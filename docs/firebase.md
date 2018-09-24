@@ -12,7 +12,7 @@ of test results.
 [Google Cloud Platform (GCP) service accounts page]
 (https://console.cloud.google.com/iam-admin/serviceaccounts?project=daq-project)
    * This is <em>not</em> from the Firebase page: it has to be from the base GCP page.
-   * Create a new service account.
+   * Create a new service account (do not use the default appspot.gserviceaccount.com).
    * Use a semi-meaningful name descriptive of the install, like 'daq-testing-lab'.
    * Add the _Pub/Sub Publisher_ and _Storage Admin_ roles.
    * Furnish a new private key.
@@ -28,7 +28,7 @@ of test results.
 6. Follow the [Firebase CLI setup instructions](https://firebase.google.com/docs/cli/).
 7. Goto the 'daq/firebase/` directory.
    * Run `firebase use` to set the GCP project to use (as created above).
-   * Run `firebase deploy` to deploy the Cloud Functions and static hosting pages.
+   * Run `firebase deploy` to deploy the necessary parts of the system.
    * Follow the link to the indicated _Hosting URL_ to see the newly installed pages.
 
 ## Datapath Debugging
@@ -75,7 +75,8 @@ The logs there will also show any signficant errors highlighting most problems.
 
 5. <em>Firestore Database:</em>
 The data ends up in the
-[Firestore Database](https://console.firebase.google.com/project/daq-project/database/firestore/) for the appropraite `{projectId}`
+[Firestore Database](https://console.firebase.google.com/project/daq-project/database/firestore/), again replacing `daq-project`
+with the appropraite `{projectId}`
 and filed under `origin/{accountId}` (the name of the service account) of the DAQ install supplying the data.
 
 6. <em>Web Application:</em>
