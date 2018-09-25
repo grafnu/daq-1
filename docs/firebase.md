@@ -3,25 +3,27 @@
 DAQ uses a simple Firebase-hosted web page to provide a dynamic dashboard
 of test results.
 
+## Initial Setup
+
 0. There should be a GCP project that can be used to host everything.
 1. Goto the [Firebase Console](https://console.firebase.google.com/) and add a new project.
    * Add the hosting GCP project to link it to this Firebase setup.
 2. Navigate to the
 [Google Cloud Platform (GCP) service accounts page]
-(https://console.cloud.google.com/iam-admin/serviceaccounts?project=atmosphere-gcp-dev)
+(https://console.cloud.google.com/iam-admin/serviceaccounts?project=daq-project)
    * This is <em>not</em> from the Firebase page: it has to be from the base GCP page.
-   * Create a new service account with a semi-meaningful name like 'daq-testing-lab'.
+   * Create a new service account with a semi-meaningful name like 'daq-testlab'.
    * Add the _Pub/Sub Publisher_ and _Storage Admin_ roles.
    * Furnish a new private key.
 4. Install the downloaded key into the DAQ install.
    * Copy the download JSON key file to the `daq/local/` directory.
    * Edit `daq/local/system.conf` to specify the `gcp_cred` setting to point to the downloaded file
      (with a path relative to the `daq/` install directory), e.g.
-     `gcp_cred=local/daq-testing-lab-de56aa4b1e47.json`.
+     `gcp_cred=local/daq-testlab-de56aa4b1e47.json`.
 5. (Re)Start the DAQ install.
    * There should be something in the top 10-20 startup log lines that look something like:
-     <br>`INFO:gcp:Loading gcp credentials from local/daq-testing-lab-de56aa4b1e47.json`
-     <br>`INFO:gcp:Initialized gcp publisher client daq-testing-lab:daq-laptop`
+     <br>`INFO:gcp:Loading gcp credentials from local/daq-testlab-de56aa4b1e47.json`
+     <br>`INFO:gcp:Initialized gcp publisher client daq-project:daq-testlab`
 6. Follow the [Firebase CLI setup instructions](https://firebase.google.com/docs/cli/).
 7. Goto the 'daq/firebase/` directory.
    * Run `firebase use` to set the GCP project to use (as created above).
@@ -37,9 +39,9 @@ section outlines the basic steps to help diagnose and debug the system, past "it
 When the system starts up and runs, there should be some descriptive log messages that highlight
 operation, with obvious error messages when something goes wrong:<pre>
 <em>...</em>
-INFO:gcp:Loading gcp credentials from local/daq-project-de56aa4b1e47.json
-INFO:gcp:Initialized gcp pub/sub daq-project:daq-laptop
-INFO:gcp:Initialized gcp firestore daq-project:daq-laptop
+INFO:gcp:Loading gcp credentials from local/daq-testlab-de56aa4b1e47.json
+INFO:gcp:Initialized gcp pub/sub daq-project:daq-testlab
+INFO:gcp:Initialized gcp firestore daq-project:daq-testlab
 <em>...</em>
 INFO:gcp:Uploaded test report to inst/report_9a02571e8f00.txt
 <em>...</em>
