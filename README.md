@@ -26,7 +26,7 @@ minimum set of basic packages, docker, and openvswitch.
 
 Once installed, the basic qualification suite can be run with `cmd/run -s`. The `-s`
 means <em>single shot</em> and will run tests just once and then exit (see the
-[options documentation](options.md) for more details).
+[options documentation](docs/options.md) for more details).
 By default, this will run everything inside of one Docker container named `daq-runner`
 and can take quite some time to download the initial docker image.
 The output should approximately look like this [example log output](docs/run_log.md).
@@ -78,7 +78,7 @@ Command-line options that can be supplied to most DAQ scripts for diagnostics:
 * `daq_loglevel=debug`: Add debug info form the DAQ test runner suite.
 * `mininet_loglevel=debug`: Add debug info from the mininet subsystem (verbose!)
 
-See the [options documentation](options.md) file for a more complete
+See the [options documentation](docs/options.md) file for a more complete
 description of all the configuration options.
 
 ## Network Taps
