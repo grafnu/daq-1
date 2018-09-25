@@ -69,13 +69,14 @@ I  daq_firestore 210615717506431 updating 1537561362986 daq-laptop port-1 5ba552
 4. <em>Firebase Use Logs:</em>
 The same Cloud Functions are represented in Firebase and can be viewed as part of the
 [Firebase Functions Usage Logs](https://console.firebase.google.com/project/daq-project/functions/usage/current-billing/execution-count)
-(note that you'll have to manually replace `daq-project` with the appropriate `{projectId}` in order for that link to work).
+(note that you'll have to manually replace `daq-project` with the 
+riate `{projectId}` in order for that link to work).
 The logs there will also show any signficant errors highlighting most problems.
 
 5. <em>Firestore Database:</em>
 The data ends up in the
 [Firestore Database](https://console.firebase.google.com/project/daq-project/database/firestore/), again replacing `daq-project`
-with the appropraite `{projectId}`
+with the appropriate `{projectId}`
 and filed under `origin/{accountId}` (the name of the service account) of the DAQ install supplying the data.
 
 6. <em>Web Application:</em>
