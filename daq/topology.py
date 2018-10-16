@@ -171,6 +171,7 @@ class FaucetTopology():
 
     def generate_acls(self, port=None):
         """Generate all ACLs required for dynamic system operation"""
+        LOGGER.info('Generating port acls (port %s)', port);
         self._generate_pri_acls()
         self._generate_port_acls(port=port)
 
@@ -253,13 +254,13 @@ class FaucetTopology():
         filename = self.INST_FILE_PREFIX + self.PORT_ACL_FILE_FORMAT % (self.sec_name, port)
         if has_mapping:
             assert self._append_acl_template(rules, 'baseline'), 'Missing ACL template baseline'
-            LOGGER.debug("Writing port acl file %s", filename)
             self._write_port_acl(port, rules, filename)
         elif os.path.isfile(filename):
             LOGGER.debug("Removing unused port acl file %s", filename)
             os.remove(filename)
 
     def _write_port_acl(self, port, rules, filename):
+        LOGGER.debug("Writing port acl file %s", filename)
         acl_name = self.PORT_ACL_NAME_FORMAT % (self.sec_name, port)
         acls = {}
         acls[acl_name] = rules
