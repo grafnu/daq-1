@@ -20,7 +20,6 @@ class FaucetTopology():
     PORT_ACL_FILE_FORMAT = "port_acls/dp_%s_port_%d_acl.yaml"
     TEMPLATE_FILE_FORMAT = "inst/acl_templates/template_%s_acl.yaml"
     FROM_ACL_KEY_FORMAT = "@from:template_%s_acl"
-    DEVICE_SPECS_FILE = "inst/device_specs.json"
     INCOMING_ACL_FORMAT = "dp_%s_incoming_acl"
     PORTSET_ACL_FORMAT = "dp_%s_portset_acl"
 
@@ -30,7 +29,7 @@ class FaucetTopology():
         self.pri = pri
         self.sec_port = 7
         self.sec_name = 'sec'
-        self._device_specs = self._load_file(self.DEVICE_SPECS_FILE)
+        self._device_specs = self._load_device_specs()
         self.topology = self._load_base_network_topology()
         assert self.topology, 'Could not find network config file'
 
@@ -55,8 +54,7 @@ class FaucetTopology():
 
     def _load_file(self, filename):
         if not os.path.isfile(filename):
-            LOGGER.debug("File %s does not exist, skipping.", filename)
-            return None
+            raise Exception("File %s does not exist." % filename)
         LOGGER.debug("Loading file %s", filename)
         with open(filename) as stream:
             return yaml.safe_load(stream)
@@ -149,6 +147,14 @@ class FaucetTopology():
         acls = self.topology['acls']
         assert acl_name not in acls, 'acl %s already defined in faucet.yaml' % acl_name
         acls[acl_name] = rules
+
+    def _load_device_specs(self):
+        device_specs = self.config.get('device_specs')
+        if device_specs:
+            LOGGER.info('Loading device specs from %s', device_specs)
+            return self._load_file(device_specs)
+        LOGGER.info('No device_specs file specified, skipping...')
+        return None
 
     def _load_base_network_topology(self):
         config_file = self.config.get('network_config')
@@ -287,9 +293,9 @@ class FaucetTopology():
 
     def _append_acl_template(self, rules, template, target_mac=None):
         filename = self.TEMPLATE_FILE_FORMAT % template
-        template_acl = self._load_file(filename)
-        if not template_acl:
+        if not self._device_specs:
             return False
+        template_acl = self._load_file(filename)
         template_key = self.FROM_ACL_KEY_FORMAT % template
         for acl in template_acl['acls'][template_key]:
             new_rule = acl['rule']

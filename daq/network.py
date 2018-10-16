@@ -128,6 +128,11 @@ class TestNetwork():
             self.sec.addIntf(intf, port=intf_port)
             self._switch_attach(self.sec, intf)
 
+    def is_system_port(self, dpid, port):
+        """Check if the dpid/port combo is a system port for logging"""
+        target_dpid = int(self.sec_dpid)
+        return dpid == target_dpid and port == self.sec_port
+
     def is_device_port(self, dpid, port):
         """Check if the dpid/port combo is for a valid device"""
         target_dpid = int(self.sec_dpid)
