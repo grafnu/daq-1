@@ -96,9 +96,8 @@ class FaucetTopology():
         self._add_acl_includes()
         self._write_network_topology()
 
-    def direct_port_traffic(self, target_mac, target):
+    def direct_port_traffic(self, target_mac, port_no, target):
         """Direct traffic from a given mac to specified port set"""
-        port_no = target['port'] if target else None
         if target is None and target_mac in self._mac_map:
             del self._mac_map[target_mac]
         elif target is not None and target_mac not in self._mac_map:
@@ -171,9 +170,9 @@ class FaucetTopology():
 
     def generate_acls(self, port=None):
         """Generate all ACLs required for dynamic system operation"""
-        LOGGER.info('Generating port acls (port %s)', port);
         self._generate_pri_acls()
-        self._generate_port_acls(port=port)
+        if not self._generate_port_acls(port=port):
+            LOGGER.info('Removed port acls for port %s', port)
 
     def _generate_pri_acls(self):
         switch_name = self.pri.name
@@ -237,10 +236,10 @@ class FaucetTopology():
 
     def _generate_port_acls(self, port=None):
         if port:
-            self._generate_port_acl(port=port)
-        else:
-            for range_port in range(1, self.sec_port):
-                self._generate_port_acl(port=range_port)
+            return self._generate_port_acl(port=port)
+        for range_port in range(1, self.sec_port):
+            self._generate_port_acl(port=range_port)
+        return True
 
     def _generate_port_acl(self, port=None):
         has_mapping = False
@@ -248,7 +247,7 @@ class FaucetTopology():
         if self._device_specs:
             for target_mac in self._mac_map:
                 if self._mac_map[target_mac]['port'] == port:
-                    self._add_acl_port_rules(rules, target_mac=target_mac)
+                    self._add_acl_port_rules(rules, target_mac, port)
                     has_mapping = True
 
         filename = self.INST_FILE_PREFIX + self.PORT_ACL_FILE_FORMAT % (self.sec_name, port)
@@ -258,6 +257,7 @@ class FaucetTopology():
         elif os.path.isfile(filename):
             LOGGER.debug("Removing unused port acl file %s", filename)
             os.remove(filename)
+        return has_mapping
 
     def _write_port_acl(self, port, rules, filename):
         LOGGER.debug("Writing port acl file %s", filename)
@@ -269,7 +269,7 @@ class FaucetTopology():
         with open(filename, "w") as output_stream:
             yaml.safe_dump(port_acl, stream=output_stream)
 
-    def _add_acl_port_rules(self, rules, target_mac):
+    def _add_acl_port_rules(self, rules, target_mac, port):
         mac_map = self._device_specs['macAddrs']
         if target_mac not in mac_map:
             LOGGER.info("No device spec found for %s", target_mac)
@@ -277,7 +277,7 @@ class FaucetTopology():
         else:
             device_info = mac_map[target_mac]
             device_type = device_info['type'] if 'type' in device_info else 'default'
-        LOGGER.info("Processing acl template for %s/%s", target_mac, device_type)
+        LOGGER.info("Applying acl template %s/%s to port %s", target_mac, device_type, port)
         self._append_acl_template(rules, device_type, target_mac)
 
     def _sanitize_mac(self, mac_addr):

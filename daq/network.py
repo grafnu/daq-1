@@ -172,11 +172,10 @@ class TestNetwork():
         LOGGER.info("Starting mininet...")
         self.net.start()
 
-    def direct_port_traffic(self, target_mac, target):
+    def direct_port_traffic(self, target_mac, port, target):
         """Direct traffic for a given mac to target port"""
-        port = target['port'] if target else None
-        LOGGER.info('Directing port traffic for %s to %s', target_mac, port)
-        self.topology.direct_port_traffic(target_mac, target)
+        LOGGER.info('Directing traffic for %s on port %s: %s', target_mac, port, bool(target))
+        self.topology.direct_port_traffic(target_mac, port, target)
 
     def device_group_for(self, target_mac):
         """Find the target device group for the given address"""
