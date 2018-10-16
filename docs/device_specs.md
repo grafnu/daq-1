@@ -19,7 +19,7 @@ equivalent to a named subnet. If no <em>group</em> is specified, then it
 defaults to an isolated group based on the device's MAC address. Devices in
 the same group will have network reachability (sans MUD restrictions) with
 a shared DHCP server (et. al.), while devices in separate groups will be
-complete sequestered.
+completely sequestered.
 
 In order to test/restrict the communication between two devices, it would need
 both a _group_ and _type_ entry, so they could be on the same subnet but with
