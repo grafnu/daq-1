@@ -50,8 +50,8 @@ def _configure_logging(config):
     ROOTLOG.setLevel(level)
     ROOTLOG.handlers[0].setLevel(level)
 
-    mininet_env = config.get('mininet_loglevel')
-    minilog.setLogLevel(mininet_env if mininet_env else 'info')
+    mininet_env = config.get('mininet_loglevel', 'info')
+    minilog.setLogLevel(mininet_env)
 
     #pylint: disable=protected-access
     minilog.MininetLogger._log = _stripped_alt_logger
