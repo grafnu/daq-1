@@ -48,7 +48,9 @@ def _configure_logging(config):
 
     # For some reason this is necessary for travis.ci
     ROOTLOG.setLevel(level)
-    ROOTLOG.handlers[0].setLevel(level)
+
+    # This handler is used by everything, so be permissive here.
+    ROOTLOG.handlers[0].setLevel(minilog.LEVELS['debug'])
 
     mininet_env = config.get('mininet_loglevel', 'info')
     minilog.setLogLevel(mininet_env)
