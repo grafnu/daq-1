@@ -34,8 +34,8 @@ fi
 # Out with the old, in with the new (use faucet instead).
 sudo /etc/init.d/openvswitch-controller stop || true
 
-# Echo cleaning old results.
-rm -rf inst/run-port-* inst/report_*
+echo Cleaning old results...
+sudo rm -rf inst/run-port-* inst/report_*
 
 echo -n "Last DAQ commit "
 git log -n 1 --pretty=format:"%h - %an, %ar : %s" || true
