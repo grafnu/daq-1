@@ -367,7 +367,7 @@ class FaucetTopology():
         actions = acls['rule']['actions']
         assert not 'output' in actions, 'output actions explicitly defined'
         if actions['allow']:
-            actions['output'] = { 'port': self.sec_port }
+            actions['output'] = {'port': self.sec_port}
         return acls
 
     def _append_device_default_allow(self, rules, target_mac):
