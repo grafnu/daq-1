@@ -77,3 +77,12 @@ configuration for an external physical switch. Key entries are:
     * `ext_ofip`: Control plane interface IP address (and subnet).
     * `ext_addr`: External switch IP address (used to verify the connection).
     * `sec_port`: Port of secondary (external) switch for the data-plane uplink (defaults to 7).
+
+## Testing
+
+The `bin/physical_sec` script will setup and test the basic connection to the external physical switch:
+```
+~/daq$ bin/physical_sec
+Reading config from /home/user/daq/local/system.conf
+ext_ctrl not defined for physical_sec.
+```
