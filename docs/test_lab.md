@@ -54,8 +54,7 @@ using a physical cable, a switch port to another network adapter on the controll
 There are several (minimum two) network connections (ethernet cables) required between the switch
 and controller machines. A standard USB-dongle Ethernet adapter should be sufficient for each.
 1. _Control_ plane, which supports the OpenFlow controller connection between switch and controller
-host. The port used for this is defined as part of the
-[vendor-specific switch setup](https://github.com/faucetsdn/faucet/tree/master/docs/vendors).
+host. The port used for this is defined as part of the vendor-specific switch setup (see below).
 2. _Data_ plane connection, which provides for all data access for the devices. Internet access for
 the devices will be filtered/proxied through the controller host. The port used for this is defined
 by the `sec_port` config (see below).
@@ -69,7 +68,7 @@ At least 1 eXtra is useful for diagnosing any switch configuration problems.
 Configuring the test lab switch requires a few separate pieces of setup:
 1. The [FAUCET Vendor-Specific Documentation](https://docs.faucet.nz/en/latest/vendors/index.html)
 for the specific switch used in any setup, including the necessary OpenFlow controller
-configuration.
+configuration. This defines which port is used for the control plane uplink to the controller.
 2. System configuration of the controller host. See `misc/system_phy.conf` for an example
 configuration for an external physical switch. Key entries are:
     * `ext_dpid`: Data plane ID for the connected physical switch.
