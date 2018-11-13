@@ -36,6 +36,8 @@ so you might need to follow the Build Setup instructions at the end of this page
 
 ## Configuration
 
+Hello?
+
 After an initial test-install run, edit `local/system.conf` to specify the network adapter
 name(s) of the device adapter(s) or external physical switch.
 If the file does not exist, it will be populated with a default version on system start with
