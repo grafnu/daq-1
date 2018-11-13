@@ -68,7 +68,7 @@ At least 1 eXtra is useful for diagnosing any switch configuration problems.
 Configuring the test lab switch requires a few separate pieces of setup:
 1. The [FAUCET Vendor-Specific Documentation](https://docs.faucet.nz/en/latest/vendors/index.html)
 for the specific switch used in any setup, including the necessary OpenFlow controller
-configuration. This defines which port is used for the control plane uplink to the controller.
+configuration (such as the port used for the control plane uplink).
 2. System configuration of the controller host. See `misc/system_phy.conf` for an example
 configuration for an external physical switch. Key entries are:
     * `ext_dpid`: Data plane ID for the connected physical switch.
