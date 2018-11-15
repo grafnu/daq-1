@@ -3,7 +3,6 @@
 """Main entrypoint for DAQ. Handles command line parsing and other
 misc setup tasks."""
 
-import io
 import logging
 import os
 import re
