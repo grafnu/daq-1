@@ -7,7 +7,7 @@
 # [Docker CE Debian Install](https://docs.docker.com/install/linux/docker-ce/debian/) (tested with version 17.12.0-ce).
 #
 # Docker versions after this introduced a bug that would prevent "service docker start" from working.
-DOCKER_VERSION="=18.06.1~ce~3-0"
+DOCKER_VERSION_NO_RELEASE="=18.06.1~ce~3-0"
 
 if [ -z "$AG" ]; then
     AG="sudo apt-get -qqy --no-install-recommends"
@@ -22,6 +22,11 @@ $AG install lsb-release git curl sudo apt-transport-https software-properties-co
 retry=bin/retry_cmd
 distrib=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
 release=$(lsb_release -cs)
+if [ $release == trusty ]; then
+    DOCKER_VERSION=$DOCKER_VERSION_NO_RELEASE
+else
+    DOCKER_VERSION=${DOCKER_VERSION_NO_RELEASE}~${release}
+fi
 
 echo Installing for $distrib $release
 
