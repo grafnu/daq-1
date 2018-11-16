@@ -8,7 +8,8 @@
 #
 
 # Docker versions after this introduced a bug that would prevent "service docker start" from working.
-DOCKER_VERSION='=18.06.1~ce~3-0~ubuntu'
+release=$(lsb_release -cs)
+DOCKER_VERSION="=18.06.1~ce~3-0~${release}"
 
 if [ -z "$AG" ]; then
     AG="sudo apt-get -qqy --no-install-recommends"
@@ -22,7 +23,6 @@ $AG install lsb-release git curl sudo apt-transport-https software-properties-co
 
 retry=bin/retry_cmd
 distrib=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
-release=$(lsb_release -cs)
 
 echo Installing for $distrib $release
 
