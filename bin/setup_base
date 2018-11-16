@@ -6,10 +6,8 @@
 # [Open vSwitch Debian Install](http://docs.openvswitch.org/en/latest/intro/install/distributions/#debian) (tested with version 2.6.2).
 # [Docker CE Debian Install](https://docs.docker.com/install/linux/docker-ce/debian/) (tested with version 17.12.0-ce).
 #
-
 # Docker versions after this introduced a bug that would prevent "service docker start" from working.
-release=$(lsb_release -cs)
-DOCKER_VERSION="=18.06.1~ce~3-0~${release}"
+DOCKER_VERSION="=18.06.1~ce~3-0"
 
 if [ -z "$AG" ]; then
     AG="sudo apt-get -qqy --no-install-recommends"
@@ -23,6 +21,7 @@ $AG install lsb-release git curl sudo apt-transport-https software-properties-co
 
 retry=bin/retry_cmd
 distrib=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
+release=$(lsb_release -cs)
 
 echo Installing for $distrib $release
 
