@@ -48,16 +48,24 @@ configure the Cloud IoT project to send state message to the state topic!)
 ## Pubber Reference Client
 
 The `daq/pubber` directory contains a simple reference client that can be used to validate/test a device setup.
+There's a simple configuraiton file that sets up the key cloud parameters, and then a simple run script.
 <pre>
+~/daq$ <b>cat local/pubber.json</b>
+{
+  "projectId": "gcp-account",
+  "cloudRegion": "us-central1",
+  "registryId": "sensor_hub",
+  "gatewayId": "GAT-001"
+}
 ~/daq$ <b>pubber/bin/run</b>
 [main] INFO daq.pubber.Pubber - Reading configuration from /home/user/daq/local/pubber.json
 [main] INFO daq.pubber.Pubber - Starting instance for registry sensor_hub
 [main] INFO daq.pubber.MqttPublisher - Creating new publisher-client for GAT-001
 [main] INFO daq.pubber.MqttPublisher - Attempting connection to sensor_hub:GAT-001
-[MQTT Call: projects/bos-daq-testing/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Received new config daq.udmi.Message$Config@209307c7
-[MQTT Call: projects/bos-daq-testing/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Starting executor with send message delay 2000
+[MQTT Call: projects/gcp-account/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Received new config daq.udmi.Message$Config@209307c7
+[MQTT Call: projects/gcp-account/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Starting executor with send message delay 2000
 [main] INFO daq.pubber.Pubber - synchronized start config result true
-[MQTT Call: projects/bos-daq-testing/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Sending state message for device GAT-001
+[MQTT Call: projects/gcp-account/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Sending state message for device GAT-001
 &hellip;
 [pool-1-thread-1] INFO daq.pubber.Pubber - Sending test message for sensor_hub/GAT-001
 [pool-1-thread-1] INFO daq.pubber.Pubber - Sending test message for sensor_hub/GAT-001
@@ -74,14 +82,14 @@ Loading config from local/system.conf
 
 BUILD SUCCESSFUL in 3s
 2 actionable tasks: 2 executed
-Using credentials from /home/user/daq/local/bos-daq-testing-de56aa4b1e47.json
+Using credentials from /home/user/daq/local/gcp-account-de56aa4b1e47.json
 Executing validator /home/user/daq/schemas/udmi pubsub:target...
 Running schema . in /home/user/daq/schemas/udmi
 Ignoring subfolders []
-Results will be uploaded to https://console.cloud.google.com/firestore/data/registries/?project=bos-daq-testing
+Results will be uploaded to https://console.cloud.google.com/firestore/data/registries/?project=gcp-account
 Also found in such directories as /home/user/daq/schemas/udmi/out
 Connecting to pubsub topic target
-Entering pubsub message loop on projects/bos-daq-testing/subscriptions/daq-validator
+Entering pubsub message loop on projects/gcp-account/subscriptions/daq-validator
 Success validating out/state_GAT-001.json
 Success validating out/state_GAT-001.json
 Success validating out/state_GAT-001.json
@@ -100,7 +108,7 @@ function described above is not installed properly.
 The `validator/bin/config.sh` script can be used to inject a configuration message to a device:
 <pre>
 ~/daq$ <b>validator/bin/config.sh GAT-001 schemas/udmi/config.tests/gateway.json</b>
-Configuring bos-daq-testing:us-central1:sensor_hub:GAT-001 from schemas/udmi/config.tests/gateway.json
+Configuring gcp-account:us-central1:sensor_hub:GAT-001 from schemas/udmi/config.tests/gateway.json
 messageIds:
 - '301010492284043'
 Updated configuration for device [GAT-001].
@@ -111,10 +119,10 @@ If using the `pubber` client, there should be a corresponding flury of activity:
 &hellip;
 [pool-1-thread-1] INFO daq.pubber.Pubber - Sending test message for sensor_hub/GAT-001
 [pool-1-thread-1] INFO daq.pubber.Pubber - Sending test message for sensor_hub/GAT-001
-[MQTT Call: projects/bos-daq-testing/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Received new config daq.udmi.Message$Config@3666b3a5
-[MQTT Call: projects/bos-daq-testing/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Starting executor with send message delay 2000
-[MQTT Call: projects/bos-daq-testing/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Sending state message for device GAT-001
-[MQTT Call: projects/bos-daq-testing/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Sending state message for device GAT-001
+[MQTT Call: projects/gcp-account/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Received new config daq.udmi.Message$Config@3666b3a5
+[MQTT Call: projects/gcp-account/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Starting executor with send message delay 2000
+[MQTT Call: projects/gcp-account/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Sending state message for device GAT-001
+[MQTT Call: projects/gcp-account/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Sending state message for device GAT-001
 [pool-1-thread-1] INFO daq.pubber.Pubber - Sending test message for sensor_hub/GAT-001
 [pool-1-thread-1] INFO daq.pubber.Pubber - Sending test message for sensor_hub/GAT-001
 &hellip;
