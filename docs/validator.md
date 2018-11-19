@@ -9,7 +9,7 @@ that set. Direct file-based validations run against an explicitly specified sub-
 validator dynamically chooses the sub-schema based off of message parameters. There's currently two schemas
 available, defined in the `validator/schemas/` subdirectory:
 * `simple`, which is really just there to make sure the system works.
-* [`udmi`](../schemas/udmi/README.md), which is a building-oriented schema for data collection.
+* [`UDMI`](../schemas/udmi/README.md), which is a building-oriented schema for data collection.
 
 ## Validation Mechanisms
 
@@ -61,7 +61,6 @@ Done with validation.
 ### PubSub Stream Validation
 
 Validating a live PubSub stream requires more setup, but ultimately most closely reflects what an
-actual system would be doing during operation. The (DAQ PubSub Documentation)[pubsub.md] details
+actual system would be doing during operation. The [DAQ PubSub Documentation](pubsub.md) details
 how to set this up. It uses the same underlying schema files as the techniques above, but routes
 it though a live stream in the cloud.
-

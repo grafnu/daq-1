@@ -1,18 +1,18 @@
 # PubSub Setup Documentation
 
-This document describes the (GCP PubSub in Cloud IoT)[https://cloud.google.com/iot-core/] mechanism for
+This document describes the [GCP PubSub in Cloud IoT](https://cloud.google.com/iot-core/) mechanism for
 processing device messages. There are three major message types employed by the system:
 * <b>Config</b>: Messages sent from cloud-to-device that _configure_ the device (idempotent).
 * <b>State</b>: Messags sent from device-to-cloud reporting _state_ form the device (idempotent).
 * <b>Events</b>: Messages sent from device-to-cloud for streaming _events_ (non-idempotent).
 
 The exact semantic meaning of theses is determined by the underlying schema used. E.g., the
-(UDMI Schema)[../schemas/udmi/README.md] specifies one set of conventions for managing IoT devices.
+[UDMI Schema](../schemas/udmi/README.md) specifies one set of conventions for managing IoT devices.
 
-## Streaming Validation
+## Validator Configuration
 
-Streaming validation validates a stream of messages pulled from a GCP PubSub topic. There are three values required
-in the `local/system.conf` file to make it work:
+Streaming validation validates a stream of messages pulled from a GCP PubSub topic. There are three values
+in the `local/system.conf` file required to make it work:
 * `gcp_cred`: The service account credentials, as per the general [DAQ Firebase setup](firebase.md).
 * `gcp_topic`: The _PubSub_ (not MQTT) topic name.
 * `gcp_schema`: Indicates which schema to validate against.
@@ -37,6 +37,8 @@ are validated against the `.../state.json` schema.
 * All messages have their attributes validated against the `.../attributes.json` schema. These attributes are
 automatically defined by the MQTT Client ID and Topic, so are not explicitly included in any message payload.
 * (There currently is no PubSub stream validation of device config messages.)
+
+## Streaming Validation
 
 Running the `bin/validate` script will will parse the configuration file and automatically start
 verifying PubSub messages against the indicated schema.
@@ -64,3 +66,8 @@ Error validating out/pointset_TCE01_01_NE_Controls.json: DeviceId TCE01_01_NE_Co
 Success validating out/logentry_FCU_01_SE_04.json
 <em>&hellip;</em>
 </pre>
+
+## State Conversation Function
+
+## Injecting Configuration
+
