@@ -11,8 +11,6 @@ public class Report {
   public Integer level = 500;
   public Date timestamp = new Date();
 
-
-
   public Report(Exception e) {
     message = e.toString();
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
