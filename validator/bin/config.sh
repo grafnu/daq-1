@@ -15,7 +15,7 @@ SUBFOLDER=config
 
 if [ ! -f "$DATA" ]; then
     echo Missing device or config file $DATA
-    echo Usage: $0 [device] [config]
+    echo Usage: $0 [device] [config_message]
     false
 fi
 
