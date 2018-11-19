@@ -18,14 +18,17 @@ in the `local/system.conf` file required to make it work:
 * `gcp_schema`: Indicates which schema to validate against.
 
 You will need to add full Project Editor permissions for the service account.
-E.g., to validate messages on the `projects/gcp-account/topics/telemetry` topic, there should be something like:
+E.g., to validate messages against the UDMI schema on the `projects/gcp-account/topics/target` topic,
+there should be something like:
 
 <pre>
 ~/daq$ <b>fgrep gcp_ local/system.conf</b>
-gcp_cred=local/gcp-project-ce6716521378.json
-gcp_topic=telemetry_topic
-gcp_schema=schemas/udmi/
+gcp_cred=local/gcp-account-de56aa4b1e47.json
+gcp_topic=target
+gcp_schema=schemas/udmi
 </pre>
+
+## Message/Schema Mapping
 
 When using the
 [GCP Cloud IoT Core MQTT Bridge](https://cloud.google.com/iot/docs/how-tos/mqtt-bridge#publishing_telemetry_events)
@@ -38,6 +41,7 @@ are validated against the `.../state.json` schema.
 automatically defined by the MQTT Client ID and Topic, so are not explicitly included in any message payload.
 * (There currently is no PubSub stream validation of device config messages.)
 
+The simple `state_shunt` function in 
 ## Streaming Validation
 
 Running the `bin/validate` script will will parse the configuration file and automatically start
