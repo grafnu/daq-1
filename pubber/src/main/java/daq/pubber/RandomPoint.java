@@ -1,7 +1,7 @@
-package org.faucetsdn.daq.pubber;
+package daq.pubber;
 
-import com.faucetsdn.daq.abacab.Message.PointData;
-import com.faucetsdn.daq.abacab.Message.PointState;
+import daq.udmi.Message.PointData;
+import daq.udmi.Message.PointState;
 
 public class RandomPoint implements AbstractPoint {
 

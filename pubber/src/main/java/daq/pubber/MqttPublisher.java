@@ -1,4 +1,4 @@
-package org.faucetsdn.daq.pubber;
+package daq.pubber;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

@@ -1,4 +1,4 @@
-package org.faucetsdn.daq.pubber;
+package daq.pubber;
 
 /**
  */

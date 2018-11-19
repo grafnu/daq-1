@@ -1,12 +1,12 @@
-package org.faucetsdn.daq.pubber;
+package daq.pubber;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.faucetsdn.daq.abacab.Message;
-import com.faucetsdn.daq.abacab.Message.PointSet;
-import com.faucetsdn.daq.abacab.Message.PointSetState;
-import com.faucetsdn.daq.abacab.Report;
-import com.faucetsdn.daq.abacab.Message.State;
+import daq.udmi.Message;
+import daq.udmi.Message.PointSet;
+import daq.udmi.Message.PointSetState;
+import daq.udmi.Report;
+import daq.udmi.Message.State;
 import com.google.common.base.Preconditions;
 import java.io.File;
 import java.nio.file.Files;

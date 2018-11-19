@@ -1,4 +1,4 @@
-package com.faucetsdn.daq.abacab;
+package daq.udmi;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -7,21 +7,21 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class Message {
 
-  public static class State extends AbacabBase {
+  public static class State extends UdmiBase {
     public SystemState system = new SystemState();
     public PointSetState pointset;
   }
 
-  public static class Config extends AbacabBase {
+  public static class Config extends UdmiBase {
     public SystemConfig system;
     public PointSetState pointset;
   }
 
-  public static class PointSet extends AbacabBase {
+  public static class PointSet extends UdmiBase {
     public Map<String, PointData> points = new HashMap<>();
   }
 
-  public static class System extends AbacabBase {
+  public static class System extends UdmiBase {
     public Report log;
   }
 
@@ -54,7 +54,7 @@ public class Message {
     public String version;
   }
 
-  public static class AbacabBase {
+  public static class UdmiBase {
     public Integer version = 1;
     public Date timestamp = new Date();
   }
