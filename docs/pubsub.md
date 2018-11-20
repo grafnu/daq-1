@@ -39,7 +39,8 @@ topic `/devices/{device-id}/events/pointset` will be validated against `.../poin
 are validated against the `.../state.json` schema.
 * All messages have their attributes validated against the `.../attributes.json` schema. These attributes are
 automatically defined by the MQTT Client ID and Topic, so are not explicitly included in any message payload.
-* (There currently is no PubSub stream validation of device config messages.)
+* The `config` messages are artifically injected into the `target` PubSub topic by the configuration script
+(below) so they can be easily checked by the validation engine.
 
 The simple `state_shunt` function in `daq/functions/state_shunt` will automatically send state update messages
 to the `target` PubSub topic. Install this function to enable validation of state updates. (Also make sure to
@@ -47,29 +48,9 @@ configure the Cloud IoT project to send state message to the state topic!)
 
 ## Pubber Reference Client
 
-The `daq/pubber` directory contains a simple reference client that can be used to validate/test a device setup.
-There's a simple configuraiton file that sets up the key cloud parameters, and then a simple run script.
-<pre>
-~/daq$ <b>cat local/pubber.json</b>
-{
-  "projectId": "gcp-account",
-  "cloudRegion": "us-central1",
-  "registryId": "sensor_hub",
-  "gatewayId": "GAT-001"
-}
-~/daq$ <b>pubber/bin/run</b>
-[main] INFO daq.pubber.Pubber - Reading configuration from /home/user/daq/local/pubber.json
-[main] INFO daq.pubber.Pubber - Starting instance for registry sensor_hub
-[main] INFO daq.pubber.MqttPublisher - Creating new publisher-client for GAT-001
-[main] INFO daq.pubber.MqttPublisher - Attempting connection to sensor_hub:GAT-001
-[MQTT Call: projects/gcp-account/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Received new config daq.udmi.Message$Config@209307c7
-[MQTT Call: projects/gcp-account/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Starting executor with send message delay 2000
-[main] INFO daq.pubber.Pubber - synchronized start config result true
-[MQTT Call: projects/gcp-account/locations/us-central1/registries/sensor_hub/devices/GAT-001] INFO daq.pubber.Pubber - Sending state message for device GAT-001
-&hellip;
-[pool-1-thread-1] INFO daq.pubber.Pubber - Sending test message for sensor_hub/GAT-001
-[pool-1-thread-1] INFO daq.pubber.Pubber - Sending test message for sensor_hub/GAT-001
-</pre>
+The [Pubber Reference Client](pubber.md) is a complete reference client that can be used to test out streaming
+validation in absence of a real known-working device. The basic setup and documentation listed on the Pubber
+page are assumed to be "running in the background" for the other examples in this section.
 
 ## Streaming Validation
 
