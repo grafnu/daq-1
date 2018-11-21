@@ -81,7 +81,7 @@ configuration for an external physical switch. Key entries are:
 ## Testing
 
 The `bin/physical_sec` script will setup and test the basic connection to the external physical switch:
-```
+<pre>
 ~/daq$ <b>bin/physical_sec</b>
 Loading config from local/system.conf
 Configuring control interface enx00e04c68036b at 192.0.2.10/16
@@ -95,7 +95,7 @@ rtt min/avg/max/mdev = 2.790/2.790/2.790/0.000 ms
 
 DAQ autoclean ip link set down dev enx00e04c68036b
 Done with physical switch configuration.
-```
+</pre>
 
 ## Common Errors
 
