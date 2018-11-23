@@ -11,6 +11,7 @@ mininet/
 local/
 firebase/.firebaserc
 firebase/.firebase
+firebase/functions/package-lock.json
 nohup.out
 **/node_modules/
 
