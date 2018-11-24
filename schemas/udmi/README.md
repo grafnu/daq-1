@@ -1,7 +1,7 @@
 # UDMI Schema Target
 
-The Universal Device Management Interface (UDMI) schema provides a high-level
-specification for the management and operation of physical systems. This data is typically exchanged
+The Universal Device Management Interface (UDMI) provides a high-level specification for the
+management and operation of physical IoT systems. This data is typically exchanged
 with a cloud entity that can maintain a "digital twin" or "shadow device" in the cloud.
 Nominally meant for use with [Googe's Cloud IoT Core](https://cloud.google.com/iot/docs/),
 as a schema it can be applied to any set of data or hosting setup.
@@ -14,19 +14,33 @@ By deisgn, this schema is intended to be:
 
 ## Use Cases
 
+The essence behind UDMI is an automated mechanism for IoT system management. Many current
+systems require direct-to-device access, such as through a web browser or telnet/ssh session.
+These techniques do not scale to robust managed ecosystems since they rely too heavily on
+manual operation (aren't automated), and increase the security exposure of the system
+(since they need to expose these management ports).
+
 UDMI is intended to support a few primary use-cases:
-* Device Testability
-* Operational Diagnostics
-* Commissioning Tools
-* Status and Logging
-* Key Rotation
-* Credential Exchange
-* Firmware Updates
+* _Device Testability_: e.g. Trigger a fake alarm to test reporting mechanims.
+* _Commissioning Tools_: Streamline system install and setup.
+* _Operational Diagnostics_: Make it easy for system operators to diagnoe basic faults.
+* _Status and Logging_: Report system operational metrics to hosting infrastructure.
+* _Key Rotation_: Manage encryption keys and certificates in accordance with best practice.
+* _Credential Exchange_: Bootstrap higher-layer authentication to restricted resources.
+* _Firmware Updates_: Initiate, monitor, and track firmware updates across an entire fleet of devices.
+
+All these situations are conceptually about _management_ of devices, which is conceptually
+different than the _control_ or _operation_. These concepts are similar to the _management_,
+_control_, and _data_ planes
+[found in traditional networking infrastructure](https://whatis.techtarget.com/definition/plane-in-networking).
+Once operational, the system should be able to operate completely autonomoulsy from the
+management capabilities, which are only required to diagnose or tweak system behavior.
 
 ## Design Philiosphy
 
-* <b>Secure and Authenticated Channel:</b> Assumes a propertly secure and
-authenticated channel, so those primitives are not included as part of the core specification.
+In order to provide for management automation, UDMI strives for the following principles:
+* <b>Secure and Authenticated:</b> Requires a propertly secure and authenticated channel
+from the device to managing infrastructure.
 * <b>Declarative Specification:</b> The schema describes the _desired_ state of the system,
 relying on the underlying mechanisms to match actual state with desired state. This is
 conceptually similar to Kubernetes-style configuraiton files.
@@ -34,6 +48,11 @@ conceptually similar to Kubernetes-style configuraiton files.
 add new capabilities in the future. <em>It is easier to add something than it is to remove it.</em>
 * <b>Reduced Choices:</b> In the long run, choice leads to more work
 to implement, and more ambiguity. Strive towards having only _one_ way of doing each thing.
+* <b>Structure and Clarity:</b> This is not a "compressed" format and not designed for
+very large structures or high-bandwidth streams.
+* <b>Property Names:</b>Uses <em>snake_case</em> convention for property names.
+* <b>Resource Names:</b> Overall structure (when flattened to paths), follows the
+[API Resource Names guidline](https://cloud.google.com/apis/design/resource_names).
 
 ## Validation
 
@@ -44,19 +63,19 @@ suite if there are new cases to test.
 
 ## Schema Structure
 
-Schemas are broken down into several sub-schemas that address different aspects
-of device management:
-* State updates ([example](state.tests/example.json)) from device to cloud,
+Schemas are broken down into several top-level sub-schemas that are invoked for
+different aspects of device management:
+* _State_ updates ([example](state.tests/example.json)) from device to cloud,
 defined by [<em>state.json</em>](state.json).
-* Configuration ([example](config.tests/example.json)) passed from cloud to device,
+* _Configuration_ ([example](config.tests/example.json)) passed from cloud to device,
 defined by [<em>config.json</em>](config.json).
-* Streaming data points ([example](pointset.tests/example.json)) from device to cloud,
+* Streaming data _points_ ([example](pointset.tests/example.json)) from device to cloud,
 defined by [<em>pointset.json</em>](pointset.json).
-* Logging messages ([example](logentry.tests/example.json)) from devices,
+* _Logging_ messages ([example](logentry.tests/example.json)) from devices,
 defined by [<em>logentry.json</em>](logentry.json).
-* Message envelope ([example](envelope.tests/example.json)) for server-side
+* Message _envelope_ ([example](envelope.tests/example.json)) for server-side
 attributes, defined by [<em>envelope.json</em>](envelope.json).
-* Device metadata ([example](metadata.tests/example.json)) stored _about_ a device,
+* Device _metadata_ ([example](metadata.tests/example.json)) stored _about_ a device,
 but not directly available to the device, defined by [<em>metadata.json</em>](metadata.json).
 
 ## Message Detail Notes
@@ -93,13 +112,3 @@ it's cleared.
 * The status `level` should conform to the numerical
 [Stackdriver LogEntry](https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#logseverity)
 levels. The `DEFAULT` value of 0 is not allowed (lowest value is 100, maximum 800).
-
-## Design Philiophy
-
-The design of the schema follows the following high-level guidelines.
-
-* Follows the [API Resource Names guidline](https://cloud.google.com/apis/design/resource_names) guideline.
-* Uses <em>snake_case</em> convention.
-* Restricted options, to prevent fragmentation. Additional fields can easily be added
-(but it's hard to take them away!).
-* Structure and clarity over brevity. This is not a "compressed" format and not designed for very large structures.
