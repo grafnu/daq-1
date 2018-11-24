@@ -10,7 +10,8 @@ By deisgn, this schema is intended to be:
 * <b>U</b>niversal: Apply to all subsystems in a building, not a singular vertical solution.
 * <b>D</b>evice: Operations on an IoT _device_, a managed entity in physical space.
 * <b>M</b>anagement: Focus on device _management_, rather than command & control.
-* <b>I</b>nterface: Define an interface specification, rather than a client-library or RPC mechanism.
+* <b>I</b>nterface: Define an interface specification, rather than a client-library or
+RPC mechanism.
 
 ## Use Cases
 
@@ -27,12 +28,13 @@ UDMI is intended to support a few primary use-cases:
 * _Status and Logging_: Report system operational metrics to hosting infrastructure.
 * _Key Rotation_: Manage encryption keys and certificates in accordance with best practice.
 * _Credential Exchange_: Bootstrap higher-layer authentication to restricted resources.
-* _Firmware Updates_: Initiate, monitor, and track firmware updates across an entire fleet of devices.
+* _Firmware Updates_: Initiate, monitor, and track firmware updates across an entire fleet
+of devices.
 
 All these situations are conceptually about _management_ of devices, which is conceptually
 different than the _control_ or _operation_. These concepts are similar to the _management_,
-_control_, and _data_ planes
-[found in traditional networking infrastructure](https://whatis.techtarget.com/definition/plane-in-networking).
+_control_, and _data_ planes of
+[Software Defined Networks](https://queue.acm.org/detail.cfm?id=2560327).
 Once operational, the system should be able to operate completely autonomoulsy from the
 management capabilities, which are only required to diagnose or tweak system behavior.
 
@@ -54,13 +56,6 @@ very large structures or high-bandwidth streams.
 * <b>Resource Names:</b> Overall structure (when flattened to paths), follows the
 [API Resource Names guidline](https://cloud.google.com/apis/design/resource_names).
 
-## Validation
-
-To verify correct operation of a real system, follow the instructions outlined in the
-[validator subsystem docs](../../../docs/validator.md), which provides for a suitable
-communication channel. Additional sample messages are easy to include in the regression
-suite if there are new cases to test.
-
 ## Schema Structure
 
 Schemas are broken down into several top-level sub-schemas that are invoked for
@@ -78,6 +73,13 @@ attributes, defined by [<em>envelope.json</em>](envelope.json).
 * Device _metadata_ ([example](metadata.tests/example.json)) stored _about_ a device,
 but not directly available to the device, defined by [<em>metadata.json</em>](metadata.json).
 
+## Validation
+
+To verify correct operation of a real system, follow the instructions outlined in the
+[validator subsystem docs](../../../docs/validator.md), which provides for a suitable
+communication channel. Additional sample messages are easy to include in the regression
+suite if there are new cases to test.
+
 ## Message Detail Notes
 
 ### State Message
@@ -87,7 +89,8 @@ but not directly available to the device, defined by [<em>metadata.json</em>](me
 ### Config Message
 
 * The `report_interval_ms` field represents a periodic trigger for the device sending a `pointset`
-message. If undefined then the system should only use `cov_increment` based updates instead (if defined).
+message. If undefined then the system should only use `cov_increment` based updates instead
+(if defined).
 
 ### Logentry Message
 
@@ -95,18 +98,24 @@ message. If undefined then the system should only use `cov_increment` based upda
 
 ### State status and logentry entries fields
 
-The State and Logentry messages both have very similar `status` and `entries` sub-fields, respectively.
+The State and Logentry messages both have very similar `status` and `entries` sub-fields,
+respectively.
 * State `status` entries represent 'sticky' conditions that persist until the situation is cleared,
 e.g. "device disconnected".
 * Logentry `entries` fields are transitory event that happen, e.g. "connection failed".
 * Both `status` and `entries` fields are arrays, allowing multiple updates to be included.
 * Config parse errors should be represented as a system-level device state status entry.
 * The `message` field sould be a one-line representation of the triggering condition.
-* The `detail` field can be multi-line and include more detail, e.g. a complete program stack-trace.
-* The `category` field is a device-specific representation of which sub-system the message comes from. In
-a Java environment, for example, it would be the fully qualified path name of the Class triggering the message.
-* The status `timestamp` field should be the timestamp the condition was triggered, or most recently updated. It might
-be different than the top-level message `timestamp` if the condition is not checked often, or is sticky until
+* The `detail` field can be multi-line and include more detail, e.g. a complete program
+stack-trace.
+* The `category` field is a device-specific representation of which sub-system the message comes
+from. In
+a Java environment, for example, it would be the fully qualified path name of the Class triggering
+the message.
+* The status `timestamp` field should be the timestamp the condition was triggered, or most
+recently updated. It might
+be different than the top-level message `timestamp` if the condition is not checked often, or is
+sticky until
 it's cleared.
 * A logentry `timestamp` field is the time that the event occured.
 * The status `level` should conform to the numerical
