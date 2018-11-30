@@ -1,35 +1,53 @@
-const PubSub = require(`@google-cloud/pubsub`);
-const pubsub = new PubSub();
-
 /**
- * State events come across on their own topic, but it would also be nice
- * to be able to process them using the same topic as regular messages.
- * This function just adds a subFolder attribute to the message and sends
- * along on the other topic. Logic later down the pipe can look for this
- * and handle appropriately. This has no impact on the device-side exchange,
- * purely the back-end processing (namely schema validator).
+ * Simple function to transfer event data to firestore.
  */
-exports.state_shunt = event => {
-  const attributes = event.attributes;
-  const dataBuffer = Buffer.from(event.data, 'base64');
-  const payload = JSON.parse(dataBuffer.toString('utf8'));
 
-  attributes.subFolder = 'state';
+const admin = require('firebase-admin');
+admin.initializeApp();
+var db = admin.firestore();
 
-  publishPubsubMessage('target', payload, attributes);
-};
+const EXPIRY_MS = 1000 * 60 * 60 * 24;
 
-function publishPubsubMessage(topicName, data, attributes) {
-  const dataBuffer = Buffer.from(JSON.stringify(data));
-
-  pubsub
-    .topic(topicName)
-    .publisher()
-    .publish(dataBuffer, attributes)
-    .then(messageId => {
-      //console.info(`Message ${messageId} published.`);
-    })
-    .catch(err => {
-      console.error('Publishing error:', err);
+function deleteRun(port, port_doc, runid) {
+  const rundoc = port_doc.collection('runid').doc(runid);
+  rundoc.collection('test').get().then(function(snapshot) {
+    snapshot.forEach(function(run_test) {
+      console.log('Deleting', port, runid, run_test.id);
+      rundoc.collection('test').doc(run_test.id)
+        .delete().catch((error) => {
+          console.error('Error deleting', port, runid, run_test.id, error);
+        });
     });
+  });
+  rundoc.delete().catch((error) => {
+    console.error('Error deleting', port, runid, error);
+  });
 }
+
+function get_device_doc(registryId, deviceId) {
+  const timestr = new Date().toTimeString();
+  const reg = db.collection('registry').doc(registryId);
+  reg.set({'updated': timestr});
+  const dev = reg.collection('device').doc(deviceId);
+  dev.set({'updated': timestr});
+  return dev;
+}
+
+exports.device_event = event => {
+  console.log(event);
+  const registryId = event.attributes.deviceRegistryId;
+  const deviceId = event.attributes.deviceId;
+  const base64 = event.data;
+  const msgString = Buffer.from(base64, 'base64').toString();
+  const msgObject = JSON.parse(msgString);
+
+  device_doc = get_device_doc(registryId, deviceId).collection('telemetry').doc('latest');
+
+  console.log(deviceId, msgObject);
+  msgObject.data.forEach((data) => {
+    device_doc.set(data);
+  });
+
+  return null;
+}
+

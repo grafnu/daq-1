@@ -1,8 +1,7 @@
 #!/bin/bash -e
 
-# Input state topic to monitor. Output topic is defined in the code itself.
-TOPIC=state
-FUNC=state_shunt
+TOPIC=target
+FUNC=device_event
 PROJECT=$1
 
 if [ -z "$PROJECT" ]; then
