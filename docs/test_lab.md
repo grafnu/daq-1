@@ -73,8 +73,9 @@ configuration (such as the port used for the control plane uplink).
 configuration for an external physical switch. Key entries are:
     * `ext_dpid`: Data plane ID for the connected physical switch.
     * `ext_ctrl`: Interface name of the control-plane network.
-    * `ext_pri` : Interface name of the data-plane network.
-    * `ext_ofip`: Control plane interface IP address (and subnet).
+    * `ext_intf`: Interface name of the data-plane network.
+    * `ext_ofpt`: Controller OpenFlow port (defaults to 6653).
+    * `ext_ofip`: Controller control plane IP address (and subnet).
     * `ext_addr`: External switch IP address (used to verify the connection).
     * `sec_port`: Port of secondary (external) switch for the data-plane uplink (defaults to 7).
 
