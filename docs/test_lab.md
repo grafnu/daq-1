@@ -113,7 +113,7 @@ configured port (_6653_). (It's not easy to tell if the controller subnet is mis
 <pre>
 ~/daq$ <b>sudo tcpdump -ni enxb49cdff33ad9</b>
 &hellip;
-11:30:47.739506 IP 192.168.1.2.37422 > 192.168.1.10.6653: Flags [S], seq 2153185008, win 29200, options [mss 1460,sackOK,TS val 38338000 ecr 0,nop,wscale 7], length 0
+11:30:47.739506 IP <b>192.168.1.2</b>.37422 > <b>192.168.1.10</b>.<b>6653</b>: Flags [S], seq 2153185008, win 29200, options [mss 1460,sackOK,TS val 38338000 ecr 0,nop,wscale 7], length 0
 &hellip;
 </pre>
 
@@ -122,7 +122,7 @@ configured incorrectly.
 <pre>
 ~/daq$ <b>sudo tcpdump -ni enxb49cdff33ad9</b>
 &hellip;
-11:34:04.739266 ARP, Request who-has 192.168.1.10 tell 192.168.1.2, length 46
+11:34:04.739266 ARP, Request who-has <b>192.168.1.10</b> tell 192.168.1.2, length 46
 11:34:08.738730 ARP, Request who-has 192.168.1.10 tell 192.168.1.2, length 46
 11:34:09.738947 ARP, Request who-has 192.168.1.10 tell 192.168.1.2, length 46
 &hellip;
@@ -136,13 +136,15 @@ the hex dipd (e.g. _0x1aeb960541_) from `inst/faucet.log` into `local/system.con
 <pre>
 ~/daq$ <b>tail -f inst/falucet.log</b>
 &hellip;
-Nov 20 23:23:56 faucet ERROR    <ryu.controller.ofp_event.EventOFPSwitchFeatures object at 0x7fd22a14dcc0>: unknown datapath DPID 115621627201 (0x1aeb960541)
+Nov 20 23:23:56 faucet ERROR    <ryu.controller.ofp_event.EventOFPSwitchFeatures object at 0x7fd22a14dcc0>: unknown datapath DPID 115621627201 (<b>0x1aeb960541</b>)
 </pre>
 
 Be careful that the error doesn't come from a locally configured OVS instance. Check
-the output of `ovs-vsctl show` to make sure nothing is running and confusing the logs.
-When DAQ is running configured for a physical switch, there should only be one Bridge
-named _pri_ shown:
+the output of `ovs-vsctl show` to make sure the wrong virtual bridge isn't running
+and confusing the logs. When DAQ is running configured for a physical switch,
+there should only be _one_ Bridge named _pri_ shown: if there's another (typically
+_sec_) bridge shown, then it means the system still thinks it's running with a
+non-physical switch (missing the `ext_intf` setting).
 <pre>
 ~/daq$ <b>sudo ovs-vsctl show | fgrep Bridge</b>
     Bridge pri
