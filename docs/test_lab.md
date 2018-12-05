@@ -141,7 +141,7 @@ The message below, in `inst/faucet.log`, indicates that a switch is trying
 to connect to faucet, but `ext_dpid` is configured wrong: simply copy/paste
 the hex dipd (_0x1aeb960541_) from `inst/faucet.log` into `local/system.conf`.
 <pre>
-~/daq$ <b>tail -f inst/falucet.log</b>
+~/daq$ <b>tail -f inst/faucet.log</b>
 &hellip;
 Nov 20 23:23:56 faucet ERROR    <ryu.controller.ofp_event.EventOFPSwitchFeatures object at 0x7fd22a14dcc0>: unknown datapath DPID 115621627201 (<b>0x1aeb960541</b>)
 </pre>
