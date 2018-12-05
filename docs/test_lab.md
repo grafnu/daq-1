@@ -86,18 +86,25 @@ configuration for an external physical switch. Key entries are:
 The `bin/physical_sec` script will setup and test the basic connection to the external physical switch:
 <pre>
 ~/daq$ <b>bin/physical_sec</b>
+~/daq$ bin/physical_sec
 Loading config from local/system.conf
 Configuring control interface enxb49cdff33ad9 at 192.168.1.10/16
+enxb49cdff33ad9: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.1.10  netmask 255.255.0.0  broadcast 0.0.0.0
+        ether b4:9c:df:f3:3a:d9  txqueuelen 1000  (Ethernet)
+&hellip;
 
-<b>If this doesn't work, try looking at: <i>tcpdump -ni enxb49cdff33ad9</i></b>
+enx645aedf345fa: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        ether 64:5a:ed:f3:45:fa  txqueuelen 1000  (Ethernet)
+&hellip;
 
 Checking external connection to 192.168.1.2
 PING 192.168.1.2 (192.168.1.2) 56(84) bytes of data.
-64 bytes from 192.168.1.2: icmp_seq=1 ttl=64 time=2.98 ms
+64 bytes from 192.168.1.2: icmp_seq=1 ttl=64 time=3.38 ms
 
 --- 192.168.1.2 ping statistics ---
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 2.980/2.980/2.980/0.000 ms
+rtt min/avg/max/mdev = 3.382/3.382/3.382/0.000 ms
 
 DAQ autoclean ip link set down dev enxb49cdff33ad9
 Done with physical switch configuration.
