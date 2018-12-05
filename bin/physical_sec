@@ -9,6 +9,12 @@ if [ -z "$ext_ctrl" ]; then
     false
 fi
 
+if [ -z "$ext_intf" ]; then
+    # Not actally used in this script, but needed elsewhere.
+    echo ext_intf not defined for physical_sec.
+    false
+fi
+
 if [ -z "$ext_ofip" ]; then
     echo ext_ofip not defined for physical_sec.
     false
@@ -37,3 +43,4 @@ ping -c 1 $ext_addr
 echo
 echo DAQ autoclean ip link set down dev $ext_ctrl
 echo Done with physical switch configuration.
+echo For further debugging, try: tcpdump -ni $ext_ctrl ip
