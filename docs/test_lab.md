@@ -79,26 +79,51 @@ configuration for an external physical switch. Key entries are:
     * `ext_addr`: External switch IP address (used to verify the connection).
     * `sec_port`: Port of secondary (external) switch for the data-plane uplink (defaults to 7).
 
-## Testing
+## Troubleshooting
+
+### Basic network connection
 
 The `bin/physical_sec` script will setup and test the basic connection to the external physical switch:
 <pre>
 ~/daq$ <b>bin/physical_sec</b>
 Loading config from local/system.conf
-Configuring control interface enx00e04c68036b at 192.0.2.10/16
-Checking external connection to 192.0.2.138
-PING 192.0.2.138 (192.0.2.138) 56(84) bytes of data.
-64 bytes from 192.0.2.138: icmp_seq=1 ttl=64 time=2.79 ms
+Configuring control interface enxb49cdff33ad9 at 192.168.1.10/16
 
---- 192.0.2.138 ping statistics ---
+<b>If this doesn't work, try looking at: <i>tcpdump -ni enxb49cdff33ad9</i></b>
+
+Checking external connection to 192.168.1.2
+PING 192.168.1.2 (192.168.1.2) 56(84) bytes of data.
+64 bytes from 192.168.1.2: icmp_seq=1 ttl=64 time=2.98 ms
+
+--- 192.168.1.2 ping statistics ---
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 2.790/2.790/2.790/0.000 ms
+rtt min/avg/max/mdev = 2.980/2.980/2.980/0.000 ms
 
-DAQ autoclean ip link set down dev enx00e04c68036b
+DAQ autoclean ip link set down dev enxb49cdff33ad9
 Done with physical switch configuration.
 </pre>
 
-## Common Errors
+### Control Plane Interface Link
+
+Looking at the control plane network interface can give some diagnostics about the switch setup.
+Using <code>tcpdump -ni <em>{ext_ctrl}</em></code> should show the switch address (_192.168.1.2_),
+the expected server address (_192.168.1.10_) and configured port (_6653_).
+
+<pre>
+11:30:47.739506 IP 192.168.1.2.37422 > 192.168.1.10.6653: Flags [S], seq 2153185008, win 29200, options [mss 1460,sackOK,TS val 38338000 ecr 0,nop,wscale 7], length 0
+</pre>
+
+If there's a string of unfulfilled ARP requests, then it likely means the `ext_ofip` is
+configured incorrectly.
+<pre>
+&hellip;
+11:34:04.739266 ARP, Request who-has 192.168.1.10 tell 192.168.1.2, length 46
+11:34:08.738730 ARP, Request who-has 192.168.1.10 tell 192.168.1.2, length 46
+11:34:09.738947 ARP, Request who-has 192.168.1.10 tell 192.168.1.2, length 46
+&hellip;
+</pre>
+
+### Determining Data Plane ID.
 
 The message below, in `inst/faucet.log`, indicates that a switch is trying
 to connect to faucet, but `ext_dpid` is configured wrong: simply copy/paste
@@ -106,3 +131,6 @@ the hex dipd (e.g. _0x1aeb960541_) from `inst/faucet.log` into `local/system.con
 <pre>
 Nov 20 23:23:56 faucet ERROR    <ryu.controller.ofp_event.EventOFPSwitchFeatures object at 0x7fd22a14dcc0>: unknown datapath DPID 115621627201 (0x1aeb960541)
 </pre>
+
+Be careful that the error doesn't come from a locally configured OVS instance. Check
+the output of `ovs-vsctl show` to make sure nothing is running and confusing the logs.

@@ -31,6 +31,9 @@ if [ "$run_mode" != "local" ]; then
 fi
 
 echo Configuring control interface $ext_ctrl at $ext_ofip
+echo
+echo If this doesn\'t work, try looking at: tcpdump -ni $ext_ctrl
+echo
 
 sudo ip addr flush dev $ext_ctrl
 sudo ip addr add $ext_ofip dev $ext_ctrl
@@ -43,4 +46,3 @@ ping -c 1 $ext_addr
 echo
 echo DAQ autoclean ip link set down dev $ext_ctrl
 echo Done with physical switch configuration.
-echo For further debugging, try: tcpdump -ni $ext_ctrl ip
