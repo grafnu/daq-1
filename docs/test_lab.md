@@ -106,16 +106,21 @@ Done with physical switch configuration.
 ### Control Plane Interface Link
 
 Looking at the control plane network interface can give some diagnostics about the switch setup.
-Using <code>tcpdump -ni <em>{ext_ctrl}</em></code> should show the switch address (_192.168.1.2_),
-the expected server address (_192.168.1.10_) and configured port (_6653_).
+Using <code>tcpdump -ni <em>{ext_ctrl}</em></code> should show the switch `ext_addr` address
+(_192.168.1.2_), the expected `ext_ofip` controller address (_192.168.1.10_) and `ext_ofpt`
+configured port (_6653_). (It's not easy to tell if the controller subnet is misconfigured.)
 
 <pre>
+~/daq$ <b>sudo tcpdump -ni enxb49cdff33ad9</b>
+&hellip;
 11:30:47.739506 IP 192.168.1.2.37422 > 192.168.1.10.6653: Flags [S], seq 2153185008, win 29200, options [mss 1460,sackOK,TS val 38338000 ecr 0,nop,wscale 7], length 0
+&hellip;
 </pre>
 
 If there's a string of unfulfilled ARP requests, then it likely means the `ext_ofip` is
 configured incorrectly.
 <pre>
+~/daq$ <b>sudo tcpdump -ni enxb49cdff33ad9</b>
 &hellip;
 11:34:04.739266 ARP, Request who-has 192.168.1.10 tell 192.168.1.2, length 46
 11:34:08.738730 ARP, Request who-has 192.168.1.10 tell 192.168.1.2, length 46
@@ -129,8 +134,17 @@ The message below, in `inst/faucet.log`, indicates that a switch is trying
 to connect to faucet, but `ext_dpid` is configured wrong: simply copy/paste
 the hex dipd (e.g. _0x1aeb960541_) from `inst/faucet.log` into `local/system.conf`.
 <pre>
+~/daq$ <b>tail -f inst/falucet.log</b>
+&hellip;
 Nov 20 23:23:56 faucet ERROR    <ryu.controller.ofp_event.EventOFPSwitchFeatures object at 0x7fd22a14dcc0>: unknown datapath DPID 115621627201 (0x1aeb960541)
 </pre>
 
 Be careful that the error doesn't come from a locally configured OVS instance. Check
 the output of `ovs-vsctl show` to make sure nothing is running and confusing the logs.
+When DAQ is running configured for a physical switch, there should only be one Bridge
+named _pri_ shown:
+<pre>
+~/daq$ <b>sudo ovs-vsctl show | fgrep Bridge</b>
+    Bridge pri
+~/daq$
+</pre>
