@@ -165,7 +165,8 @@ class TestNetwork():
         target_ip = "127.0.0.1"
         LOGGER.debug("Adding controller at %s", target_ip)
         controller = mininet_node.RemoteController
-        self.net.addController('controller', controller=controller, ip=target_ip, port=self.ext_ofpt)
+        self.net.addController('controller', controller=controller,
+                               ip=target_ip, port=self.ext_ofpt)
 
         LOGGER.debug("Adding secondary...")
         self._create_secondary()
