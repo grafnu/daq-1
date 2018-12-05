@@ -132,7 +132,7 @@ configured incorrectly.
 
 The message below, in `inst/faucet.log`, indicates that a switch is trying
 to connect to faucet, but `ext_dpid` is configured wrong: simply copy/paste
-the hex dipd (e.g. _0x1aeb960541_) from `inst/faucet.log` into `local/system.conf`.
+the hex dipd (_0x1aeb960541_) from `inst/faucet.log` into `local/system.conf`.
 <pre>
 ~/daq$ <b>tail -f inst/falucet.log</b>
 &hellip;
@@ -142,8 +142,8 @@ Nov 20 23:23:56 faucet ERROR    <ryu.controller.ofp_event.EventOFPSwitchFeatures
 Be careful that the error doesn't come from a locally configured OVS instance. Check
 the output of `ovs-vsctl show` to make sure the wrong virtual bridge isn't running
 and confusing the logs. When DAQ is running configured for a physical switch,
-there should only be _one_ Bridge named _pri_ shown: if there's another (typically
-_sec_) bridge shown, then it means the system still thinks it's running with a
+there should only be _one_ Bridge named `pri` shown: if there's another (typically
+named `sec`) bridge shown, then it means the system still thinks it's running with a
 non-physical switch (missing the `ext_intf` setting).
 <pre>
 ~/daq$ <b>sudo ovs-vsctl show | fgrep Bridge</b>
