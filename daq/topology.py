@@ -65,9 +65,9 @@ class FaucetTopology():
         with open(filename) as stream:
             return yaml.safe_load(stream)
 
-    def get_pri_intf(self):
+    def get_ext_intf(self):
         """Return the external interface for seconday, if any"""
-        return self.config.get('ext_pri')
+        return self.config.get('ext_intf')
 
     def get_sec_dpid(self):
         """Return the secondary dpid"""
@@ -129,14 +129,14 @@ class FaucetTopology():
         interface = {}
         interface['acl_in'] = self.INCOMING_ACL_FORMAT % self.pri_name
         interface['stack'] = {'dp': self.sec_name, 'port': self.sec_port}
-        interface['name'] = self.config.get('ext_pri', 'stack_pri')
+        interface['name'] = 'stack_pri'
         return interface
 
     def _make_sec_stack_interface(self):
         interface = {}
         interface['acl_in'] = self.INCOMING_ACL_FORMAT % self.sec_name
         interface['stack'] = {'dp': self.pri_name, 'port': self.PRI_STACK_PORT}
-        interface['name'] = self.config.get('ext_sec', 'stack_pri')
+        interface['name'] = self.config.get('ext_intf', 'stack_sec')
         return interface
 
     def _make_default_acl_rules(self):
@@ -218,7 +218,7 @@ class FaucetTopology():
 
     def generate_acls(self, port=None):
         """Generate all ACLs required for dynamic system operation"""
-        self._generate_pri_acls()
+        self._generate_main_acls()
         if not self._generate_port_acls(port=port):
             LOGGER.info('Cleared port acls for port %s', port)
 
@@ -230,9 +230,7 @@ class FaucetTopology():
     def _get_bcast_ports(self):
         return [1] + self._get_gw_ports()
 
-    def _generate_pri_acls(self):
-        switch_name = self.pri.name
-
+    def _generate_main_acls(self):
         incoming_acl = []
         portset_acl = []
         secondary_acl = []
@@ -243,6 +241,7 @@ class FaucetTopology():
             incoming = list(range(target['range'][0], target['range'][1])) + [mirror_port]
             self._add_acl_rule(incoming_acl, dl_src=target_mac,
                                in_vlan=self.DEFAULT_VLAN, ports=incoming)
+            self._add_acl_rule(incoming_acl, dl_src=target_mac, port=mirror_port)
             portset = [1, mirror_port]
             self._add_acl_rule(portset_acl, dl_dst=target_mac, ports=portset)
 
@@ -253,8 +252,8 @@ class FaucetTopology():
         self._add_acl_rule(secondary_acl, allow=1, out_vlan=self.DEFAULT_VLAN)
 
         acls = {}
-        acls[self.INCOMING_ACL_FORMAT % switch_name] = incoming_acl
-        acls[self.PORTSET_ACL_FORMAT % switch_name] = portset_acl
+        acls[self.INCOMING_ACL_FORMAT % self.pri_name] = incoming_acl
+        acls[self.PORTSET_ACL_FORMAT % self.pri_name] = portset_acl
         acls[self.INCOMING_ACL_FORMAT % self.sec_name] = secondary_acl
 
         pri_acls = {}

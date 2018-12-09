@@ -26,7 +26,8 @@ minimum set of basic packages, docker, and openvswitch.
 
 Once installed, the basic qualification suite can be run with `cmd/run -s`. The `-s`
 means <em>single shot</em> and will run tests just once and then exit (see the
-[options documentation](docs/options.md) for more details). Runtime configuraiton
+[options documentation](docs/options.md) for more details). The `local/` directory is 
+created upon first execution of `cmd/run`. Runtime configuraiton
 is always pulled from `local/system.conf`, and if this file does not exist a baseline
 one will be copied from `misc/system_base.conf`.
 The output should approximately look like this [example log output](docs/run_log.md).
@@ -102,7 +103,7 @@ The [example pcap output file](docs/startup_pcap.md) shows what this should look
 (Replace `01` with the appropriate port set number.)
 
 If there are device-level network problems then it is possible to use `tcpdump` or similar
-to example the network traffic. When using the `cmd/run` command, the system runs the
+to examine the network traffic. When using the `cmd/run` command, the system runs the
 framework in a Docker container named `daq-runner` and it moves the test
 network interface(s) into that container. Any tap command must be also run in the container, so it
 looks something like (replacing `faux` with the real adapter name):
