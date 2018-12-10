@@ -356,7 +356,7 @@ class DAQRunner():
         elif len(ready_devices) == group_size:
             gateway.activated = True
             for target_mac in ready_devices:
-                LOGGER.info('DHCP dctivating target %s', target_mac)
+                LOGGER.info('DHCP activating target %s', target_mac)
                 target_host = self.mac_targets[target_mac]
                 target_ip = self._target_mac_ip[target_mac]
                 triggered = target_host.trigger(state, target_ip=target_ip)
