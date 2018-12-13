@@ -357,10 +357,10 @@ class DAQRunner():
         group_size = self.network.device_group_size(group_name)
 
         if len(ready_devices) != group_size:
-            LOGGER.info('DHCP deferring activation of %s in group %s', target_mac, group_name)
+            LOGGER.info('DHCP waiting for additional members of group %s', group_name)
             return
 
-        ready_trigger = False
+        ready_trigger = True
         for target_mac in ready_devices:
             ready_trigger = ready_trigger and target_host.trigger_ready()
         if not ready_trigger:
