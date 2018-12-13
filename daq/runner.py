@@ -364,7 +364,7 @@ class DAQRunner():
         for target_mac in ready_devices:
             ready_trigger = ready_trigger and target_host.trigger_ready()
         if not ready_trigger:
-            LOGGER.warn('DHCP device group %s not ready to trigger', group_name)
+            LOGGER.warning('DHCP device group %s not ready to trigger', group_name)
             return
 
         gateway.activated = True
