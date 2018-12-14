@@ -2,7 +2,7 @@
 
 DAQ is a framework designed to test and operate IoT devices in an enterprise IoT environment.
 Nominally about device testing and qualification, Device Automated Qualification (DAQ), provides
-a means to _automate_ many capabilities, resulting in a more mangagable, robust, and
+a means to _automate_ many capabilities, resulting in a more manageable, robust, and
 secure platform.
 
 Join the [daq-users@googlegroups.com](https://groups.google.com/forum/#!forum/daq-users) email
@@ -26,7 +26,7 @@ a robust ecosystem of IoT devices. (Details forthcoming.)
 
 ## System Requirements
 
-Most aspects of DAQ assume a baseline setup consiting of:
+Most aspects of DAQ assume a baseline setup consisting of:
 * Linux install: DAQ has been tested against both `Ubuntu 16.04.4 LTS xenial` and
 `Debian GNU/Linux 9.4 stretch`, YMMV with other platforms.
 * Dedicated network adapters: At the very minimum one dedicated ethernet adapter is
