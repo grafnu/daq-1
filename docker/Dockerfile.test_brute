@@ -1,0 +1,11 @@
+FROM daq/aardvark:latest
+
+RUN $AG update && $AG install python
+
+COPY subset/brute/userList.json .
+COPY subset/brute/test_brute .
+COPY subset/brute/client.py .
+
+#CMD python client.py $TARGET_IP 10000
+
+CMD ./test_brute

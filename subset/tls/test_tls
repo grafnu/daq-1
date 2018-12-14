@@ -1,0 +1,3 @@
+#!/bin/bash -e
+
+python client.py $TARGET_IP 10001
