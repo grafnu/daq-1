@@ -60,7 +60,7 @@ the devices will be filtered/proxied through the controller host. The port used 
 by the `sec_port` config (see below).
 3. _eXtra_ devices, also known as _faux_ devices (not required), can be used to run a simulated device on the controller
 host. They can be used as a stand-alone device or alongside physical devices for further testing. 3 or more eXtra are recommended for a full test lab setup because it allows for running [core FAUCET switch tests](https://faucet.readthedocs.io/en/latest/testing.html#hardware-switch-testing-with-docker).
-At least 1 eXtra is useful for diagnosing any switch configuration problems.  <br>To create _eXtra/faux_ devices, use `cmd/faux [interface name]`, ie `cmd/faux eth1`. </br>
+At least 1 eXtra is useful for diagnosing any switch configuration problems. To create _eXtra/faux_ devices, use `cmd/faux [interface name]`, ie `cmd/faux eth1`.
 
 ## Configuration
 
