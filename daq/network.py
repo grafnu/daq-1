@@ -185,9 +185,9 @@ class TestNetwork():
 
     def create_mirror_interface(self, port, delete=False):
         """Create/delete a mirror interface for the given port"""
-        mirror_intf_name = 'mirror-%02d' % port
+        mirror_intf_name = self.topology.mirror_iface_name(port)
         mirror_intf_peer = mirror_intf_name + '-ext'
-        mirror_port = self.topology.MIRROR_PORT_BASE + port
+        mirror_port = self.topology.mirror_port(port)
         if delete:
             LOGGER.info('Deleting mirror pair %s <-> %s', mirror_intf_name, mirror_intf_peer)
             self.pri.cmd('ip link del %s' % mirror_intf_name)

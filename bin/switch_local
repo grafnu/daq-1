@@ -1,0 +1,27 @@
+#!/bin/bash -ex
+
+echo Cleaning old setup...
+sudo ip link del sw-pri 2>/dev/null || true
+sudo ip link del sw-alt 2>/dev/null || true
+sudo ovs-vsctl del-port pri sw-pri || true
+sudo ip link set sw-alt nomaster || true
+#sudo brctl delif docker0 sw-alt || true
+
+echo Creating link interface...
+sudo ip link add sw-pri type veth peer name sw-alt
+sudo ip link set sw-pri up
+sudo ip link set sw-alt up
+
+echo Attaching to bridges...
+sudo ovs-vsctl add-port pri sw-pri -- set interface sw-pri ofport_request=1000
+#sudo ip link set sw-alt master docker0
+#sudo brctl addif docker0 sw-alt
+
+#echo Configuring host settings...
+#sudo route add -net 10.0.0.0/16 dev sw-alt
+#sudo arp -s 10.0.0.9 4e:ee:1d:c8:a9:b7 # IP/mac of test container
+
+# Test container
+#echo route add default dev hold01-eth0
+
+echo Done with local switch setup.
