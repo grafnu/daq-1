@@ -4,22 +4,13 @@ ROOT=$(realpath $(dirname $0)/..)
 cd $ROOT
 source misc/config_base.sh
 
-if [ -z "$ext_ctrl" ]; then
-    echo ext_ctrl not defined.
-    false
-fi
-
-if [ -z "$ext_ofip" ]; then
-    echo ext_ofip not defined.
-    false
-fi
-
 IPREFIX=ctrl
 
 echo Cleaning old setup...
 sudo ip link del ${IPREFIX}-pri 2>/dev/null || true
-sudo ip link del ${IPREFIX}-alt 2>/dev/null || true
 sudo ip link del ${IPREFIX}-br 2>/dev/null || true
+sudo ip link del ${IPREFIX}-swx 2>/dev/null || true
+sudo ip link del ${IPREFIX}-swa 2>/dev/null || true
 sudo ovs-vsctl del-port pri ${IPREFIX}-pri 2>/dev/null || true
 
 echo Creating local bridge...
@@ -39,15 +30,42 @@ sudo ip link set ${IPREFIX}-swy up
 echo Attaching to bridges...
 sudo ovs-vsctl add-port pri ${IPREFIX}-pri -- set interface ${IPREFIX}-pri ofport_request=1000
 sudo ip link set ${IPREFIX}-alt master ${IPREFIX}-br
-sudo ip link set $ext_ctrl master ${IPREFIX}-br
 sudo ip link set ${IPREFIX}-swx master ${IPREFIX}-br
 
-echo Adjusting IP addresses...
-sudo ip addr flush dev $ext_ctrl
-sudo ip addr add $ext_ofip dev ${IPREFIX}-swy
+if [ -z "$ext_ctrl" -a -n "$ext_addr" ]; then
+    echo Creating daq-switch, because only $ext_addr defined.
+
+    docker rm -f daq-switch || true
+    cid=$(docker run -d --privileged --name daq-switch --hostname switch --net=none daq/test_hold)
+    pid=$(docker inspect --format="{{ .State.Pid }}" $cid)
+
+    echo Creating docker with veth -swb
+    sudo ip link add ${IPREFIX}-swa type veth peer name ${IPREFIX}-swb
+    sudo ip link set ${IPREFIX}-swa up
+    sudo ip link set ${IPREFIX}-swb netns $pid
+    ipsuffix=${ext_ofip#*/}
+    docker exec daq-switch ip addr add $ext_addr/${ipsuffix} dev ${IPREFIX}-swb
+    docker exec daq-switch ip link set ${IPREFIX}-swb up
+
+    ext_ctrl=${IPREFIX}-swa
+fi
+
+if [ -z "$ext_ctrl" ]; then
+    echo ext_ctrl not defined, skipping configuration.
+else
+    echo Configuring $ext_ctrl to $ext_ofip
+    sudo ip link set $ext_ctrl master ${IPREFIX}-br
+    sudo ip addr flush dev $ext_ctrl
+fi
+
+if [ -z "$ext_ofip" ]; then
+    echo ext_ofip not defined, skipping configuration.
+else
+    echo Configuring ${IPREFIX}-swy with $ext_ofip
+    sudo ip addr add $ext_ofip dev ${IPREFIX}-swy
+fi
 
 echo Adjust IP tables to enable bridge forwaring...
-
-iptables -A FORWARD -p all -i ${IPREFIX}-br -j ACCEPT
+sudo iptables -A FORWARD -p all -i ${IPREFIX}-br -j ACCEPT
 
 echo Done with local switch setup.
