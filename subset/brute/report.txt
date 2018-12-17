@@ -1,3 +1,0 @@
-
-Username:manager
-Password:friend
