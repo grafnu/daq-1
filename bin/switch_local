@@ -46,6 +46,8 @@ echo Adjusting IP addresses...
 sudo ip addr flush dev $ext_ctrl
 sudo ip addr add $ext_ofip dev ${IPREFIX}-swy
 
-echo NEED TO FIX IPTABLES
+echo Adjust IP tables to enable bridge forwaring...
+
+iptables -A FORWARD -p all -i ${IPREFIX}-br -j ACCEPT
 
 echo Done with local switch setup.
