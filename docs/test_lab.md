@@ -62,6 +62,8 @@ by the `sec_port` config (see below).
 host. 3x eXtra is recommened for a full test lab setup because it allows for running
 [core FAUCET switch tests](https://faucet.readthedocs.io/en/latest/testing.html#hardware-switch-testing-with-docker).
 At least 1 eXtra is useful for diagnosing any switch configuration problems.
+4. _Faux_ device, which can be used to run a _faux_ device under test either stand-alone or alongside other physical
+devices. To create _faux_ devices, use `cmd/faux [interface name]`, ie `cmd/faux eth1`.
 
 ## Configuration
 
