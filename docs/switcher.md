@@ -1,6 +1,10 @@
+# Mock switch testing.
 
-# Window #1
-```
+This setup tests using a mock-switch as an experimental endpoint
+for accessing the control plane from a container test.
+
+## Window #1
+<pre>
 ~/daq$ <b>cat local/system.conf</b>
 source misc/system_multi.conf
 
@@ -22,10 +26,10 @@ INFO:docker:Target port 1 test mudgee passed
 <b>INFO:docker:Target port 1 test hold running</b>
 INFO:docker:Target port 2 test nmap passed
 INFO:docker:Target port 2 test mudgee running
-```
+</pre>
 
-# Window #2
-```
+## Window #2
+<pre>
 ~/daq$ <b>bin/switch_local</b>
 Loading config from local/system.conf
 Cleaning old setup...
@@ -55,4 +59,4 @@ PING 192.0.2.138 (192.0.2.138) 56(84) bytes of data.
 64 bytes from 192.0.2.138: icmp_seq=5 ttl=64 time=0.151 ms
 64 bytes from 192.0.2.138: icmp_seq=6 ttl=64 time=0.151 ms
 &hellip;
-```
+</pre>
