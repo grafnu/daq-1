@@ -33,7 +33,7 @@ sudo ip link set ${IPREFIX}-alt master ${IPREFIX}-br
 sudo ip link set ${IPREFIX}-swx master ${IPREFIX}-br
 
 if [ -z "$ext_ctrl" -a -n "$ext_addr" ]; then
-    echo Creating daq-switch, because only $ext_addr defined.
+    echo Creating daq-switch, because only ext_addr defined.
 
     docker rm -f daq-switch || true
     cid=$(docker run -d --privileged --name daq-switch --hostname switch --net=none daq/test_hold)
@@ -68,5 +68,8 @@ fi
 echo Adjust IP tables to enable bridge forwaring...
 sudo iptables -A FORWARD -p all -i ${IPREFIX}-br -j ACCEPT
 
-echo TODO: Add appropriate IP address to test runner container.
+echo
+echo TODO: Add appropriate IP address to test runner container:
+echo '  root@hold01:~# ip addr add 192.0.2.11/16 dev hold01-eth0'
+echo
 echo Done with local switch setup.
