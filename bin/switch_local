@@ -39,12 +39,13 @@ if [ -z "$ext_ctrl" -a -n "$ext_addr" ]; then
     cid=$(docker run -d --privileged --name daq-switch --hostname switch --net=none daq/test_hold)
     pid=$(docker inspect --format="{{ .State.Pid }}" $cid)
 
-    echo Creating docker with veth -swb
+    ipsuffix=${ext_ofip#*/}
+    targetip=$ext_addr/${ipsuffix}
+    echo Creating docker with veth -swb at $targetip
     sudo ip link add ${IPREFIX}-swa type veth peer name ${IPREFIX}-swb
     sudo ip link set ${IPREFIX}-swa up
     sudo ip link set ${IPREFIX}-swb netns $pid
-    ipsuffix=${ext_ofip#*/}
-    docker exec daq-switch ip addr add $ext_addr/${ipsuffix} dev ${IPREFIX}-swb
+    docker exec daq-switch ip addr add $targetip dev ${IPREFIX}-swb
     docker exec daq-switch ip link set ${IPREFIX}-swb up
 
     ext_ctrl=${IPREFIX}-swa
@@ -53,7 +54,7 @@ fi
 if [ -z "$ext_ctrl" ]; then
     echo ext_ctrl not defined, skipping configuration.
 else
-    echo Configuring $ext_ctrl to $ext_ofip
+    echo Bridging $ext_ctrl to ${IPREFIX}-br
     sudo ip link set $ext_ctrl master ${IPREFIX}-br
     sudo ip addr flush dev $ext_ctrl
 fi

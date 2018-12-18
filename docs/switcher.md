@@ -39,8 +39,8 @@ Creating local-link interfaces...
 Attaching to bridges...
 Creating daq-switch, because only ext_addr defined.
 daq-switch
-Creating docker with veth -swb
-Configuring ctrl-swa to 192.0.2.10/16
+Creating docker with veth -swb at 192.0.2.138/16
+Bridging ctrl-swa to ctrl-br
 Configuring ctrl-swy with 192.0.2.10/16
 Adjust IP tables to enable bridge forwaring...
 
