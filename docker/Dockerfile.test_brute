@@ -6,6 +6,4 @@ COPY subset/pentests/user_list.json .
 COPY subset/pentests/test_brute .
 COPY subset/pentests/brute_client.py .
 
-#CMD python client.py $TARGET_IP 10000
-
 CMD ./test_brute

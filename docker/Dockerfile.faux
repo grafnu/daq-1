@@ -29,6 +29,4 @@ COPY subset/pentests/brute_server.py pentests/
 COPY misc/start_faux bin/
 COPY misc/bacnet_discover bin/
 
-#CMD cat start_faux_head start_faux_body start_faux_foot > start_faux
-
 ENTRYPOINT ["bin/start_faux"]
