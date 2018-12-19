@@ -14,8 +14,9 @@ echo
 
 # Setup for accessing control plane switch.
 if [ -n "$LOCAL_IP" ]; then
+    echo Configuring network with local address $LOCAL_IP
     ip addr add $LOCAL_IP dev `hostname`-eth0
-    ping -n -c 3 $SWITCH_IP
+    ping -n -c 4 $SWITCH_IP
 fi
 
 # First ping might fail b/c of warm-up delays.
