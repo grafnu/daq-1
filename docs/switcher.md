@@ -12,7 +12,8 @@ test containers. See `misc/test_ping` for an example of how to use them.
 
 If `ext_ctrl` is _not_ defined, then the system will spin up a special
 `daq-switch` Docker container to masqurade as a switch (well, respond
-to a ping, at least).
+to a ping, at least); otherwise, it should enable access to an external
+actual physical switch.
 
 ## Test Run
 <pre>
