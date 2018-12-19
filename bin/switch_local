@@ -69,7 +69,4 @@ echo Adjust IP tables to enable bridge forwaring...
 sudo iptables -A FORWARD -p all -i ${IPREFIX}-br -j ACCEPT
 
 echo
-echo TODO: Add appropriate IP address to test runner container:
-echo '  root@hold01:~# ip addr add 192.0.2.11/16 dev hold01-eth0'
-echo
 echo Done with local switch setup.
