@@ -3,7 +3,13 @@
 This setup tests using a mock-switch as an experimental endpoint
 for accessing the control plane from a container test.
 
-## Window #1
+## Required Config
+* `ext_ofip`: IP address and netmask for local controller interface.
+* `ext_addr`: IP address of physical switch.
+* `ext_loip`: Pattern for test container IP, e.g. `192.0.3.@/16`.
+The `@` will be automaticaly replaced with test port set number.
+
+## Test Run
 <pre>
 ~/daq$ <b>cat local/system.conf</b>
 source misc/system_multi.conf
