@@ -4,10 +4,14 @@ This setup tests using a mock-switch as an experimental endpoint
 for accessing the control plane from a container test.
 
 ## Required Config
+Setting these values:
 * `ext_ofip`: IP address and netmask for local controller interface.
 * `ext_addr`: IP address of physical switch.
 * `ext_loip`: Pattern for test container IP, e.g. `192.0.3.@/16`.
 The `@` will be automaticaly replaced with test port set number.
+
+Enables the `LOCAL_IP` and `SWITCH_IP` env variables in a test container.
+See `misc/test_ping` for an example of how to use them.
 
 ## Test Run
 <pre>
