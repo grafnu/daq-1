@@ -22,33 +22,25 @@ source misc/system_multi.conf
 
 ext_ofip=192.0.2.10/16
 ext_addr=192.0.2.138
-ext_loip=192.0.3.@/16
+<b>ext_loip=192.0.3.@/16</b>
 ~/daq$ <b>cmd/run -s</b>
 Running as root...
 Loading config from local/system.conf
 Release version 0.9.0
 cleanup='echo cleanup'
-ext_addr=192.0.2.138
+<b>ext_addr=192.0.2.138
 ext_loip=192.0.3.@/16
-ext_ofip=192.0.2.10/16
+ext_ofip=192.0.2.10/16</b>
 intf_names=faux-1,faux-2,faux-3
 &hellip;
 INFO:mininet:*** Starting 2 switches
 INFO:mininet:pri
 INFO:mininet:sec
 INFO:mininet:...
-INFO:network:Attaching switch interface ctrl-pri on port 1000
+<b>INFO:network:Attaching switch interface ctrl-pri on port 1000</b>
 INFO:runner:Waiting for system to settle...
 INFO:runner:Entering main event loop.
 &hellip;
-INFO:runner:Done with runner.
-INFO:daq:DAQ runner returned 0
-Cleanup docker kill daq-faux-1
-daq-faux-1
-Cleanup docker kill daq-faux-2
-daq-faux-2
-Cleanup docker kill daq-faux-3
-daq-faux-3
 Done with run, exit 0
 ~/daq$ <b>fgrep 192.0.2.138 inst/run-port-01/nodes/ping01/activate.log</b>
 PING 192.0.2.138 (192.0.2.138) 56(84) bytes of data.
