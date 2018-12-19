@@ -4,6 +4,8 @@ ROOT=$(realpath $(dirname $0)/..)
 cd $ROOT
 source misc/config_base.sh
 
+IPREFIX=ctrl
+
 if [ -z "$ext_ctrl" ]; then
     echo ext_ctrl not defined for physical_sec.
     false
@@ -44,6 +46,13 @@ sudo ip addr flush dev $ext_ctrl
 sudo ip addr add $ext_ofip dev $ext_ctrl
 
 sudo ip link set up dev $ext_ctrl
+
+echo Cleaning switch bridge, if any...
+sudo ip link del ${IPREFIX}-pri 2>/dev/null || true
+sudo ip link del ${IPREFIX}-br 2>/dev/null || true
+sudo ip link del ${IPREFIX}-swx 2>/dev/null || true
+sudo ip link del ${IPREFIX}-swa 2>/dev/null || true
+sudo ip link set $ext_ctrl nomaster
 
 echo Checking external connection to $ext_addr
 if ! ping -c 1 $ext_addr; then
