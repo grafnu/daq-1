@@ -124,6 +124,10 @@ class FaucetTopology():
         """Network port to use for mirroring interface"""
         return self._MIRROR_PORT_BASE + input_port
 
+    def switch_port(self):
+        """Network port to use for local switch connection"""
+        return self._SWITCH_LOCAL_PORT
+
     def _make_mirror_interface(self, input_port):
         interface = {}
         interface['name'] = self.mirror_iface_name(input_port)

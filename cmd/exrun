@@ -75,6 +75,11 @@ if [ -n "$ext_ctrl" ]; then
     bin/physical_sec
 fi
 
+if [ -n "$ext_loip" ]; then
+    echo Activating switch bridge...
+    bin/switch_local
+fi
+
 function external {
     echo -n
 }

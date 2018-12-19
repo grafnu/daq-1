@@ -28,7 +28,6 @@ sudo ip link set ${IPREFIX}-swx up
 sudo ip link set ${IPREFIX}-swy up
 
 echo Attaching to bridges...
-sudo ovs-vsctl add-port pri ${IPREFIX}-pri -- set interface ${IPREFIX}-pri ofport_request=1000
 sudo ip link set ${IPREFIX}-alt master ${IPREFIX}-br
 sudo ip link set ${IPREFIX}-swx master ${IPREFIX}-br
 
