@@ -1,7 +1,6 @@
-# Mock switch testing.
+# Control Plane Switch Access.
 
-This setup tests using a mock-switch as an experimental endpoint
-for accessing the control plane from a container test.
+This setup defines how to access the the control plane from a container test.
 
 ## Required Config
 In addition to the `ext_ofip` and `ext_addr` config values, setting
@@ -10,6 +9,10 @@ to a pattern for the test container IP, e.g. `192.0.3.@/16`, where
 the `@` will be automaticaly replaced with test port set number.
 Doing this causes the `LOCAL_IP` and `SWITCH_IP` env variables to be set in
 test containers. See `misc/test_ping` for an example of how to use them.
+
+If `ext_ctrl` is _not_ defined, then the system will spin up a special
+`daq-switch` Docker container to masqurade as a switch (well, respond
+to a ping, at least).
 
 ## Test Run
 <pre>
