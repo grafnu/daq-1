@@ -16,4 +16,11 @@ echo Validator exit code $? | tee -a $TEST_RESULTS
 cmd/inbuild skip
 echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
 
+echo Extended tests | tee -a $TEST_RESULTS
+cp misc/system_multi.conf local/system.conf
+export DAQ_FAUX1_OPTS=brute
+export DAQ_FAUX2_OPTS=nobrute
+cmd/run -s
+more inst/run-port-*/nodes/brute*/activate.log | tee -a $TEST_RESULTS
+
 echo Done with tests | tee -a $TEST_RESULTS
