@@ -66,7 +66,7 @@ which is considered 'sicky' until a new state message is sent.
 * Device _config_ ([example](config.tests/example.json)), passed from cloud to device,
 defined by [<em>config.json</em>](config.json). There is one active 'config' message per device,
 which should be considered current until a new config is recevied.
-* Streaming data _points_ ([example](pointset.tests/example.json)) from device to cloud,
+* Streaming _pointset_ ([example](pointset.tests/example.json)) from device to cloud,
 defined by [<em>pointset.json</em>](pointset.json).
 * Monitoring _logentry_ messages ([example](logentry.tests/example.json)) from devices,
 defined by [<em>logentry.json</em>](logentry.json).
