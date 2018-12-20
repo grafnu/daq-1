@@ -21,6 +21,6 @@ cp misc/system_multi.conf local/system.conf
 export DAQ_FAUX1_OPTS=brute
 export DAQ_FAUX2_OPTS=nobrute
 cmd/run -s
-more inst/run-port-*/nodes/brute*/activate.log | tee -a $TEST_RESULTS
+more inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
 
 echo Done with tests | tee -a $TEST_RESULTS
