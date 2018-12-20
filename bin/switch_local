@@ -70,4 +70,12 @@ else
     sudo ip addr add $ext_ofip dev $ctrl_swy
 fi
 
+echo Checking external connection to $ext_addr
+if ! ping -c 1 $ext_addr; then
+    echo
+    echo That didn\'t seem to work.
+    echo
+    false
+fi
+
 echo Done with local switch setup.
