@@ -22,6 +22,7 @@ export DAQ_FAUX1_OPTS=brute
 export DAQ_FAUX2_OPTS=nobrute
 cmd/run -s
 more inst/run-port-*/nodes/brute*/tmp/report.txt
+more inst/run-port-*/nodes/brute*/activate.log
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
 
 echo Done with tests | tee -a $TEST_RESULTS
