@@ -14,7 +14,7 @@ LOGGER = logging.getLogger('gateway')
 class Gateway():
     """Gateway collection class for managing testing services"""
 
-    HOST_OFFSET = 0
+    GATEWAY_OFFSET = 0
     DUMMY_OFFSET = 1
     TEST_OFFSET_START = 2
     TEST_OFFSET_LIMIT = 10
@@ -32,6 +32,7 @@ class Gateway():
         self.dhcp_monitor = None
         self.fake_target = None
         self.host = None
+        self.host_intf = None
         self.dummy = None
         self.tmpdir = None
         self.targets = {}
@@ -49,7 +50,7 @@ class Gateway():
 
     def _initialize(self):
         host_name = 'gw%02d' % self.port_set
-        host_port = self._switch_port(self.HOST_OFFSET)
+        host_port = self._switch_port(self.GATEWAY_OFFSET)
         LOGGER.info('Initializing gateway %s as %s/%d', self.name, host_name, host_port)
         self.tmpdir = self._setup_tmpdir(host_name)
         cls = docker_host.make_docker_host('daq/networking', prefix='daq', network='bridge')
@@ -64,9 +65,11 @@ class Gateway():
         LOGGER.info("Added dummy target %s on port %d at %s", dummy_name, dummy_port, dummy.IP())
 
         self.fake_target = self.TEST_IP_FORMAT % self.port_set
-        LOGGER.debug('Adding fake target at %s', self.fake_target)
-        intf = self.runner.get_host_interface(host)
-        host.cmd('ip addr add %s dev %s' % (self.fake_target, intf))
+        self.host_intf = self.runner.get_host_interface(host)
+        LOGGER.debug('Adding fake target at %s to %s', self.fake_target, self.host_intf)
+        host.cmd('ip addr add %s dev %s' % (self.fake_target, self.host_intf))
+
+        self._startup_scan()
 
         # Dummy doesn't use DHCP, so need to set default route manually.
         dummy.cmd('route add -net 0.0.0.0 gw %s' % host.IP())
@@ -88,6 +91,10 @@ class Gateway():
 
         self.host = host
 
+    def activate(self):
+        """Mark this gateway as activated once all hosts are present"""
+        self.activated = True
+
     def allocate_test_port(self):
         """Get the test port to use for this gateway setup"""
         test_port = self._switch_port(self.TEST_OFFSET_START)
@@ -97,6 +104,12 @@ class Gateway():
         assert test_port < limit_port, 'no test ports available'
         self.test_ports[test_port] = True
         return test_port
+
+    def _startup_scan(self, intf):
+        intf = self.runner.get_host_interface(host)
+        startup_file = os.path.join(self.tmpdir, 'startup.pcap')
+        LOGGER.info('Creating gateway startup capture %s', startup_file)
+
 
     def release_test_port(self, test_port):
         """Release the given port from the gateway"""
