@@ -18,6 +18,12 @@ while ! ifconfig -a | fgrep -q faux-eth0; do
     sleep 1
 done
 
+# To capture all the data in/out of the faux device for debugging, uncomment
+# the following lines. The pcap file will end up in inst/faux/{hostname}.pcap
+# on the DAQ controller.
+#echo Starting pcap capture...
+#tcpdump -nUi faux-eth0 -w /tmp/`hostname`.pcap &
+
 ip addr show faux-eth0
 
 if [ -n "${options[xdhcp]}" ]; then
