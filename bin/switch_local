@@ -21,7 +21,6 @@ else
     echo Using default cplane_mac $cplane_mac
 fi
 
->>>>>>> master
 echo Cleaning old setup...
 sudo ip link del $ctrl_pri 2>/dev/null || true
 sudo ip link del $ctrl_bridge 2>/dev/null || true
