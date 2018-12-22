@@ -13,6 +13,14 @@ ctrl_swy=${iprefix}-swy
 ctrl_swa=${iprefix}-swa
 ctrl_swb=${iprefix}-swb
 
+if [ -n "$ext_ctrl" ]; then
+    cplane_mac=$(ip link show $ext_ctrl | fgrep ether | awk '{print $2}')
+    echo Pulled cplane_mac $cplane_mac from $ext_ctrl
+else
+    cplane_mac=f8:39:71:c9:7a:09
+    echo Using default cplane_mac $cplane_mac
+fi
+
 echo Cleaning old setup...
 sudo ip link del $ctrl_pri 2>/dev/null || true
 sudo ip link del $ctrl_bridge 2>/dev/null || true
@@ -28,6 +36,7 @@ sudo ip link set $ctrl_alt up
 
 echo Creating local-link interfaces...
 sudo ip link add $ctrl_swx type veth peer name $ctrl_swy
+sudo ip link set $ctrl_swy address $cplane_mac
 sudo ip link set $ctrl_swx up
 sudo ip link set $ctrl_swy up
 
@@ -47,12 +56,15 @@ if [ -z "$ext_ctrl" -a -n "$ext_addr" ]; then
     targetip=$ext_addr/${ipsuffix}
     echo Creating docker with veth -swb at $targetip
     sudo ip link add $ctrl_swa type veth peer name $ctrl_swb
+    sudo ip link set $ctrl_swa address $cplane_mac
     sudo ip link set $ctrl_swa up
     sudo ip link set $ctrl_swb netns $pid
     docker exec daq-switch ip addr add $targetip dev $ctrl_swb
     docker exec daq-switch ip link set $ctrl_swb up
 
     ext_ctrl=$ctrl_swa
+else
+    sudo ip link set $ext_ctrl up
 fi
 
 if [ -z "$ext_ctrl" ]; then
