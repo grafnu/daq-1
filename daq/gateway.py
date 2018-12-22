@@ -6,6 +6,7 @@ import os
 import shutil
 
 from clib import docker_host
+from clib import tcpdump_helper
 
 import dhcp_monitor
 
@@ -39,6 +40,7 @@ class Gateway():
         self.test_ports = {}
         self.ready = {}
         self.activated = False
+        self._scan_monitor = None
 
     def initialize(self):
         """Initialize the gateway host"""
@@ -69,7 +71,7 @@ class Gateway():
         LOGGER.debug('Adding fake target at %s to %s', self.fake_target, self.host_intf)
         host.cmd('ip addr add %s dev %s' % (self.fake_target, self.host_intf))
 
-        self._startup_scan()
+        self._startup_scan(host)
 
         # Dummy doesn't use DHCP, so need to set default route manually.
         dummy.cmd('route add -net 0.0.0.0 gw %s' % host.IP())
@@ -94,6 +96,9 @@ class Gateway():
     def activate(self):
         """Mark this gateway as activated once all hosts are present"""
         self.activated = True
+        if self._scan_monitor:
+            self._scan_monitor.terminate()
+            self._scan_monitor = None
 
     def allocate_test_port(self):
         """Get the test port to use for this gateway setup"""
@@ -105,11 +110,15 @@ class Gateway():
         self.test_ports[test_port] = True
         return test_port
 
-    def _startup_scan(self, intf):
-        intf = self.runner.get_host_interface(host)
+    def _startup_scan(self, host):
+        assert not self._scan_monitor, 'startup_scan already active'
         startup_file = os.path.join(self.tmpdir, 'startup.pcap')
         LOGGER.info('Creating gateway startup capture %s', startup_file)
-
+        tcp_filter = ''
+        helper = tcpdump_helper.TcpdumpHelper(host, tcp_filter, packets=None,
+                                              intf_name=self.host_intf,
+                                              pcap_out=startup_file, blocking=False)
+        self._scan_monitor = helper
 
     def release_test_port(self, test_port):
         """Release the given port from the gateway"""
