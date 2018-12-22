@@ -21,7 +21,6 @@ env:
     - DOCKER_STARTUP_TIMEOUT_MS=60000
   matrix:
     - DAQ_TEST=base
-    - DAQ_TEST=many
     - DAQ_TEST=aux
 branches:
   except:
