@@ -22,5 +22,11 @@ DAQ_FAUX1_OPTS=brute DAQ_FAUX2_OPTS=nobrute cmd/run -s
 more inst/run-port-*/nodes/brute*/tmp/report.txt
 more inst/run-port-*/nodes/brute*/activate.log
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
+echo faux-1 log
+docker logs daq-faux-1
+echo faux-2 log
+docker logs daq-faux-2
+echo faux-3 log
+docker logs daq-faux-3
 
 echo Done with tests | tee -a $TEST_RESULTS
