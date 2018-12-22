@@ -20,6 +20,6 @@ echo Extended tests | tee -a $TEST_RESULTS
 cp misc/system_multi.conf local/system.conf
 DAQ_FAUX1_OPTS=brute DAQ_FAUX2_OPTS=nobrute cmd/run -s
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
-more inst/run-port-01/nodes/nmap01/tmp/report.txt | tee -a $TEST_RESULTS
+sort inst/result.log | tee -a $TEST_RESULTS
 
 echo Done with tests | tee -a $TEST_RESULTS
