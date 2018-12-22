@@ -29,6 +29,7 @@ more inst/result.log | tee -a $TEST_RESULTS
     $cmdrun -s
     more inst/result.log | tee -a $TEST_RESULTS
     cat inst/run-port-01/nodes/nmap01/activate.log
+    ls -l inst/gw*/nodes/gw*/tmp/startup.pcap
 )
 
 # Test an "external" switch.

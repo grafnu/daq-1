@@ -27,20 +27,20 @@ IP address & port.
 Device port 1 is handled by ports 10-19 on the primary switch, with interfaces pri-eth10 to pri-eth19.
 You can tap in there to see where data is doing into/out-of modules, e.g.:
 
-pri-eth10  -- gateway for port set 1
-pri-eth11  -- dummy test host
-pri-eth12  -- running test (e.g. ping, hold, bacnet, nmap, etc..)
+* `pri-eth10`: gateway for port set 1
+* `pri-eth11`: dummy test host
+* `pri-eth12`: running test (e.g. ping, hold, bacnet, nmap, etc..)
 
 # Docker containers
 
 See `docker ps` for the containers. They should be fairly direct what they are.  You can get into
 the containers and then run tcpdump there to see what traffic is flowing:
 
-docker exec -ti daq-hold01 bash
+`docker exec -ti daq-hold01 bash`
 
 # Sample path
 
-<code>
+<pre>
 ~/daq$ <b>ip link show faux</b>
 2209: faux@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master ovs-system state UP mode DEFAULT group default qlen 1000
     link/ether 42:b0:c3:25:02:5f brd ff:ff:ff:ff:ff:ff link-netnsid 0
@@ -57,7 +57,7 @@ docker exec -ti daq-hold01 bash
     link/ether 02:42:c0:a8:09:03 brd ff:ff:ff:ff:ff:ff link-netnsid 0
 2218: gw01-eth0@if2219: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
     link/ether fa:74:5a:d8:d9:ed brd ff:ff:ff:ff:ff:ff link-netnsid 0
-</code>
+</pre>
 
 ## Capture files
 
@@ -65,7 +65,7 @@ Some useful files.
 * _activate.log_: Docker logs for container.
 * _startup.pcap_: Packet capture before tests run (e.g. initial DHCP). Decode using `tcpdump -r`
 
-<code>
+<pre>
 ~/daq$ <b>find inst/gw01/ -type f</b>
 inst/gw01/dhcp_monitor.txt
 inst/gw01/nodes/gw01/tmp/dnsmasq.log
@@ -77,4 +77,4 @@ inst/run-port-01/nodes/ping01/return_code.txt
 inst/run-port-01/nodes/ping01/activate.log
 inst/run-port-01/scans/monitor.pcap
 inst/run-port-01/scans/startup.pcap
-</code>
+</pre>
