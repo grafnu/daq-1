@@ -114,7 +114,7 @@ class Gateway():
     def _startup_scan(self, host):
         assert not self._scan_monitor, 'startup_scan already active'
         startup_file = '/tmp/startup.pcap'
-        LOGGER.info('Creating gateway capture in dontainer at %s', startup_file)
+        LOGGER.info('Gateway %s startup capture in container %s', self.port_set, startup_file)
         tcp_filter = ''
         helper = tcpdump_helper.TcpdumpHelper(host, tcp_filter, packets=None,
                                               intf_name=self.host_intf, timeout=None,
