@@ -69,10 +69,10 @@ fi
 
 if [ -n "${options[brute]}" ]; then
     echo Starting brute server.
-    python pentests/brute_server.py bad 10000 &
+    (python pentests/brute_server.py bad 10000; echo Brute done.) &
 elif [ -n "${options[nobrute]}" ]; then
     echo Starting nobrute server.
-    python pentests/brute_server.py good 10000 &
+    (python pentests/brute_server.py good 10000; echo Brute done.) &
 fi
 
 echo Blocking for all eternety.
