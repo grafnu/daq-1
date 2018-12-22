@@ -48,7 +48,7 @@ echo Faux device at $local_ip bcast $broadcast_ip
 # Setup dummy telnet listener to trigger port-scan failure
 if [ -n "${options[telnet]}" ]; then
     echo Enabling mock telnet server...
-    nc -lk -p 23 -e date &
+    nc -vlk -p 23 -e date &
 fi
 
 if [ -n "${options[bacnet]}" ]; then

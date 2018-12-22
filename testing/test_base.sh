@@ -23,6 +23,7 @@ more inst/result.log | tee -a $TEST_RESULTS
     $cmdrun -s
     more inst/result.log | tee -a $TEST_RESULTS
     cat inst/run-port-01/nodes/nmap01/activate.log
+    docker logs daq-faux || true
 
     # Except with a default MUD file that blocks the port.
     echo device_specs=misc/device_specs.json >> local/system.conf
