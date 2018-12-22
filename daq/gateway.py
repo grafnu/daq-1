@@ -116,9 +116,20 @@ class Gateway():
         LOGGER.info('Creating gateway startup capture %s', startup_file)
         tcp_filter = ''
         helper = tcpdump_helper.TcpdumpHelper(host, tcp_filter, packets=None,
-                                              intf_name=self.host_intf,
+                                              intf_name=self.host_intf, timeout=None,
                                               pcap_out=startup_file, blocking=False)
         self._scan_monitor = helper
+        self.runner.monitor_stream('gateway', helper.stream(),
+                                   helper.next_line, hangup=self._scan_complete,
+                                   error=self._scan_error)
+
+    def _scan_complete(self):
+        LOGGER.info('Gateway %d scan complete', self.target_port)
+        self._scan_monitor = None
+
+    def _scan_error(self, e):
+        LOGGER.error('Gateway %d monitor error: %s', self.target_port, e)
+        self._scan_monitor = None
 
     def release_test_port(self, test_port):
         """Release the given port from the gateway"""
