@@ -29,5 +29,3 @@ if [ "$run_mode" == local ]; then
 else
     cmd/inrun $run_args "$@"
 fi
-
-more inst/run-port-*/nodes/nmap*/activate.log || true
