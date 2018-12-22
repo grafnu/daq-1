@@ -97,6 +97,7 @@ class Gateway():
         """Mark this gateway as activated once all hosts are present"""
         self.activated = True
         if self._scan_monitor:
+            self.runner.monitor_forget(self._scan_monitor.stream())
             self._scan_monitor.terminate()
             self._scan_monitor = None
 
@@ -112,8 +113,8 @@ class Gateway():
 
     def _startup_scan(self, host):
         assert not self._scan_monitor, 'startup_scan already active'
-        startup_file = os.path.join(self.tmpdir, 'startup.pcap')
-        LOGGER.info('Creating gateway startup capture %s', startup_file)
+        startup_file = '/tmp/startup.pcap'
+        LOGGER.info('Creating gateway capture in dontainer at %s', startup_file)
         tcp_filter = ''
         helper = tcpdump_helper.TcpdumpHelper(host, tcp_filter, packets=None,
                                               intf_name=self.host_intf, timeout=None,
@@ -124,11 +125,11 @@ class Gateway():
                                    error=self._scan_error)
 
     def _scan_complete(self):
-        LOGGER.info('Gateway %d scan complete', self.target_port)
+        LOGGER.info('Gateway %d scan complete', self.port_set)
         self._scan_monitor = None
 
     def _scan_error(self, e):
-        LOGGER.error('Gateway %d monitor error: %s', self.target_port, e)
+        LOGGER.error('Gateway %d monitor error: %s', self.port_set, e)
         self._scan_monitor = None
 
     def release_test_port(self, test_port):
