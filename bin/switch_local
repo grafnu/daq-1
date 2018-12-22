@@ -83,7 +83,7 @@ else
 fi
 
 echo Checking external connection to $ext_addr
-if ! ping -n -c 10 $ext_addr; then
+if ! ping -n -c 2 $ext_addr; then
     echo
     echo That didn\'t seem to work.
     echo
