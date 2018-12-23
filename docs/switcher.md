@@ -1,4 +1,4 @@
-# Control Plane Switch Access.
+# Control Plane Switch Access
 
 This setup defines how to access the the control plane from a container test.
 

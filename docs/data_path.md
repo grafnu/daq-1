@@ -2,7 +2,14 @@
 
 Overview:
 
-device --> sec switch --> switch-link --> pri switch --> gateway set --> docker
+device &rarr; sec switch &rarr; switch-link &rarr; pri switch &rarr; gateway set &rarr; docker
+
+* _device_: Source device, either physical or virtual.
+* _sec switch_: Secondary switch, either physical or virtual.
+* _switch-link_: Data-plane link between sec and pri switch. Either physical or virtual.
+* _pri switch_: Virtual internal primary switch.
+* _gateway set_: Set of containers representing one device group.
+* _docker_: Container providing core functionality (e.g. gateway, DHCP server, or test host).
 
 If devices are in a group, then they will share the same gateway set. So,
 gateway set 1 does not always correspond to the device on port 1. Check
