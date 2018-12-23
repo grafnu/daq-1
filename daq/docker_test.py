@@ -93,9 +93,9 @@ class DockerTest():
         LOGGER.debug("Target port %d docker complete, return=%d (%s)",
                      self.target_port, return_code, exception)
         if return_code:
-            LOGGER.info("Target port %d test %s after %ss failed: %s %s",
+            LOGGER.info("Target port %d test %s failed %ss: %s %s",
                         self.target_port, self.test_name, delay, return_code, exception)
         else:
-            LOGGER.info("Target port %d test %s after %ss passed",
+            LOGGER.info("Target port %d test %s passed %ss",
                         self.target_port, self.test_name, delay)
         self.callback(return_code=return_code, exception=exception)
