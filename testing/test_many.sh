@@ -24,7 +24,7 @@ done
 echo intf_names=${ifaces#,} >> local/system.conf
 
 echo DAQ stress test | tee $TEST_RESULTS
-$cmdrun -f run_limit=50
+$cmdrun run_limit=50
 cat inst/result.log
 results=$(fgrep [] inst/result.log | wc -l)
 echo Enough results $(($results > 40)) | tee -a $TEST_RESULTS
