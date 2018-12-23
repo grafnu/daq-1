@@ -26,6 +26,7 @@ echo intf_names=${ifaces#,} >> local/system.conf
 
 echo DAQ stress test | tee $TEST_RESULTS
 $cmdrun -f run_limit=50
-more inst/run-port-*/nodes/nmap*/return_code.txt | tee -a $TEST_RESULTS
+sort inst/result.log | tee -a $TEST_RESULTS
+more inst/run-port-*/nodes/nmap*/tmp/report.txt
 
 echo Done with tests | tee -a $TEST_RESULTS
