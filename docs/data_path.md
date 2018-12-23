@@ -17,36 +17,39 @@ the logs.
 
 ## Device-port
 
-USB interface: tcpdump on Linux interface
+USB interface or virtual: `tcpdump` on Linux interface, as specified by the `intf_names`
+configuration parameter.
 
-Using physical switch: Can't do much about it
+Using physical switch: Can't do much about it, since it's local to the physical switch.
 
 ## Switch link
 
-Hooked into the pri switch on $ext_intf, else pri-eth1 (default), use tcpdump
-
-This interface multiplexes traffic from all devices, so requires some filtering.
-Some of it is duplicated on a vlan (10), others are raw packets.  Can filter by
+Hooked into the _pri switch_ on `ext_intf`, else 'pri-eth1' (default). Use `tcpdump` to monitor
+traffic. This interface multiplexes traffic from all devices, so requires some filtering to
+be meaningful. Some of it is duplicated on a vlan (10), others are raw packets.  Can filter by
 IP address & port.
 
 # Gateway set.
 
-Device port 1 is handled by ports 10-19 on the primary switch, with interfaces pri-eth10 to pri-eth19.
-You can tap in there to see where data is doing into/out-of modules, e.g.:
+Device port 1 is handled by ports 10-19 on the primary switch, with interfaces pri-eth10
+to pri-eth19. You can tap in there to see where data is doing into/out-of modules, e.g.:
 
-* `pri-eth10`: gateway for port set 1
+* `pri-eth10`: gateway for port set 1, including DHCP server
 * `pri-eth11`: dummy test host
 * `pri-eth12`: running test (e.g. ping, hold, bacnet, nmap, etc..)
 
 # Docker containers
 
-See `docker ps` for the containers. They should be fairly direct what they are.  You can get into
-the containers and then run tcpdump there to see what traffic is flowing:
+See `docker ps` for the containers. They should be fairly direct what they are. You can get into
+the containers and then run tcpdump there to see what traffic is flowing. If you use the `-k`
+runtime option, then the system will create and <b>k</b>eep (forever) a test container, e.g.:
 
-`docker exec -ti daq-hold01 bash`
+* _Window 1_: `cmd/run -k`
+* _Window 2_: `docker exec -ti daq-hold01 bash`
 
 # Sample path
 
+Setup with virtual switching using `intf_names=faux`:
 <pre>
 ~/daq$ <b>ip link show faux</b>
 2209: faux@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master ovs-system state UP mode DEFAULT group default qlen 1000
