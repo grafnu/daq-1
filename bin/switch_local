@@ -49,7 +49,7 @@ if [ -z "$ext_ctrl" -a -n "$ext_addr" ]; then
     echo Creating daq-switch, because only ext_addr defined.
 
     docker rm -f daq-switch || true
-    cid=$(docker run -d --privileged --name daq-switch --hostname switch --net=none daq/test_hold)
+    cid=$(docker run -d --privileged --name daq-switch --hostname switch --net=none daq/switch)
     pid=$(docker inspect --format="{{ .State.Pid }}" $cid)
 
     ipsuffix=${ext_ofip#*/}
@@ -90,4 +90,5 @@ if ! ping -n -c 2 $ext_addr; then
     false
 fi
 
+echo DAQ autoclean docker rm -f daq-switch
 echo Done with local switch setup.
