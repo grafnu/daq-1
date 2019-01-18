@@ -57,14 +57,15 @@ cntrlr_ucast="$cntrlr_traffic and ether dst 9a:02:57:1e:8f:01"
 cntrlr_xcast="$cntrlr_traffic and ether dst 9a:02:57:1e:8f:03 or ether src 9a:02:57:1e:8f:03"
 
 function summarize_results {
+    type=$1
     bcast=$($device_bcast | wc -l)
     ucast=$($device_ucast | wc -l)
     xcast=$($device_xcast | wc -l)
-    echo device open $(($bcast > 2)) $(($ucast > 2)) $(($xcast > 0)) | tee -a $TEST_RESULTS
+    echo device $type $(($bcast > 2)) $(($ucast > 2)) $(($xcast > 0)) | tee -a $TEST_RESULTS
     bcast=$($cntrlr_bcast | wc -l)
     ucast=$($cntrlr_ucast | wc -l)
     xcast=$($cntrlr_xcast | wc -l)
-    echo cntrlr open $(($bcast > 2)) $(($ucast > 2)) $(($xcast > 0)) | tee -a $TEST_RESULTS
+    echo cntrlr $type $(($bcast > 2)) $(($ucast > 2)) $(($xcast > 0)) | tee -a $TEST_RESULTS
 }
 
 $cmdrun -s
