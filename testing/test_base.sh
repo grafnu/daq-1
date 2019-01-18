@@ -45,11 +45,7 @@ ls -l inst/gw*/nodes/gw*/tmp/startup.pcap
 # Test various configurations of mud files.
 
 echo Mud profile tests | tee -a $TEST_RESULTS
-echo add ping > inst/ping_only.conf
-
-cp misc/system_multi.conf local/system.conf
-echo host_tests=inst/ping_only.conf >> local/system.conf
-echo startup_cmds=misc/startup_discover.cmd >> local/system.conf
+cp misc/system_muddy.conf local/system.conf
 
 device_traffic="tcpdump -en -r inst/run-port-01/scans/monitor.pcap port 47808"
 device_bcast="$device_traffic and ether broadcast"
