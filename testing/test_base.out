@@ -19,6 +19,6 @@ device frdev 1 0 0
 cntrlr frdev 1 0 0
 device none 0 0 0
 cntrlr none 0 0 0
-device star 1 1 1
+device star 1 1 0
 cntrlr star 1 1 0
 Done with tests
