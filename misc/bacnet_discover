@@ -25,6 +25,4 @@ echo Scanning bacnet $broadcast_ip from $local_ip
 java -cp $JAR $CLASS $local_ip $broadcast_ip $subcmd | tee $TMPOUT
 
 # For testing, consider the presense of bacnet a failure.
-( ! fgrep "$TARGET" $TMPOUT ) || echo test failed
-
-tail -f /dev/null
+! fgrep "$TARGET" $TMPOUT

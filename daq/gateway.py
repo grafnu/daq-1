@@ -21,7 +21,6 @@ class Gateway():
     NUM_SET_PORTS = 4
     SET_SPACING = 10
     _PING_RETRY_COUNT = 5
-    _FAUCET_LOG = 'inst/faucet.log'
 
     TEST_IP_FORMAT = '192.168.84.%d'
 
@@ -89,19 +88,12 @@ class Gateway():
                         host_name, datetime.datetime.now(), ping_retry)
             assert ping_retry, 'warmup ping failure'
 
-        self._write_faucet_log('Gateway %s warmup complt at %s with %d' %
-                               (host_name, datetime.datetime.now(), ping_retry))
-
         assert self._ping_test(host, dummy), 'dummy ping failed'
         assert self._ping_test(dummy, host), 'host ping failed'
         assert self._ping_test(dummy, self.fake_target), 'fake ping failed'
         assert self._ping_test(host, dummy, src_addr=self.fake_target), 'reverse ping failed'
 
         self.host = host
-
-    def _write_faucet_log(self, message):
-        with open(self._FAUCET_LOG, 'a') as output_stream:
-            output_stream.write(message + '\n')
 
     def activate(self):
         """Mark this gateway as activated once all hosts are present"""

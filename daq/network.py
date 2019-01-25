@@ -1,7 +1,6 @@
 """Networking module"""
 
 import logging
-import datetime
 import os
 
 import topology
@@ -37,7 +36,6 @@ class TestNetwork():
     MAX_INTERNAL_DPID = 100
     DEFAULT_OF_PORT = 6653
     _CTRL_PRI_IFACE = 'ctrl-pri'
-    _FAUCET_LOG = 'inst/faucet.log'
 
     def __init__(self, config):
         self.config = config
@@ -67,17 +65,10 @@ class TestNetwork():
             if self.net.built:
                 host.configDefault()
                 self._switch_attach(self.pri, switch_link.intf1)
-            message = ('Interface sleep %s at %s' %
-                       (switch_link.intf1, datetime.datetime.now()))
-            self._write_faucet_log(message)
         except:
             host.terminate()
             raise
         return host
-
-    def _write_faucet_log(self, message):
-        with open(self._FAUCET_LOG, 'a') as output_stream:
-            output_stream.write(message + '\n')
 
     def get_host_interface(self, host):
         """Get the internal link interface for this host"""
