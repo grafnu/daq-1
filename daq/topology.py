@@ -3,6 +3,7 @@
 import copy
 import logging
 import os
+import time
 import yaml
 
 from gateway import Gateway
@@ -13,6 +14,7 @@ class FaucetTopology():
     """Topology manager specific to FAUCET configs"""
 
     OUTPUT_NETWORK_FILE = "inst/faucet.yaml"
+    WAIT_TIME_SEC = 0
     MAC_PREFIX = "@mac:"
     DNS_PREFIX = "@dns:"
     CTL_PREFIX = "@ctrl:"
@@ -31,6 +33,7 @@ class FaucetTopology():
     _SWITCH_LOCAL_PORT = _MIRROR_PORT_BASE
     PRI_STACK_PORT = 1
     DEFAULT_VLAN = 10
+    _FAUCET_LOG = 'inst/faucet.log'
 
     def __init__(self, config, pri):
         self._mac_map = {}
@@ -213,6 +216,7 @@ class FaucetTopology():
         pri_dp['name'] = self.pri_name
         pri_dp['stack'] = {'priority':1}
         pri_dp['interfaces'] = self._make_pri_interfaces()
+        pri_dp['ofchannel_log'] = '/var/log/faucet/ofchannel-pri.log'
         return pri_dp
 
     def _make_sec_topology(self):
@@ -243,18 +247,23 @@ class FaucetTopology():
         }
 
     def _write_network_topology(self):
-        LOGGER.info('Writing network config to %s', self.OUTPUT_NETWORK_FILE)
+        LOGGER.info('Writing network config to %s, wait %d',
+                    self.OUTPUT_NETWORK_FILE, self.WAIT_TIME_SEC)
         with open(self.OUTPUT_NETWORK_FILE, "w") as output_stream:
             yaml.safe_dump(self.topology, stream=output_stream)
+        time.sleep(self.WAIT_TIME_SEC)
 
     def _generate_acls(self):
         self._generate_main_acls()
         self._generate_port_acls()
 
     def _get_gw_ports(self):
-        min_port = Gateway.SET_SPACING
-        max_port = Gateway.SET_SPACING * self.sec_port
-        return list(range(min_port, max_port))
+        ports = []
+        for port_set in range(1, self.sec_port):
+            base_port = Gateway.SET_SPACING * port_set
+            end_port = base_port + Gateway.NUM_SET_PORTS
+            ports.extend(range(base_port, end_port))
+        return ports
 
     def _get_bcast_ports(self):
         return [1, self._SWITCH_LOCAL_PORT] + self._get_gw_ports()
@@ -270,7 +279,7 @@ class FaucetTopology():
             incoming = list(range(target['range'][0], target['range'][1])) + [mirror_port]
             self._add_acl_rule(incoming_acl, dl_src=target_mac, ports=incoming)
             portset = [1, mirror_port]
-            self._add_acl_rule(portset_acl, dl_dst=target_mac, ports=portset)
+            self._add_acl_rule(portset_acl, dl_dst=target_mac, ports=portset, allow=1)
 
         self._add_acl_rule(incoming_acl, allow=0)
         self._add_acl_rule(portset_acl, dl_dst=self.BROADCAST_MAC,
@@ -287,9 +296,10 @@ class FaucetTopology():
         pri_acls["acls"] = acls
 
         filename = self.INST_FILE_PREFIX + self.DP_ACL_FILE_FORMAT
-        LOGGER.debug("Writing updated pri acls to %s", filename)
+        LOGGER.debug("Writing updated pri acls to %s, wait %d", filename, self.WAIT_TIME_SEC)
         with open(filename, "w") as output_stream:
             yaml.safe_dump(pri_acls, stream=output_stream)
+        time.sleep(self.WAIT_TIME_SEC)
 
     def _maybe_apply(self, target, keyword, origin, source=None):
         source_keyword = source if source else keyword
@@ -344,12 +354,13 @@ class FaucetTopology():
             self._append_device_default_allow(rules, target_mac)
             self._write_port_acl(port, rules, filename)
         elif os.path.isfile(filename):
-            LOGGER.debug("Removing unused port acl file %s", filename)
+            LOGGER.debug("Removing unused port acl file %s, wait %d", filename, self.WAIT_TIME_SEC)
             os.remove(filename)
+            time.sleep(self.WAIT_TIME_SEC)
         return target_mac
 
     def _write_port_acl(self, port, rules, filename):
-        LOGGER.debug("Writing port acl file %s", filename)
+        LOGGER.debug("Writing port acl file %s, wait %d", filename, self.WAIT_TIME_SEC)
         acl_name = self.PORT_ACL_NAME_FORMAT % (self.sec_name, port)
         acls = {}
         acls[acl_name] = rules
@@ -357,6 +368,7 @@ class FaucetTopology():
         port_acl['acls'] = acls
         with open(filename, "w") as output_stream:
             yaml.safe_dump(port_acl, stream=output_stream)
+        time.sleep(self.WAIT_TIME_SEC)
 
     def _get_device_type(self, target_mac):
         device_macs = self._device_specs['macAddrs']
