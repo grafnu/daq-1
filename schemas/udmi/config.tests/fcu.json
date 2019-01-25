@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "timestamp": "2019-01-17T14:02:29.364Z",
+  "system": {
+    "max_update_ms": 50000,
+    "min_loglevel": 500
+  },
+  "pointset": {
+    "points": {
+      "space_temperature_sensor": {
+        "min_update_ms": 2000,
+        "force_value": 10
+      },
+      "fan_run_status": {
+        "min_update_ms": 5000,
+        "force_value": true
+      },
+      "fan_run_enable": {
+        "min_update_ms": 1000,
+        "force_value": false
+      },
+       "chilled_water_valve_percentage_command": {
+        "min_update_ms": 1000,
+        "force_value": 150
+      }
+    }
+  }
+}
