@@ -21,7 +21,7 @@ if [ -n "$LOCAL_IP" ]; then
     ping -n -c 5 $SWITCH_IP
 fi
 
-ping -n -c 1 $TARGET_IP | true
+ping -n -c 1 $TARGET_IP || true
 
 route -n
 
