@@ -254,7 +254,7 @@ class DAQRunner():
             'port': target_port,
             'group': group_name,
             'fake': gateway.fake_target,
-            'range': gateway.get_port_range(),
+            'port_set': gateway.port_set,
             'mac': target_mac
         }
         gateway.attach_target(target_port, target)

@@ -25,7 +25,7 @@ class FaucetTopology():
     FROM_ACL_KEY_FORMAT = "@from:template_%s_acl"
     TO_ACL_KEY_FORMAT = "@to:template_%s_acl"
     INCOMING_ACL_FORMAT = "dp_%s_incoming_acl"
-    PORTSET_ACL_FORMAT = "dp_%s_portset_acl"
+    PORTSET_ACL_FORMAT = "dp_%s_portset_%d_acl"
     _MIRROR_IFACE_FORMAT = "mirror-%d"
     _MIRROR_PORT_BASE = 1000
     _SWITCH_LOCAL_PORT = _MIRROR_PORT_BASE
@@ -140,10 +140,9 @@ class FaucetTopology():
         interface['native_vlan'] = self.DEFAULT_VLAN
         return interface
 
-    def _make_gw_interface(self, input_port):
-        input_port = input_port
+    def _make_gw_interface(self, port_set):
         interface = {}
-        interface['acl_in'] = self.PORTSET_ACL_FORMAT % self.pri_name
+        interface['acl_in'] = self.PORTSET_ACL_FORMAT % (self.pri_name, port_set)
         interface['native_vlan'] = self.DEFAULT_VLAN
         return interface
 
@@ -183,11 +182,11 @@ class FaucetTopology():
     def _make_pri_interfaces(self):
         interfaces = {}
         interfaces[self.PRI_STACK_PORT] = self._make_pri_stack_interface()
-        for port in self._get_gw_ports():
-            interfaces[port] = self._make_gw_interface(port)
-        for input_port in range(1, self.sec_port):
-            mirror_port = self.mirror_port(input_port)
-            interfaces[mirror_port] = self._make_mirror_interface(input_port)
+        for port_set in range(1, self.sec_port):
+            for port in self._get_gw_ports(port_set):
+                interfaces[port] = self._make_gw_interface(port_set)
+            mirror_port = self.mirror_port(port_set)
+            interfaces[mirror_port] = self._make_mirror_interface(port_set)
         interfaces[self._SWITCH_LOCAL_PORT] = self._make_switch_interface()
         return interfaces
 
@@ -251,40 +250,45 @@ class FaucetTopology():
         self._generate_main_acls()
         self._generate_port_acls()
 
-    def _get_gw_ports(self):
-        ports = []
-        for port_set in range(1, self.sec_port):
-            base_port = Gateway.SET_SPACING * port_set
-            end_port = base_port + Gateway.NUM_SET_PORTS
-            ports.extend(range(base_port, end_port))
-        return ports
+    def _get_gw_ports(self, port_set):
+        base_port = Gateway.SET_SPACING * port_set
+        end_port = base_port + Gateway.NUM_SET_PORTS
+        return list(range(base_port, end_port))
 
-    def _get_bcast_ports(self):
-        return [1, self._SWITCH_LOCAL_PORT] + self._get_gw_ports()
+    def _get_bcast_ports(self, port_set):
+        return [1, self._SWITCH_LOCAL_PORT] + self._get_gw_ports(port_set)
 
     def _generate_main_acls(self):
         incoming_acl = []
-        portset_acl = []
+        portset_acls = {}
         secondary_acl = []
+        acls = {}
+
+        for port_set in range(1, self.sec_port):
+            portset_acls[port_set] = []
 
         for target_mac in self._mac_map:
             target = self._mac_map[target_mac]
-            mirror_port = self.mirror_port(target['port'])
-            incoming = list(range(target['range'][0], target['range'][1])) + [mirror_port]
-            self._add_acl_rule(incoming_acl, dl_src=target_mac, ports=incoming)
-            portset = [1, mirror_port]
-            self._add_acl_rule(portset_acl, dl_dst=target_mac, ports=portset, allow=1)
+            target_port = target['port']
+            mirror_port = self.mirror_port(target_port)
+            port_set = target['port_set']
+            gw_out = self._get_gw_ports(port_set) + [mirror_port]
+            self._add_acl_rule(incoming_acl, dl_src=target_mac, ports=gw_out)
+            out_ports = [1, mirror_port]
+            self._add_acl_rule(portset_acls[port_set], dl_dst=target_mac, ports=out_ports, allow=1)
 
         self._add_acl_rule(incoming_acl, allow=0)
-        self._add_acl_rule(portset_acl, dl_dst=self.BROADCAST_MAC,
-                           ports=self._get_bcast_ports(), allow=1)
-        self._add_acl_rule(portset_acl, allow=1)
-        self._add_acl_rule(secondary_acl, allow=1, out_vlan=self.DEFAULT_VLAN)
-
-        acls = {}
         acls[self.INCOMING_ACL_FORMAT % self.pri_name] = incoming_acl
-        acls[self.PORTSET_ACL_FORMAT % self.pri_name] = portset_acl
+
+        self._add_acl_rule(secondary_acl, allow=1, out_vlan=self.DEFAULT_VLAN)
         acls[self.INCOMING_ACL_FORMAT % self.sec_name] = secondary_acl
+
+        for port_set in range(1, self.sec_port):
+            portset_acl = portset_acls[port_set]
+            self._add_acl_rule(portset_acl, dl_dst=self.BROADCAST_MAC,
+                               ports=self._get_bcast_ports(port_set), allow=1)
+            self._add_acl_rule(portset_acl, allow=1)
+            acls[self.PORTSET_ACL_FORMAT % (self.pri_name, port_set)] = portset_acl
 
         pri_acls = {}
         pri_acls["acls"] = acls
