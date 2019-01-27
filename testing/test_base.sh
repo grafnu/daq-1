@@ -13,6 +13,8 @@ cp misc/system_base.conf local/system.conf
 echo Base tests | tee $TEST_RESULTS
 $cmdrun -s
 more inst/result.log | tee -a $TEST_RESULTS
+cat inst/run-port-*/nodes/ping*/activate.log
+cat inst/run-port-*/nodes/nmap*/activate.log
 
 # Test block for open-port failures.
 (
