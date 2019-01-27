@@ -18,6 +18,7 @@ class FaucetTopology():
     CTL_PREFIX = "@ctrl:"
     INST_FILE_PREFIX = "inst/"
     BROADCAST_MAC = "ff:ff:ff:ff:ff:ff"
+    ARP_DL_TYPE = "0x0806"
     PORT_ACL_NAME_FORMAT = "dp_%s_port_%d_acl"
     DP_ACL_FILE_FORMAT = "dp_port_acls.yaml"
     PORT_ACL_FILE_FORMAT = "port_acls/dp_%s_port_%d_acl.yaml"
@@ -285,8 +286,9 @@ class FaucetTopology():
 
         for port_set in range(1, self.sec_port):
             portset_acl = portset_acls[port_set]
+            self._add_acl_rule(portset_acl, dl_type=self.ARP_DL_TYPE, allow=1)
             self._add_acl_rule(portset_acl, dl_dst=self.BROADCAST_MAC,
-                               ports=self._get_bcast_ports(port_set), allow=1)
+                               ports=self._get_bcast_ports(port_set))
             self._add_acl_rule(portset_acl, allow=1)
             acls[self.PORTSET_ACL_FORMAT % (self.pri_name, port_set)] = portset_acl
 
@@ -323,6 +325,7 @@ class FaucetTopology():
 
         subrule = {}
         subrule["actions"] = actions
+        self._maybe_apply(subrule, 'dl_type', kwargs)
         self._maybe_apply(subrule, 'dl_src', kwargs)
         self._maybe_apply(subrule, 'dl_dst', kwargs)
         self._maybe_apply(subrule, 'vlan_vid', in_vlan)
