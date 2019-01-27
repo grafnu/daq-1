@@ -248,8 +248,14 @@ class FaucetTopology():
             yaml.safe_dump(self.topology, stream=output_stream)
 
     def _generate_acls(self):
-        self._generate_main_acls()
         self._generate_port_acls()
+        pri_acls = self._generate_main_acls()
+        filename = self.INST_FILE_PREFIX + self.DP_ACL_FILE_FORMAT
+        LOGGER.debug('Writing updated pri acls to %s', filename)
+        with open(filename, "w") as output_stream:
+            yaml.safe_dump(pri_acls, stream=output_stream)
+
+
 
     def _get_gw_ports(self, port_set):
         base_port = Gateway.SET_SPACING * port_set
@@ -270,8 +276,7 @@ class FaucetTopology():
 
         for target_mac in self._mac_map:
             target = self._mac_map[target_mac]
-            target_port = target['port']
-            mirror_port = self.mirror_port(target_port)
+            mirror_port = self.mirror_port(target['port'])
             port_set = target['port_set']
             gw_out = self._get_gw_ports(port_set) + [mirror_port]
             self._add_acl_rule(incoming_acl, dl_src=target_mac, ports=gw_out)
@@ -296,10 +301,7 @@ class FaucetTopology():
         pri_acls = {}
         pri_acls["acls"] = acls
 
-        filename = self.INST_FILE_PREFIX + self.DP_ACL_FILE_FORMAT
-        LOGGER.debug('Writing updated pri acls to %s', filename)
-        with open(filename, "w") as output_stream:
-            yaml.safe_dump(pri_acls, stream=output_stream)
+        return pri_acls
 
     def _maybe_apply(self, target, keyword, origin, source=None):
         source_keyword = source if source else keyword
