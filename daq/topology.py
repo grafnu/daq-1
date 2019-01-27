@@ -281,6 +281,7 @@ class FaucetTopology():
         self._add_acl_rule(incoming_acl, allow=0)
         acls[self.INCOMING_ACL_FORMAT % self.pri_name] = incoming_acl
 
+        self._add_acl_rule(secondary_acl, allow=1, vlan_vid=self.DEFAULT_VLAN)
         self._add_acl_rule(secondary_acl, allow=1, out_vlan=self.DEFAULT_VLAN)
         acls[self.INCOMING_ACL_FORMAT % self.sec_name] = secondary_acl
 
@@ -303,6 +304,7 @@ class FaucetTopology():
     def _maybe_apply(self, target, keyword, origin, source=None):
         source_keyword = source if source else keyword
         if source_keyword in origin:
+            assert not keyword in target, 'duplicate acl rule keyword %s' % keyword
             target[keyword] = origin[source_keyword]
 
     def _add_acl_rule(self, acl, **kwargs):
@@ -329,6 +331,7 @@ class FaucetTopology():
         self._maybe_apply(subrule, 'dl_src', kwargs)
         self._maybe_apply(subrule, 'dl_dst', kwargs)
         self._maybe_apply(subrule, 'vlan_vid', in_vlan)
+        self._maybe_apply(subrule, 'vlan_vid', kwargs)
 
         rule = {}
         rule['rule'] = subrule
