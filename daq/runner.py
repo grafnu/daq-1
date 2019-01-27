@@ -73,9 +73,6 @@ class DAQRunner():
             'timestamp': int(time.time()),
         })
 
-    def _port_control(self, message):
-        LOGGER.info('port_control %s', message)
-
     def initialize(self):
         """Initialize DAQ instance"""
         self._send_heartbeat()
