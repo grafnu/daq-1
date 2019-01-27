@@ -13,13 +13,6 @@ cp misc/system_base.conf local/system.conf
 echo Base tests | tee $TEST_RESULTS
 $cmdrun -s
 more inst/result.log | tee -a $TEST_RESULTS
-echo TAP ping log
-cat inst/run-port-*/nodes/ping*/activate.log
-echo TAP nmap logs
-cat inst/run-port-*/nodes/nmap*/activate.log
-echo TAP faucet.log
-cat inst/faucet.log
-echo TAP done
 
 # Test block for open-port failures.
 (
