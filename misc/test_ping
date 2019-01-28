@@ -21,6 +21,12 @@ if [ -n "$LOCAL_IP" ]; then
     ping -n -c 5 $SWITCH_IP
 fi
 
+echo ARP
+arp -n
+echo ROUTE
+route -n
+echo
+
 monitor_filter=/config/monitor_filter.txt
 filter_out=/tmp/monitor_filter.out
 if [ -f $monitor_filter ]; then
