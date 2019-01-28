@@ -44,7 +44,6 @@ class DockerTest():
         vol_maps = [params['scan_base'] + ":/scans"]
         if 'conf_base' in params:
             conf_base = params['conf_base']
-            assert os.path.exists(conf_base), 'missing conf directory %s' % conf_base
             vol_maps += [conf_base + ":/config"]
 
         image = self.IMAGE_NAME_FORMAT % self.test_name
