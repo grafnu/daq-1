@@ -170,7 +170,7 @@ class DAQRunner():
                 if self.active_ports[target_port] is not True:
                     self._target_set_trigger(target_port)
                     all_idle = False
-        if not self.port_targets and not self.run_tests:
+        if not self.port_targets and not self.run_tests and not self.result_linger:
             if self.faucet_events:
                 self.monitor_forget(self.faucet_events.sock)
                 self.faucet_events.disconnect()
@@ -451,9 +451,11 @@ class DAQRunner():
             LOGGER.info('Target port %d cancel %s (#%d/%s).',
                         target_port, target_mac, self.run_count, self.run_limit)
             results = self._combine_result_set(target_port, self.result_sets[target_port])
-            if results and self.result_linger:
+            this_result_linger = results and self.result_linger
+            if target_gateway.result_linger or this_result_linger:
                 LOGGER.warning('Target port %d result_linger: %s', target_port, results)
                 self.active_ports[target_port] = True
+                target_gateway.result_linger = True
             else:
                 self._direct_port_traffic(target_mac, target_port, None)
                 target_host.terminate(trigger=False)
