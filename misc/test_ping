@@ -21,17 +21,17 @@ if [ -n "$LOCAL_IP" ]; then
     ping -n -c 5 $SWITCH_IP
 fi
 
-startup_filter=/config/startup_filter.txt
-filter_out=/tmp/startup_filter.out
-if [ -f $startup_filter ]; then
-    filter=$(<$startup_filter)
-    tcpdump -en -r /scans/startup.pcap $filter > $filter_out
+monitor_filter=/config/monitor_filter.txt
+filter_out=/tmp/monitor_filter.out
+if [ -f $monitor_filter ]; then
+    filter=$(<$monitor_filter)
+    tcpdump -en -r /scans/monitor.pcap $filter > $filter_out
     cat $filter_out
     count=$(wc -l < $filter_out)
     echo Found $count from $filter
     [ $count -gt 0 ]
 else
-    echo $startup_filter not found.
+    echo $monitor_filter not found.
 fi
 echo
 
