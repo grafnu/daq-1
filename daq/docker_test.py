@@ -42,6 +42,10 @@ class DockerTest():
                          "SWITCH_IP=" + params['switch_ip']]
 
         vol_maps = [params['scan_base'] + ":/scans"]
+        if 'conf_base' in params:
+            conf_base = params['conf_base']
+            assert os.path.exists(conf_base), 'missing conf directory %s' % conf_base
+            vol_maps += [conf_base + ":/config"]
 
         image = self.IMAGE_NAME_FORMAT % self.test_name
         LOGGER.debug("Target port %d running docker test %s", self.target_port, image)

@@ -46,6 +46,8 @@ class ConnectedHost():
         self.tmpdir = self._initialize_tempdir()
         self.run_id = '%06x' % int(time.time())
         self.scan_base = os.path.abspath(os.path.join(self.tmpdir, 'scans'))
+        self._conf_base = os.path.abspath(os.path.join(self._TMPDIR_BASE,
+                                                       'conf-%02d' % self.target_port))
         self.state = None
         self.no_test = config.get('no_test', False)
         self._state_transition(_STATE.READY if self.no_test else _STATE.INIT)
@@ -80,6 +82,8 @@ class ConnectedHost():
         time.sleep(2)
         shutil.rmtree(self.tmpdir, ignore_errors=True)
         os.makedirs(self.scan_base)
+        if not os.path.exists(self._conf_base):
+            os.makedirs(self._conf_base)
         network = self.runner.network
         self._mirror_intf_name = network.create_mirror_interface(self.target_port)
         if self.no_test:
@@ -308,6 +312,7 @@ class ConnectedHost():
             'target_mac': self.target_mac,
             'gateway_ip': self.gateway.IP(),
             'gateway_mac': self.gateway.MAC(),
+            'conf_base': self._conf_base,
             'scan_base': self.scan_base
         }
 
