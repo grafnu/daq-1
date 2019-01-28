@@ -30,7 +30,7 @@ class _STATE():
 class ConnectedHost():
     """Class managing a device-under-test"""
 
-    _MONITOR_SCAN_SEC = 30
+    _MONITOR_SCAN_SEC = 60
     _STARTUP_MIN_TIME_SEC = 5
     _REPORT_FORMAT = "report_%s_%s.txt"
     _TMPDIR_BASE = "inst"
@@ -210,7 +210,8 @@ class ConnectedHost():
 
     def _monitor_cleanup(self, forget=True):
         if self._tcp_monitor:
-            LOGGER.info('Target port %d monitor scan complete', self.target_port)
+            now = datetime.datetime.now()
+            LOGGER.info('Target port %d monitor scan complete at %s', self.target_port, now)
             if forget:
                 self.runner.monitor_forget(self._tcp_monitor.stream())
             self._tcp_monitor.terminate()
@@ -227,8 +228,9 @@ class ConnectedHost():
         self._state_transition(_STATE.MONITOR, _STATE.BASE)
         self.record_result('monitor', time=self._MONITOR_SCAN_SEC, state='run')
         monitor_file = os.path.join(self.scan_base, 'monitor.pcap')
-        LOGGER.info('Target port %d background scan for %d seconds...',
-                    self.target_port, self._MONITOR_SCAN_SEC)
+        now = datetime.datetime.now()
+        LOGGER.info('Target port %d background scan at %s for %ds',
+                    self.target_port, now, self._MONITOR_SCAN_SEC)
         network = self.runner.network
         tcp_filter = ''
         intf_name = self._mirror_intf_name
