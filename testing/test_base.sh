@@ -5,12 +5,42 @@ if [ `whoami` != 'root' ]; then
     exit -1
 fi
 
-TEST_RESULTS=test_results.out
-rm -f $TEST_RESULTS
-
 echo Writing test results to $TEST_RESULTS
+cmdrun="cmd/run codecov"
 
-cmdrun="cmd/run"
+cp misc/system_base.conf local/system.conf
+
+echo Base tests | tee $TEST_RESULTS
+$cmdrun -s
+more inst/result.log | tee -a $TEST_RESULTS
+
+# Test block for open-port failures.
+(
+    echo Open port tests | tee -a $TEST_RESULTS
+
+    export DAQ_FAUX_OPTS=telnet
+    # Check that an open port causes the appropriate failure.
+    $cmdrun -s
+    more inst/result.log | tee -a $TEST_RESULTS
+    cat inst/run-port-01/nodes/nmap01/activate.log
+
+    # Except with a default MUD file that blocks the port.
+    echo device_specs=misc/device_specs.json >> local/system.conf
+    $cmdrun -s
+    more inst/result.log | tee -a $TEST_RESULTS
+    cat inst/run-port-01/nodes/nmap01/activate.log
+)
+
+# Test an "external" switch.
+echo External switch tests | tee -a $TEST_RESULTS
+cp misc/system_ext.conf local/system.conf
+$cmdrun -s
+more inst/result.log | tee -a $TEST_RESULTS
+fgrep dp_id inst/faucet.yaml | tee -a $TEST_RESULTS
+fgrep time inst/run-port-02/nodes/ping02/activate.log
+count=$(fgrep icmp_seq=5 inst/run-port-02/nodes/ping02/activate.log | wc -l)
+echo switch ping $count | tee -a $TEST_RESULTS
+ls -l inst/gw*/nodes/gw*/tmp/startup.pcap
 
 # Test various configurations of mud files.
 
@@ -39,6 +69,11 @@ function test_mud {
     echo cntrlr $type $(($bcast > 2)) $(($ucast > 2)) $(($xcast > 0)) | tee -a $TEST_RESULTS
 }
 
+test_mud open
 test_mud base
+test_mud todev
+test_mud frdev
+test_mud none
+test_mud star
 
 echo Done with tests | tee -a $TEST_RESULTS
