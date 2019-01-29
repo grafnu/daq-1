@@ -46,8 +46,7 @@ class ConnectedHost():
         self.tmpdir = self._initialize_tempdir()
         self.run_id = '%06x' % int(time.time())
         self.scan_base = os.path.abspath(os.path.join(self.tmpdir, 'scans'))
-        self._conf_base = os.path.abspath(os.path.join(self._TMPDIR_BASE,
-                                                       'conf-%02d' % self.target_port))
+        self._conf_base = self._initialize_conf_base()
         self.state = None
         self.no_test = config.get('no_test', False)
         self._state_transition(_STATE.READY if self.no_test else _STATE.INIT)
@@ -75,6 +74,16 @@ class ConnectedHost():
         os.makedirs(tmpdir)
         return tmpdir
 
+    def _initialize_conf_base(self):
+        test_config = self.config.get('test_config')
+        if not test_config:
+            return None
+        conf_base = os.path.abspath(os.path.join(test_config, 'port-%02d' % self.target_port))
+        if not os.path.isdir(conf_base):
+            LOGGER.warning('Test config directory not found: %s', conf_base)
+            return None
+        return conf_base
+
     def initialize(self):
         """Fully initialize a new host set"""
         LOGGER.info('Target port %d initializing...', self.target_port)
@@ -82,8 +91,6 @@ class ConnectedHost():
         time.sleep(2)
         shutil.rmtree(self.tmpdir, ignore_errors=True)
         os.makedirs(self.scan_base)
-        if not os.path.exists(self._conf_base):
-            os.makedirs(self._conf_base)
         network = self.runner.network
         self._mirror_intf_name = network.create_mirror_interface(self.target_port)
         if self.no_test:
