@@ -24,7 +24,7 @@ cntrlr frdev 1 0 0
 result none 01: ['01:ping:1'] 02: ['02:ping:1'] 03: []
 device none 0 0 0
 cntrlr none 0 0 0
-result star 01: ['01:ping:1'] 02: [] 03: []
+result star 01: [] 02: ['02:ping:1'] 03: []
 device star 1 1 1
 cntrlr star 1 1 0
 Done with tests
