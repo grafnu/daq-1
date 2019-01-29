@@ -42,8 +42,9 @@ class DockerTest():
                          "SWITCH_IP=" + params['switch_ip']]
 
         vol_maps = [params['scan_base'] + ":/scans"]
-        if 'conf_base' in params:
-            conf_base = params['conf_base']
+
+        conf_base = params.get('conf_base')
+        if conf_base:
             vol_maps += [conf_base + ":/config"]
 
         image = self.IMAGE_NAME_FORMAT % self.test_name
