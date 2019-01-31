@@ -138,15 +138,15 @@ class TopologyGenerator():
 
     def _make_t1_dp_interfaces(self, t1_conf, domain):
         interfaces = {}
-        corp_port = self._site['tier1']['defaults']['corp_port']
-        interfaces.update({corp_port: self._make_corp_interface(t1_conf['uplink'])})
+        uplink_port = self._site['tier1']['defaults']['uplink_port']
+        interfaces.update({uplink_port: self._make_uplink_interface(t1_conf['uplink'])})
         interfaces.update(self._make_t1_stack_interfaces(domain))
         interfaces.update(self._make_t1_device_interfaces())
         return interfaces
 
-    def _make_corp_interface(self, uplink):
+    def _make_uplink_interface(self, uplink):
         interface = {}
-        interface.update(self._setup['corp_iface'])
+        interface.update(self._setup['uplink_iface'])
         interface['name'] = uplink
         interface['tagged_vlans'] = [self._site['vlan_id']]
         return interface
@@ -174,13 +174,13 @@ class TopologyGenerator():
                 })
             else:
                 interfaces.update({
-                    tier1_port:self._make_t2_external_interface()
+                    tier1_port:self._make_t2_cross_interface()
                 })
 
         return interfaces
 
     def _make_t1_stack_interface(self, tier2_spec):
-        port = tier2_spec['uplink_port']
+        port = tier2_spec['stack_port']
         dp_name = self._get_t2_dp_name(tier2_spec)
         return {
             'lldp_beacon': self._get_port_lldp_beacon(),
@@ -190,7 +190,7 @@ class TopologyGenerator():
             }
         }
 
-    def _make_t2_external_interface(self):
+    def _make_t2_cross_interface(self):
         return {
             'lldp_beacon': self._get_port_lldp_beacon(),
             'loop_protect_external': self._setup['loop_protect_external'],
@@ -225,8 +225,8 @@ class TopologyGenerator():
 
     def _make_t2_interfaces(self, t2_conf, t1_port):
         return {
-            t2_conf['uplink_port']: self._make_t2_stack_interface(t2_conf, t1_port),
-            t2_conf['alternate_port']: self._make_t2_external_interface()
+            t2_conf['stack_port']: self._make_t2_stack_interface(t2_conf, t1_port),
+            t2_conf['cross_port']: self._make_t2_cross_interface()
         }
 
     def _make_t2_stack_interface(self, t2_conf, t1_port):
