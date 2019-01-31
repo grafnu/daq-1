@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+ROOT=$(realpath $(dirname $0)/..)
+cd $ROOT
+source misc/config_base.sh
+
+FAUCET=$(realpath $ROOT/faucet)
+MININET=$(realpath $ROOT/mininet)
+
+export PYTHONPATH=$FAUCET:$MININET
+source venv/bin/activate
+
+python3 -u daq/generator.py "$@"
