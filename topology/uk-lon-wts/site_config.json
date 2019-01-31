@@ -8,17 +8,15 @@
       "hardware": "GenericTFM"
     },
     "domains": {
-      "1": {
+      "-1": {
         "dp_id": "0x223d5a07ff",
-        "floor": "0g",
-        "idf": 1,
+        "location": "0g-1",
         "corp_port": 16,
         "uplink": "uk-lon-wts-agg1:eth1/44"
       },
-      "2": {
+      "-2": {
         "dp_id": "0x223d5a0829",
-        "floor": "0g",
-        "idf": 1,
+        "location": "0g-1",
         "uplink": "uk-lon-wts-agg2:eth1/44"
       }
     }
@@ -31,17 +29,15 @@
     "tier1_ports": {
       17: {
         "dp_id": "0x1aeb97652e",
-        "floor": "0g",
-        "idf": 1,
-        "domain": "1",
+        "location": "0g-1",
+        "domain": "-1",
         "uplink_port": 50,
         "alternate_port": 51
       },
       18: {
         "dp_id": "0xe01aea308c61",
-        "floor": "0g",
-        "idf": 1,
-        "domain": "2",
+        "location": "0g-1",
+        "domain": "-2",
         "uplink_port": 51,
         "alternate_port": 50
       }

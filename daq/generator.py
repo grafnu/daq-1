@@ -83,8 +83,7 @@ class TopologyGenerator():
     def _make_target(self, domain):
         domain_dp = self._site['tier1']['domains'][domain]
         return {
-            'floor': domain_dp['floor'],
-            'idf': domain_dp['idf'],
+            'location': domain_dp['location'],
             'domain': domain
         }
 
@@ -119,13 +118,6 @@ class TopologyGenerator():
         t1_dp_names = list(self._make_t1_dps(domain).keys())
         t2_dp_names = list(self._make_t2_dps(domain).keys())
         return t1_dp_names + t2_dp_names
-
-    def _get_t1_dp_name(self, domain):
-        t1_conf = self._site['tier1']['domains'][domain]
-        return self._get_dp_name('t1', t1_conf['floor'], t1_conf['idf'], domain)
-
-    def _get_t2_dp_name(self, t2_conf):
-        return self._get_dp_name('t2', t2_conf['floor'], t2_conf['idf'], t2_conf['domain'])
 
     def _make_t1_dps(self, domain):
         t1_defaults = self._site['tier1']['defaults']
@@ -176,7 +168,7 @@ class TopologyGenerator():
         tier1_ports = self._site['tier2']['tier1_ports']
         for tier1_port in tier1_ports:
             tier2_spec = tier1_ports[tier1_port]
-            if tier2_spec['domain'] is domain:
+            if tier2_spec['domain'] == domain:
                 interfaces.update({
                     tier1_port:self._make_t1_stack_interface(tier2_spec)
                 })
@@ -211,7 +203,7 @@ class TopologyGenerator():
         for t1_port in t1_ports:
             t2_conf = t1_ports[t1_port]
             if t2_conf['domain'] == domain:
-                dp_name = self._get_dp_name('t2', t2_conf['floor'], t2_conf['idf'], domain)
+                dp_name = self._get_t2_dp_name(t2_conf)
                 dps.update({dp_name: self._make_t2_dp(t2_conf, t1_port)})
         return dps
 
@@ -253,14 +245,21 @@ class TopologyGenerator():
     def _get_port_lldp_beacon(self):
         return copy.deepcopy(self._setup['port_lldp_beacon'])
 
-    def _get_dp_name(self, dp_type, floor, idf, domain):
-        site_name = self._site['site_name']
-        return self._setup['dp_name_format'] % (site_name, dp_type, floor, idf, domain)
-
     def _get_ctl_name(self, target):
         site_name = self._site['site_name']
-        format_tuple = (site_name, target['floor'], target['idf'], target['domain'])
-        return self._setup['ctl_name_format'] % format_tuple
+        switch_type = self._setup['naming']['ctl']
+        return site_name + switch_type + target['location'] + target['domain']
+
+    def _get_t1_dp_name(self, domain):
+        site_name = self._site['site_name']
+        switch_type = self._setup['naming']['tier1']
+        t1_conf = self._site['tier1']['domains'][domain]
+        return site_name + switch_type + t1_conf['location'] + domain
+
+    def _get_t2_dp_name(self, t2_conf):
+        site_name = self._site['site_name']
+        switch_type = self._setup['naming']['tier2']
+        return site_name + switch_type + t2_conf['location'] + t2_conf['domain']
 
     def _make_vlans(self):
         return {

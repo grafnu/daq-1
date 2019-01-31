@@ -1,7 +1,10 @@
 {
   'faucet_yaml': '/etc/faucet/faucet.yaml',
-  'dp_name_format': '%s-%ssw%s-%s-%s',
-  'ctl_name_format': '%s-ctl%s-%s-%s',
+  'naming': {
+    'tier1': '-t1sw',
+    'tier2': '-t2sw',
+    'ctl': '-ctl'
+  },
   'device_description': 'IoT Device',
   'vlan': {
     'description': 'Faucet IoT',
