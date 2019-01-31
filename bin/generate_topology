@@ -10,4 +10,11 @@ MININET=$(realpath $ROOT/mininet)
 export PYTHONPATH=$FAUCET:$MININET
 source venv/bin/activate
 
-python3 -u daq/generator.py "$@"
+if [ -n "$DAQ_CODECOV" ]; then
+    echo Running with codecov analysis...
+    runcmd="coverage run --source=daq -a"
+else
+    runcmd="python3 -u"
+fi
+
+$runcmd daq/generator.py "$@"
