@@ -6,12 +6,11 @@ if [ `whoami` != 'root' ]; then
 fi
 
 echo Writing test results to $TEST_RESULTS
-cmdrun="cmd/run codecov"
 
 cp misc/system_base.conf local/system.conf
 
 echo Base tests | tee $TEST_RESULTS
-$cmdrun -s
+cmd/run -s
 more inst/result.log | tee -a $TEST_RESULTS
 
 # Test block for open-port failures.
@@ -20,13 +19,13 @@ more inst/result.log | tee -a $TEST_RESULTS
 
     export DAQ_FAUX_OPTS=telnet
     # Check that an open port causes the appropriate failure.
-    $cmdrun -s
+    cmd/run -s
     more inst/result.log | tee -a $TEST_RESULTS
     cat inst/run-port-01/nodes/nmap01/activate.log
 
     # Except with a default MUD file that blocks the port.
     echo device_specs=misc/device_specs.json >> local/system.conf
-    $cmdrun -s
+    cmd/run -s
     more inst/result.log | tee -a $TEST_RESULTS
     cat inst/run-port-01/nodes/nmap01/activate.log
 )
@@ -34,7 +33,7 @@ more inst/result.log | tee -a $TEST_RESULTS
 # Test an "external" switch.
 echo External switch tests | tee -a $TEST_RESULTS
 cp misc/system_ext.conf local/system.conf
-$cmdrun -s
+cmd/run -s
 more inst/result.log | tee -a $TEST_RESULTS
 fgrep dp_id inst/faucet.yaml | tee -a $TEST_RESULTS
 fgrep time inst/run-port-02/nodes/ping02/activate.log
@@ -58,7 +57,7 @@ cntrlr_xcast="$cntrlr_traffic and ether host 9a:02:57:1e:8f:03"
 
 function test_mud {
     type=$1
-    $cmdrun -s device_specs=misc/device_specs_bacnet_$type.json
+    cmd/run -s device_specs=misc/device_specs_bacnet_$type.json
     echo result $type $(sort inst/result.log) | tee -a $TEST_RESULTS
     bcast=$($device_bcast | wc -l)
     ucast=$($device_ucast | wc -l)
