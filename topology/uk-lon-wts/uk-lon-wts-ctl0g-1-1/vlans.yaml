@@ -1,3 +1,0 @@
-version: 2
-vlans:
-  FAUCET_BOS: {description: Faucet IoT, vid: 323}

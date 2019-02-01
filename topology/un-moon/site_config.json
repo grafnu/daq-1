@@ -1,22 +1,21 @@
 {
-  "site_name": "uk-lon-wts",
+  "site_name": "un-moon",
   "vlan_id": 323,
   "tier1": {
     "defaults": {
       "uplink_port": 16,
-      "device_port": 23,
       "hardware": "GenericTFM"
     },
     "domains": {
       "-1": {
         "dp_id": "0x223d5a07ff",
         "location": "0g-1",
-        "uplink": "uk-lon-wts-agg1:eth1/44"
+        "uplink": "un-moon-agg1:eth1/44"
       },
       "-2": {
         "dp_id": "0x223d5a0829",
         "location": "0g-1",
-        "uplink": "uk-lon-wts-agg2:eth1/44"
+        "uplink": "un-moon-agg2:eth1/44"
       }
     }
   },

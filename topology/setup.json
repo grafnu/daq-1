@@ -8,7 +8,7 @@
   'device_description': 'IoT Device',
   'vlan': {
     'description': 'Faucet IoT',
-    'name': 'FAUCET_BOS'
+    'name': 'Faucet_IoT'
   },
   'gauge': {
     'db_type': 'prometheus',

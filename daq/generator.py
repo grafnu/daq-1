@@ -141,7 +141,6 @@ class TopologyGenerator():
         uplink_port = self._site['tier1']['defaults']['uplink_port']
         interfaces.update({uplink_port: self._make_uplink_interface(t1_conf['uplink'])})
         interfaces.update(self._make_t1_stack_interfaces(domain))
-        interfaces.update(self._make_t1_device_interfaces())
         return interfaces
 
     def _make_uplink_interface(self, uplink):
@@ -150,12 +149,6 @@ class TopologyGenerator():
         interface['name'] = uplink
         interface['tagged_vlans'] = [self._site['vlan_id']]
         return interface
-
-    def _make_t1_device_interfaces(self):
-        device_port = self._site['tier1']['defaults']['device_port']
-        return {
-            device_port: self._make_device_interface()
-        }
 
     def _make_device_interface(self):
         return {

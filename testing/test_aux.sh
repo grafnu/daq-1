@@ -11,11 +11,11 @@ echo Aux Tests > $TEST_RESULTS
 
 echo Generator tests | tee -a $TEST_RESULTS
 rm -rf topology/out
-normalize_base=topology/uk-lon-wts/uk-lon-wts-ctl0g-1-1/
+normalize_base=topology/un-moon/un-moon-ctl0g-1-1/
 bin/generate_topology raw_topo=$normalize_base topo_dir=topology/out/normalized
 diff -r $normalize_base topology/out/normalized | tee -a $TEST_RESULTS
-bin/generate_topology site_config=topology/uk-lon-wts/site_config.json topo_dir=topology/out/generated
-diff -r topology/uk-lon-wts/ topology/out/generated | tee -a $TEST_RESULTS
+bin/generate_topology site_config=topology/un-moon/site_config.json topo_dir=topology/out/generated
+diff -r topology/un-moon/ topology/out/generated | tee -a $TEST_RESULTS
 
 echo mudacl tests | tee -a $TEST_RESULTS
 mudacl/bin/test.sh
