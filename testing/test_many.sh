@@ -2,7 +2,7 @@
 
 source testing/test_preamble.sh
 
-echo Base Many >> $TEST_RESULTS
+echo Many Tests >> $TEST_RESULTS
 
 echo source misc/system.conf > local/system.conf
 
@@ -19,7 +19,7 @@ for iface in 1 2 3 4 5 6 7 8 9; do
 done
 echo intf_names=${ifaces#,} >> local/system.conf
 
-echo DAQ stress test | tee $TEST_RESULTS
+echo DAQ stress test | tee -a $TEST_RESULTS
 cmd/run run_limit=40
 cat inst/result.log
 results=$(fgrep [] inst/result.log | wc -l)
