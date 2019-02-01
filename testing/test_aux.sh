@@ -1,13 +1,8 @@
 #!/bin/bash
 
-if [ `whoami` != 'root' ]; then
-    echo Need to run as root.
-    exit -1
-fi
+source testing/test_preamble.sh
 
-TEST_RESULTS=${TEST_RESULTS:-/tmp/test_results.out}
-echo Results in $TEST_RESULTS
-echo Aux Tests > $TEST_RESULTS
+echo Aux Tests >> $TEST_RESULTS
 
 echo Generator tests | tee -a $TEST_RESULTS
 rm -rf topology/out

@@ -1,11 +1,8 @@
 #!/bin/bash
 
-if [ `whoami` != 'root' ]; then
-    echo Need to run as root.
-    exit -1
-fi
+source testing/test_preamble.sh
 
-echo Writing test results to $TEST_RESULTS
+echo Base Many >> $TEST_RESULTS
 
 echo source misc/system.conf > local/system.conf
 
