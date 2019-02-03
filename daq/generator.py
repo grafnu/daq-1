@@ -83,7 +83,7 @@ class TopologyGenerator():
     def _make_target(self, domain):
         domain_dp = self._site['tier1']['domains'][domain]
         return {
-            'location': domain_dp['location'],
+            'location': domain_dp.get('location', ''),
             'domain': domain
         }
 
@@ -126,12 +126,15 @@ class TopologyGenerator():
         return {
             dp_name: {
                 'dp_id': t1_conf['dp_id'],
+                'combinatorial_port_flood': self._setup['combinatorial_port_flood'],
+                'faucet_dp_mac': self._setup['faucet_dp_mac'],
                 'hardware': t1_defaults['hardware'],
+                'lacp_timeout': self._setup['lacp_timeout'],
                 'lldp_beacon': self._get_switch_lldp_beacon(),
-                'name': dp_name,
                 'interfaces': self._make_t1_dp_interfaces(t1_conf, domain),
                 'stack': {
-                    'priority': 1
+                    'priority': 1,
+                    'upstream_lacp': self._setup['upstream_lacp'],
                 }
             }
         }
@@ -177,6 +180,7 @@ class TopologyGenerator():
         dp_name = self._get_t2_dp_name(tier2_spec)
         return {
             'lldp_beacon': self._get_port_lldp_beacon(),
+            'receive_lldp': self._setup['receive_lldp'],
             'stack': {
                 'dp': dp_name,
                 'port': port
@@ -185,7 +189,6 @@ class TopologyGenerator():
 
     def _make_t2_cross_interface(self):
         return {
-            'lldp_beacon': self._get_port_lldp_beacon(),
             'loop_protect_external': self._setup['loop_protect_external'],
             'tagged_vlans': [self._site['vlan_id']]
         }
@@ -205,11 +208,13 @@ class TopologyGenerator():
         dp_name = self._get_t2_dp_name(t2_conf)
         return {
             'dp_id': t2_conf['dp_id'],
+            'combinatorial_port_flood': self._setup['combinatorial_port_flood'],
+            'faucet_dp_mac': self._setup['faucet_dp_mac'],
             'hardware': t2_defaults['hardware'],
+            'lacp_timeout': self._setup['lacp_timeout'],
             'lldp_beacon': self._get_switch_lldp_beacon(),
             'interface_ranges': self._make_t2_interface_ranges(),
-            'interfaces': self._make_t2_interfaces(t2_conf, t1_port),
-            'name': dp_name,
+            'interfaces': self._make_t2_interfaces(t2_conf, t1_port)
         }
 
     def _make_t2_interface_ranges(self):
@@ -226,6 +231,7 @@ class TopologyGenerator():
         t1_dp_name = self._get_t1_dp_name(t2_conf['domain'])
         return {
             'lldp_beacon': self._get_port_lldp_beacon(),
+            'receive_lldp': self._setup['receive_lldp'],
             'stack': {
                 'dp': t1_dp_name,
                 'port': t1_port
@@ -241,18 +247,18 @@ class TopologyGenerator():
     def _get_ctl_name(self, target):
         site_name = self._site['site_name']
         switch_type = self._setup['naming']['ctl']
-        return site_name + switch_type + target['location'] + target['domain']
+        return site_name + switch_type + target.get('location', '') + target['domain']
 
     def _get_t1_dp_name(self, domain):
         site_name = self._site['site_name']
         switch_type = self._setup['naming']['tier1']
         t1_conf = self._site['tier1']['domains'][domain]
-        return site_name + switch_type + t1_conf['location'] + domain
+        return site_name + switch_type + t1_conf.get('location', '') + domain
 
     def _get_t2_dp_name(self, t2_conf):
         site_name = self._site['site_name']
         switch_type = self._setup['naming']['tier2']
-        return site_name + switch_type + t2_conf['location'] + t2_conf['domain']
+        return site_name + switch_type + t2_conf.get('location', '') + t2_conf['domain']
 
     def _make_vlans(self):
         return {

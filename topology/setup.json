@@ -2,6 +2,7 @@
   'faucet_yaml': '/etc/faucet/faucet.yaml',
   'faucet_dp_mac': '0e:00:00:00:01:01',
   'lacp_timeout': 5,
+  'upstream_lacp': 1,
   'combinatorial_port_flood': true,
   'naming': {
     'tier1': '-t1sw',
@@ -24,6 +25,7 @@
       'type': 'prometheus'
     }
   },
+  'receive_lldp': true,
   'switch_lldp_beacon': {
     'max_per_interval': 5,
     'send_interval': 5
