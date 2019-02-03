@@ -1,6 +1,14 @@
 {
   "site_name": "nz-kiwi",
   "vlan_id": 100,
+  "uplink_ports": {
+    1: {
+      "native_vlan": 100
+    },
+    2: {
+      "native_vlan": 100
+    }
+  },
   "tier1": {
     "defaults": {
       "hardware": "Generic",
@@ -8,12 +16,10 @@
     },
     "domains": {
       "1": {
-        "dp_id": "0x223d5a07ff",
-        "uplink": "un-moon-agg1:eth1/44"
+        "dp_id": "0x223d5a07ff"
       },
       "2": {
-        "dp_id": "0x223d5a0829",
-        "uplink": "un-moon-agg2:eth1/44"
+        "dp_id": "0x223d5a0829"
       }
     }
   },
