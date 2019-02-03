@@ -127,7 +127,7 @@ class TopologyGenerator():
             dp_name: {
                 'dp_id': t1_conf['dp_id'],
                 'combinatorial_port_flood': self._setup['combinatorial_port_flood'],
-                'faucet_dp_mac': self._setup['faucet_dp_mac'],
+                'faucet_dp_mac': self._make_faucet_dp_mac(domain, 1),
                 'hardware': t1_defaults['hardware'],
                 'lacp_timeout': self._setup['lacp_timeout'],
                 'lldp_beacon': self._get_switch_lldp_beacon(),
@@ -138,6 +138,9 @@ class TopologyGenerator():
                 }
             }
         }
+
+    def _make_faucet_dp_mac(self, domain, tier):
+        return self._setup['faucet_dp_mac_format'] % (int(domain), tier)
 
     def _make_t1_dp_interfaces(self, t1_conf, domain):
         interfaces = {}
@@ -209,7 +212,7 @@ class TopologyGenerator():
         return {
             'dp_id': t2_conf['dp_id'],
             'combinatorial_port_flood': self._setup['combinatorial_port_flood'],
-            'faucet_dp_mac': self._setup['faucet_dp_mac'],
+            'faucet_dp_mac': self._make_faucet_dp_mac(t2_conf['domain'], 2),
             'hardware': t2_defaults['hardware'],
             'lacp_timeout': self._setup['lacp_timeout'],
             'lldp_beacon': self._get_switch_lldp_beacon(),

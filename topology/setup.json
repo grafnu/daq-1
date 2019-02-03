@@ -1,6 +1,6 @@
 {
   'faucet_yaml': '/etc/faucet/faucet.yaml',
-  'faucet_dp_mac': '0e:00:00:00:01:01',
+  'faucet_dp_mac_format': '0e:00:00:00:%02x:%02x',
   'lacp_timeout': 5,
   'upstream_lacp': 1,
   'combinatorial_port_flood': true,
