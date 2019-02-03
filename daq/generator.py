@@ -120,7 +120,6 @@ class TopologyGenerator():
         return t1_dp_names + t2_dp_names
 
     def _make_t1_dps(self, domain):
-        t1_defaults = self._site['tier1']['defaults']
         t1_conf = self._site['tier1']['domains'][domain]
         dp_name = self._get_t1_dp_name(domain)
         return {
@@ -128,7 +127,7 @@ class TopologyGenerator():
                 'dp_id': t1_conf['dp_id'],
                 'combinatorial_port_flood': self._setup['combinatorial_port_flood'],
                 'faucet_dp_mac': self._make_faucet_dp_mac(domain, 1),
-                'hardware': t1_defaults['hardware'],
+                'hardware': self._site['tier1']['defaults']['hardware'],
                 'lacp_timeout': self._setup['lacp_timeout'],
                 'lldp_beacon': self._get_switch_lldp_beacon(),
                 'interfaces': self._make_t1_dp_interfaces(t1_conf, domain),
@@ -144,17 +143,15 @@ class TopologyGenerator():
 
     def _make_t1_dp_interfaces(self, t1_conf, domain):
         interfaces = {}
-        for uplink_port in self._site['uplink_ports']:
-            interfaces.update({
-                uplink_port: self._make_uplink_interface(self._site['uplink_ports'][uplink_port])
-            })
+        for uplink_port in self._site['tier1']['uplink_ports']:
+            interfaces.update({uplink_port: self._make_uplink_interface()})
         interfaces.update(self._make_t1_stack_interfaces(domain))
         return interfaces
 
-    def _make_uplink_interface(self, uplink):
+    def _make_uplink_interface(self):
         interface = {}
         interface.update(self._setup['uplink_iface'])
-        interface.update(uplink)
+        interface.update(self._site['tier1']['uplink_port'])
         return interface
 
     def _make_device_interface(self):
