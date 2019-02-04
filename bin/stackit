@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+#no_bond=y
+
 #############################################################
 
 function add_br {
@@ -62,6 +64,7 @@ cmd/faucet nz-kiwi-ctl2 6663
 add_br corp 1
 sudo ovs-vsctl set-fail-mode corp standalone
 sudo ovs-vsctl set bridge corp stp_enable=true
+sudo ifconfig corp 192.168.0.254/16 up
 
 add_br t1sw1 147058198527 6653
 add_br t2sw1 246406202821729 6653
@@ -80,13 +83,18 @@ add_link t1sw2 23 t2sw1 6
 
 ip link | fgrep corp-eth
 
-sudo ovs-vsctl del-port corp-eth10
-sudo ovs-vsctl del-port corp-eth11
-sudo ovs-vsctl del-port corp-eth20
-sudo ovs-vsctl del-port corp-eth21
-sudo ovs-vsctl add-bond corp bond1 corp-eth10 corp-eth11 lacp=active
-sudo ovs-vsctl add-bond corp bond2 corp-eth20 corp-eth21 lacp=active
-echo Set up bond1 and bond2
+if [ -n "$no_bond" ]; then
+    sudo ovs-vsctl del-port corp-eth11
+    sudo ovs-vsctl del-port corp-eth21
+else
+    sudo ovs-vsctl del-port corp-eth10
+    sudo ovs-vsctl del-port corp-eth11
+    sudo ovs-vsctl del-port corp-eth20
+    sudo ovs-vsctl del-port corp-eth21
+    sudo ovs-vsctl add-bond corp bond1 corp-eth10 corp-eth11 lacp=active
+    sudo ovs-vsctl add-bond corp bond2 corp-eth20 corp-eth21 lacp=active
+    echo Set up bond1 and bond2
+fi
 
 add_iface t2sw1 1 faux-1
 add_iface t2sw2 1 faux-2
