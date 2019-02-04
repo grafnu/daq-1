@@ -1,0 +1,73 @@
+#!/bin/bash -e
+
+#############################################################
+
+function add_br {
+    bname=$1
+    dpid=$(printf %016x $2)
+    port=$3
+    sudo ovs-vsctl --if-exists del-br $bname \
+         -- add-br $bname \
+         -- set bridge $bname other_config:datapath-id=$dpid
+
+    if [ -n "$port" ]; then
+        sudo ovs-vsctl set-controller $bname tcp:127.0.0.1:$port
+    fi
+    
+    echo Added $bname 0x$dpid on $port
+}
+
+function add_link {
+    br_a=$1
+    pt_a=$2
+    br_b=$3
+    pt_b=$4
+
+    iface_a=$br_a-eth$pt_a
+    iface_b=$br_b-eth$pt_b
+
+    sudo ip link del $iface_a || true
+    sudo ip link del $iface_b || true
+    sudo ip link add $iface_a type veth peer name $iface_b
+    sudo ifconfig $iface_a up
+    sudo ifconfig $iface_b up
+    sudo ovs-vsctl add-port $br_a $iface_a -- set interface $iface_a ofport_request=$pt_a
+    sudo ovs-vsctl add-port $br_b $iface_b -- set interface $iface_b ofport_request=$pt_b
+    echo Added $iface_a linked $iface_b
+}
+
+function add_iface {
+    br=$1
+    pt=$2
+    iface=$3
+    sudo ovs-vsctl add-port $br $iface -- set interface $iface ofport_request=$pt
+}
+
+###########################################################
+
+rm -rf inst/faucet
+
+bin/generate_topology site_config=topology/nz-kiwi/site_config.json topo_dir=inst/faucet/
+
+cmd/faucet nz-kiwi-ctl1 6653
+cmd/faucet nz-kiwi-ctl2 6663
+
+add_br corp 1
+add_br t1sw1 147058198527 6653
+add_br t2sw1 246406202821729 6653
+add_br t1sw2 147058198569 6663
+add_br t2sw2 115621717294 6663
+
+add_link t1sw1 1 corp 1
+add_link t1sw1 2 corp 2
+add_link t1sw1 22 t2sw1 6
+add_link t1sw1 23 t2sw1 7
+add_link t1sw2 1 corp 1
+add_link t1sw2 2 corp 2
+add_link t1sw2 22 t2sw2 6
+add_link t1sw2 23 t2sw2 7
+
+cmd/faux 1
+cmd/faux 2
+add_iface t2sw1 1 faux-1
+add_iface t2sw2 1 faux-2
