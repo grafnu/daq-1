@@ -43,11 +43,42 @@ function add_iface {
     sudo ovs-vsctl add-port $br $iface -- set interface $iface ofport_request=$pt
 }
 
+function add_oeth {
+    br_a=$1
+    pt_a=$2
+    iface_a=$br_a-eth$pt_a
+    iface_b=$3
+
+    sudo ip link del $iface_a || true
+    sudo ip link del $iface_b || true
+    sudo ip link add $iface_a type veth peer name $iface_b
+    sudo ifconfig $iface_a up
+    sudo ifconfig $iface_b up
+    sudo ovs-vsctl add-port $br_a $iface_a -- set interface $iface_a ofport_request=$pt_a
+    echo Added $iface_a linked $iface_b
+}
+
+function add_ovsbondbr {
+    iface=$1
+    sudo ovs-vsctl del-br ovsbondbr || true
+    sudo ovs-vsctl add-br ovsbondbr
+    sudo ovs-vsctl set-fail-mode ovsbondbr standalone
+    sudo ovs-vsctl set bridge ovsbondbr stp_enable=true
+    sudo ovs-vsctl add-bond ovsbondbr x510 enx0023565c8859 enx0023547c5665 lacp=active
+    sudo ovs-vsctl add-bond ovsbondbr x930 enp2s0f0 enp2s0f1 lacp=active
+    sudo ifconfig ovsbondbr 10.99.0.254/24 up
+    sudo ovs-vsctl add-port ovsbondbr $iface
+}
+
 ###########################################################
 
 rm -rf inst/faucet
+mkdir -p inst/faucet/nz-kiwi-ctl1
+mkdir -p inst/faucet/nz-kiwi-ctl2
 
-bin/generate_topology site_config=topology/nz-kiwi/site_config.json topo_dir=inst/faucet/
+#bin/generate_topology site_config=topology/nz-kiwi/site_config.json topo_dir=inst/faucet/
+cp faucet/etc/faucet/faucet-s1.yaml inst/faucet/nz-kiwi-ctl1/faucet.yaml
+cp faucet/etc/faucet/faucet-s2.yaml inst/faucet/nz-kiwi-ctl2/faucet.yaml
 
 cmd/faux 1
 cmd/faux 2
@@ -59,31 +90,39 @@ docker exec -ti daq-faux-3 ifconfig faux-eth0 192.168.0.3/16
 cmd/faucet nz-kiwi-ctl1 6653
 cmd/faucet nz-kiwi-ctl2 6663
 
-sudo ovs-vsctl --if-exists del-br corp -- add-br corp
-sudo ovs-vsctl set-fail-mode corp standalone
-sudo ovs-vsctl set bridge corp stp_enable=true
-sudo ifconfig corp 192.168.0.254/16 up
-sudo ovs-vsctl add-bond corp bond1 corp-eth10 corp-eth11 lacp=active
-sudo ovs-vsctl add-bond corp bond2 corp-eth20 corp-eth21 lacp=active
-echo Created bonded interface corp
+#sudo ovs-vsctl --if-exists del-br corp -- add-br corp
+#sudo ovs-vsctl set-fail-mode corp standalone
+#sudo ovs-vsctl set bridge corp stp_enable=true
+#sudo ifconfig corp 192.168.0.254/16 up
+#sudo ovs-vsctl add-bond corp bond1 corp-eth10 corp-eth11 lacp=active
+#sudo ovs-vsctl add-bond corp bond2 corp-eth20 corp-eth21 lacp=active
+#echo Created bonded interface corp
 
-add_br t1sw1 147058198527 6653
-add_br t2sw1 246406202821729 6653
-add_br t1sw2 147058198569 6663
-add_br t2sw2 115621717294 6663
+add_ovsbondbr faux-3
 
-add_link t1sw1 1 corp 10
-add_link t1sw1 2 corp 11
+add_br t1sw1 0x510 6653 # 147058198527 6653
+add_br t2sw1 0x0b1 6653 # 246406202821729 6653
+add_br t1sw2 0x930 6663 # 147058198569 6663
+add_br t2sw2 0x0b2 6663 # 115621717294 6663
+
+#add_link t1sw1 1 corp 10
+#add_link t1sw1 2 corp 11
+add_oeth t1sw1 1 enx0023565c8859
+add_oeth t1sw1 2 enx0023547c5665
+
 add_link t1sw1 22 t2sw2 7
 add_link t1sw1 23 t2sw1 7
 
-add_link t1sw2 1 corp 20
-add_link t1sw2 2 corp 21
+#add_link t1sw2 1 corp 20
+#add_link t1sw2 2 corp 21
+add_oeth t1sw2 1 enp2s0f0
+add_oeth t1sw2 2 enp2s0f1
+
 add_link t1sw2 22 t2sw2 6
 add_link t1sw2 23 t2sw1 6
 
-ip link | fgrep corp-eth
-
 add_iface t2sw1 1 faux-1
 add_iface t2sw2 1 faux-2
-add_iface corp 1 faux-3
+#add_iface corp 1 faux-3
+
+echo Done with stack setup.
