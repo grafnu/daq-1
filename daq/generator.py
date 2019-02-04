@@ -54,10 +54,8 @@ class TopologyGenerator():
         self._site = self._load_config(site_config)
         for domain in self._get_all_domains():
             target = self._make_target(domain)
-            self._write_config(target, 'faucet.yaml', self._make_faucet())
+            self._write_config(target, 'faucet.yaml', self._make_faucet(domain))
             self._write_config(target, 'gauge.yaml', self._make_gauge(domain))
-            self._write_config(target, 'dps.yaml', self._make_dps(domain))
-            self._write_config(target, 'vlans.yaml', self._make_vlans())
 
     def _load_config(self, path):
         LOGGER.info('Loading %s', path)
@@ -87,9 +85,10 @@ class TopologyGenerator():
             'domain': domain
         }
 
-    def _make_faucet(self):
+    def _make_faucet(self, domain):
         return {
-            'include': ['vlans.yaml', 'dps.yaml'],
+            'vlans': self._make_vlans(),
+            'dps': self._make_dps(domain),
             'version': 2
         }
 
@@ -263,21 +262,14 @@ class TopologyGenerator():
 
     def _make_vlans(self):
         return {
-            'version': 2,
-            'vlans': {
-                self._setup['vlan']['name']: {
-                    'description': self._setup['vlan']['description'],
-                    'vid': self._site['vlan_id']
-                }
+            self._setup['vlan']['name']: {
+                'description': self._setup['vlan']['description'],
+                'vid': self._site['vlan_id']
             }
         }
 
     def _make_dps(self, domain):
-        return {
-            'version': 2,
-            'dps': {**self._make_t1_dps(domain), **self._make_t2_dps(domain)}
-        }
-
+        return {**self._make_t1_dps(domain), **self._make_t2_dps(domain)}
 
 
 if __name__ == '__main__':
