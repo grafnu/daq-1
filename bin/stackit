@@ -1,7 +1,5 @@
 #!/bin/bash -e
 
-#no_bond=y
-
 #############################################################
 
 function add_br {
@@ -34,7 +32,7 @@ function add_link {
     sudo ifconfig $iface_a up
     sudo ifconfig $iface_b up
     sudo ovs-vsctl add-port $br_a $iface_a -- set interface $iface_a ofport_request=$pt_a
-    sudo ovs-vsctl add-port $br_b $iface_b -- set interface $iface_b ofport_request=$pt_b
+    sudo ovs-vsctl add-port $br_b $iface_b -- set interface $iface_b ofport_request=$pt_b || true
     echo Added $iface_a linked $iface_b
 }
 
@@ -61,10 +59,13 @@ docker exec -ti daq-faux-3 ifconfig faux-eth0 192.168.0.3/16
 cmd/faucet nz-kiwi-ctl1 6653
 cmd/faucet nz-kiwi-ctl2 6663
 
-add_br corp 1
+sudo ovs-vsctl --if-exists del-br corp -- add-br corp
 sudo ovs-vsctl set-fail-mode corp standalone
 sudo ovs-vsctl set bridge corp stp_enable=true
 sudo ifconfig corp 192.168.0.254/16 up
+sudo ovs-vsctl add-bond corp bond1 corp-eth10 corp-eth11 lacp=active
+sudo ovs-vsctl add-bond corp bond2 corp-eth20 corp-eth21 lacp=active
+echo Created bonded interface corp
 
 add_br t1sw1 147058198527 6653
 add_br t2sw1 246406202821729 6653
@@ -82,19 +83,6 @@ add_link t1sw2 22 t2sw2 6
 add_link t1sw2 23 t2sw1 6
 
 ip link | fgrep corp-eth
-
-if [ -n "$no_bond" ]; then
-    sudo ovs-vsctl del-port corp-eth11
-    sudo ovs-vsctl del-port corp-eth21
-else
-    sudo ovs-vsctl del-port corp-eth10
-    sudo ovs-vsctl del-port corp-eth11
-    sudo ovs-vsctl del-port corp-eth20
-    sudo ovs-vsctl del-port corp-eth21
-    sudo ovs-vsctl add-bond corp bond1 corp-eth10 corp-eth11 lacp=active
-    sudo ovs-vsctl add-bond corp bond2 corp-eth20 corp-eth21 lacp=active
-    echo Set up bond1 and bond2
-fi
 
 add_iface t2sw1 1 faux-1
 add_iface t2sw2 1 faux-2
