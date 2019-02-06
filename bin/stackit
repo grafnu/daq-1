@@ -100,8 +100,8 @@ add_br t2sw1 246406202821729 6653 # 0x0b1 6653
 add_br t1sw2 147058198569 6663 # 0x930 6663
 add_br t2sw2 115621717294 6663 # 0x0b2 6663
 add_br corp  0x111 6673
-sudo ovs-vsctl set-fail-mode corp standalone
-sudo ovs-vsctl set bridge corp stp_enable=true
+#sudo ovs-vsctl set-fail-mode corp standalone
+#sudo ovs-vsctl set bridge corp stp_enable=true
 
 #sudo ovs-vsctl --if-exists del-br corp -- add-br corp
 #sudo ovs-vsctl set-fail-mode corp standalone
@@ -151,7 +151,7 @@ sudo ip link set corp-eth20 master bond2
 sudo ip link set corp-eth21 master bond2
 sudo ip link set up dev corp-eth20
 sudo ip link set up dev corp-eth21
-sudo ovs-vsctl add-port corp bond2 -- set interface bond2 ofport_request=20
+#sudo ovs-vsctl add-port corp bond2 -- set interface bond2 ofport_request=20
 
 add_iface t2sw1 1 faux-1
 add_iface t2sw2 1 faux-2
