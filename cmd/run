@@ -21,13 +21,13 @@ if [ -z "$run_mode" ]; then
     false
 fi
 
-mkdir -p local && (test -f local/build_hash || touch local/build_hash)
+test -f .build_hash || touch .build_hash
 build_hash=$(bin/build_hash.sh)
-local_hash=$(< local/build_hash)
+local_hash=$(< .build_hash)
 if [ "$build_hash" != "$local_hash" ]; then
     echo Local build hash does not match, or not found.
     echo Please run cmd/build, or if you know what you\'re doing:
-    echo echo $build_hash \> local/build_hash
+    echo echo $build_hash \> .build_hash
     false
 fi
 

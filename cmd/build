@@ -162,6 +162,5 @@ if [ "$do_images" == load ]; then
     touch $load_mark
 fi
 
-echo Updating local/build_hash...
-mkdir -p local
-bin/build_hash.sh > local/build_hash
+echo Updating .build_hash
+bin/build_hash.sh > .build_hash
