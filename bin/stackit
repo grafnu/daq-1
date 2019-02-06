@@ -71,6 +71,8 @@ function add_ovsbondbr {
 
 ###########################################################
 
+sudo modprobe bonding
+
 rm -rf inst/faucet
 mkdir -p inst/faucet/nz-kiwi-ctl1
 mkdir -p inst/faucet/nz-kiwi-ctl2
