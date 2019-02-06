@@ -21,6 +21,16 @@ if [ -z "$run_mode" ]; then
     false
 fi
 
+mkdir -p local && (test -f local/build_hash || touch local/build_hash)
+build_hash=$(bin/build_hash.sh)
+local_hash=$(< local/build_hash)
+if [ "$build_hash" != "$local_hash" ]; then
+    echo Local build hash does not match, or not found.
+    echo Please run cmd/build, or if you know what you\'re doing:
+    echo echo $build_hash \> local/build_hash
+    false
+fi
+
 echo Starting `date`, run_mode is $run_mode
 echo Clearing previous reports...
 sudo rm -rf inst/report_*.txt inst/run-port-*
