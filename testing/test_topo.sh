@@ -8,7 +8,8 @@ echo Topology Tests >> $TEST_RESULTS
 function generate_system {
   echo source misc/system.conf > local/system.conf
 
-  faux_num=$1
+  type=$1
+  faux_num=$2
 
   topostartup=inst/startup_topo.cmd
   rm -f $topostartup
@@ -25,46 +26,45 @@ function generate_system {
 
   # Specify a different set of tests
   echo host_tests=misc/topo_tests.conf >> local/system.conf
+
+  echo site_description=\"$type with $devices devices\" >> local/system.conf
+  echo device_specs=misc/device_specs_topo_$type.json >> local/system.conf
 }
 
 echo DAQ topologies test | tee -a $TEST_RESULTS
 
-minimal_device_traffic="tcpdump -en -r inst/run-port-01/scans/monitor.pcap port 47808"
-minimal_device_bcast="$minimal_device_traffic and ether broadcast"
-minimal_device_ucast="$minimal_device_traffic and ether dst 9a:02:57:1e:8f:02"
-minimal_device_xcast="$minimal_device_traffic and ether host 9a:02:57:1e:8f:03"
-minimal_cntrlr_traffic="tcpdump -en -r inst/run-port-02/scans/monitor.pcap port 47808"
-minimal_cntrlr_bcast="$minimal_cntrlr_traffic and ether broadcast"
-minimal_cntrlr_ucast="$minimal_cntrlr_traffic and ether dst 9a:02:57:1e:8f:01"
-minimal_cntrlr_xcast="$minimal_cntrlr_traffic and ether host 9a:02:57:1e:8f:03"
+MAC_BASE=9a:02:57:1e:8f
+
+function check_bacnet {
+    at_dev=$(printf %02d $1)
+    src_dev=$(printf %02x $2)
+    tcp_base="tcpdump -en -r inst/run-port-$at_dev/scans/monitor.pcap port 47808"
+
+    src_mac=$MAC_BASE:$src_dev
+
+    bcast_any=`$tcp_base and ether broadcast | wc -l`
+    bcast_from=`$tcp_base and ether broadcast and ether src $src_mac | wc -l`
+    ucast_from=`$tcp_base and ether src $src_mac | wc -l`
+    ucast_other=`$tcp_base and not ether src $src_mac | wc -l`
+
+    echo bacnet $at_dev/$src_dev $((bcast_any > 0)) $((bcast_from > 0)) $((ucast_from > 0)) $((ucast_other > 0)) | tee -a $TEST_RESULTS
+}
 
 function run_topo {
     type=$1
     devices=$2
 
-    generate_system $devices
-    cmd/run -s site_description=$type device_specs=misc/device_specs_topo_$type.json
+    # Clean out in case there's an error
+    rm -rf inst/run-port-*
+
+    echo Running $type $devices | tee -a $TEST_RESULTS
+    generate_system $type $devices
+    cmd/run -s
 }
 
-
-    
-    # For reference, faux devices MAC addresses are in the form 9a:02:57:1e:8f:XX
-#    bcast=$(eval echo \$$type\_device_bcast | wc -l)
-#    ucast=$(eval echo \$$type\_device_ucast | wc -l)
-#    xcast=$(eval echo \$$type\_device_xcast | wc -l)
-#    echo device $type $(($bcast > 2)) $(($ucast > 2)) $(($xcast > 0)) | tee -a $TEST_RESULTS
-#    bcast=$(eval echo \$$type\_cntrlr_bcast | wc -l)
-#    ucast=$(eval echo \$$type\_cntrlr_ucast | wc -l)
-#    xcast=$(eval echo \$$type\_cntrlr_xcast | wc -l)
-#    echo cntrlr $type $(($bcast > 2)) $(($ucast > 2)) $(($xcast > 0)) | tee -a $TEST_RESULTS
-#}
-
-# Run tests. The first option is the name of the test, the second one is the number of devices
-#test_topo one 1
 run_topo minimal 3
-#test_topo minimal_commissioning 4
-#test_topo complete 6
-#test_topo headend 11
-#test_topo two_groups 11
+check_bacnet 1 2
+check_bacnet 2 3
+check_bacnet 3 1
 
 echo Done with tests | tee -a $TEST_RESULTS
