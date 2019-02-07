@@ -22,6 +22,7 @@ function generate_system {
       echo autostart cmd/faux $iface discover >> $topostartup
   done
   echo intf_names=${iface_names#,} >> local/system.conf
+
   # Specify a different set of tests
   echo host_tests=misc/topo_tests.conf >> local/system.conf
 }
