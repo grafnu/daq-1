@@ -4,6 +4,8 @@ source testing/test_preamble.sh
 
 echo Topology Tests >> $TEST_RESULTS
 
+bacnet_file=/tmp/bacnet_result.txt
+
 # Create system.conf and startup file for arbitrary number of faux virtual devices.
 function generate {
   echo source misc/system.conf > local/system.conf
@@ -53,21 +55,25 @@ function check_bacnet {
     cmd_file=$conf_dir/ping_runtime.sh
 
     tcp_base="tcpdump -en -r eth0.pcap port 47808"
-    out_file=/tmp/bacnet_result.txt
+
+    if [ ! -f $conf_dir/.test_bacnet ]; then
+        touch $conf_dir/.test_bacnet
+        cat >> $cmd_file <<EOF
+timeout 20 tcpdump -eni \$HOSTNAME-eth0 -w eth0.pcap || true
+function testit {
+    echo -n \$((\$($tcp_base and \$@ | wc -l ) > 0)) \ >> $bacnet_file
+}
+
+EOF
+    fi
 
     cat >> $cmd_file <<EOF
-    test -f eth0.pcap || timeout 20 tcpdump -eni \$HOSTNAME-eth0 -w eth0.pcap || true
-
-    function testit {
-       echo -n \$((\$($tcp_base and \$@ | wc -l ) > 0)) \ >> $out_file
-    }
-
-    echo -n bacnet $at_dev $ex_dev \ >> $out_file
-    testit ether dst $ex_mac
-    testit not ether src $at_mac and not ether dst $at_mac
-    testit ether broadcast and ether src $at_mac
-    testit ether broadcast and not ether src $at_mac
-    echo >> $out_file
+echo -n bacnet $at_dev $ex_dev \ >> $bacnet_file
+testit ether dst $ex_mac
+testit not ether src $at_mac and not ether dst $at_mac
+testit ether broadcast and ether src $at_mac
+testit ether broadcast and not ether src $at_mac
+echo >> $bacnet_file
 EOF
 }
 
@@ -86,7 +92,7 @@ function check_tcp {
 function run_test {
     cmd/run -s
     more inst/run-port-*/nodes/ping*/tmp/nc_result.txt | tee -a $TEST_RESULTS
-    more inst/run-port-*/nodes/ping*/tmp/bacnet_result.txt | tee -a $TEST_RESULTS
+    more inst/run-port-*/nodes/ping*${bacnet_file} | tee -a $TEST_RESULTS
 }
 
 generate open 3
