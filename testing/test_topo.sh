@@ -24,6 +24,7 @@ function generate {
   echo sec_port=$((faux_num+1)) >> local/system.conf
 
   # Create required number of faux devices
+  iface_names=
   for iface in $(seq 1 $faux_num); do
       iface_names=${iface_names},faux-$iface
       echo autostart cmd/faux $iface discover telnet >> $topostartup
@@ -57,17 +58,16 @@ function check_bacnet {
     cat >> $cmd_file <<EOF
     test -f eth0.pcap || timeout 20 tcpdump -eni \$HOSTNAME-eth0 -w eth0.pcap || true
 
-    echo -n ucast_to $ex_dev \ >> $out_file
-    $tcp_base and ether dst $ex_mac | wc -l >> $out_file
+    function testit {
+       echo -n \$((\$($tcp_base and \$@ | wc -l ) > 0)) \ >> $out_file
+    }
 
-    echo -n ucast_other \ >> $out_file
-    $tcp_base and not ether src $at_mac and not ether dst $at_mac | wc -l >> $out_file
-
-    echo -n bcast_out \ >> $out_file
-    $tcp_base and ether broadcast and ether src $at_mac | wc -l >> $out_file
-
-    echo -n bcast_in \ >> $out_file
-    $tcp_base and ether broadcast and not ether src $at_mac | wc -l >> $out_file
+    echo -n bacnet $at_dev $ex_dev \ >> $out_file
+    testit ether dst $ex_mac
+    testit not ether src $at_mac and not ether dst $at_mac
+    testit ether broadcast and ether src $at_mac
+    testit ether broadcast and not ether src $at_mac
+    echo >> $out_file
 EOF
 }
 
