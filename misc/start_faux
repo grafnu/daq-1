@@ -35,6 +35,12 @@ else
     echo Running dhclient...
     dhclient -v
     ip addr show faux-eth0
+
+    # dhclient relies on systemd to update resolve.conf -- but this setup does
+    # not use systemd, so get all hacky and update manually.
+    dhcp_dns=$(fgrep DNS= /run/systemd/resolved.conf.d/isc-dhcp-v4-faux-eth0.conf)
+    echo Updating resolve.conf with $dhcp_dns
+    echo nameserver ${dhcp_dns#DNS=} > /etc/resolve.conf
 fi
 
 # Pick the one not-lo inet v4 address.
