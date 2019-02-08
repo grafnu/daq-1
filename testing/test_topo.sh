@@ -70,6 +70,13 @@ function check_tcp {
     echo "nc $to_host $port >> /tmp/nc_result.txt" >> inst/runtime_conf/$from_port/ping_runtime.sh
 }
 
+generate open 3
+check_tcp 1 2 23
+cmd/run -s
+check_bacnet 1 2
+check_bacnet 2 3
+check_bacnet 3 1
+
 generate minimal 3
 check_tcp 1 2 23
 cmd/run -s
