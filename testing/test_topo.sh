@@ -5,11 +5,16 @@ source testing/test_preamble.sh
 echo Topology Tests >> $TEST_RESULTS
 
 # Create system.conf and startup file for arbitrary number of faux virtual devices.
-function generate_system {
+function generate {
   echo source misc/system.conf > local/system.conf
 
   type=$1
   faux_num=$2
+
+  echo Running $type $faux_num | tee -a $TEST_RESULTS
+
+  # Clean out in case there's an error
+  rm -rf inst/run-port-*
 
   topostartup=inst/startup_topo.cmd
   rm -f $topostartup
@@ -20,7 +25,7 @@ function generate_system {
   # Create required number of faux devices
   for iface in $(seq 1 $faux_num); do
       iface_names=${iface_names},faux-$iface
-      echo autostart cmd/faux $iface discover >> $topostartup
+      echo autostart cmd/faux $iface discover telnet >> $topostartup
   done
   echo intf_names=${iface_names#,} >> local/system.conf
 
@@ -52,19 +57,8 @@ function check_bacnet {
     echo bacnet $at_dev/$ex_dev $((ucast_to > 0)) $((ucast_cross > 0)) $((bcast_out > 0)) | tee -a $TEST_RESULTS
 }
 
-function run_topo {
-    type=$1
-    devices=$2
-
-    # Clean out in case there's an error
-    rm -rf inst/run-port-*
-
-    echo Running $type $devices | tee -a $TEST_RESULTS
-    generate_system $type $devices
-    cmd/run -s
-}
-
-run_topo minimal 3
+generate minimal 3
+cmd/run -s
 check_bacnet 1 2
 check_bacnet 2 3
 check_bacnet 3 1
