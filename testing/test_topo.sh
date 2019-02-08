@@ -31,8 +31,6 @@ function generate_system {
   echo device_specs=misc/device_specs_topo_$type.json >> local/system.conf
 }
 
-echo DAQ topologies test | tee -a $TEST_RESULTS
-
 MAC_BASE=9a:02:57:1e:8f
 
 function check_bacnet {
