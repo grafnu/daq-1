@@ -67,23 +67,26 @@ function check_tcp {
 
     conf_dir=inst/runtime_conf/port-$(printf %02d $from_dev)
     mkdir -p $conf_dir
-    echo "timeout 10 nc $to_host $port 2>&1 >> /tmp/nc_result.txt" >> $conf_dir/ping_runtime.sh
+    echo "timeout 10 nc $to_host $port 2>&1 || echo Fail $to_host:$port >> /tmp/nc_result.txt" >> $conf_dir/ping_runtime.sh
+}
+
+function run_test {
+    cmd/run -s
+    more inst/run-port-*/nodes/ping*/tmp/nc_result.txt
 }
 
 generate open 3
 check_tcp 1 2 23
-cmd/run -s
+run_test
 check_bacnet 1 2
 check_bacnet 2 3
 check_bacnet 3 1
-more inst/run-port-*/nodes/ping*/tmp/nc_result.txt
 
 generate minimal 3
 check_tcp 1 2 23
-cmd/run -s
+run_test
 check_bacnet 1 2
 check_bacnet 2 3
 check_bacnet 3 1
-more inst/run-port-*/nodes/ping*/tmp/nc_result.txt
 
 echo Done with tests | tee -a $TEST_RESULTS
