@@ -37,17 +37,21 @@ MAC_BASE=9a:02:57:1e:8f
 
 function check_bacnet {
     at_dev=$(printf %02d $1)
-    src_dev=$(printf %02x $2)
+    ex_dev=$(printf %02d $2)
+
+    at_mac=$MAC_BASE:$(printf %02x $at_dev)
+    ex_mac=$MAC_BASE:$(printf %02x $ex_dev)
+
     tcp_base="tcpdump -en -r inst/run-port-$at_dev/scans/monitor.pcap port 47808"
 
-    src_mac=$MAC_BASE:$src_dev
+    ucast_to=`$tcp_base and ether dst $ex_mac | wc -l`
+    ucast_cross=`$tcp_base and not ether src $at_mac and not ether dst $at_mac | wc -l`
+    bcast_out=`$tcp_base and ether broadcast and ether src $at_mac | wc -l`
 
-    bcast_any=`$tcp_base and ether broadcast | wc -l`
-    bcast_from=`$tcp_base and ether broadcast and ether src $src_mac | wc -l`
-    ucast_from=`$tcp_base and ether src $src_mac | wc -l`
-    ucast_other=`$tcp_base and not ether src $src_mac | wc -l`
+    # Monitoring is currently broken, so only captures outgoing packets, so this doesn't work.
+    bcast_from=`$tcp_base and ether broadcast and ether src $ex_mac | wc -l`
 
-    echo bacnet $at_dev/$src_dev $((bcast_any > 0)) $((bcast_from > 0)) $((ucast_from > 0)) $((ucast_other > 0)) | tee -a $TEST_RESULTS
+    echo bacnet $at_dev/$ex_dev $((ucast_to > 0)) $((ucast_cross > 0)) $((bcast_out > 0)) | tee -a $TEST_RESULTS
 }
 
 function run_topo {
