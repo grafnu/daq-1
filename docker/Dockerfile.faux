@@ -31,4 +31,7 @@ COPY subset/pentests/brute_server.py pentests/
 COPY misc/start_faux bin/
 COPY misc/bacnet_discover bin/
 
-ENTRYPOINT ["bin/start_faux"]
+COPY misc/faux.service /etc/systemd/system/
+RUN systemctl enable faux
+
+ENTRYPOINT ["/bin/systemd"]

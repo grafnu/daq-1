@@ -16,7 +16,7 @@ echo monitor_scan_sec=0 >> local/system.conf
 echo sec_port=$((NUM_DEVICES+1)) >> local/system.conf
 
 ifaces=
-for iface in $(sec 1 $NUM_DEVICES); do
+for iface in $(seq 1 $NUM_DEVICES); do
     ifaces=${ifaces},faux-$iface
     echo autostart cmd/faux $iface >> $manystartup
 done
