@@ -72,7 +72,7 @@ function check_tcp {
 
 generate minimal 3
 check_tcp 1 2 23
-cmd/run -s -k
+cmd/run -s
 check_bacnet 1 2
 check_bacnet 2 3
 check_bacnet 3 1
