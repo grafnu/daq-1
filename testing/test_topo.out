@@ -1,11 +1,13 @@
 Running testing/test_topo.sh
 Topology Tests
 Running open 3
-bacnet 01/02 1 0 1
-bacnet 02/03 1 0 1
-bacnet 03/01 1 0 1
+Fail daq-faux-2:23
+bacnet 01 02  1  1  1  1  
+bacnet 02 03  1  1  1  1  
+bacnet 03 01  1  1  1  1  
 Running minimal 3
-bacnet 01/02 1 0 1
-bacnet 02/03 0 0 1
-bacnet 03/01 0 0 1
+Fail daq-faux-2:23
+bacnet 01 02  1  1  1  1  
+bacnet 02 03  0  1  1  1  
+bacnet 03 01  1  1  0  1  
 Done with tests
