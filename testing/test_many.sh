@@ -12,7 +12,7 @@ manystartup=inst/startup_many.cmd
 rm -f $manystartup
 echo startup_cmds=$manystartup >> local/system.conf
 
-echo monitor_scan_sec=0 >> local/system.conf
+echo monitor_scan_sec=5 >> local/system.conf
 echo sec_port=$((NUM_DEVICES+1)) >> local/system.conf
 
 ifaces=
