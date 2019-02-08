@@ -46,16 +46,25 @@ function check_bacnet {
     at_mac=$MAC_BASE:$(printf %02x $at_dev)
     ex_mac=$MAC_BASE:$(printf %02x $ex_dev)
 
-    tcp_base="tcpdump -en -r inst/run-port-$at_dev/scans/monitor.pcap port 47808"
+    conf_dir=inst/runtime_conf/port-$(printf %02d $from_dev)
+    mkdir -p $conf_dir
+    cmd_file=$conf_dir/ping_runtime.sh
 
-    ucast_to=`$tcp_base and ether dst $ex_mac | wc -l`
-    ucast_cross=`$tcp_base and not ether src $at_mac and not ether dst $at_mac | wc -l`
-    bcast_out=`$tcp_base and ether broadcast and ether src $at_mac | wc -l`
+    iface=$(hostname)-eth0
+    tcp_base="tcpdump -en -r eth0.pcap port 47808"
+    out_file=/tmp/bacnet_result.txt
 
-    # Monitoring is currently broken, so only captures outgoing packets, so this doesn't work.
-    bcast_from=`$tcp_base and ether broadcast and ether src $ex_mac | wc -l`
+    cat >> $cmd_file <<EOF
+    test -f eth0.pcap || timeout 20 tcpdump -eni $iface -w eth0.pcap || true
+    echo -n ucast_to $ex_dev >> $out_file
+    $tcp_base and ether dst $ex_mac | wc -l >> $out_file
 
-    echo bacnet $at_dev/$ex_dev $((ucast_to > 0)) $((ucast_cross > 0)) $((bcast_out > 0)) | tee -a $TEST_RESULTS
+    echo -n ucast_to $ex_dev >> $out_file
+    $tcp_base and not ether src $at_mac and not ether dst $at_mac | wc -l >> $out_file
+
+    echo -n ucast_to $ex_dev >> /tmp/nc_result.txt >> $out_file
+    $tcp_base and ether broadcast and ether src $at_mac | wc -l >> $out_file
+EOF
 }
 
 function check_tcp {
@@ -72,21 +81,22 @@ function check_tcp {
 
 function run_test {
     cmd/run -s
-    more inst/run-port-*/nodes/ping*/tmp/nc_result.txt
+    more inst/run-port-*/nodes/ping*/tmp/nc_result.txt | tee -a $TEST_RESULTS
+    more inst/run-port-*/nodes/ping*/tmp/bacnet_result.txt | tee -a $TEST_RESULTS
 }
 
 generate open 3
 check_tcp 1 2 23
-run_test
 check_bacnet 1 2
 check_bacnet 2 3
 check_bacnet 3 1
+run_test
 
 generate minimal 3
 check_tcp 1 2 23
-run_test
 check_bacnet 1 2
 check_bacnet 2 3
 check_bacnet 3 1
+run_test
 
 echo Done with tests | tee -a $TEST_RESULTS
