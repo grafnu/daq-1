@@ -14,7 +14,7 @@ function generate {
   echo Running $type $faux_num | tee -a $TEST_RESULTS
 
   # Clean out in case there's an error
-  rm -rf inst/run-port-*
+  rm -rf inst/run-port-*  inst/runtime_conf/
 
   topostartup=inst/startup_topo.cmd
   rm -f $topostartup
@@ -34,6 +34,7 @@ function generate {
 
   echo site_description=\"$type with $devices devices\" >> local/system.conf
   echo device_specs=misc/device_specs_topo_$type.json >> local/system.conf
+  echo test_config=inst/runtime_conf/ >> local/system.conf
 }
 
 MAC_BASE=9a:02:57:1e:8f
@@ -57,8 +58,21 @@ function check_bacnet {
     echo bacnet $at_dev/$ex_dev $((ucast_to > 0)) $((ucast_cross > 0)) $((bcast_out > 0)) | tee -a $TEST_RESULTS
 }
 
+function check_tcp {
+    from_dev=$1
+    to_dev=$2
+    port=$3
+
+    to_host=daq-faux-$to_dev
+    from_port=port-$(printf %02d $from_dev)
+
+    mkdir -p inst/runtime_conf/$from_port
+    echo "nc $to_host $port >> /tmp/nc_result.txt" >> inst/runtime_conf/$from_port/ping_runtime.sh
+}
+
 generate minimal 3
-cmd/run -s
+check_tcp 1 2 23
+cmd/run -s -k
 check_bacnet 1 2
 check_bacnet 2 3
 check_bacnet 3 1
