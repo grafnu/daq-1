@@ -14,7 +14,8 @@ function generate {
   echo Running $type $faux_num | tee -a $TEST_RESULTS
 
   # Clean out in case there's an error
-  rm -rf inst/run-port-*  inst/runtime_conf/
+  rm -rf inst/run-port-*
+  rm -rf inst/runtime_conf
 
   topostartup=inst/startup_topo.cmd
   rm -f $topostartup
@@ -50,20 +51,23 @@ function check_bacnet {
     mkdir -p $conf_dir
     cmd_file=$conf_dir/ping_runtime.sh
 
-    iface=$(hostname)-eth0
     tcp_base="tcpdump -en -r eth0.pcap port 47808"
     out_file=/tmp/bacnet_result.txt
 
     cat >> $cmd_file <<EOF
-    test -f eth0.pcap || timeout 20 tcpdump -eni $iface -w eth0.pcap || true
-    echo -n ucast_to $ex_dev >> $out_file
+    test -f eth0.pcap || timeout 20 tcpdump -eni \$HOSTNAME-eth0 -w eth0.pcap || true
+
+    echo -n ucast_to $ex_dev \ >> $out_file
     $tcp_base and ether dst $ex_mac | wc -l >> $out_file
 
-    echo -n ucast_to $ex_dev >> $out_file
+    echo -n ucast_other \ >> $out_file
     $tcp_base and not ether src $at_mac and not ether dst $at_mac | wc -l >> $out_file
 
-    echo -n ucast_to $ex_dev >> /tmp/nc_result.txt >> $out_file
+    echo -n bcast_out \ >> $out_file
     $tcp_base and ether broadcast and ether src $at_mac | wc -l >> $out_file
+
+    echo -n bcast_in \ >> $out_file
+    $tcp_base and ether broadcast and not ether src $at_mac | wc -l >> $out_file
 EOF
 }
 
