@@ -1,5 +1,9 @@
 Running testing/test_topo.sh
 Topology Tests
+Running open 3
+bacnet 01/02 1 0 1
+bacnet 02/03 1 0 1
+bacnet 03/01 1 0 1
 Running minimal 3
 bacnet 01/02 1 0 1
 bacnet 02/03 0 0 1
