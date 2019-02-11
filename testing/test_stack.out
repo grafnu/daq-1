@@ -1,68 +1,141 @@
 Running testing/test_stack.sh
 Stacking Tests
-7d1c8797-bc89-4dcb-b046-50152204308f
-    Bridge "t1sw2"
-        Controller "tcp:127.0.0.1:6663"
-        Port "t1sw2-eth23"
-            Interface "t1sw2-eth23"
-        Port "t1sw2-eth22"
-            Interface "t1sw2-eth22"
-        Port "t1sw2-eth1"
-            Interface "t1sw2-eth1"
-        Port "t1sw2"
-            Interface "t1sw2"
-                type: internal
-        Port "t1sw2-eth2"
-            Interface "t1sw2-eth2"
-    Bridge "t2sw2"
-        Controller "tcp:127.0.0.1:6663"
-        Port "t2sw2"
-            Interface "t2sw2"
-                type: internal
-        Port "t2sw2-eth6"
-            Interface "t2sw2-eth6"
-        Port "t2sw2-eth7"
-            Interface "t2sw2-eth7"
-        Port "faux-2"
-            Interface "faux-2"
-    Bridge "t1sw1"
-        Controller "tcp:127.0.0.1:6653"
-            is_connected: true
-        Port "t1sw1-eth23"
-            Interface "t1sw1-eth23"
-        Port "t1sw1-eth22"
-            Interface "t1sw1-eth22"
-        Port "t1sw1-eth2"
-            Interface "t1sw1-eth2"
-        Port "t1sw1"
-            Interface "t1sw1"
-                type: internal
-        Port "t1sw1-eth1"
-            Interface "t1sw1-eth1"
-    Bridge corp
-        Controller "tcp:127.0.0.1:6673"
-        Port "bond1"
-            Interface "bond1"
-        Port corp
-            Interface corp
-                type: internal
-        Port "bond2"
-            Interface "bond2"
-        Port "faux-3"
-            Interface "faux-3"
-    Bridge "t2sw1"
-        Controller "tcp:127.0.0.1:6653"
-        Port "t2sw1-eth7"
-            Interface "t2sw1-eth7"
-        Port "t2sw1-eth6"
-            Interface "t2sw1-eth6"
-        Port "faux-1"
-            Interface "faux-1"
-        Port "t2sw1"
-            Interface "t2sw1"
-                type: internal
-    ovs_version: "2.10.1"
-Waiting for stack to settle
+OVS bridge corp
+OFPT_FEATURES_REPLY (xid=0x2): dpid:0000000000000111
+n_tables:254, n_buffers:0
+capabilities: FLOW_STATS TABLE_STATS PORT_STATS QUEUE_STATS ARP_MATCH_IP
+actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_dst mod_nw_src mod_nw_dst mod_nw_tos mod_tp_src mod_tp_dst
+ 1(faux-3): addr:82:25:9e:98:be:da
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 10(bond1): addr:e6:34:bd:31:a9:49
+     config:     0
+     state:      0
+     current:    10GB-FD
+     speed: 10000 Mbps now, 0 Mbps max
+ 20(bond2): addr:fa:82:cb:ee:57:1d
+     config:     0
+     state:      0
+     current:    10GB-FD
+     speed: 10000 Mbps now, 0 Mbps max
+ LOCAL(corp): addr:d6:6c:b4:65:ad:43
+     config:     PORT_DOWN
+     state:      LINK_DOWN
+     speed: 0 Mbps now, 0 Mbps max
+OFPT_GET_CONFIG_REPLY (xid=0x4): frags=normal miss_send_len=0
+OVS bridge t1sw1
+OFPT_FEATURES_REPLY (xid=0x2): dpid:000000223d5a07ff
+n_tables:254, n_buffers:0
+capabilities: FLOW_STATS TABLE_STATS PORT_STATS QUEUE_STATS ARP_MATCH_IP
+actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_dst mod_nw_src mod_nw_dst mod_nw_tos mod_tp_src mod_tp_dst
+ 1(t1sw1-eth1): addr:42:e2:0d:59:a8:2f
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 2(t1sw1-eth2): addr:0e:e2:bd:ef:3e:4a
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 22(t1sw1-eth22): addr:52:78:9c:fc:ac:d6
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 23(t1sw1-eth23): addr:76:8a:dc:a5:8e:7c
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ LOCAL(t1sw1): addr:ae:5a:69:e2:62:43
+     config:     PORT_DOWN
+     state:      LINK_DOWN
+     speed: 0 Mbps now, 0 Mbps max
+OFPT_GET_CONFIG_REPLY (xid=0x4): frags=normal miss_send_len=0
+OVS bridge t1sw2
+OFPT_FEATURES_REPLY (xid=0x2): dpid:000000223d5a0829
+n_tables:254, n_buffers:0
+capabilities: FLOW_STATS TABLE_STATS PORT_STATS QUEUE_STATS ARP_MATCH_IP
+actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_dst mod_nw_src mod_nw_dst mod_nw_tos mod_tp_src mod_tp_dst
+ 1(t1sw2-eth1): addr:82:06:e6:29:e1:57
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 2(t1sw2-eth2): addr:1a:17:3f:fa:b8:77
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 22(t1sw2-eth22): addr:ea:00:7b:fe:a8:77
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 23(t1sw2-eth23): addr:c6:70:74:97:bc:42
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ LOCAL(t1sw2): addr:9a:0f:36:68:d9:42
+     config:     PORT_DOWN
+     state:      LINK_DOWN
+     speed: 0 Mbps now, 0 Mbps max
+OFPT_GET_CONFIG_REPLY (xid=0x4): frags=normal miss_send_len=0
+OVS bridge t2sw1
+OFPT_FEATURES_REPLY (xid=0x2): dpid:0000e01aea308c61
+n_tables:254, n_buffers:0
+capabilities: FLOW_STATS TABLE_STATS PORT_STATS QUEUE_STATS ARP_MATCH_IP
+actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_dst mod_nw_src mod_nw_dst mod_nw_tos mod_tp_src mod_tp_dst
+ 1(faux-1): addr:2a:d4:80:50:9b:b2
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 6(t2sw1-eth6): addr:ce:70:05:d8:33:b1
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 7(t2sw1-eth7): addr:9e:b2:82:86:5a:80
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ LOCAL(t2sw1): addr:d2:45:c9:94:bb:47
+     config:     PORT_DOWN
+     state:      LINK_DOWN
+     speed: 0 Mbps now, 0 Mbps max
+OFPT_GET_CONFIG_REPLY (xid=0x4): frags=normal miss_send_len=0
+OVS bridge t2sw2
+OFPT_FEATURES_REPLY (xid=0x2): dpid:0000001aeb97652e
+n_tables:254, n_buffers:0
+capabilities: FLOW_STATS TABLE_STATS PORT_STATS QUEUE_STATS ARP_MATCH_IP
+actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_dst mod_nw_src mod_nw_dst mod_nw_tos mod_tp_src mod_tp_dst
+ 1(faux-2): addr:ee:8e:57:d0:6a:58
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 6(t2sw2-eth6): addr:d2:6a:cf:83:c4:72
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 7(t2sw2-eth7): addr:46:75:ef:59:b3:a3
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ LOCAL(t2sw2): addr:9a:84:38:1f:4f:48
+     config:     PORT_DOWN
+     state:      LINK_DOWN
+     speed: 0 Mbps now, 0 Mbps max
+OFPT_GET_CONFIG_REPLY (xid=0x4): frags=normal miss_send_len=0
+Waiting 60 sec for stack to settle
 daq-faux-1: ping -c 10 192.168.0.2 10
 daq-faux-1: ping -c 10 192.168.0.3 10
 daq-faux-2: ping -c 10 192.168.0.1 10
@@ -70,4 +143,3 @@ daq-faux-2: ping -c 10 192.168.0.3 10
 daq-faux-3: ping -c 10 192.168.0.1 10
 daq-faux-3: ping -c 10 192.168.0.2 10
 Done with stack test.
-

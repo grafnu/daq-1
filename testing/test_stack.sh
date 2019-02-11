@@ -9,8 +9,15 @@ echo Stacking Tests >> $TEST_RESULTS
 
 bin/setup_stack
 
-ovs-vsctl show | tee -a $TEST_RESULTS
+echo Configured bridges:
+bridges=$(ovs-vsctl list-br | sort)
+for bridge in $bridges; do
+    echo
+    echo OVS bridge $bridge | tee -a $TEST_RESULTS
+    ovs-ofctl show $bridge | tee -a $TEST_RESULTS
+done
 
+echo
 echo Waiting $setup_delay sec for stack to settle | tee -a $TEST_RESULTS
 sleep $setup_delay
 
