@@ -338,13 +338,21 @@ class DAQRunner():
         target_ip = target.get('ip')
         LOGGER.debug('DHCP notify %s is %s on gw%02d (%s)', target_mac,
                      target_ip, gateway_set, str(exception))
-        if target_mac:
-            self._target_mac_ip[target_mac] = target_ip
 
         if exception:
             LOGGER.error('DHCP exception for gw%02d: %s', gateway_set, exception)
             LOGGER.exception(exception)
             self._terminate_gateway_set(gateway_set)
+            return
+
+        if not target_mac:
+            LOGGER.warning('DHCP target mac %s', target_mac)
+            return
+
+        self._target_mac_ip[target_mac] = target_ip
+
+        if target_mac not in self.mac_targets:
+            LOGGER.warning('DHCP targets missing %s', target_mac)
             return
 
         target_host = self.mac_targets[target_mac]
