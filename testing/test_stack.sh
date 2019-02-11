@@ -3,6 +3,7 @@
 source testing/test_preamble.sh
 
 out_base=/tmp/daq-test_stack
+setup_delay=60
 
 echo Stacking Tests >> $TEST_RESULTS
 
@@ -10,8 +11,8 @@ bin/setup_stack
 
 ovs-vsctl show | tee -a $TEST_RESULTS
 
-echo Waiting for stack to settle | tee -a $TEST_RESULTS
-sleep 30
+echo Waiting $setup_delay sec for stack to settle | tee -a $TEST_RESULTS
+sleep $setup_delay
 
 function test_pair {
     src=$1
