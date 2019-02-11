@@ -7,8 +7,11 @@
 #
 
 ROOT=$(dirname $0)/..
-FAUCET=https://github.com/anarkiwi/faucet.git
-FAUCETV=$(cat $ROOT/misc/FAUCET_VERSION) || true
+cd $ROOT
+
+FAUCETR=${DAQ_FAUCET_REPO:-https://github.com/faucetsdn/faucet}
+FAUCETB=${DAQ_FAUCET_BRANCH}
+FAUCETV=$(cat misc/FAUCET_VERSION)
 MININET=https://github.com/mininet/mininet
 MININETV=2.3.0d3
 
@@ -22,8 +25,6 @@ fi
 
 echo AG is $AG
 echo PIP is $PIP
-
-cd $ROOT
 echo Setup root is $PWD
 
 if [ "$DAQ_BUILD" == "no" ]; then
@@ -97,7 +98,15 @@ if [ -d faucet ]; then
 elif [ -z "$FAUCETV" ]; then
     echo No faucet version found, skipping.
 else
-    echo Cloning $FAUCET $FAUCETV...
-    git clone -n $FAUCET faucet
-    (cd faucet; git reset --hard $FAUCETV)
+    if [ -n "$FAUCETB" ]; then
+        FAUCETB="--branch $FAUCETB"
+    fi
+    echo Cloning $FAUCETR $FAUCETB...
+    git clone -n $FAUCETR $FAUCETB faucet
+    if [ -n "$FAUCETB" ]; then
+        (cd faucet; git rev-list -n 1 HEAD) > misc/FAUCET_VERSION
+        echo Updated FAUCET_VERSION to $(cat misc/FAUCET_VERSION)
+    else
+        (cd faucet; git reset --hard $FAUCETV)
+    fi
 fi
