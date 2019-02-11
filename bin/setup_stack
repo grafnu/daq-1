@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 ROOT=$(dirname $0)/..
 cd $ROOT
@@ -124,5 +124,8 @@ sudo ovs-vsctl add-port corp bond2 -- set interface bond2 ofport_request=20
 add_iface t2sw1 1 faux-1
 add_iface t2sw2 1 faux-2
 add_iface corp 1 faux-3
+
+# Delay to let things stabilize.
+sleep 10
 
 echo Done with stack setup.

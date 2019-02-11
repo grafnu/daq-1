@@ -20,8 +20,8 @@ echo Validator exit code $? | tee -a $TEST_RESULTS
 
 # Runs lint checks and some similar things
 echo Lint checks | tee -a $TEST_RESULTS
-cmd/inbuild skip
-echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
+#cmd/inbuild skip
+#echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
 
 echo Extended tests | tee -a $TEST_RESULTS
 cp misc/system_multi.conf local/system.conf
