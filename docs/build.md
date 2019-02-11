@@ -24,7 +24,7 @@ or set `run_mode=local` in the `local/system.conf` file.
 
 ## Tests, Tests, and More Tests
 
-In a whirlwind fit of appropriateness, the baseline for DAQ development is... testing. Specifically,
+In a whirlwind of flagrant appropriateness, the baseline for DAQ development is... testing. Specifically,
 there is a suite of continuous integration tests that run on [Travis CI](https://travis-ci.com/faucetsdn/daq)
 that puts the system through a barrage of tests to make sure all is good. Any PR submission will
 require that these tests pass. It's recommended (but not required) that you set up Travis CI on
@@ -32,11 +32,15 @@ your personal development branch to test your commits in the full Travis CI envi
 on the automatic PR test mechanism.
 
 The `.travis.yml` file contains the information for the tests themselves, primarily listed under the `matrix:`
-subsection that shows all the various tested configurations. Note that this assumes a fully installed and
-_clean_ environment (e.g. no `local/system.conf` file). From there, individual tests can be run locally by
+subsection that shows all the various tested configurations. Note that this assumes a fully installed environment
+(as setup with `bin/setup_daq`). From there, individual tests can be run locally by
 appending `bin/test_daq` to a `sudo` line of shell environment settings, e.g. as taken from one matrix entry:
 <pre>
-~/daq$ <b>sudo DAQ_CONF=misc/system_multi.conf DAQ_RUNS=10 bin/test_daq</b>
+~/daq$ <b>sudo DAQ_TEST=base bin/test_daq</b>
+&hellip;
+<em>or directly with:</em>
+~/daq$ <b>sudo testing/test_base.sh</b>
+&hellip;
 </pre>
 
 ## Build Debugging
