@@ -75,6 +75,6 @@ Loading config from local/system.conf
 </pre>
 
 The file `.build_built` includes the hashes from the last time the system successfully completed
-a `cmd/build` run, while `.build_files` contains the hashes after the most recent 'cmd/run` hash mismatch.
+a `cmd/build` run, while `.build_files` contains the hashes after the most recent `cmd/run` hash mismatch.
 The example `diff` above indicates that some files were deleted from the `docker/` and `misc/`
 directories, triggering the rebuild requirement.
