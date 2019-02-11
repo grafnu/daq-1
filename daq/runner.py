@@ -336,9 +336,11 @@ class DAQRunner():
         """Handle a DHCP notificaiton"""
         target_mac = target.get('mac')
         target_ip = target.get('ip')
-        self._target_mac_ip[target_mac] = target_ip
         LOGGER.debug('DHCP notify %s is %s on gw%02d (%s)', target_mac,
                      target_ip, gateway_set, str(exception))
+        if target_mac:
+            self._target_mac_ip[target_mac] = target_ip
+
         if exception:
             LOGGER.error('DHCP exception for gw%02d: %s', gateway_set, exception)
             LOGGER.exception(exception)
