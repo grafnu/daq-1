@@ -68,7 +68,7 @@ Build docker/Dockerfile.default into daq/default, log to build/docker_build.defa
 Build subset/pentests/Dockerfile.test_brute into daq/test_brute, log to build/docker_build.test_brute...
 Build subset/pentests/Dockerfile.test_nmap into daq/test_nmap, log to build/docker_build.test_nmap...
 Updating .build_hash
-~/daq$ <b>cmd/run<b>
+~/daq$ <b>cmd/run</b>
 Loading config from local/system.conf
 <b>Starting Mon Feb 11 08:40:12 PST 2019, run_mode is local</b>
 &hellip;
