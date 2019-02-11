@@ -14,7 +14,7 @@ bridges=$(ovs-vsctl list-br | sort)
 for bridge in $bridges; do
     echo
     echo OVS bridge $bridge | tee -a $TEST_RESULTS
-    ovs-ofctl show $bridge | tee -a $TEST_RESULTS
+    ovs-ofctl show $bridge | sed -e 's/ addr:.*//' | tee -a $TEST_RESULTS
 done
 
 echo
@@ -41,6 +41,7 @@ test_pair 2 3
 test_pair 3 1
 test_pair 3 2
 
+echo Waiting for pair tests to complete...
 wait
 
 cat $out_base-* | tee -a $TEST_RESULTS
