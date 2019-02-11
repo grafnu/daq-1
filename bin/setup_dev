@@ -98,15 +98,15 @@ if [ -d faucet ]; then
 elif [ -z "$FAUCETV" ]; then
     echo No faucet version found, skipping.
 else
+    echo Cloning $FAUCETR...
+    git clone -n $FAUCETR faucet
     if [ -n "$FAUCETB" ]; then
-        FAUCETB="--branch $FAUCETB"
-    fi
-    echo Cloning $FAUCETR $FAUCETB...
-    git clone -n $FAUCETR $FAUCETB faucet
-    if [ -n "$FAUCETB" ]; then
+        echo Switching to branch $FAUCETB...
+        (cd faucet; git checkout $FAUCETB --)
         (cd faucet; git rev-list -n 1 HEAD) > misc/FAUCET_VERSION
         echo Updated FAUCET_VERSION to $(cat misc/FAUCET_VERSION)
     else
+        echo Forcing faucet commit $FAUCETV
         (cd faucet; git reset --hard $FAUCETV)
     fi
 fi
