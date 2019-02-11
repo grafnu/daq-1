@@ -127,6 +127,11 @@ EOF
 }
 
 function run_test {
+    for port in $(seq 1 $1); do
+        conf_dir=inst/runtime_conf/port-$(printf %02d $port)
+        cmd_file=$conf_dir/ping_runtime.sh
+        test -d $conf_dir || (mkdir -p $conf_dir; echo sleep 30 >> $cmd_file)
+    done
     cmd/run -s
     fgrep :ping: inst/result.log | tee -a $TEST_RESULTS
     cat inst/run-port-*/nodes/ping*${socket_file} | tee -a $TEST_RESULTS
@@ -140,22 +145,22 @@ check_socket 02 01 1 1
 check_bacnet 01 02 1 1 1 1
 check_bacnet 02 03 1 1 1 1
 check_bacnet 03 01 1 1 1 1
-run_test
+run_test 3
 
 generate minimal 3
 check_bacnet 01 02 1 1 1 1
 check_bacnet 02 03 0 1 1 1
 check_bacnet 03 01 1 1 1 1
-run_test
+run_test 3
 
 generate commissioning 4
 check_socket 01 02 0 0
 check_socket 02 01 0 0
 check_bacnet 01 02 1 1 1 1
-check_bacnet 01 04 0 1 1 1
+check_bacnet 01 04 1 1 1 1
 check_bacnet 02 03 0 1 1 1
-check_bacnet 02 04 0 1 1 1
+check_bacnet 02 04 1 1 1 1
 check_bacnet 03 01 1 1 1 1
-run_test
+run_test 4
 
 echo Done with tests | tee -a $TEST_RESULTS
