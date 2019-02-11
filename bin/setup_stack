@@ -103,6 +103,8 @@ add_oeth t1sw2 2 corp-eth21
 add_link t1sw2 22 t2sw2 6
 add_link t1sw2 23 t2sw1 6
 
+ip link help bond
+
 sudo ip link del bond1 || true
 sudo ip link add bond1 type bond mode 802.3ad
 sudo ip link set bond1 up
