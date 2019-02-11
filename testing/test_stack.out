@@ -1,0 +1,73 @@
+Running testing/test_stack.sh
+Stacking Tests
+7d1c8797-bc89-4dcb-b046-50152204308f
+    Bridge "t1sw2"
+        Controller "tcp:127.0.0.1:6663"
+        Port "t1sw2-eth23"
+            Interface "t1sw2-eth23"
+        Port "t1sw2-eth22"
+            Interface "t1sw2-eth22"
+        Port "t1sw2-eth1"
+            Interface "t1sw2-eth1"
+        Port "t1sw2"
+            Interface "t1sw2"
+                type: internal
+        Port "t1sw2-eth2"
+            Interface "t1sw2-eth2"
+    Bridge "t2sw2"
+        Controller "tcp:127.0.0.1:6663"
+        Port "t2sw2"
+            Interface "t2sw2"
+                type: internal
+        Port "t2sw2-eth6"
+            Interface "t2sw2-eth6"
+        Port "t2sw2-eth7"
+            Interface "t2sw2-eth7"
+        Port "faux-2"
+            Interface "faux-2"
+    Bridge "t1sw1"
+        Controller "tcp:127.0.0.1:6653"
+            is_connected: true
+        Port "t1sw1-eth23"
+            Interface "t1sw1-eth23"
+        Port "t1sw1-eth22"
+            Interface "t1sw1-eth22"
+        Port "t1sw1-eth2"
+            Interface "t1sw1-eth2"
+        Port "t1sw1"
+            Interface "t1sw1"
+                type: internal
+        Port "t1sw1-eth1"
+            Interface "t1sw1-eth1"
+    Bridge corp
+        Controller "tcp:127.0.0.1:6673"
+        Port "bond1"
+            Interface "bond1"
+        Port corp
+            Interface corp
+                type: internal
+        Port "bond2"
+            Interface "bond2"
+        Port "faux-3"
+            Interface "faux-3"
+    Bridge "t2sw1"
+        Controller "tcp:127.0.0.1:6653"
+        Port "t2sw1-eth7"
+            Interface "t2sw1-eth7"
+        Port "t2sw1-eth6"
+            Interface "t2sw1-eth6"
+        Port "faux-1"
+            Interface "faux-1"
+        Port "t2sw1"
+            Interface "t2sw1"
+                type: internal
+    ovs_version: "2.10.1"
+Waiting for stack to settle
+daq-faux-1: ping -c 10 192.168.0.2 10
+daq-faux-1: ping -c 10 192.168.0.3 10
+daq-faux-2: ping -c 10 192.168.0.1 10
+daq-faux-2: ping -c 10 192.168.0.3 10
+daq-faux-3: ping -c 10 192.168.0.1 10
+daq-faux-3: ping -c 10 192.168.0.2 10
+Done with stack test.
+
