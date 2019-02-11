@@ -162,4 +162,4 @@ if [ "$do_images" == load ]; then
 fi
 
 echo Updating .build_hash
-bin/build_hash.sh > .build_hash
+bin/build_hash > .build_hash

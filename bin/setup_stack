@@ -65,11 +65,10 @@ function add_oeth {
 sudo modprobe bonding
 
 rm -rf inst/faucet
-mkdir -p inst/faucet/nz-kiwi-ctl1
-mkdir -p inst/faucet/nz-kiwi-ctl2
-mkdir -p inst/faucet/corp
 
 bin/generate_topology site_config=topology/nz-kiwi/site_config.json topo_dir=inst/faucet/
+
+mkdir -p inst/faucet/corp
 cp misc/corp_faucet.yaml inst/faucet/corp/faucet.yaml
 
 cmd/faux 1 xdhcp
