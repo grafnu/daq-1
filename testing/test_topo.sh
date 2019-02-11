@@ -127,10 +127,6 @@ EOF
 }
 
 function run_test {
-    # Hack for race condition to make sure all actual is testing before this one completes.
-    for conf in $(find inst/runtime_conf -name ping_runtime.sh); do
-        echo sleep 60 >> $conf
-    done
     cmd/run -s
     fgrep :ping: inst/result.log | tee -a $TEST_RESULTS
     cat inst/run-port-*/nodes/ping*${socket_file} | tee -a $TEST_RESULTS
@@ -140,6 +136,7 @@ function run_test {
 
 generate open 3
 check_socket 01 02 1 1
+check_socket 02 01 1 1
 check_bacnet 01 02 1 1 1 1
 check_bacnet 02 03 1 1 1 1
 check_bacnet 03 01 1 1 1 1
@@ -153,6 +150,7 @@ run_test
 
 generate commissioning 4
 check_socket 01 02 0 0
+check_socket 02 01 0 0
 check_bacnet 01 02 1 1 1 1
 check_bacnet 01 04 0 1 1 1
 check_bacnet 02 03 0 1 1 1
