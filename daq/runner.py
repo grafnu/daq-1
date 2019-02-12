@@ -92,7 +92,7 @@ class DAQRunner():
     def cleanup(self):
         """Cleanup instance"""
         try:
-            LOGGER.debug("Stopping network...")
+            LOGGER.info("Stopping network...")
             self.network.stop()
         except Exception as e:
             LOGGER.error('Exception: %s', e)
