@@ -51,13 +51,12 @@ $AG install \
 # Fix permissions in case they have wandered...
 test -f venv && sudo chown `stat . -c %u:%g` -R venv/
 
-python3 -m venv venv
-
 # Can't use venv inside of containers because of absolute paths.
-if [ -z "$DAQ_CONTAINER" ]; then
-    source venv/bin/activate
+if [ -n "$DAQ_CONTAINER" -o -n "$TRAVIS" ]; then
+    echo Skipping venv activation.
 else
-    echo Running in container $DAQ_CONTAINER
+    python3 -m venv venv
+    source venv/bin/activate
 fi
 
 echo Installing python dependencies...
