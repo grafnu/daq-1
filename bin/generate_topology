@@ -10,10 +10,6 @@ MININET=$(realpath $ROOT/mininet)
 export PYTHONPATH=$FAUCET:$MININET
 source venv/bin/activate
 
-echo I am g`whoami`
-echo Coverage is in `which coverage`
-echo PATH is $PATH
-
 if [ -n "$DAQ_CODECOV" ]; then
     echo Running with codecov analysis...
     runcmd="coverage run --source=daq -a"

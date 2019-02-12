@@ -65,10 +65,6 @@ $PIP install wheel
 $PIP install --index-url=https://pypi.python.org/simple pylint \
     netifaces pyyaml codecov coverage firebase-admin==2.11.0 google-cloud-pubsub==0.32.1
 
-echo I am g`whoami`
-echo Coverage is in `which coverage`
-echo PATH is $PATH
-
 if [ -d mininet ]; then
     echo Checking mininet version matches $MININETV...
     targetrev=$(cd mininet; git rev-parse $MININETV)
