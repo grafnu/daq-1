@@ -28,8 +28,8 @@ cp misc/system_multi.conf local/system.conf
 DAQ_FAUX1_OPTS=brute DAQ_FAUX2_OPTS=nobrute cmd/run -s mininet_loglevel=debug
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
 sort inst/result.log | tee -a $TEST_RESULTS
-more cat inst/run-port-*/nodes/brute*/activate.log
 more cat inst/run-port-*/nodes/ping*/activate.log
 more cat inst/run-port-*/nodes/nmap*/activate.log
+more cat inst/run-port-*/nodes/brute*/activate.log
 
 echo Done with tests | tee -a $TEST_RESULTS
