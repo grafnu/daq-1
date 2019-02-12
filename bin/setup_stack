@@ -103,6 +103,7 @@ add_oeth t1sw2 2 corp-eth21
 add_link t1sw2 22 t2sw2 6
 add_link t1sw2 23 t2sw1 6
 
+apt-cache policy iproute2
 uname -a
 ip -V
 ip link help bond
