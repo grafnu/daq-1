@@ -37,4 +37,6 @@ $AG update
 DOCKER_VERSION=${DOCKER_VERSION_BASE}~${distrib}
 $AG install openvswitch-switch openvswitch-common docker-ce${DOCKER_VERSION}
 
+echo Java version check...
+which java || true
 java -version || true
