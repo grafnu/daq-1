@@ -10,6 +10,9 @@ MININET=$(realpath $ROOT/mininet)
 export PYTHONPATH=$FAUCET:$MININET
 source venv/bin/activate
 
+echo Searching
+find $HOME -name coverage
+
 if [ -n "$DAQ_CODECOV" ]; then
     echo Running with codecov analysis...
     runcmd="coverage run --source=daq -a"
