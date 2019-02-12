@@ -93,6 +93,10 @@ else
     )
 fi
 
+ls -l $HOME/.cache
+sudo chown $USER -R $HOME/.cache
+ls -l $HOME/.cache
+
 if [ -d faucet ]; then
     echo faucet already installed, skipping.
 elif [ -z "$FAUCETV" ]; then
