@@ -67,6 +67,7 @@ $PIP install --index-url=https://pypi.python.org/simple pylint \
 
 echo I am g`whoami`
 echo Coverage is in `which coverage`
+echo PATH is $PATH
 
 if [ -d mininet ]; then
     echo Checking mininet version matches $MININETV...
