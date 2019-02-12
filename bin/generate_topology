@@ -10,6 +10,7 @@ MININET=$(realpath $ROOT/mininet)
 export PYTHONPATH=$FAUCET:$MININET
 source venv/bin/activate
 
+find . -name coverage || true
 which coverage || true
 pip3 install coverage
 which coverage || true
