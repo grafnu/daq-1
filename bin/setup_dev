@@ -53,16 +53,20 @@ test -f venv && sudo chown `stat . -c %u:%g` -R venv/
 
 python3 -m venv venv
 
-echo Running in container $DAQ_CONTAINER
 # Can't use venv inside of containers because of absolute paths.
 if [ -z "$DAQ_CONTAINER" ]; then
     source venv/bin/activate
+else
+    echo Running in container $DAQ_CONTAINER
 fi
 
 echo Installing python dependencies...
 $PIP install wheel
 $PIP install --index-url=https://pypi.python.org/simple pylint \
     netifaces pyyaml codecov firebase-admin==2.11.0 google-cloud-pubsub==0.32.1
+
+find $HOME -name firebase_admin
+find $HOME -name coverage
 
 if [ -d mininet ]; then
     echo Checking mininet version matches $MININETV...
@@ -85,9 +89,8 @@ else
     )
 fi
 
-ls -al $HOME/.cache
+echo Resetting .cache directory permissions...
 sudo chown $USER -R $HOME/.cache
-ls -al $HOME/.cache
 
 if [ -d faucet ]; then
     echo faucet already installed, skipping.
