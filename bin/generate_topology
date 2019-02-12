@@ -10,6 +10,10 @@ MININET=$(realpath $ROOT/mininet)
 export PYTHONPATH=$FAUCET:$MININET
 source venv/bin/activate
 
+which coverage || true
+pip3 install coverage
+which coverage || true
+
 if [ -n "$DAQ_CODECOV" ]; then
     echo Running with codecov analysis...
     runcmd="coverage run --source=daq -a"
