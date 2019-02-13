@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 ROOT=$(dirname $0)/..
 cd $ROOT
@@ -102,11 +102,6 @@ add_oeth t1sw2 2 corp-eth21
 
 add_link t1sw2 22 t2sw2 6
 add_link t1sw2 23 t2sw1 6
-
-apt-cache policy iproute2
-uname -a
-ip -V
-ip link help bond
 
 sudo ip link del bond1 || true
 sudo ip link add bond1 type bond mode 802.3ad
