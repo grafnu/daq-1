@@ -153,9 +153,9 @@ class DAQRunner():
                 self._handle_device_port_state(dpid, port, active)
 
     def _handle_device_port_state(self, dpid, port, active):
+        port_key = "%s-%s" % (dpid, port)
         LOGGER.debug('Port timer %s triggered', port_key)
         with self._port_lock:
-            port_key = "%s-%s" % (dpid, port)
             del self._port_timers[port_key]
             if active != (port in self.active_ports):
                 LOGGER.info('Port %s dpid %s is now active %s', port, dpid, active)
