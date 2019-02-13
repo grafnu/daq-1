@@ -53,7 +53,7 @@ class DAQRunner():
         self.run_limit = int(config.get('run_limit', 0))
         self.result_log = self._open_result_log()
         self._port_lock = threading.Lock()
-        self._port_debounce_sec = config.get('port_debounce_sec', self._PORT_DEBOUNCE_SEC)
+        self._port_debounce_sec = int(config.get('port_debounce_sec', self._PORT_DEBOUNCE_SEC))
 
         test_list = self._get_test_list(config.get('host_tests', _DEFAULT_TESTS_FILE), [])
         if self.config.get('keep_hold'):
@@ -144,10 +144,13 @@ class DAQRunner():
             if port_key in self._port_timers:
                 self._port_timers[port_key].cancel()
                 LOGGER.debug('Port timer %s cancelled', port_key)
-            LOGGER.debug('Port timer %s set for %d sec', port_key, self._port_debounce_sec)
-            args = (dpid, port, active)
-            timer = threading.Timer(self._port_debounce_sec, self._handle_device_port_state, args)
-            self._port_timers[port_key] = timer
+            if self.port_debounce_sec >= 0:
+                args = (dpid, port, active)
+                timer = threading.Timer(self._port_debounce_sec, self._handle_device_port_state, args)
+                self._port_timers[port_key] = timer
+                LOGGER.debug('Port timer %s set for %d sec', port_key, self._port_debounce_sec)
+            else:
+                self._handle_device_port_state(dpid, port, active)
 
     def _handle_device_port_state(self, dpid, port, active):
         LOGGER.debug('Port timer %s triggered', port_key)
