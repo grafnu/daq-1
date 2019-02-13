@@ -492,8 +492,7 @@ class DAQRunner():
             LOGGER.info('Target port %d cancel %s (#%d/%s).',
                         target_port, target_mac, self.run_count, self.run_limit)
             results = self._combine_result_set(target_port, self.result_sets[target_port])
-            fail_linger = results or not self.fail_mode
-            this_result_linger = fail_linger and self.result_linger
+            this_result_linger = results and self.result_linger
             if target_gateway.result_linger or this_result_linger:
                 LOGGER.warning('Target port %d result_linger: %s', target_port, results)
                 self.active_ports[target_port] = True
