@@ -524,7 +524,9 @@ class DAQRunner():
 
     def _combine_result_set(self, set_key, result_sets):
         results = []
-        for result_set_key in result_sets:
+        result_set_keys = list(result_sets)
+        result_set_keys.sort()
+        for result_set_key in result_set_keys:
             result = result_sets[result_set_key]
             exception = self._extract_exception(result)
             code_string = result['code'] if 'code' in result else None
