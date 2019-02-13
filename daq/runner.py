@@ -132,13 +132,6 @@ class DAQRunner():
                 self._handle_port_learn(dpid, port, target_mac)
 
     def _handle_port_state(self, dpid, port, active):
-        if self.network.is_system_port(dpid, port):
-            LOGGER.warning('System port %s on dpid %s is active %s', port, dpid, active)
-            return
-        elif not self.network.is_device_port(dpid, port):
-            LOGGER.debug('Port %s on dpid %s is active %s', port, dpid, active)
-            return
-
         with self._port_lock:
             port_key = "%s-%s" % (dpid, port)
             if port_key in self._port_timers:
@@ -156,6 +149,13 @@ class DAQRunner():
         port_key = "%s-%s" % (dpid, port)
         LOGGER.debug('Port timer %s triggered', port_key)
         with self._port_lock:
+            if self.network.is_system_port(dpid, port):
+                LOGGER.warning('System port %s on dpid %s is active %s', port, dpid, active)
+                return
+            elif not self.network.is_device_port(dpid, port):
+                LOGGER.debug('Unknown port %s on dpid %s is active %s', port, dpid, active)
+                return
+
             del self._port_timers[port_key]
             if active != (port in self.active_ports):
                 LOGGER.info('Port %s dpid %s is now active %s', port, dpid, active)
