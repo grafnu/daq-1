@@ -144,7 +144,7 @@ class DAQRunner():
             if port_key in self._port_timers:
                 self._port_timers[port_key].cancel()
                 LOGGER.debug('Port timer %s cancelled', port_key)
-            if self.port_debounce_sec >= 0:
+            if self._port_debounce_sec >= 0:
                 args = (dpid, port, active)
                 timer = threading.Timer(self._port_debounce_sec, self._handle_device_port_state, args)
                 self._port_timers[port_key] = timer
