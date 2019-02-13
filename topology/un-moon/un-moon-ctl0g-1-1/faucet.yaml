@@ -6,10 +6,7 @@ dps:
     hardware: GenericTFM
     interfaces:
       16:
-        description: uplink access
         lacp: 1
-        lldp_beacon: {enable: true}
-        loop_protect_external: true
         tagged_vlans: [323]
       17:
         lldp_beacon: {enable: true}

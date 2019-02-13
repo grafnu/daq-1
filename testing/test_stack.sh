@@ -24,7 +24,7 @@ sleep $setup_delay
 function test_pair {
     src=$1
     dst=$2
-    
+
     out_file=$out_base-$src-$dst
     host=daq-faux-$src
     cmd="ping -c 10 192.168.0.$dst"
