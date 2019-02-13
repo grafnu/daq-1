@@ -1,5 +1,0 @@
-#!/bin/bash -e
-
-python certs/generateCert.py 
-
-python client.py
