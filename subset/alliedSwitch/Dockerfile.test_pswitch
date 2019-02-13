@@ -1,0 +1,13 @@
+FROM daq/aardvark:latest
+
+RUN $AG update && $AG install openjdk-8-jre
+
+RUN $AG update && $AG install openjdk-8-jdk
+
+RUN $AG update && $AG install maven
+
+COPY subset/alliedSwitch/ alliedSwitch/ 
+
+RUN cd alliedSwitch && mvn clean compile assembly:single -X
+
+CMD ["./alliedSwitch/test_pswitch"]

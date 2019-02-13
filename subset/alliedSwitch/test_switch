@@ -1,8 +1,0 @@
-#!/bin/bash -e
-
-cd alliedSwitch
-
-mvn install
-
-java -jar target/alliedswitch-0.0.1.jar $SWITCH_IP $SWITCH_PORT
-

@@ -1,0 +1,5 @@
+#!/bin/bash -e
+
+#java -jar alliedSwitch/target/alliedswitch-0.0.1-jar-with-dependencies.jar $SWITCH_IP $SWITCH_PORT
+java -jar alliedSwitch/target/alliedswitch-0.0.1-jar-with-dependencies.jar 192.168.1.2 12
+
