@@ -7,7 +7,7 @@ setup_delay=60
 
 echo Stacking Tests >> $TEST_RESULTS
 
-bin/setup_stack
+bin/setup_stack || exit 1
 
 echo Configured bridges:
 bridges=$(ovs-vsctl list-br | sort)
