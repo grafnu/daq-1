@@ -41,7 +41,7 @@ class DAQRunner():
         self.version = os.environ['DAQ_VERSION']
         self.network = network.TestNetwork(config)
         self.result_linger = config.get('result_linger', False)
-        self._linger_exit = False
+        self._linger_exit = 0
         self.faucet_events = None
         self.single_shot = config.get('single_shot', False)
         self.event_trigger = config.get('event_trigger', False)
@@ -204,7 +204,8 @@ class DAQRunner():
                 self.faucet_events = None
                 count = self.stream_monitor.log_monitors()
                 LOGGER.warning('No active ports remaining (%d): ending test run.', count)
-            if self._linger_exit:
+            if self._linger_exit == 1:
+                self._linger_exit = 2
                 LOGGER.warning('Result linger on exit.')
             all_idle = False
         if all_idle:
@@ -478,7 +479,7 @@ class DAQRunner():
             LOGGER.warning('Suppressing further tests due to failure.')
             self.run_tests = False
             if self.result_linger:
-                self._linger_exit = True
+                self._linger_exit = 1
         self.result_sets[target_port] = result_set
 
     def _target_set_cancel(self, target_port):
