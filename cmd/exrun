@@ -73,7 +73,7 @@ function autostart {
 function DAQ {
     shift # autoclean
     echo Cleanup $@
-    $@
+    $@ || true
 }
 
 if [ -z "$skip_autostart" -a -n "$startup_cmds" ]; then

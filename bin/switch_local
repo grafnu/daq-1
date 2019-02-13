@@ -23,7 +23,6 @@ fi
 
 echo Cleaning old setup...
 sudo ip link del $ctrl_pri 2>/dev/null || true
-sudo ip link del $ctrl_bridge 2>/dev/null || true
 sudo ip link del $ctrl_swx 2>/dev/null || true
 sudo ip link del $ctrl_swa 2>/dev/null || true
 sudo ovs-vsctl --if-exists del-port pri $ctrl_pri
@@ -101,6 +100,5 @@ fi
 
 echo DAQ autoclean ip link del $ctrl_pri
 echo DAQ autoclean ip link del $ctrl_swx
-echo DAQ autoclean ip link del $ctrl_bridge
 echo DAQ autoclean ovs-vsctl --if-exists del-br $ctrl_bridge
 echo Done with local switch setup.
