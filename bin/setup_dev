@@ -87,7 +87,7 @@ else
 fi
 
 echo Resetting .cache directory permissions...
-sudo chown $USER -R $HOME/.cache
+test -n "$USER" && sudo chown $USER -R $HOME/.cache
 
 if [ -d faucet ]; then
     echo faucet already installed, skipping.
