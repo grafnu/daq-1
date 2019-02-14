@@ -58,11 +58,32 @@ public class AlliedTelnetClientSocket implements TelnetNotificationHandler, Runn
         addOptionHandlers();
     }
     
+    private void connectTelnetSocket() {
+    	int attempts =0;
+    	
+    	while(!telnetClient.isConnected() && attempts < 10) {
+	    	try {
+	    		telnetClient.connect(remoteIpAddress, remotePort);
+			}
+			catch (IOException e) {
+			    System.err.println("Exception while connecting:" + e.getMessage());
+			}
+	    	
+	    	attempts++;
+	    	
+	    	try {
+				Thread.sleep(100);
+			} 
+	    	catch (InterruptedException e) {
+	    		System.err.println("Exception while connecting:" + e.getMessage());
+			}
+    	}
+    }
+    
     @Override
 	public void run() {
-		try {
-			telnetClient.connect(remoteIpAddress, remotePort);
-			
+			connectTelnetSocket();
+
 			Runnable readDataRunnable = () -> { 
 				readData();
 			};
@@ -79,10 +100,7 @@ public class AlliedTelnetClientSocket implements TelnetNotificationHandler, Runn
 				
 			outputStream = telnetClient.getOutputStream();
 			
-		}
-		catch (IOException e) {
-		    System.err.println("Exception while connecting:" + e.getMessage());
-		}
+
 	}
 
     /***
@@ -324,10 +342,8 @@ public class AlliedTelnetClientSocket implements TelnetNotificationHandler, Runn
 	    					}
 	    				}
 	    				else if(interrogator.getRequestFlag() == 1 || interrogator.getRequestFlag() == 2) {		
-	    					System.out.println("Above position###############################\n");
 	    					position = rxGathered.lastIndexOf(interrogator.getHostname());
 	    					if(position >= 0) {
-	    						System.out.println("Below position############################\n");
 	    						expectedLength = 600;
 	    						charLength = interrogator.getHostname().length()+1;
 	    						flush = 0;

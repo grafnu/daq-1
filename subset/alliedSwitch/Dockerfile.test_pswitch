@@ -6,6 +6,8 @@ RUN $AG update && $AG install openjdk-8-jdk
 
 RUN $AG update && $AG install maven
 
+RUN $AG update && $AG install netcat
+
 COPY subset/alliedSwitch/ alliedSwitch/ 
 
 RUN cd alliedSwitch && mvn clean compile assembly:single -X

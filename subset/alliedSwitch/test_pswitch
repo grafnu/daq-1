@@ -1,5 +1,18 @@
 #!/bin/bash -e
 
-#java -jar alliedSwitch/target/alliedswitch-0.0.1-jar-with-dependencies.jar $SWITCH_IP $SWITCH_PORT
-java -jar alliedSwitch/target/alliedswitch-0.0.1-jar-with-dependencies.jar 192.168.1.2 12
+# Setup for accessing control plane switch. If LOCAL_IP is defined, which
+# is the intended local address for this node on the control plane then
+# SWITCH_IP will be the IP address of the OpenFlow switch.
+if [ -n "$LOCAL_IP" ]; then
+    echo Configuring network with local address $LOCAL_IP.
+    ip addr add $LOCAL_IP dev `hostname`-eth0
+    echo Switch test with port $SWITCH_PORT.
+    ping -n -c 10 $SWITCH_IP
+    java -jar alliedSwitch/target/alliedswitch-0.0.1-jar-with-dependencies.jar $SWITCH_IP $SWITCH_PORT
+#java -jar alliedSwitch/target/alliedswitch-0.0.1-jar-with-dependencies.jar 192.168.1.2 12
+else
+    echo LOCAL_IP not configured, assuming no network switch.
+fi
+
+
 
