@@ -25,7 +25,7 @@ class FaucetEventClient():
     def connect(self):
         """Make connection to sock to receive events"""
 
-        sock_path = os.getenv('FAUCET_EVENT_SOCK'))
+        sock_path = os.getenv('FAUCET_EVENT_SOCK')
 
         self.previous_state = {}
         self.buffer = ''
