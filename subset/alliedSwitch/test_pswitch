@@ -14,5 +14,4 @@ else
     echo LOCAL_IP not configured, assuming no network switch.
 fi
 
-
-
+cp -r alliedSwitch/target/tmp/* tmp/
