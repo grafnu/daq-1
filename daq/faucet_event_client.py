@@ -65,11 +65,9 @@ class FaucetEventClient():
     def _filter_state_update(self, event):
         (dpid, port, active) = self.as_port_state(event)
         if dpid and port:
-            state_key = '%s-%d' % (dpid, port)
-            if state_key in self.previous_state and self.previous_state[state_key] == active:
-                return None
-            self.previous_state[state_key] = active
-            return event
+            if self._process_state_update(dpid, port, active):
+                return event
+            return None
 
         (dpid, status) = self.as_ports_status(event)
         if dpid:
@@ -77,6 +75,13 @@ class FaucetEventClient():
                 self.prepend_event(self._make_port_state(dpid, port, status[port]))
             return None
         return event
+
+    def _process_state_update(self, dpid, port, active):
+        state_key = '%s-%d' % (dpid, port)
+        if state_key in self.previous_state and self.previous_state[state_key] == active:
+            return False
+        self.previous_state[state_key] = active
+        return True
 
     def prepend_event(self, event):
         """Prepend a (synthetic) event to the event queue"""
