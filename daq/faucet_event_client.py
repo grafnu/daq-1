@@ -126,8 +126,6 @@ class FaucetEventClient():
         port_active = event['PORT_CHANGE']['status'] and reason != 'DELETE'
         return (dpid, port_no, port_active)
 
-    def _active_to_state
-
     def as_port_learn(self, event):
         """Convert to port learning info, if applicable"""
         if not event or 'L2_LEARN' not in event:
