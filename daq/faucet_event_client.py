@@ -123,6 +123,8 @@ class FaucetEventClient():
             index = self.buffer.rfind('\n')
             if index == len(self.buffer) - 1:
                 self.buffer = '%s%s\n' % (self.buffer, event_str)
+            elif index == -1:
+                self.buffer = '%s\n%s' % (event_str, self.buffer)
             else:
                 self.buffer = '%s\n%s%s' % (self.buffer[:index], event_str, self.buffer[index:])
             LOGGER.debug('appended %s\n%s*', event_str, self.buffer)
