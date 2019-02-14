@@ -61,7 +61,9 @@ class FaucetEventClient():
             if '\n' in self.buffer:
                 return True
             if blocking or self.has_data():
-                self.buffer += self.sock.recv(1024).decode('utf-8')
+                data = self.sock.recv(1024).decode('utf-8')
+                with self._buffer_lock:
+                    self.buffer += data
             else:
                 return False
 
@@ -77,7 +79,8 @@ class FaucetEventClient():
         (dpid, status) = self.as_ports_status(event)
         if dpid:
             for port in status:
-                self.prepend_event(self._make_port_state(dpid, port, status[port]))
+                # Prepend events so they functionally replace the current one in the queue.
+                self._prepend_event(self._make_port_state(dpid, port, status[port]))
             return None
         return event
 
@@ -108,17 +111,27 @@ class FaucetEventClient():
     def _handle_debounce(self, dpid, port, active):
         status = 'ADD' if active else 'DELETE'
         LOGGER.debug('Port handle %s-%s = %s', dpid, port, status)
-        self.prepend_event(self._make_port_state(dpid, port, status, debounced=True))
+        self._append_event(self._make_port_state(dpid, port, status, debounced=True))
 
-    def prepend_event(self, event):
-        """Prepend a (synthetic) event to the event queue"""
-        self.buffer = '%s\n%s' % (json.dumps(event), self.buffer)
+    def _prepend_event(self, event):
+        with self._buffer_lock:
+            self.buffer = '%s\n%s' % (json.dumps(event), self.buffer)
+
+    def _append_event(self, event):
+        event_str = json.dumps(event)
+        with self._buffer_lock:
+            index = self.buffer.rfind('\n')
+            if index == len(self.buffer) - 1:
+                self.buffer = '%s%s\n' % (self.buffer, event_str)
+            else:
+                self.buffer = '%s\n%s%s' % (self.buffer[:index], event_str, self.buffer[index:])
 
     def next_event(self, blocking=False):
         """Return the next event from the queue"""
         while self.has_event(blocking=blocking):
-            line, remainder = self.buffer.split('\n', 1)
-            self.buffer = remainder
+            with self._buffer_lock:
+                line, remainder = self.buffer.split('\n', 1)
+                self.buffer = remainder
             event = json.loads(line)
             event = self._filter_faucet_event(event)
             if event:
@@ -165,4 +178,5 @@ class FaucetEventClient():
         """Close the faucet event socket"""
         self.sock.close()
         self.sock = None
-        self.buffer = None
+        with self._buffer_lock:
+            self.buffer = None
