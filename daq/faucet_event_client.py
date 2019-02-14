@@ -1,11 +1,14 @@
 """Simple client for working with the faucet event socket"""
 
 import json
+import logging
 import os
 import select
 import socket
 import threading
 import time
+
+LOGGER = logging.getLogger('faucet')
 
 class FaucetEventClient():
     """A general client interface to the FAUCET event API"""
@@ -85,15 +88,26 @@ class FaucetEventClient():
         self.previous_state[state_key] = active
         return True
 
-    def _debounce_port_event(dpid, port, active):
+    def _debounce_port_event(self, dpid, port, active):
+        if not self._port_debounce_sec:
+            self._handle_debounce(dpid, port, active)
+            return
+        state_key = '%s-%d' % (dpid, port)
         if state_key in self._port_timers:
+            LOGGER.debug('Port cancel %s', state_key)
             self._port_timers[state_key].cancel()
-        arg = (dpid, port, active)
-        timer = threading.Timer(self._port_debounce_sec, self._handle_debounce_timer, args)
+        if active:
+            self._handle_debounce(dpid, port, active)
+            return
+        LOGGER.debug('Port set %s = %s', state_key, active)
+        timer = threading.Timer(self._port_debounce_sec,
+                                lambda: self._handle_debounce(dpid, port, active))
+        timer.start()
         self._port_timers[state_key] = timer
 
-    def _handle_debounce_timer(self, dpid, port, active):
+    def _handle_debounce(self, dpid, port, active):
         status = 'ADD' if active else 'DELETE'
+        LOGGER.debug('Port handle %s-%s = %s', dpid, port, status)
         self.prepend_event(self._make_port_state(dpid, port, status, debounced=True))
 
     def prepend_event(self, event):
@@ -134,7 +148,6 @@ class FaucetEventClient():
             return (None, None, None)
         dpid = event['dp_id']
         port_no = int(event['PORT_CHANGE']['port_no'])
-        port_active = self._status_to_active(event['PORT_CHANGE'])
         reason = event['PORT_CHANGE']['reason']
         port_active = event['PORT_CHANGE']['status'] and reason != 'DELETE'
         return (dpid, port_no, port_active)

@@ -81,7 +81,7 @@ class DAQRunner():
         self.network.initialize()
 
         LOGGER.debug("Attaching event channel...")
-        self.faucet_events = faucet_event_client.FaucetEventClient(config)
+        self.faucet_events = faucet_event_client.FaucetEventClient(self.config)
         self.faucet_events.connect()
 
         LOGGER.info("Waiting for system to settle...")
