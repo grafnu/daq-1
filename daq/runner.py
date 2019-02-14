@@ -113,7 +113,7 @@ class DAQRunner():
         """Get the internal interface for the host"""
         return self.network.get_host_interface(host)
 
-    def _handle_faucet_event(self):
+    def _handle_faucet_events(self):
         while True:
             event = self.faucet_events.next_event()
             LOGGER.debug('Faucet event %s', event)
@@ -158,6 +158,8 @@ class DAQRunner():
             LOGGER.debug('Port %s dpid %s learned %s', port, dpid, target_mac)
 
     def _handle_system_idle(self):
+        # Some synthetic faucet events don't come in on the socket, so process them here.
+        self._handle_faucet_events()
         all_idle = True
         # Iterate over copy of list to prevent fail-on-modification.
         for target_set in list(self.port_targets.values()):
@@ -206,7 +208,7 @@ class DAQRunner():
             monitor = stream_monitor.StreamMonitor(idle_handler=self._handle_system_idle,
                                                    loop_hook=self._loop_hook)
             self.stream_monitor = monitor
-            self.monitor_stream('faucet', self.faucet_events.sock, self._handle_faucet_event)
+            self.monitor_stream('faucet', self.faucet_events.sock, self._handle_faucet_events)
             if self.event_trigger:
                 self._flush_faucet_events()
             LOGGER.info('Entering main event loop.')

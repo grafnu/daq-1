@@ -88,6 +88,7 @@ class FaucetEventClient():
         state_key = '%s-%d' % (dpid, port)
         if state_key in self.previous_state and self.previous_state[state_key] == active:
             return False
+        LOGGER.debug('Port change %s active %s', state_key, active)
         self.previous_state[state_key] = active
         return True
 
@@ -102,16 +103,15 @@ class FaucetEventClient():
         if active:
             self._handle_debounce(dpid, port, active)
             return
-        LOGGER.debug('Port set %s = %s', state_key, active)
+        LOGGER.debug('Port timer %s = %s', state_key, active)
         timer = threading.Timer(self._port_debounce_sec,
                                 lambda: self._handle_debounce(dpid, port, active))
         timer.start()
         self._port_timers[state_key] = timer
 
     def _handle_debounce(self, dpid, port, active):
-        status = 'ADD' if active else 'DELETE'
-        LOGGER.debug('Port handle %s-%s = %s', dpid, port, status)
-        self._append_event(self._make_port_state(dpid, port, status, debounced=True))
+        LOGGER.debug('Port handle %s-%s as %s', dpid, port, active)
+        self._append_event(self._make_port_state(dpid, port, active, debounced=True))
 
     def _prepend_event(self, event):
         with self._buffer_lock:
@@ -125,6 +125,7 @@ class FaucetEventClient():
                 self.buffer = '%s%s\n' % (self.buffer, event_str)
             else:
                 self.buffer = '%s\n%s%s' % (self.buffer[:index], event_str, self.buffer[index:])
+            LOGGER.debug('appended %s\n%s*', event_str, self.buffer)
 
     def next_event(self, blocking=False):
         """Return the next event from the queue"""
@@ -132,7 +133,10 @@ class FaucetEventClient():
             with self._buffer_lock:
                 line, remainder = self.buffer.split('\n', 1)
                 self.buffer = remainder
-            event = json.loads(line)
+            try:
+                event = json.loads(line)
+            except:
+                LOGGER.info('Error parsing\n%s*\nwith\n%s*', line, remainder)
             event = self._filter_faucet_event(event)
             if event:
                 return event
