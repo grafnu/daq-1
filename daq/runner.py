@@ -139,35 +139,31 @@ class DAQRunner():
                 LOGGER.debug('Port timer %s cancelled', port_key)
             if self._port_debounce_sec > 0:
                 args = (dpid, port, active)
-                timer = threading.Timer(self._port_debounce_sec, self._handle_device_port_state, args)
+                timer = threading.Timer(self._port_debounce_sec, self._handle_port_state_raw, args)
                 self._port_timers[port_key] = timer
                 LOGGER.debug('Port timer %s set for %d sec', port_key, self._port_debounce_sec)
             else:
-                self._handle_device_port_state(dpid, port, active)
+                self._handle_port_state_raw(dpid, port, active)
 
-    def _handle_device_port_state(self, dpid, port, active):
-        port_key = "%s-%s" % (dpid, port)
-        LOGGER.debug('Port timer %s triggered', port_key)
-        with self._port_lock:
-            if self.network.is_system_port(dpid, port):
-                LOGGER.warning('System port %s on dpid %s is active %s', port, dpid, active)
-                return
-            elif not self.network.is_device_port(dpid, port):
-                LOGGER.debug('Unknown port %s on dpid %s is active %s', port, dpid, active)
-                return
+    def _handle_port_state_raw(self, dpid, port, active):
+        if self.network.is_system_port(dpid, port):
+            LOGGER.warning('System port %s on dpid %s is active %s', port, dpid, active)
+            return
+        elif not self.network.is_device_port(dpid, port):
+            LOGGER.debug('Unknown port %s on dpid %s is active %s', port, dpid, active)
+            return
 
-            del self._port_timers[port_key]
-            if active != (port in self.active_ports):
-                LOGGER.info('Port %s dpid %s is now active %s', port, dpid, active)
-            if active:
-                self.active_ports[port] = True
-            else:
-                if port in self.port_targets:
-                    self.target_set_complete(self.port_targets[port], 'port not active')
-                if port in self.active_ports:
-                    if self.active_ports[port] is not True:
-                        self._direct_port_traffic(self.active_ports[port], port, None)
-                    del self.active_ports[port]
+        if active != (port in self.active_ports):
+            LOGGER.info('Port %s dpid %s is now active %s', port, dpid, active)
+        if active:
+            self.active_ports[port] = True
+        else:
+            if port in self.port_targets:
+                self.target_set_complete(self.port_targets[port], 'port not active')
+            if port in self.active_ports:
+                if self.active_ports[port] is not True:
+                    self._direct_port_traffic(self.active_ports[port], port, None)
+                del self.active_ports[port]
 
     def _direct_port_traffic(self, mac, port, target):
         self.network.direct_port_traffic(mac, port, target)
