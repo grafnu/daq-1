@@ -17,8 +17,8 @@ class FaucetEventClient():
         self.config = config
         self.sock = None
         self.buffer = None
+        self._buffer_lock = threading.Lock()
         self.previous_state = None
-        self._port_lock = threading.Lock()
         self._port_debounce_sec = int(config.get('port_debounce_sec', self._PORT_DEBOUNCE_SEC))
         self._port_timers = {}
 
@@ -62,10 +62,12 @@ class FaucetEventClient():
             else:
                 return False
 
-    def _filter_state_update(self, event):
+    def _filter_faucet_event(self, event):
         (dpid, port, active) = self.as_port_state(event)
         if dpid and port:
-            if self._process_state_update(dpid, port, active):
+            if not event.get('debounced'):
+                self._debounce_port_event(dpid, port, active)
+            elif self._process_state_update(dpid, port, active):
                 return event
             return None
 
@@ -83,6 +85,17 @@ class FaucetEventClient():
         self.previous_state[state_key] = active
         return True
 
+    def _debounce_port_event(dpid, port, active):
+        if state_key in self._port_timers:
+            self._port_timers[state_key].cancel()
+        arg = (dpid, port, active)
+        timer = threading.Timer(self._port_debounce_sec, self._handle_debounce_timer, args)
+        self._port_timers[state_key] = timer
+
+    def _handle_debounce_timer(self, dpid, port, active):
+        status = 'ADD' if active else 'DELETE'
+        self.prepend_event(self._make_port_state(dpid, port, status, debounced=True))
+
     def prepend_event(self, event):
         """Prepend a (synthetic) event to the event queue"""
         self.buffer = '%s\n%s' % (json.dumps(event), self.buffer)
@@ -93,7 +106,7 @@ class FaucetEventClient():
             line, remainder = self.buffer.split('\n', 1)
             self.buffer = remainder
             event = json.loads(line)
-            event = self._filter_state_update(event)
+            event = self._filter_faucet_event(event)
             if event:
                 return event
         return None
