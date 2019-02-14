@@ -3,7 +3,6 @@
 import logging
 import os
 import re
-import threading
 import time
 
 import faucet_event_client
@@ -23,7 +22,6 @@ class DAQRunner():
     class owns the main event loop and shards out work to subclasses."""
 
     MAX_GATEWAYS = 10
-    _PORT_DEBOUNCE_SEC = 5
 
     def __init__(self, config):
         self.config = config
@@ -32,7 +30,6 @@ class DAQRunner():
         self.mac_targets = {}
         self.result_sets = {}
         self.active_ports = {}
-        self._port_timers = {}
         self._device_groups = {}
         self._gateway_sets = {}
         self._target_mac_ip = {}
@@ -52,8 +49,6 @@ class DAQRunner():
         self.run_count = 0
         self.run_limit = int(config.get('run_limit', 0))
         self.result_log = self._open_result_log()
-        self._port_lock = threading.Lock()
-        self._port_debounce_sec = int(config.get('port_debounce_sec', self._PORT_DEBOUNCE_SEC))
 
         test_list = self._get_test_list(config.get('host_tests', _DEFAULT_TESTS_FILE), [])
         if self.config.get('keep_hold'):
@@ -86,8 +81,8 @@ class DAQRunner():
         self.network.initialize()
 
         LOGGER.debug("Attaching event channel...")
-        self.faucet_events = faucet_event_client.FaucetEventClient()
-        self.faucet_events.connect(os.getenv('FAUCET_EVENT_SOCK'))
+        self.faucet_events = faucet_event_client.FaucetEventClient(config)
+        self.faucet_events.connect()
 
         LOGGER.info("Waiting for system to settle...")
         time.sleep(3)
@@ -132,20 +127,6 @@ class DAQRunner():
                 self._handle_port_learn(dpid, port, target_mac)
 
     def _handle_port_state(self, dpid, port, active):
-        with self._port_lock:
-            port_key = "%s-%s" % (dpid, port)
-            if port_key in self._port_timers:
-                self._port_timers[port_key].cancel()
-                LOGGER.debug('Port timer %s cancelled', port_key)
-            if self._port_debounce_sec > 0:
-                args = (dpid, port, active)
-                timer = threading.Timer(self._port_debounce_sec, self._handle_port_state_raw, args)
-                self._port_timers[port_key] = timer
-                LOGGER.debug('Port timer %s set for %d sec', port_key, self._port_debounce_sec)
-            else:
-                self._handle_port_state_raw(dpid, port, active)
-
-    def _handle_port_state_raw(self, dpid, port, active):
         if self.network.is_system_port(dpid, port):
             LOGGER.info('System port %s on dpid %s is active %s', port, dpid, active)
             return

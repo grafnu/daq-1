@@ -4,20 +4,28 @@ import json
 import os
 import select
 import socket
+import threading
 import time
 
 class FaucetEventClient():
     """A general client interface to the FAUCET event API"""
 
     FAUCET_RETRIES = 10
+    _PORT_DEBOUNCE_SEC = 5
 
-    def __init__(self):
+    def __init__(self, config):
+        self.config = config
         self.sock = None
         self.buffer = None
         self.previous_state = None
+        self._port_lock = threading.Lock()
+        self._port_debounce_sec = int(config.get('port_debounce_sec', self._PORT_DEBOUNCE_SEC))
+        self._port_timers = {}
 
-    def connect(self, sock_path):
+    def connect(self):
         """Make connection to sock to receive events"""
+
+        sock_path = os.getenv('FAUCET_EVENT_SOCK'))
 
         self.previous_state = {}
         self.buffer = ''
@@ -54,8 +62,7 @@ class FaucetEventClient():
             else:
                 return False
 
-    def filter_state_update(self, event):
-        """Filter out state updates to only detect meaningful changes"""
+    def _filter_state_update(self, event):
         (dpid, port, active) = self.as_port_state(event)
         if dpid and port:
             state_key = '%s-%d' % (dpid, port)
@@ -67,7 +74,7 @@ class FaucetEventClient():
         (dpid, status) = self.as_ports_status(event)
         if dpid:
             for port in status:
-                self.prepend_event(self.make_port_state(dpid, port, status[port]))
+                self.prepend_event(self._make_port_state(dpid, port, status[port]))
             return None
         return event
 
@@ -81,7 +88,7 @@ class FaucetEventClient():
             line, remainder = self.buffer.split('\n', 1)
             self.buffer = remainder
             event = json.loads(line)
-            event = self.filter_state_update(event)
+            event = self._filter_state_update(event)
             if event:
                 return event
         return None
@@ -92,8 +99,7 @@ class FaucetEventClient():
             return (None, None)
         return (event['dp_id'], event['PORTS_STATUS'])
 
-    def make_port_state(self, dpid, port, status):
-        """Make a synthetic port state event"""
+    def _make_port_state(self, dpid, port, status, debounced=False):
         port_change = {}
         port_change['port_no'] = port
         port_change['status'] = status
@@ -101,6 +107,7 @@ class FaucetEventClient():
         event = {}
         event['dp_id'] = dpid
         event['PORT_CHANGE'] = port_change
+        event['debounced'] = debounced
         return event
 
     def as_port_state(self, event):
@@ -108,10 +115,13 @@ class FaucetEventClient():
         if not event or 'PORT_CHANGE' not in event:
             return (None, None, None)
         dpid = event['dp_id']
-        reason = event['PORT_CHANGE']['reason']
         port_no = int(event['PORT_CHANGE']['port_no'])
+        port_active = self._status_to_active(event['PORT_CHANGE'])
+        reason = event['PORT_CHANGE']['reason']
         port_active = event['PORT_CHANGE']['status'] and reason != 'DELETE'
         return (dpid, port_no, port_active)
+
+    def _active_to_state
 
     def as_port_learn(self, event):
         """Convert to port learning info, if applicable"""
