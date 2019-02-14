@@ -5,6 +5,7 @@
 	* Build and release documentation updates.
 	* Dual stacking topology tests.
 	* Port debounce feature for flaky switch connections.
+	* Debugging fail_hook setting.
 * 0.9.2
 	* Stacking topology generator.
 	* SWITCH_PORT env variable available to tests.
