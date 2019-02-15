@@ -139,7 +139,8 @@ class DAQRunner():
         if active != (port in self.active_ports):
             LOGGER.info('Port %s dpid %s is now active %s', port, dpid, active)
         if active:
-            self.active_ports[port] = True
+            if not self.active_ports.get(port):
+                self.active_ports[port] = True
         else:
             if port in self.port_targets:
                 self.target_set_complete(self.port_targets[port], 'port not active')
@@ -471,8 +472,7 @@ class DAQRunner():
             target_gateway = self.port_gateways[target_port]
             del self.port_gateways[target_port]
             target_mac = self.active_ports[target_port]
-            if target_mac in self.mac_targets:
-                del self.mac_targets[target_mac]
+            del self.mac_targets[target_mac]
             LOGGER.info('Target port %d cancel %s (#%d/%s).',
                         target_port, target_mac, self.run_count, self.run_limit)
             results = self._combine_result_set(target_port, self.result_sets[target_port])
