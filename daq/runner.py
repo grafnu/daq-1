@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import time
+import traceback
 
 import faucet_event_client
 import gateway as gateway_manager
@@ -138,7 +139,8 @@ class DAQRunner():
         if active != (port in self.active_ports):
             LOGGER.info('Port %s dpid %s is now active %s', port, dpid, active)
         if active:
-            self.active_ports[port] = True
+            if not self.active_ports.get(port):
+                self.active_ports[port] = True
         else:
             if port in self.port_targets:
                 self.target_set_complete(self.port_targets[port], 'port not active')
@@ -434,6 +436,7 @@ class DAQRunner():
         """Handle an error in the target port set"""
         active = target_port in self.port_targets
         LOGGER.warning('Target port %d (%s) exception: %s', target_port, active, e)
+        LOGGER.error('Exception: %s', ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)))
         if active:
             target_set = self.port_targets[target_port]
             target_set.record_result(target_set.test_name, exception=e)
