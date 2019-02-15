@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import time
+import traceback
 
 import faucet_event_client
 import gateway as gateway_manager
@@ -434,7 +435,7 @@ class DAQRunner():
         """Handle an error in the target port set"""
         active = target_port in self.port_targets
         LOGGER.warning('Target port %d (%s) exception: %s', target_port, active, e)
-        LOGGER.exception('Port Exception', e)
+        LOGGER.error('Exception: %s', ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)))
         if active:
             target_set = self.port_targets[target_port]
             target_set.record_result(target_set.test_name, exception=e)
@@ -470,7 +471,8 @@ class DAQRunner():
             target_gateway = self.port_gateways[target_port]
             del self.port_gateways[target_port]
             target_mac = self.active_ports[target_port]
-            del self.mac_targets[target_mac]
+            if target_mac in self.mac_targets:
+                del self.mac_targets[target_mac]
             LOGGER.info('Target port %d cancel %s (#%d/%s).',
                         target_port, target_mac, self.run_count, self.run_limit)
             results = self._combine_result_set(target_port, self.result_sets[target_port])
