@@ -434,6 +434,7 @@ class DAQRunner():
         """Handle an error in the target port set"""
         active = target_port in self.port_targets
         LOGGER.warning('Target port %d (%s) exception: %s', target_port, active, e)
+        LOGGER.exception('Port Exception', e)
         if active:
             target_set = self.port_targets[target_port]
             target_set.record_result(target_set.test_name, exception=e)
