@@ -58,8 +58,9 @@ class DAQRunner():
 
     def _flush_faucet_events(self):
         LOGGER.info('Flushing faucet event queue...')
-        while self.faucet_events.next_event():
-            pass
+        if self.faucet_events:
+            while self.faucet_events.next_event():
+                pass
 
     def _open_result_log(self):
         return open(RESULT_LOG_FILE, 'w')
@@ -114,7 +115,7 @@ class DAQRunner():
         return self.network.get_host_interface(host)
 
     def _handle_faucet_events(self):
-        while True:
+        while self.faucet_events:
             event = self.faucet_events.next_event()
             LOGGER.debug('Faucet event %s', event)
             if not event:
