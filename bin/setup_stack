@@ -68,7 +68,7 @@ sudo rm -rf inst/faucet
 mkdir -p inst/faucet/corp-agg
 
 cp misc/corp_faucet.yaml inst/faucet/corp-agg/faucet.yaml
-cp -a topology/nz-kiwi/* inst/faucet/
+cp -a $(find topology/nz-kiwi -maxdepth 1 -type d) inst/faucet/
 
 docker kill nz-kiwi-ctl1 || true
 docker kill nz-kiwi-ctl2 || true
