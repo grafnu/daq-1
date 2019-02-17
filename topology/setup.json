@@ -35,10 +35,7 @@
   },
   'loop_protect_external': true,
   'uplink_iface': {
-    'description': 'uplink access',
-    'lacp': 1,
-    'lldp_beacon': {'enable': true},
-    'loop_protect_external': true
+    'lacp': 1
   },
   "pre_acls": [
     {
