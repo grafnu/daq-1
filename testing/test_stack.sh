@@ -2,7 +2,7 @@
 
 source testing/test_preamble.sh
 
-out_dir=/tmp/daq-test_stack
+out_dir=out/daq-test_stack
 rm -rf $out_dir
 
 pcap_file=$out_dir/t2sw1-eth6.pcap
@@ -72,7 +72,7 @@ wait
 
 bcount=$(tcpdump -en -r $pcap_file | wc -l) 2>/dev/null
 echo pcap count is $bcount
-echo pcap sane $((bcount > 10)) $((bcount < 1000)) | tee -a $TEST_RESULTS
+echo pcap sane $((bcount > 5)) $((bcount < 20)) | tee -a $TEST_RESULTS
 
 cat $nodes_dir/* | tee -a $TEST_RESULTS
 
