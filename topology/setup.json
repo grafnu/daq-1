@@ -35,6 +35,40 @@
   },
   'loop_protect_external': true,
   'uplink_iface': {
-    'lacp': 1
-  }
+    'description': 'uplink access',
+    'lacp': 1,
+    'lldp_beacon': {'enable': true},
+    'loop_protect_external': true
+  },
+  "pre_acls": [
+    {
+      "description": "ICMP Allow",
+      "nw_proto": 1
+    },
+    {
+      "description": "ARP Allow",
+      "dl_type": "0x0806"
+    },
+    {
+      "description": "DHCP Allow",
+      "udp_src": 68,
+      "udp_dst": 67
+    },
+    {
+      "description": "DNS Allow",
+      "udp_dst": 53
+    },
+    {
+      "description": "DHCP Broadcast",
+      "dl_dst": "ff:ff:ff:ff:ff:ff",
+      "udp_src": 68,
+      "udp_dst": 67
+    }
+  ],
+  "post_acls": [
+    {
+      "description": "Default Deny",
+      "allow": false
+    }
+  ]
 }
