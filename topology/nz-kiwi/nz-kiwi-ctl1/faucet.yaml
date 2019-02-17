@@ -34,6 +34,7 @@ dps:
         stack: {dp: nz-kiwi-t1sw1, port: 23}
     lacp_timeout: 5
     lldp_beacon: {max_per_interval: 5, send_interval: 5}
+include: [uniform.yaml]
 version: 2
 vlans:
-  Faucet_IoT: {description: Faucet IoT, vid: 100}
+  Faucet_IoT: {acl_in: uniform_acl, description: Faucet IoT, vid: 100}
