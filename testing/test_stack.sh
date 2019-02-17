@@ -12,6 +12,22 @@ mkdir -p $out_dir $nodes_dir
 
 setup_delay=60
 
+echo Generator tests | tee -a $TEST_RESULTS
+rm -rf out/topology
+normalize_base=topology/un-moon/un-moon-ctl0g-1-1/
+bin/generate_topology raw_topo=$normalize_base topo_dir=out/topology/normalized
+diff -r out/topology/normalized $normalize_base | tee -a $TEST_RESULTS
+
+sites=$(cd topology; ls -d *)
+mkdir -p out/topology/generated
+for site in $sites; do
+    if [ ! -d topology/$site ]; then
+        continue;
+    fi
+    bin/generate_topology site_config=topology/$site/site_config.json topo_dir=out/topology/generated/$site
+done
+diff -r out/topology/generated topology/ | tee -a $TEST_RESULTS
+
 echo Stacking Tests >> $TEST_RESULTS
 
 bin/setup_stack || exit 1
@@ -58,7 +74,7 @@ bcount=$(tcpdump -en -r $pcap_file | wc -l)
 echo pcap count is $bcount
 echo pcap sane $((bcount > 10)) $((bcount < 1000)) | tee -a $TEST_RESULTS
 
-cat $nodes_dir/* | tee -a $TEST_RESULTS
+#cat $nodes_dir/* | tee -a $TEST_RESULTS
 
 echo Faucet logs
 more inst/faucet/*/faucet.log
