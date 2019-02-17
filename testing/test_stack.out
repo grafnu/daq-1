@@ -1,12 +1,10 @@
 Running testing/test_stack.sh
 Generator tests
-Only in out/topology/generated/nz-kiwi/nz-kiwi-ctl1: gauge.yaml
-Only in topology/nz-kiwi/nz-kiwi-ctl2: dps.yaml
-Only in out/topology/generated/nz-kiwi/nz-kiwi-ctl2: gauge.yaml
-Only in topology/nz-kiwi/nz-kiwi-ctl2: vlans.yaml
 Only in topology/nz-kiwi: site_config.json
 Only in topology/: setup.json
 Only in topology/un-moon: site_config.json
+Only in out/topology/generated/un-moon/un-moon-ctl0g-1-1: uniform.yaml
+Only in out/topology/generated/un-moon/un-moon-ctl0g-1-2: uniform.yaml
 Stacking Tests
 OVS bridge corp
 OFPT_FEATURES_REPLY (xid=0x2): dpid:0000000000000111
