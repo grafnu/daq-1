@@ -53,7 +53,7 @@ function test_pair {
     cmd="ping -c 10 192.168.0.$dst"
     echo $host: $cmd
     echo -n $host: $cmd\ > $out_file
-    docker exec -ti $host $cmd | fgrep time= | wc -l >> $out_file &
+    docker exec $host $cmd | fgrep time= | wc -l >> $out_file 2>/dev/null &
 }
 
 echo Capturing pcap to $pcap_file for 20 seconds...
