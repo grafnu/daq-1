@@ -64,7 +64,7 @@ function add_oeth {
 
 sudo modprobe bonding
 
-rm -rf inst/faucet
+sudo rm -rf inst/faucet
 mkdir -p inst/faucet/corp-agg
 
 cp misc/corp_faucet.yaml inst/faucet/corp-agg/faucet.yaml
@@ -85,9 +85,9 @@ docker exec -ti daq-faux-3 ip addr flush faux-eth0
 docker exec -ti daq-faux-3 ifconfig faux-eth0 192.168.0.3/16
 
 add_br t1sw1 177 6653 # 0x510 6653
-add_br t2sw1 178 6653 # 0x0b1 6653
-add_br t1sw2 1296 6663 # 0x930 6663
-add_br t2sw2 2352 6663 # 0x0b2 6663
+add_br t2sw1 2352 6653 # 0x0b1 6653
+add_br t1sw2 178 6663 # 0x930 6663
+add_br t2sw2 1296 6663 # 0x0b2 6663
 add_br corp  0x111 6673
 
 add_oeth t1sw1 1 corp-eth10

@@ -70,11 +70,11 @@ test_pair 3 2
 echo Waiting for pair tests to complete...
 wait
 
-bcount=$(tcpdump -en -r $pcap_file | wc -l)
+bcount=$(tcpdump -en -r $pcap_file | wc -l) 2>/dev/null
 echo pcap count is $bcount
 echo pcap sane $((bcount > 10)) $((bcount < 1000)) | tee -a $TEST_RESULTS
 
-#cat $nodes_dir/* | tee -a $TEST_RESULTS
+cat $nodes_dir/* | tee -a $TEST_RESULTS
 
 echo Faucet logs
 more inst/faucet/*/faucet.log
