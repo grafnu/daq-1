@@ -53,7 +53,7 @@ function test_pair {
     cmd="ping -c 10 192.168.0.$dst"
     echo $host: $cmd
     echo -n $host: $cmd\ > $out_file
-    docker exec $host $cmd | fgrep time= | wc -l >> $out_file 2>/dev/null &
+    docker exec $host $cmd | fgrep time= | fgrep -v DUP | wc -l >> $out_file 2>/dev/null &
 }
 
 echo Capturing pcap to $pcap_file for 20 seconds...
@@ -73,6 +73,9 @@ wait
 bcount=$(tcpdump -en -r $pcap_file | wc -l) 2>/dev/null
 echo pcap count is $bcount
 echo pcap sane $((bcount > 5)) $((bcount < 20)) | tee -a $TEST_RESULTS
+if [ $bcount <= 5 ]; then
+    tcpdump -en -r $pcap_file
+fi
 
 cat $nodes_dir/* | tee -a $TEST_RESULTS
 
