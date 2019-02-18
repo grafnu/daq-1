@@ -6,7 +6,7 @@ out_dir=out/daq-test_stack
 rm -rf $out_dir
 
 t2sw1p6_pcap=$out_dir/t2sw1-eth6.pcap
-t2sw2p6_pcap=$out_dir/t2sw2-eth6.pcap
+t2sw1p7_pcap=$out_dir/t2sw1-eth7.pcap
 nodes_dir=$out_dir/nodes
 
 mkdir -p $out_dir $nodes_dir
@@ -59,7 +59,7 @@ function test_pair {
 
 echo Capturing pcap to $t2sw1p6_pcap for 20 seconds...
 timeout 20 tcpdump -eni t2sw1-eth6 -w $t2sw1p6_pcap &
-timeout 20 tcpdump -eni t2sw2-eth6 -w $t2sw2p6_pcap &
+timeout 20 tcpdump -eni t2sw1-eth7 -w $t2sw1p7_pcap &
 sleep 1
 
 test_pair 1 2
@@ -80,11 +80,14 @@ echo pcap count is $bcount
 echo pcap sane $((bcount > 5)) $((bcount < 20)) | tee -a $TEST_RESULTS
 if [ $bcount -lt 5 ]; then
     tcpdump -en -r $t2sw1p6_pcap
+    tcpdump -en -r $t2sw1p7_pcap
 fi
 
-telnet=$(tcpdump -en -r $t2sw2p6_pcap vlan and port 23 | wc -l) 2>/dev/null
-https=$(tcpdump -en -r $t2sw2p6_pcap vlan and port 443 | wc -l) 2>/dev/null
-echo telnet $telnet https $https | tee -a $TEST_RESULTS
+telnet6=$(tcpdump -en -r $t2sw1p6_pcap vlan and port 23 | wc -l) 2>/dev/null
+https6=$(tcpdump -en -r $t2sw1p6_pcap vlan and port 443 | wc -l) 2>/dev/null
+telnet7=$(tcpdump -en -r $t2sw1p7_pcap vlan and port 23 | wc -l) 2>/dev/null
+https7=$(tcpdump -en -r $t2sw1p7_pcap vlan and port 443 | wc -l) 2>/dev/null
+echo telnet $telnet6 $telnet7 https $https6 $https7 | tee -a $TEST_RESULTS
 
 cat $nodes_dir/* | tee -a $TEST_RESULTS
 
