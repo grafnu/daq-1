@@ -37,5 +37,15 @@
         "cross_port": 6
       }
     }
-  }
+  },
+  "uniform_acls": [
+    {
+      "description": "https_to",
+      "tcp_dst": 443
+    },
+    {
+      "description": "https_from",
+      "tcp_src": 443
+    }
+  ]
 }

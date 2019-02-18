@@ -197,6 +197,7 @@ class TopologyGenerator():
     def _make_device_interface(self):
         return {
             'description': self._setup['device_description'],
+            'acl_in': self._UNIFORM_ACL_NAME,
             'native_vlan': self._site['vlan_id']
         }
 
@@ -305,7 +306,6 @@ class TopologyGenerator():
         return {
             self._setup['vlan']['name']: {
                 'description': self._setup['vlan']['description'],
-                'acl_in': self._UNIFORM_ACL_NAME,
                 'vid': self._site['vlan_id']
             }
         }

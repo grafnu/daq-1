@@ -23,7 +23,7 @@ dps:
     faucet_dp_mac: 0e:00:00:00:02:02
     hardware: Generic
     interface_ranges:
-      '1': {description: IoT Device, native_vlan: 100}
+      '1': {acl_in: uniform_acl, description: IoT Device, native_vlan: 100}
     interfaces:
       6:
         lldp_beacon: {enable: true}
@@ -37,4 +37,4 @@ dps:
 include: [uniform.yaml]
 version: 2
 vlans:
-  Faucet_IoT: {acl_in: uniform_acl, description: Faucet IoT, vid: 100}
+  Faucet_IoT: {description: Faucet IoT, vid: 100}

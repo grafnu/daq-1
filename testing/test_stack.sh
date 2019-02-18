@@ -5,7 +5,8 @@ source testing/test_preamble.sh
 out_dir=out/daq-test_stack
 rm -rf $out_dir
 
-pcap_file=$out_dir/t2sw1-eth6.pcap
+t2sw1p6_pcap=$out_dir/t2sw1-eth6.pcap
+t2sw2p6_pcap=$out_dir/t2sw2-eth6.pcap
 nodes_dir=$out_dir/nodes
 
 mkdir -p $out_dir $nodes_dir
@@ -36,8 +37,8 @@ echo Configured bridges:
 bridges=$(ovs-vsctl list-br | sort)
 for bridge in $bridges; do
     echo
-    echo OVS bridge $bridge | tee -a $TEST_RESULTS
-    ovs-ofctl show $bridge | sed -e 's/ addr:.*//' | tee -a $TEST_RESULTS
+    echo OVS bridge $bridge
+    ovs-ofctl show $bridge
 done
 
 echo
@@ -56,8 +57,9 @@ function test_pair {
     docker exec $host $cmd | fgrep time= | fgrep -v DUP | wc -l >> $out_file 2>/dev/null &
 }
 
-echo Capturing pcap to $pcap_file for 20 seconds...
-timeout 20 tcpdump -eni t2sw1-eth6 -w $pcap_file &
+echo Capturing pcap to $t2sw1p6_pcap for 20 seconds...
+timeout 20 tcpdump -eni t2sw1-eth6 -w $t2sw1p6_pcap &
+timeout 20 tcpdump -eni t2sw2-eth6 -w $t2sw2p6_pcap &
 sleep 1
 
 test_pair 1 2
@@ -67,15 +69,22 @@ test_pair 2 3
 test_pair 3 1
 test_pair 3 2
 
+docker exec daq-faux-1 nc -w 1 192.168.0.2 23 2>&1 | tee -a $TEST_RESULTS
+docker exec daq-faux-1 nc -w 1 192.168.0.2 443 2>&1 | tee -a $TEST_RESULTS
+
 echo Waiting for pair tests to complete...
 wait
 
-bcount=$(tcpdump -en -r $pcap_file | wc -l) 2>/dev/null
+bcount=$(tcpdump -en -r $t2sw1p6_pcap | wc -l) 2>/dev/null
 echo pcap count is $bcount
 echo pcap sane $((bcount > 5)) $((bcount < 20)) | tee -a $TEST_RESULTS
-if [ $bcount <= 5 ]; then
-    tcpdump -en -r $pcap_file
+if [ $bcount -lt 5 ]; then
+    tcpdump -en -r $t2sw1p6_pcap
 fi
+
+telnet=$(tcpdump -en -r $t2sw2p6_pcap vlan and port 23 | wc -l) 2>/dev/null
+https=$(tcpdump -en -r $t2sw2p6_pcap vlan and port 443 | wc -l) 2>/dev/null
+echo telnet $telnet https $https | tee -a $TEST_RESULTS
 
 cat $nodes_dir/* | tee -a $TEST_RESULTS
 
