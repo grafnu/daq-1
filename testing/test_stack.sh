@@ -81,7 +81,7 @@ echo Waited $((end_time - start_time))s.
 bcount6=$(tcpdump -en -r $t2sw1p6_pcap | wc -l) 2>/dev/null
 bcount7=$(tcpdump -en -r $t2sw1p7_pcap | wc -l) 2>/dev/null
 echo pcap count is $bcount6 $bcount7
-echo pcap sane $((bcount6 > 3)) $((bcount6 < 20)) $((bcount7 > 90)) $((bcount7 < 120)) | tee -a $TEST_RESULTS
+echo pcap sane $((bcount6 > 2)) $((bcount6 < 10)) $((bcount7 > 90)) $((bcount7 < 120)) | tee -a $TEST_RESULTS
 echo pcap t2sw1p6
 tcpdump -en -c 20 -r $t2sw1p6_pcap
 echo pcap t2sw1p7
