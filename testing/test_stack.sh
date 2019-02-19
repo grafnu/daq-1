@@ -78,10 +78,8 @@ wait
 bcount=$(tcpdump -en -r $t2sw1p6_pcap | wc -l) 2>/dev/null
 echo pcap count is $bcount
 echo pcap sane $((bcount > 5)) $((bcount < 20)) | tee -a $TEST_RESULTS
-if [ $bcount -lt 5 ]; then
-    tcpdump -en -r $t2sw1p6_pcap
-    tcpdump -en -r $t2sw1p7_pcap
-fi
+tcpdump -en -c 10 -r $t2sw1p6_pcap
+tcpdump -en -c 10 -r $t2sw1p7_pcap
 
 telnet6=$(tcpdump -en -r $t2sw1p6_pcap vlan and port 23 | wc -l) 2>/dev/null
 https6=$(tcpdump -en -r $t2sw1p6_pcap vlan and port 443 | wc -l) 2>/dev/null
