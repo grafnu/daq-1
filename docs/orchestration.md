@@ -1,6 +1,6 @@
-# Orchestrator
+# Orchestration
 
-The _DAQ Orchestrator_ is a sub-function of the overall DAQ framework that
+_Orchestration_ is a sub-function of the overall DAQ framework that
 enables the enforcement of network microsegmentation using the capabilities provided
 by the [Faucet OpenFlow network controller](https://faucet.nz/). The system takes
 in a number of device topology specification descriptiors, and dynamically applies
