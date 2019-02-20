@@ -12,6 +12,7 @@ nodes_dir=$out_dir/nodes
 mkdir -p $out_dir $nodes_dir
 
 setup_delay=60
+cap_length=20
 
 echo Generator tests | tee -a $TEST_RESULTS
 rm -rf out/topology
@@ -57,10 +58,10 @@ function test_pair {
     docker exec $host $cmd | fgrep time= | fgrep -v DUP | wc -l >> $out_file 2>/dev/null &
 }
 
-echo Capturing pcap to $t2sw1p6_pcap for 20 seconds...
-timeout 30 tcpdump -eni t2sw1-eth6 -w $t2sw1p6_pcap &
-timeout 30 tcpdump -eni t2sw1-eth7 -w $t2sw1p7_pcap &
-sleep 2
+echo Capturing pcap to $t2sw1p6_pcap for $cap_length seconds...
+timeout $cap_length tcpdump -eni t2sw1-eth6 -w $t2sw1p6_pcap &
+timeout $cap_length tcpdump -eni t2sw1-eth7 -w $t2sw1p7_pcap &
+sleep 5
 
 test_pair 1 2
 test_pair 1 3
