@@ -22,9 +22,9 @@ devices are interconnected.
 ## Sequence of Events
 
 1. Pre-runtime, MUD file are compiled into templatized fACLs (Faucet ACLs), such as the
-[BACnet ACL example](../setup/acl_templates/template_bacnet_acl.yaml).
+[BACnet ACL example](../mudacl/setup/acl_templates/template_bacnet_acl.yaml).
 2. When a new device is detected (characterized by a Faucet switch learning event), the system
-looks up the device's specification in the configured `device_spec`, correlating the type
+looks up the device's specification in the configured `device_spec`, correlating it's `type`
 field with a similarly-named MUD template.
 3. Templatized field information (like destination hosts) are resolved based on the current
 state of the network topology.
