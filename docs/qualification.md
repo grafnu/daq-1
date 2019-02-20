@@ -1,4 +1,4 @@
-# Device Qualification Overview
+# Device Qualification
 
 One primary function of DAQ is the ability to automatically (and continuously) test devices against
 a set of recognized standards. The goal is to increase the overall security level of devices to
