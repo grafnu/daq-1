@@ -35,6 +35,7 @@ class ConnectedHost():
     _REPORT_FORMAT = "report_%s_%s.txt"
     _TMPDIR_BASE = "inst"
     _REPORT_PREFIX = "\n#############"
+    _FAIL_BASE_FORMAT = "inst/fail_%s"
 
     def __init__(self, runner, gateway, target, config):
         self.runner = runner
@@ -67,6 +68,8 @@ class ConnectedHost():
         self._report_file = None
         self._initialize_report()
         self._startup_time = None
+        self._monitor_scan_sec = int(config.get('monitor_scan_sec', self._MONITOR_SCAN_SEC))
+        self._fail_hook = config.get('fail_hook')
 
     def _initialize_tempdir(self):
         tmpdir = os.path.join(self._TMPDIR_BASE, 'run-port-%02d' % self.target_port)
@@ -233,11 +236,15 @@ class ConnectedHost():
 
     def _monitor_scan(self):
         self._state_transition(_STATE.MONITOR, _STATE.BASE)
-        self.record_result('monitor', time=self._MONITOR_SCAN_SEC, state='run')
+        if not self._monitor_scan_sec:
+            LOGGER.info('Target port %d skipping background scan', self.target_port)
+            self._monitor_continue()
+            return
+        self.record_result('monitor', time=self._monitor_scan_sec, state='run')
         monitor_file = os.path.join(self.scan_base, 'monitor.pcap')
         now = datetime.datetime.now()
         LOGGER.info('Target port %d background scan at %s for %ds',
-                    self.target_port, now, self._MONITOR_SCAN_SEC)
+                    self.target_port, now, self._monitor_scan_sec)
         network = self.runner.network
         tcp_filter = ''
         intf_name = self._mirror_intf_name
@@ -246,7 +253,7 @@ class ConnectedHost():
                      self.target_port, intf_name, tcp_filter, monitor_file)
         helper = tcpdump_helper.TcpdumpHelper(network.pri, tcp_filter, packets=None,
                                               intf_name=intf_name,
-                                              timeout=self._MONITOR_SCAN_SEC,
+                                              timeout=self._monitor_scan_sec,
                                               pcap_out=monitor_file, blocking=False)
         self._tcp_monitor = helper
         self.runner.monitor_stream('tcpdump', self._tcp_monitor.stream(),
@@ -257,6 +264,9 @@ class ConnectedHost():
         LOGGER.info('Target port %d scan complete', self.target_port)
         self._monitor_cleanup(forget=False)
         self.record_result('monitor')
+        self._monitor_continue()
+
+    def _monitor_continue(self):
         self._state_transition(_STATE.NEXT, _STATE.MONITOR)
         self._run_next_test()
 
@@ -329,7 +339,8 @@ class ConnectedHost():
         self.test_port = self.runner.allocate_test_port(self.target_port)
         host_name = self.test_host.host_name if self.test_host else 'unknown'
         if 'ext_loip' in self.config:
-            params['local_ip'] = self.config['ext_loip'].replace('@', str(self.test_port))
+            ext_loip = self.config['ext_loip'].replace('@', '%d')
+            params['local_ip'] = ext_loip % self.test_port
             params['switch_ip'] = self.config['ext_addr']
             params['switch_port'] = str(self.target_port)
         LOGGER.debug('test_host start %s/%s', self.test_name, host_name)
@@ -339,6 +350,10 @@ class ConnectedHost():
         host_name = self.test_host.host_name if self.test_host else 'unknown'
         LOGGER.debug('test_host callback %s/%s was %s with %s',
                      self.test_name, host_name, return_code, exception)
+        if (return_code or exception) and self._fail_hook:
+            fail_file = self._FAIL_BASE_FORMAT % self.test_host.host_name
+            LOGGER.warning('Executing fail_hook: %s %s', self._fail_hook, fail_file)
+            os.system('%s %s 2>&1 > %s.out' % (self._fail_hook, fail_file, fail_file))
         self.record_result(self.test_name, code=return_code, exception=exception)
         result_path = os.path.join(self.tmpdir, 'nodes', host_name, 'return_code.txt')
         try:

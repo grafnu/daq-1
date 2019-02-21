@@ -18,7 +18,7 @@ class Gateway():
     GATEWAY_OFFSET = 0
     DUMMY_OFFSET = 1
     TEST_OFFSET_START = 2
-    NUM_SET_PORTS = 4
+    NUM_SET_PORTS = 6
     SET_SPACING = 10
     _PING_RETRY_COUNT = 5
 
@@ -161,8 +161,9 @@ class Gateway():
             'ip': target_ip,
             'mac': target_mac
         }
-        if self._is_target_expected(target) and not exception:
-            self.runner.dhcp_notify(state, target=target, gateway_set=self.port_set)
+        if self._is_target_expected(target) or exception:
+            self.runner.dhcp_notify(state, target=target, exception=exception,
+                                    gateway_set=self.port_set)
         else:
             LOGGER.warning('Unexpected target %s for gateway %s', target_mac, self.name)
 

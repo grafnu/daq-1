@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+if [ -n "$DAQ_SUPPRESS_PHY_SETUP" ]; then
+    echo Suppressing startup_cmds switch_local.
+    exit 0
+fi
+
 ROOT=$(realpath $(dirname $0)/..)
 cd $ROOT
 source misc/config_base.sh
@@ -23,7 +28,6 @@ fi
 
 echo Cleaning old setup...
 sudo ip link del $ctrl_pri 2>/dev/null || true
-sudo ip link del $ctrl_bridge 2>/dev/null || true
 sudo ip link del $ctrl_swx 2>/dev/null || true
 sudo ip link del $ctrl_swa 2>/dev/null || true
 sudo ovs-vsctl --if-exists del-port pri $ctrl_pri
@@ -75,6 +79,9 @@ if [ -z "$ext_ctrl" -a -n "$ext_addr" ]; then
     docker exec daq-switch ip addr add $targetip dev $ctrl_swb
     docker exec daq-switch ip link set $ctrl_swb up
 
+    echo DAQ autoclean docker rm -f daq-switch
+    echo DAQ autoclean ip link del $ctrl_swa
+
     ext_ctrl=$ctrl_swa
 else
     sudo ip link set $ext_ctrl up
@@ -96,9 +103,7 @@ if ! ping -n -c 2 $ext_addr; then
     false
 fi
 
-echo DAQ autoclean docker rm -f daq-switch
 echo DAQ autoclean ip link del $ctrl_pri
 echo DAQ autoclean ip link del $ctrl_swx
-echo DAQ autoclean ip link del $ctrl_bridge
-echo DAQ autoclean ip link del $ctrl_swa
+echo DAQ autoclean ovs-vsctl --if-exists del-br $ctrl_bridge
 echo Done with local switch setup.

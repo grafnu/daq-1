@@ -1,8 +1,13 @@
-# Device Qualification Overview
+# Device Qualification
 
 One primary function of DAQ is the ability to automatically (and continuously) test devices against
 a set of recognized standards. The goal is to increase the overall security level of devices to
-help prevent system compromise.
+help prevent system compromise. In the base case, once the system is setup, a device can be plugged in
+and automatically tested against the built-in suite of tests to measure complicance. Core tests
+focus on base network operation (e.g. proper handling of DHCP) and security measures (e.g. proper
+use of TLS). Techincally, the core framework is a python program that coordinates the operation of
+dockerized test containers to run against tests against network-attached target devices; afterwards,
+a report is generated and optionally uploaded to a web dashboard.
 
 ## Quickstart
 
@@ -33,9 +38,10 @@ or cloud credentials.)
 ## Report Generation
 
 After a test run, the system creates a <em>test report document</em> in a file that is named
-something like <code>inst/report_<em>ma:ca:dd:re:ss</em>.txt</code>. This file contains a complete
-summary of all the test results most germane to qualifying a device (but is not in iteself
-comprehensive).
+something like <code>inst/report_<em>ma:ca:dd:re:ss</em>_<em>timestamp</em>.txt</code>. This file
+contains a complete summary of all the test results most germane to qualifying a device (but is not
+in iteself comprehensive). If properly configured, this report will be uploaded to the configured
+cloud instance and available for download from the Web UI.
 
 ## Qualification Dashboard
 

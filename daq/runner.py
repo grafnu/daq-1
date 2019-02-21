@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import time
+import traceback
 
 import faucet_event_client
 import gateway as gateway_manager
@@ -38,7 +39,7 @@ class DAQRunner():
         self.version = os.environ['DAQ_VERSION']
         self.network = network.TestNetwork(config)
         self.result_linger = config.get('result_linger', False)
-        self._linger_exit = False
+        self._linger_exit = 0
         self.faucet_events = None
         self.single_shot = config.get('single_shot', False)
         self.event_trigger = config.get('event_trigger', False)
@@ -58,8 +59,9 @@ class DAQRunner():
 
     def _flush_faucet_events(self):
         LOGGER.info('Flushing faucet event queue...')
-        while self.faucet_events.next_event():
-            pass
+        if self.faucet_events:
+            while self.faucet_events.next_event():
+                pass
 
     def _open_result_log(self):
         return open(RESULT_LOG_FILE, 'w')
@@ -81,8 +83,8 @@ class DAQRunner():
         self.network.initialize()
 
         LOGGER.debug("Attaching event channel...")
-        self.faucet_events = faucet_event_client.FaucetEventClient()
-        self.faucet_events.connect(os.getenv('FAUCET_EVENT_SOCK'))
+        self.faucet_events = faucet_event_client.FaucetEventClient(self.config)
+        self.faucet_events.connect()
 
         LOGGER.info("Waiting for system to settle...")
         time.sleep(3)
@@ -92,7 +94,7 @@ class DAQRunner():
     def cleanup(self):
         """Cleanup instance"""
         try:
-            LOGGER.debug("Stopping network...")
+            LOGGER.info("Stopping network...")
             self.network.stop()
         except Exception as e:
             LOGGER.error('Exception: %s', e)
@@ -113,8 +115,8 @@ class DAQRunner():
         """Get the internal interface for the host"""
         return self.network.get_host_interface(host)
 
-    def _handle_faucet_event(self):
-        while True:
+    def _handle_faucet_events(self):
+        while self.faucet_events:
             event = self.faucet_events.next_event()
             LOGGER.debug('Faucet event %s', event)
             if not event:
@@ -127,21 +129,25 @@ class DAQRunner():
                 self._handle_port_learn(dpid, port, target_mac)
 
     def _handle_port_state(self, dpid, port, active):
-        LOGGER.debug('Port %s on dpid %s is active %s', port, dpid, active)
         if self.network.is_system_port(dpid, port):
             LOGGER.info('System port %s on dpid %s is active %s', port, dpid, active)
-        if self.network.is_device_port(dpid, port):
-            if active != (port in self.active_ports):
-                LOGGER.info('Port %s dpid %s is now active %s', port, dpid, active)
-            if active:
+            return
+        elif not self.network.is_device_port(dpid, port):
+            LOGGER.debug('Unknown port %s on dpid %s is active %s', port, dpid, active)
+            return
+
+        if active != (port in self.active_ports):
+            LOGGER.info('Port %s dpid %s is now active %s', port, dpid, active)
+        if active:
+            if not self.active_ports.get(port):
                 self.active_ports[port] = True
-            else:
-                if port in self.port_targets:
-                    self.target_set_complete(self.port_targets[port], 'port not active')
-                if port in self.active_ports:
-                    if self.active_ports[port] is not True:
-                        self._direct_port_traffic(self.active_ports[port], port, None)
-                    del self.active_ports[port]
+        else:
+            if port in self.port_targets:
+                self.target_set_complete(self.port_targets[port], 'port not active')
+            if port in self.active_ports:
+                if self.active_ports[port] is not True:
+                    self._direct_port_traffic(self.active_ports[port], port, None)
+                del self.active_ports[port]
 
     def _direct_port_traffic(self, mac, port, target):
         self.network.direct_port_traffic(mac, port, target)
@@ -155,6 +161,8 @@ class DAQRunner():
             LOGGER.debug('Port %s dpid %s learned %s', port, dpid, target_mac)
 
     def _handle_system_idle(self):
+        # Some synthetic faucet events don't come in on the socket, so process them here.
+        self._handle_faucet_events()
         all_idle = True
         # Iterate over copy of list to prevent fail-on-modification.
         for target_set in list(self.port_targets.values()):
@@ -178,7 +186,8 @@ class DAQRunner():
                 self.faucet_events = None
                 count = self.stream_monitor.log_monitors()
                 LOGGER.warning('No active ports remaining (%d): ending test run.', count)
-            if self._linger_exit:
+            if self._linger_exit == 1:
+                self._linger_exit = 2
                 LOGGER.warning('Result linger on exit.')
             all_idle = False
         if all_idle:
@@ -202,7 +211,7 @@ class DAQRunner():
             monitor = stream_monitor.StreamMonitor(idle_handler=self._handle_system_idle,
                                                    loop_hook=self._loop_hook)
             self.stream_monitor = monitor
-            self.monitor_stream('faucet', self.faucet_events.sock, self._handle_faucet_event)
+            self.monitor_stream('faucet', self.faucet_events.sock, self._handle_faucet_events)
             if self.event_trigger:
                 self._flush_faucet_events()
             LOGGER.info('Entering main event loop.')
@@ -336,39 +345,24 @@ class DAQRunner():
         """Handle a DHCP notificaiton"""
         target_mac = target.get('mac')
         target_ip = target.get('ip')
-        self._target_mac_ip[target_mac] = target_ip
         LOGGER.debug('DHCP notify %s is %s on gw%02d (%s)', target_mac,
                      target_ip, gateway_set, str(exception))
+
         if exception:
             LOGGER.error('DHCP exception for gw%02d: %s', gateway_set, exception)
             LOGGER.exception(exception)
             self._terminate_gateway_set(gateway_set)
             return
 
-        target_host = self.mac_targets[target_mac]
-        if not target_host.is_active():
-            LOGGER.debug('DHCP device %s ignoring spurious notify', target_mac)
+        if not target_mac:
+            LOGGER.warning('DHCP target mac missing')
             return
 
-        group_name = self._gateway_sets[gateway_set]
-        gateway = self._device_groups[group_name]
+        self._target_mac_ip[target_mac] = target_ip
 
-        if gateway.activated:
-            LOGGER.debug('DHCP activation group %s already activated', group_name)
-            return
+        (gateway, ready_devices) = self._should_activate_target(target_mac, target_ip, gateway_set)
 
-        ready_devices = gateway.target_ready(target_mac)
-        group_size = self.network.device_group_size(group_name)
-
-        if len(ready_devices) != group_size:
-            LOGGER.info('DHCP waiting for additional members of group %s', group_name)
-            return
-
-        ready_trigger = True
-        for target_mac in ready_devices:
-            ready_trigger = ready_trigger and target_host.trigger_ready()
-        if not ready_trigger:
-            LOGGER.warning('DHCP device group %s not ready to trigger', group_name)
+        if not ready_devices:
             return
 
         gateway.activate()
@@ -378,6 +372,40 @@ class DAQRunner():
             target_ip = self._target_mac_ip[target_mac]
             triggered = target_host.trigger(state, target_ip=target_ip)
             assert triggered, 'host %s not triggered' % target_mac
+
+    def _should_activate_target(self, target_mac, target_ip, gateway_set):
+        if target_mac not in self.mac_targets:
+            LOGGER.warning('DHCP targets missing %s', target_mac)
+            return (False, False)
+
+        target_host = self.mac_targets[target_mac]
+        if not target_host.is_active():
+            LOGGER.debug('DHCP device %s ignoring spurious notify', target_mac)
+            return (False, False)
+
+        group_name = self._gateway_sets[gateway_set]
+        gateway = self._device_groups[group_name]
+
+        if gateway.activated:
+            LOGGER.debug('DHCP activation group %s already activated', group_name)
+            return (False, False)
+
+        ready_devices = gateway.target_ready(target_mac)
+        group_size = self.network.device_group_size(group_name)
+
+        remaining = group_size - len(ready_devices)
+        if remaining and self.run_tests:
+            LOGGER.info('DHCP waiting for %d additional members of group %s', remaining, group_name)
+            return (False, False)
+
+        ready_trigger = True
+        for target_mac in ready_devices:
+            ready_trigger = ready_trigger and target_host.trigger_ready()
+        if not ready_trigger:
+            LOGGER.warning('DHCP device group %s not ready to trigger', group_name)
+            return (False, False)
+
+        return (gateway, ready_devices)
 
     def _terminate_gateway_set(self, gateway_set):
         if not gateway_set in self._gateway_sets:
@@ -418,6 +446,7 @@ class DAQRunner():
         """Handle an error in the target port set"""
         active = target_port in self.port_targets
         LOGGER.warning('Target port %d (%s) exception: %s', target_port, active, e)
+        LOGGER.error('Exception: %s', ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)))
         if active:
             target_set = self.port_targets[target_port]
             target_set.record_result(target_set.test_name, exception=e)
@@ -443,7 +472,7 @@ class DAQRunner():
             LOGGER.warning('Suppressing further tests due to failure.')
             self.run_tests = False
             if self.result_linger:
-                self._linger_exit = True
+                self._linger_exit = 1
         self.result_sets[target_port] = result_set
 
     def _target_set_cancel(self, target_port):
@@ -504,7 +533,9 @@ class DAQRunner():
 
     def _combine_result_set(self, set_key, result_sets):
         results = []
-        for result_set_key in result_sets:
+        result_set_keys = list(result_sets)
+        result_set_keys.sort()
+        for result_set_key in result_set_keys:
             result = result_sets[result_set_key]
             exception = self._extract_exception(result)
             code_string = result['code'] if 'code' in result else None
