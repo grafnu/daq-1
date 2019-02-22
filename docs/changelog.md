@@ -1,10 +1,11 @@
 # Changelog
 
-* 0.9.3
+* Next Version
 	* Fixes for broken local_switch setup and docs.
 	* Build and release documentation updates.
 	* Dual stacking topology tests.
 	* Port debounce feature for flaky ports.
+	* Updates to FCU example status messages.
 	* Debugging fail_hook setting.
 	* Faucet update to version 1.8.34.
 * 0.9.2
