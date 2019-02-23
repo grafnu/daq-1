@@ -4,6 +4,9 @@ Base Tests
 DAQ scan report for device 9a:02:57:1e:8f:00
 XXX
 
+Sample device description.
+By default would be in local/devices/ rather than misc/.
+
 #############
 
 Report for test nmap
