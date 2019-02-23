@@ -37,7 +37,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.apis:google-api-services-cloudiot:v1-rev20170922-1.22.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.api-client:google-api-client:1.22.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: io.moquette:moquette-broker:0.10" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.bugsnag:bugsnag:3.4.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.bugsnag:bugsnag:3.4.4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.librato.metrics:metrics-librato:5.1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.librato.metrics:librato-java:2.1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.1" level="project" />
@@ -106,7 +106,7 @@
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.google.apis:google-api-services-cloudiot:v1-rev20170922-1.22.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.google.api-client:google-api-client:1.22.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: io.moquette:moquette-broker:0.10" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: com.bugsnag:bugsnag:3.4.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: com.bugsnag:bugsnag:3.4.4" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.librato.metrics:metrics-librato:5.1.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.librato.metrics:librato-java:2.1.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.1" level="project" />
@@ -175,7 +175,7 @@
     <orderEntry type="library" scope="TEST" name="Gradle: com.google.apis:google-api-services-cloudiot:v1-rev20170922-1.22.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.google.api-client:google-api-client:1.22.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: io.moquette:moquette-broker:0.10" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: com.bugsnag:bugsnag:3.4.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.bugsnag:bugsnag:3.4.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.librato.metrics:metrics-librato:5.1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.librato.metrics:librato-java:2.1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.1" level="project" />
