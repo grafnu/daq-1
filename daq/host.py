@@ -3,12 +3,14 @@
 import datetime
 import logging
 import os
+import pytz
 import shutil
 import time
 
 from clib import tcpdump_helper
 
 import docker_test
+import report
 
 LOGGER = logging.getLogger('host')
 
@@ -32,9 +34,9 @@ class ConnectedHost():
 
     _MONITOR_SCAN_SEC = 30
     _STARTUP_MIN_TIME_SEC = 5
-    _REPORT_FORMAT = "report_%s_%s.txt"
-    _TMPDIR_BASE = "inst"
-    _REPORT_PREFIX = "\n#############"
+    _TMPDIR_BASE = "inst/"
+    _FAIL_BASE_FORMAT = "inst/fail_%s"
+    _TEST_PREFIX = "\n#############\n"
 
     def __init__(self, runner, gateway, target, config):
         self.runner = runner
@@ -46,6 +48,7 @@ class ConnectedHost():
         self.tmpdir = self._initialize_tempdir()
         self.run_id = '%06x' % int(time.time())
         self.scan_base = os.path.abspath(os.path.join(self.tmpdir, 'scans'))
+        self._conf_base = self._initialize_conf_base()
         self.state = None
         self.no_test = config.get('no_test', False)
         self._state_transition(_STATE.READY if self.no_test else _STATE.INIT)
@@ -62,16 +65,27 @@ class ConnectedHost():
         self._tcp_monitor = None
         self.target_ip = None
         self.record_result('startup', state='run')
-        self._report_path = None
-        self._report_file = None
-        self._initialize_report()
+        self._report = report.ReportGenerator(os.path.join(self._TMPDIR_BASE, 'reports'),
+                                              config.get('device_path'), self.target_mac)
         self._startup_time = None
+        self._monitor_scan_sec = int(config.get('monitor_scan_sec', self._MONITOR_SCAN_SEC))
+        self._fail_hook = config.get('fail_hook')
 
     def _initialize_tempdir(self):
         tmpdir = os.path.join(self._TMPDIR_BASE, 'run-port-%02d' % self.target_port)
         shutil.rmtree(tmpdir, ignore_errors=True)
         os.makedirs(tmpdir)
         return tmpdir
+
+    def _initialize_conf_base(self):
+        test_config = self.config.get('test_config')
+        if not test_config:
+            return None
+        conf_base = os.path.abspath(os.path.join(test_config, 'port-%02d' % self.target_port))
+        if not os.path.isdir(conf_base):
+            LOGGER.warning('Test config directory not found: %s', conf_base)
+            return None
+        return conf_base
 
     def initialize(self):
         """Fully initialize a new host set"""
@@ -206,7 +220,8 @@ class ConnectedHost():
 
     def _monitor_cleanup(self, forget=True):
         if self._tcp_monitor:
-            LOGGER.info('Target port %d monitor scan complete', self.target_port)
+            now = datetime.datetime.now()
+            LOGGER.info('Target port %d monitor scan complete at %s', self.target_port, now)
             if forget:
                 self.runner.monitor_forget(self._tcp_monitor.stream())
             self._tcp_monitor.terminate()
@@ -221,10 +236,15 @@ class ConnectedHost():
 
     def _monitor_scan(self):
         self._state_transition(_STATE.MONITOR, _STATE.BASE)
-        self.record_result('monitor', time=self._MONITOR_SCAN_SEC, state='run')
+        if not self._monitor_scan_sec:
+            LOGGER.info('Target port %d skipping background scan', self.target_port)
+            self._monitor_continue()
+            return
+        self.record_result('monitor', time=self._monitor_scan_sec, state='run')
         monitor_file = os.path.join(self.scan_base, 'monitor.pcap')
-        LOGGER.info('Target port %d background scan for %d seconds...',
-                    self.target_port, self._MONITOR_SCAN_SEC)
+        now = datetime.datetime.now()
+        LOGGER.info('Target port %d background scan at %s for %ds',
+                    self.target_port, now, self._monitor_scan_sec)
         network = self.runner.network
         tcp_filter = ''
         intf_name = self._mirror_intf_name
@@ -233,7 +253,7 @@ class ConnectedHost():
                      self.target_port, intf_name, tcp_filter, monitor_file)
         helper = tcpdump_helper.TcpdumpHelper(network.pri, tcp_filter, packets=None,
                                               intf_name=intf_name,
-                                              timeout=self._MONITOR_SCAN_SEC,
+                                              timeout=self._monitor_scan_sec,
                                               pcap_out=monitor_file, blocking=False)
         self._tcp_monitor = helper
         self.runner.monitor_stream('tcpdump', self._tcp_monitor.stream(),
@@ -244,6 +264,9 @@ class ConnectedHost():
         LOGGER.info('Target port %d scan complete', self.target_port)
         self._monitor_cleanup(forget=False)
         self.record_result('monitor')
+        self._monitor_continue()
+
+    def _monitor_continue(self):
         self._state_transition(_STATE.NEXT, _STATE.MONITOR)
         self._run_next_test()
 
@@ -271,34 +294,16 @@ class ConnectedHost():
             else:
                 LOGGER.info('Target port %d no more tests remaining', self.target_port)
                 self._state_transition(_STATE.DONE, _STATE.NEXT)
-                self._finalize_report()
-                self.record_result('finish', report=self._report_path)
+                self._report.write(self._TEST_PREFIX)
+                self._report.finalize()
+                self.runner.gcp.upload_report(self._report.path)
+                self.record_result('finish', report=self._report.path)
+                self._report = None
                 self.record_result(None)
         except Exception as e:
             LOGGER.error('Target port %d start error: %s', self.target_port, e)
             self._state_transition(_STATE.ERROR)
             self.runner.target_set_error(self.target_port, e)
-
-    def _initialize_report(self):
-        report_timestamp = datetime.datetime.now().replace(microsecond=0).isoformat()
-        report_filename = self._REPORT_FORMAT % (self.target_mac.replace(':', ''),
-                                                 report_timestamp)
-        report_path = os.path.join(self._TMPDIR_BASE, report_filename)
-
-        LOGGER.info('Creating report as %s', report_path)
-        self._report_path = report_path
-        self._report_file = open(report_path, "w")
-        self._report_file.write('DAQ scan report for device %s\n' % self.target_mac)
-
-    def _report_write(self, msg):
-        self._report_file.write('%s %s\n' % (self._REPORT_PREFIX, msg))
-
-    def _finalize_report(self):
-        LOGGER.info('Finalizing report %s', self._report_path)
-        self._report_write('Report complete.')
-        self._report_file.close()
-        self._report_file = None
-        self.runner.gcp.upload_report(self._report_path)
 
     def _docker_test(self, test_name):
         self._state_transition(_STATE.TESTING, _STATE.NEXT)
@@ -308,6 +313,7 @@ class ConnectedHost():
             'target_mac': self.target_mac,
             'gateway_ip': self.gateway.IP(),
             'gateway_mac': self.gateway.MAC(),
+            'conf_base': self._conf_base,
             'scan_base': self.scan_base
         }
 
@@ -315,8 +321,10 @@ class ConnectedHost():
         self.test_port = self.runner.allocate_test_port(self.target_port)
         host_name = self.test_host.host_name if self.test_host else 'unknown'
         if 'ext_loip' in self.config:
-            params['local_ip'] = self.config['ext_loip'].replace('@', str(self.test_port))
+            ext_loip = self.config['ext_loip'].replace('@', '%d')
+            params['local_ip'] = ext_loip % self.test_port
             params['switch_ip'] = self.config['ext_addr']
+            params['switch_port'] = str(self.target_port)
         LOGGER.debug('test_host start %s/%s', self.test_name, host_name)
         self.test_host.start(self.test_port, params, self._docker_callback)
 
@@ -324,6 +332,10 @@ class ConnectedHost():
         host_name = self.test_host.host_name if self.test_host else 'unknown'
         LOGGER.debug('test_host callback %s/%s was %s with %s',
                      self.test_name, host_name, return_code, exception)
+        if (return_code or exception) and self._fail_hook:
+            fail_file = self._FAIL_BASE_FORMAT % self.test_host.host_name
+            LOGGER.warning('Executing fail_hook: %s %s', self._fail_hook, fail_file)
+            os.system('%s %s 2>&1 > %s.out' % (self._fail_hook, fail_file, fail_file))
         self.record_result(self.test_name, code=return_code, exception=exception)
         result_path = os.path.join(self.tmpdir, 'nodes', host_name, 'return_code.txt')
         try:
@@ -333,9 +345,9 @@ class ConnectedHost():
             LOGGER.error('While writing result code: %s', e)
         report_path = os.path.join(self.tmpdir, 'nodes', host_name, 'tmp', 'report.txt')
         if os.path.isfile(report_path):
-            self._report_write('Report for test %s' % self.test_name)
-            with open(report_path, 'r') as report_stream:
-                shutil.copyfileobj(report_stream, self._report_file)
+            self._report.write(self._TEST_PREFIX)
+            self._report.write('Report for test %s' % self.test_name)
+            self._report.copy(report_path)
         self.test_host = None
         self.runner.release_test_port(self.target_port, self.test_port)
         if exception:

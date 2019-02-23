@@ -3,17 +3,18 @@
 This setup defines how to access the the control plane from a container test.
 
 ## Required Config
+
 In addition to the `ext_ofip` and `ext_addr` config values, setting
-`ext_loip` will enable switch control-plan access. It should be set
-to a pattern for the test container IP, e.g. `192.0.3.@/16`, where
-the `@` will be automaticaly replaced with test port set number.
+`ext_loip` will enable switch control-plane access. It should be set
+to a pattern for the test container IP, e.g. `192.0.3.%d/24`, where
+the `%d` will be automaticaly replaced with test port set number.
 Doing this causes the `LOCAL_IP` and `SWITCH_IP` env variables to be set in
 test containers. See `misc/test_ping` for an example of how to use them.
 
-If `ext_ctrl` is defined, then this will enable access to the actual
-actual physical switch. If `ext_ctrl` is _not_ defined, then the system
-will spin up a special `daq-switch` Docker container to masqurade as a switch
-(just responds to a ping, no actual switch functionality).
+If `ext_ctrl` is defined, then this will enable utilization of the actual physical
+switch. If `ext_ctrl` is _not_ defined, then the system will spin up a special
+`daq-switch` Docker container, defined by `Dockerfile.switch`, to masquerade as
+the switch for unit testing.
 
 ## Test Run
 This is a sample test run while using a simulated docker switch container
@@ -31,8 +32,8 @@ cleanup='echo cleanup'
 ext_addr=192.0.2.138
 ext_dpid=0x123456789
 ext_intf=ext-ovs-pri
-<b>ext_loip=192.0.3.@/16</b>
-ext_ofip=192.0.2.10/16
+<b>ext_loip=192.0.3.%d/24</b>
+ext_ofip=192.0.2.10/24
 ext_ofpt=6666
 run_mode=local
 sec_port=7

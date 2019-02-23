@@ -1,4 +1,4 @@
 autostart bin/external_ovs 0x123456789
 autostart cmd/faux
-external faux 2
-external ext-ovs-sec 7
+autostart bin/bridge_link ext-ovs faux 2
+autostart bin/bridge_link ext-ovs ext-ovs-sec 7

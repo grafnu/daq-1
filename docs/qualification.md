@@ -1,8 +1,13 @@
-# Device Qualification Overview
+# Device Qualification
 
 One primary function of DAQ is the ability to automatically (and continuously) test devices against
 a set of recognized standards. The goal is to increase the overall security level of devices to
-help prevent system compromise.
+help prevent system compromise. In the base case, once the system is setup, a device can be plugged in
+and automatically tested against the built-in suite of tests to measure complicance. Core tests
+focus on base network operation (e.g. proper handling of DHCP) and security measures (e.g. proper
+use of TLS). Techincally, the core framework is a python program that coordinates the operation of
+dockerized test containers to run against tests against network-attached target devices; afterwards,
+a report is generated and optionally uploaded to a web dashboard.
 
 ## Quickstart
 
@@ -12,11 +17,11 @@ Additionally, it sets up a local install of required packages and components.
 
 Once installed, the basic qualification suite can be run with `cmd/run -s`. The `-s`
 means <em>single shot</em> and will run tests just once and then exit (see the
-[options documentation](docs/options.md) for more details). The `local/` directory is 
+[options documentation](options.md) for more details). The `local/` directory is 
 created upon first execution of `cmd/run`. Runtime configuration
 is always pulled from `local/system.conf`, and if this file does not exist a baseline
 one will be copied from `misc/system_base.conf`.
-The output should approximately look like this [example log output](docs/run_log.md).
+The output should approximately look like this [example log output](run_log.md).
 
 ## Configuration
 
@@ -33,16 +38,17 @@ or cloud credentials.)
 ## Report Generation
 
 After a test run, the system creates a <em>test report document</em> in a file that is named
-something like <code>inst/report_<em>ma:ca:dd:re:ss</em>.txt</code>. This file contains a complete
-summary of all the test results most germane to qualifying a device (but is not in iteself
-comprehensive).
+something like <code>inst/report_<em>ma:ca:dd:re:ss</em>_<em>timestamp</em>.txt</code>. This file
+contains a complete summary of all the test results most germane to qualifying a device (but is not
+in iteself comprehensive). If properly configured, this report will be uploaded to the configured
+cloud instance and available for download from the Web UI.
 
 ## Qualification Dashboard
 
 The (optional) cloud dashboard requires a service-account certification to grant authorization.
 Contact the project owner to obtain a new certificate for a dashboard page on an already
 existing cloud project. Alternatively set up a new project by following the
-[Firebase install instructions](docs/firebase.md). The `bin/stress_test` script is useful for
+[Firebase install instructions](firebase.md). The `bin/stress_test` script is useful for
 setting up a continuous qualification environment: it runs in the background and pipes the output
 into a rotating set of logfiles.
 
@@ -51,7 +57,7 @@ into a rotating set of logfiles.
 The majority of device tests are run as Docker containers, which provides a convenient bundling of
 all the necessary code. The `docker/` subdirectory contains a set of Docker files that are used
 by the base system. Local or custom tests can be added by following the
-["add a test" documentation](docs/add_test.md). Tests are generally supplied the IP address of the
+["add a test" documentation](add_test.md). Tests are generally supplied the IP address of the
 target device, which can then be used for any necessary probes (e.g. a nmap port scan).
 
 ## Debugging
@@ -59,7 +65,7 @@ target device, which can then be used for any necessary probes (e.g. a nmap port
 The `inst/` subdirectory is the <em>inst</em>ance runtime directory, and holds all the resulting
 log files and diagnostic information from each run. There's a collection of different files in
 there that provide useful information, depending on the specific problem(s) encountered. A device's
-[startup sequence log](docs/startup_pcap.md) provides useful debugging material for intial device
+[startup sequence log](startup_pcap.md) provides useful debugging material for intial device
 phases (e.g. DHCP exchange).
 
 Command-line options that can be supplied to most DAQ scripts for diagnostics:
@@ -68,7 +74,7 @@ Command-line options that can be supplied to most DAQ scripts for diagnostics:
 * `daq_loglevel=debug`: Add debug info form the DAQ test runner suite.
 * `mininet_loglevel=debug`: Add debug info from the mininet subsystem (verbose!)
 
-See the [options documentation](docs/options.md) file for a more complete
+See the [options documentation](options.md) file for a more complete
 description of all the configuration options.
 
 ## Network Taps
@@ -78,5 +84,5 @@ in the node-specific directory, and can be parsed using tcpdump with something l
 
 `tcpdump -en -r inst/run-port-01/nodes/gw01/tmp/startup.pcap ip`
 
-The [example pcap output file](docs/startup_pcap.md) shows what this should look like for a
+The [example pcap output file](startup_pcap.md) shows what this should look like for a
 normal run (replace `01` with the appropriate port set number).

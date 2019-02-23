@@ -39,9 +39,14 @@ class DockerTest():
 
         if 'local_ip' in params:
             env_vars += ["LOCAL_IP=" + params['local_ip'],
+                         "SWITCH_PORT=" + params['switch_port'],
                          "SWITCH_IP=" + params['switch_ip']]
 
         vol_maps = [params['scan_base'] + ":/scans"]
+
+        conf_base = params.get('conf_base')
+        if conf_base:
+            vol_maps += [conf_base + ":/config"]
 
         image = self.IMAGE_NAME_FORMAT % self.test_name
         LOGGER.debug("Target port %d running docker test %s", self.target_port, image)
@@ -53,6 +58,8 @@ class DockerTest():
             LOGGER.debug("Target port %d activating docker test %s", self.target_port, image)
             host = self.docker_host
             pipe = host.activate(log_name=None)
+            # Docker tests don't use DHCP, so manually set up DNS.
+            host.cmd('echo nameserver $GATEWAY_IP > /etc/resolv.conf')
             self.docker_log = host.open_log()
             self.runner.monitor_stream(self.host_name, pipe.stdout, copy_to=self.docker_log,
                                        hangup=self._docker_complete,
