@@ -36,7 +36,7 @@ class ConnectedHost():
     _STARTUP_MIN_TIME_SEC = 5
     _TMPDIR_BASE = "inst/"
     _FAIL_BASE_FORMAT = "inst/fail_%s"
-    _TEST_PREFIX = "\n#############"
+    _TEST_PREFIX = "\n#############\n"
 
     def __init__(self, runner, gateway, target, config):
         self.runner = runner
