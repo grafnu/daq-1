@@ -66,7 +66,7 @@ class ConnectedHost():
         self.target_ip = None
         self.record_result('startup', state='run')
         self._report = report.ReportGenerator(os.path.join(self._TMPDIR_BASE, 'reports'),
-                                              self.target_mac)
+                                              config.get('device_path'), self.target_mac)
         self._startup_time = None
         self._monitor_scan_sec = int(config.get('monitor_scan_sec', self._MONITOR_SCAN_SEC))
         self._fail_hook = config.get('fail_hook')

@@ -14,7 +14,7 @@ class ReportGenerator():
 
     _NAME_FORMAT = "report_%s_%s.txt"
 
-    def __init__(self, path_base, target_mac):
+    def __init__(self, path_base, dev_base, target_mac):
         self._target_mac = target_mac
         report_when = datetime.datetime.now(pytz.utc).replace(microsecond=0)
         report_filename = self._NAME_FORMAT % (self._target_mac.replace(':', ''),
@@ -27,6 +27,12 @@ class ReportGenerator():
         self._file = open(report_path, "w")
         self.write('DAQ scan report for device %s' % self._target_mac)
         self.write('Started %s' % report_when)
+        dev_path = os.path.join(str(dev_base), target_mac + '.txt')
+        if os.path.isfile(dev_path):
+            self.write('')
+            self.copy(dev_path)
+        else:
+            LOGGER.info('Device description not found in %s', dev_path)
 
     def write(self, msg):
         """Write a message to a report file"""
@@ -35,6 +41,7 @@ class ReportGenerator():
 
     def copy(self, input_path):
         """Copy an input file to the report"""
+        LOGGER.info('Copying %s to report', input_path)
         with open(input_path, 'r') as input_stream:
             shutil.copyfileobj(input_stream, self._file)
         self._file.flush()
