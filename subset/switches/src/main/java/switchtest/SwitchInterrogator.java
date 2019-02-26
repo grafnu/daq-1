@@ -1,4 +1,4 @@
-package alliedswitch;
+package switchtest;
 
 /*
  * Licensed to the Google under one or more contributor license agreements.
@@ -20,12 +20,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class AlliedInterrogator implements Runnable {
-  AlliedTelnetClientSocket telnetClientSocket;
+public class SwitchInterrogator implements Runnable {
+  SwitchTelnetClientSocket telnetClientSocket;
   Thread telnetClientSocketThread;
 
   String username = "manager";
-
   String password = "friend";
 
   String remoteIpAddress;
@@ -46,15 +45,26 @@ public class AlliedInterrogator implements Runnable {
   };
 
   String[] command = {
-    "enable", "show interface port1.0.", "show platform port port1.0.", "show run", "show stack"
+    "enable",
+    "show interface port1.0.",
+    "show platform port port1.0.",
+    "show run",
+    "show stack"
   };
 
   int interfacePos = 1;
   int platformPos = 2;
 
   String[] show_stack_expected = {
-    "ID", "Pending ID", "MAC address", "Priority", "Status", "Role", "\n"
+    "ID",
+    "Pending ID",
+    "MAC address",
+    "Priority",
+    "Status",
+    "Role",
+    "\n"
   };
+
   int[] show_stack_pointers = new int[7];
   String[] show_stack_data = new String[6];
 
@@ -174,7 +184,7 @@ public class AlliedInterrogator implements Runnable {
 
   int count = 0;
 
-  String device_hostname;
+  String device_hostname = "";
 
   String login_report = "";
 
@@ -184,7 +194,7 @@ public class AlliedInterrogator implements Runnable {
 
   boolean extendedTests = false;
 
-  public AlliedInterrogator(String remoteIpAddress, int interfacePort) {
+  public SwitchInterrogator(String remoteIpAddress, int interfacePort) {
     this.remoteIpAddress = remoteIpAddress;
     this.interfacePort = interfacePort;
     command[interfacePos] = command[interfacePos] + interfacePort;
@@ -194,7 +204,7 @@ public class AlliedInterrogator implements Runnable {
   @Override
   public void run() {
     System.out.println("Interrogator new connection...");
-    telnetClientSocket = new AlliedTelnetClientSocket(remoteIpAddress, remotePort, this, debug);
+    telnetClientSocket = new SwitchTelnetClientSocket(remoteIpAddress, remotePort, this, debug);
     telnetClientSocketThread = new Thread(telnetClientSocket);
     telnetClientSocketThread.start();
   }
@@ -240,8 +250,7 @@ public class AlliedInterrogator implements Runnable {
     }
   }
 
-  private void parse_single(
-      String raw_data, String[] expected_array, int[] pointers_array, String[] data_array) {
+  private void parse_single(String raw_data, String[] expected_array, int[] pointers_array, String[] data_array) {
     int start = 0;
     for (int x = 0; x < expected_array.length; x++) {
       start = recursive_data(raw_data, expected_array[x], start);
@@ -273,6 +282,40 @@ public class AlliedInterrogator implements Runnable {
 
         login_report += extracted_data + "\n";
       }
+    }
+  }
+
+  private void parse_inline(String raw_data, String[] expected, int[] pointers, String[] data_array) {
+    int start = 0;
+
+    for (int x = 0; x < expected.length; x++) {
+      start = recursive_data(raw_data, expected[x], start);
+      pointers[x] = start;
+      if (x > 0) {
+        pointers[x - 1] = pointers[x] - pointers[x - 1];
+      }
+    }
+
+    int chunk_start = pointers[pointers.length - 1];
+    int chunk_end = pointers[pointers.length - 1];
+
+    for (int x = 0; x < data_array.length; x++) {
+      chunk_start = chunk_end;
+
+      if (x > 0) {
+        chunk_start += 1;
+      }
+
+      chunk_end += show_stack_pointers[x];
+
+      if (x != data_array.length - 1) {
+        data_array[x] =
+            raw_data.substring(chunk_start, chunk_end).replace("\n", "").replace(" ", "");
+      } else {
+        chunk_end = recursive_data(raw_data, "\n", chunk_start);
+        data_array[x] = raw_data.substring(chunk_start, chunk_end).replace("\n", "");
+      }
+      login_report += expected[x] + ":" + data_array[x] + "\n";
     }
   }
 
@@ -350,90 +393,7 @@ public class AlliedInterrogator implements Runnable {
                 System.exit(0);
               }
             } else {
-              switch (requestFlag) {
-                case 2:
-                  // parse show interface
-                  login_report += "show interface:\n";
-
-                  parse_packet(data, show_interface_port_expected, show_interface_port_pointers);
-
-                  writeReport();
-
-                  telnetClientSocket.writeData("\n");
-                  // map for data will improve
-                  break;
-                case 3:
-                  // parse show platform
-                  login_report += "\nshow platform:\n";
-
-                  parse_packet(data, show_platform_port_expected, show_platform_port_pointers);
-
-                  writeReport();
-
-                  telnetClientSocket.writeData("\n");
-                  break;
-                case 4:
-                  // parse show run
-                  // login_report = "show run:";
-                  data = data.replace("\n\n\n\n", "\n");
-                  data = data.replace("\n\n\n", "\n");
-                  data = data.replace("\n\n", "\n");
-                  data = data.replace("end", "");
-                  login_report += "\n" + data;
-                  if (debug) {
-                    System.out.println("login_report:" + login_report);
-                  }
-
-                  writeReport();
-
-                  telnetClientSocket.writeData("\n");
-                  break;
-                case 5:
-                  // parse show stack
-
-                  login_report += "\nshow stack:\n";
-
-                  int start = 0;
-
-                  for (int x = 0; x < show_stack_expected.length; x++) {
-                    start = recursive_data(data, show_stack_expected[x], start);
-                    show_stack_pointers[x] = start;
-                    if (x > 0) {
-                      show_stack_pointers[x - 1] =
-                          show_stack_pointers[x] - show_stack_pointers[x - 1];
-                    }
-                  }
-
-                  int chunk_start = show_stack_pointers[show_stack_pointers.length - 1];
-                  int chunk_end = show_stack_pointers[show_stack_pointers.length - 1];
-
-                  for (int x = 0; x < show_stack_data.length; x++) {
-                    chunk_start = chunk_end;
-
-                    if (x > 0) {
-                      chunk_start += 1;
-                    }
-
-                    chunk_end += show_stack_pointers[x];
-
-                    if (x != show_stack_data.length - 1) {
-                      show_stack_data[x] =
-                          data.substring(chunk_start, chunk_end).replace("\n", "").replace(" ", "");
-                    } else {
-                      chunk_end = recursive_data(data, "\n", chunk_start);
-                      show_stack_data[x] = data.substring(chunk_start, chunk_end).replace("\n", "");
-                    }
-                    login_report += show_stack_expected[x] + ":" + show_stack_data[x] + "\n";
-                  }
-                  if (debug) {
-                    System.out.println("login_report:" + login_report);
-                  }
-
-                  writeReport();
-
-                  telnetClientSocket.writeData("\n");
-                  break;
-              }
+              parseRequestFlag(data, requestFlag);
             }
           }
         }
@@ -444,8 +404,53 @@ public class AlliedInterrogator implements Runnable {
     }
   }
 
+  private void parseRequestFlag(String data, int requestFlag) {
+    switch (requestFlag) {
+      case 2:
+        // parse show interface
+        login_report += "show interface:\n";
+        parse_packet(data, show_interface_port_expected, show_interface_port_pointers);
+        writeReport();
+        telnetClientSocket.writeData("\n");
+        break;
+      case 3:
+        // parse show platform
+        login_report += "\nshow platform:\n";
+        parse_packet(data, show_platform_port_expected, show_platform_port_pointers);
+        writeReport();
+        telnetClientSocket.writeData("\n");
+        break;
+      case 4:
+        // parse show run
+        data = cleanShowRunData(data);
+        login_report += "\n" + data;
+        writeReport();
+        telnetClientSocket.writeData("\n");
+        break;
+      case 5:
+        // parse show stack
+        login_report += "\nshow stack:\n";
+        parse_inline(data, show_stack_expected, show_stack_pointers, show_stack_data);
+        writeReport();
+        telnetClientSocket.writeData("\n");
+        break;
+    }
+  }
+
+  private String cleanShowRunData(String data) {
+    data = data.replace("\n\n\n\n", "\n");
+    data = data.replace("\n\n\n", "\n");
+    data = data.replace("\n\n", "\n");
+    data = data.replace("end", "");
+    return data;
+  }
+
   private void writeReport() {
     try {
+      if (debug) {
+        System.out.println("login_report:" + login_report);
+      }
+
       String[] directory = reportFilename.split("/");
 
       File dir = new File(directory[directory.length - 2]);
@@ -456,7 +461,6 @@ public class AlliedInterrogator implements Runnable {
       writer.close();
     } catch (IOException e) {
       System.err.println("Exception writeReport:" + e.getMessage());
-      e.printStackTrace();
     }
   }
 }

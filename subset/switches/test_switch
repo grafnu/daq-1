@@ -8,14 +8,9 @@ if [ -n "$LOCAL_IP" ]; then
     ip addr add $LOCAL_IP dev `hostname`-eth0
     echo Switch test with port $SWITCH_PORT.
     ping -n -c 10 $SWITCH_IP
-    java -jar alliedSwitch/target/alliedswitch-0.0.1-jar-with-dependencies.jar $SWITCH_IP $SWITCH_PORT
-#java -jar alliedSwitch/target/alliedswitch-0.0.1-jar-with-dependencies.jar 192.168.1.2 12
+    java -jar switches/target/switchtest-0.0.1-jar-with-dependencies.jar $SWITCH_IP $SWITCH_PORT
 else
     echo LOCAL_IP not configured, assuming no network switch.
 fi
 
-echo ls tmp
-
-ls tmp
-
-cat tmp/report.txt
+cp -r tmp/report.txt /tmp/report.txt

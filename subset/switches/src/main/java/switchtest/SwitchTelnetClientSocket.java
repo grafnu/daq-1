@@ -1,4 +1,4 @@
-package alliedswitch;
+package switchtest;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -31,9 +31,9 @@ import org.apache.commons.net.telnet.TelnetClient;
 import org.apache.commons.net.telnet.TelnetNotificationHandler;
 import org.apache.commons.net.telnet.TerminalTypeOptionHandler;
 
-public class AlliedTelnetClientSocket implements TelnetNotificationHandler, Runnable {
+public class SwitchTelnetClientSocket implements TelnetNotificationHandler, Runnable {
   TelnetClient telnetClient = null;
-  AlliedInterrogator interrogator;
+  SwitchInterrogator interrogator;
 
   String remoteIpAddress = "";
   int remotePort = 23;
@@ -48,8 +48,8 @@ public class AlliedTelnetClientSocket implements TelnetNotificationHandler, Runn
 
   boolean debug = false;
 
-  public AlliedTelnetClientSocket(
-      String remoteIpAddress, int remotePort, AlliedInterrogator interrogator, boolean debug) {
+  public SwitchTelnetClientSocket(
+    String remoteIpAddress, int remotePort, SwitchInterrogator interrogator, boolean debug) {
     this.remoteIpAddress = remoteIpAddress;
     this.remotePort = remotePort;
     this.interrogator = interrogator;
@@ -138,8 +138,6 @@ public class AlliedTelnetClientSocket implements TelnetNotificationHandler, Runn
         new TerminalTypeOptionHandler("VT100", false, false, true, false);
 
     EchoOptionHandler echoOptionHandler = new EchoOptionHandler(false, false, false, false);
-    // EchoOptionHandler echoOptionHandler = new EchoOptionHandler(true, false, true,
-    // false);//original method
 
     SuppressGAOptionHandler suppressGAOptionHandler =
         new SuppressGAOptionHandler(true, true, true, true);
@@ -227,13 +225,13 @@ public class AlliedTelnetClientSocket implements TelnetNotificationHandler, Runn
         if (bytesRead > 0) {
           String rawData = normalizeLineEnding(buffer, '\n');
           rxQueue.add(rawData);
+          // Useful for debugging
           // rxQueue.add(new String(buffer, 0, bytesRead, StandardCharsets.UTF_8));
         } else {
           try {
             Thread.sleep(100);
           } catch (InterruptedException e) {
             System.err.println("InterruptedException readData:" + e.getMessage());
-            e.printStackTrace();
           }
         }
       } catch (IOException e) {
@@ -281,6 +279,7 @@ public class AlliedTelnetClientSocket implements TelnetNotificationHandler, Runn
             if (debug) {
               System.out.println("more position:" + rxTemp.indexOf("--More--"));
               System.out.println("rxTemp.length" + rxTemp.length() + "rxTemp pre:" + rxTemp);
+              // Useful for debugging
               // char[] tempChar = rxTemp.toCharArray();
               // for(char temp:tempChar) {
               //        System.out.println("tempChar:"+(byte)temp);
@@ -312,14 +311,23 @@ public class AlliedTelnetClientSocket implements TelnetNotificationHandler, Runn
             int beginPosition = 0;
             System.out.println("count is:" + count);
 
-            char[] expected = {':', ':', '>'};
-            int[] expectedLen = {5, 5, 40};
+            String[] loginExpected = {":", ":", ">"};
+            int[] loginExpectedLength = {5, 5, 40};
+
+            String hostname = interrogator.getHostname();
+            int requestFlag = interrogator.getRequestFlag() - 1;
+
+            boolean[] requestFlagIndexOf = {false, false, true, false};
+            String[] requestFlagExpected = {hostname, hostname, "end", hostname};
+            int[] requestFlagExpectedLength = {600, 600, 1000, 290};
+            int[] requestFlagCharLength = {hostname.length() + 1, hostname.length() + 1, 3, -1};
+            int[] requestFlagFlush = {0, 0, 15, 0};
 
             // login & enable process
             if (count < 3) {
-              position = rxGathered.indexOf(expected[count]);
+              position = rxGathered.indexOf(loginExpected[count]);
               if (position >= 0) {
-                expectedLength = expectedLen[count];
+                expectedLength = loginExpectedLength[count];
                 if (count == 2) {
                   interrogator.setUserAuthorised(true);
                 }
@@ -335,31 +343,16 @@ public class AlliedTelnetClientSocket implements TelnetNotificationHandler, Runn
                 beginPosition = 0;
                 count++;
               }
-            } else if (interrogator.getRequestFlag() == 1 || interrogator.getRequestFlag() == 2) {
-              position = rxGathered.lastIndexOf(interrogator.getHostname());
+            } else {
+              position =
+                  findPosition(
+                      rxGathered,
+                      requestFlagExpected[requestFlag],
+                      requestFlagIndexOf[requestFlag]);
               if (position >= 0) {
-                expectedLength = 600;
-                charLength = interrogator.getHostname().length() + 1;
-                flush = 0;
-                if (rxGathered.length() >= expectedLength) {
-                  beginPosition = 4;
-                  count++;
-                }
-              }
-            } else if (interrogator.getRequestFlag() == 3) {
-              position = rxGathered.indexOf("end");
-              if (position >= 0) {
-                expectedLength = 1000;
-                charLength = 3;
-                flush = 15;
-                count++;
-              }
-            } else if (interrogator.getRequestFlag() == 4) {
-              position = rxGathered.lastIndexOf(interrogator.getHostname());
-              if (position >= 0) {
-                expectedLength = 290;
-                charLength = -1;
-                flush = 0;
+                expectedLength = requestFlagExpectedLength[requestFlag];
+                charLength = requestFlagCharLength[requestFlag];
+                flush = requestFlagFlush[requestFlag];
                 if (rxGathered.length() >= expectedLength) {
                   beginPosition = 4;
                   count++;
@@ -368,10 +361,6 @@ public class AlliedTelnetClientSocket implements TelnetNotificationHandler, Runn
             }
 
             if (position >= 0 && rxGathered.length() >= expectedLength) {
-              parseFlag = true;
-            }
-
-            if (parseFlag) {
               rxGathered = rxGathered.substring(beginPosition, position + charLength);
               System.out.println(
                   java.time.LocalTime.now()
@@ -382,16 +371,23 @@ public class AlliedTelnetClientSocket implements TelnetNotificationHandler, Runn
               rxData.delete(0, position + charLength + flush);
 
               interrogator.receiveData(rxGathered);
-
-              parseFlag = false;
             }
           }
         }
       } catch (InterruptedException e) {
         System.err.println("InterruptedException gatherData:" + e.getMessage());
-        e.printStackTrace();
       }
     }
+  }
+
+  private int findPosition(String rxGathered, String value, boolean indexOf) {
+    int position = -1;
+    if (indexOf) {
+      position = rxGathered.indexOf(value);
+    } else {
+      position = rxGathered.lastIndexOf(value);
+    }
+    return position;
   }
 
   public void writeData(String data) {
@@ -406,11 +402,11 @@ public class AlliedTelnetClientSocket implements TelnetNotificationHandler, Runn
   private void writeOutputStream(String data) {
     try {
       outputStream.write(data.getBytes());
+      // Useful for debugging
       // outputStream.write(data.getBytes(StandardCharsets.UTF_8));
       outputStream.flush();
     } catch (IOException e) {
       System.err.println("Exception while writing socket:" + e.getMessage());
-      e.printStackTrace();
     }
   }
 
@@ -419,7 +415,6 @@ public class AlliedTelnetClientSocket implements TelnetNotificationHandler, Runn
       telnetClient.disconnect();
     } catch (IOException e) {
       System.err.println("Exception while disposeConnection:" + e.getMessage());
-      e.printStackTrace();
     }
   }
 }
