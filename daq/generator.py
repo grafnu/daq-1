@@ -14,6 +14,8 @@ class TopologyGenerator():
     """Topology generator for Faucet top-level configs"""
 
     _YAML_POSTFIX = '.yaml'
+    _UNIFORM_ACL_NAME = 'uniform_acl'
+    _UNIFORM_FILE_NAME = 'uniform.yaml'
 
     def __init__(self, daq_config):
         self.config = daq_config.config
@@ -54,10 +56,9 @@ class TopologyGenerator():
         self._site = self._load_config(site_config)
         for domain in self._get_all_domains():
             target = self._make_target(domain)
-            self._write_config(target, 'faucet.yaml', self._make_faucet())
+            self._write_config(target, 'faucet.yaml', self._make_faucet(domain))
             self._write_config(target, 'gauge.yaml', self._make_gauge(domain))
-            self._write_config(target, 'dps.yaml', self._make_dps(domain))
-            self._write_config(target, 'vlans.yaml', self._make_vlans())
+            self._write_config(target, self._UNIFORM_FILE_NAME, self._make_uniform())
 
     def _load_config(self, path):
         LOGGER.info('Loading %s', path)
@@ -83,13 +84,52 @@ class TopologyGenerator():
     def _make_target(self, domain):
         domain_dp = self._site['tier1']['domains'][domain]
         return {
-            'location': domain_dp['location'],
+            'location': domain_dp.get('location', ''),
             'domain': domain
         }
 
-    def _make_faucet(self):
+    def _make_uniform(self):
+        pre_rules = self._make_uniform_rules(self._setup['pre_acls'])
+        site_rules = self._make_uniform_rules(self._site.get('uniform_acls'))
+        post_rules = self._make_uniform_rules(self._setup['post_acls'])
         return {
-            'include': ['vlans.yaml', 'dps.yaml'],
+            "acls": {
+                self._UNIFORM_ACL_NAME: pre_rules + site_rules + post_rules
+            }
+        }
+
+    def _make_uniform_rules(self, entries):
+        if not entries:
+            return []
+        rules = []
+        for entry in entries:
+            entry = copy.deepcopy(entry)
+
+            allow = entry.get('allow', True)
+            if 'allow' in entry:
+                del entry['allow']
+            entry['actions'] = {
+                'allow': 1 if allow else 0
+            }
+
+            if not 'dl_type' in entry:
+                entry['dl_type'] = '0x0800'
+
+            if 'tcp_src' in entry or 'tcp_dst' in entry:
+                entry['nw_proto'] = 6
+            if 'udp_src' in entry or 'udp_dst' in entry:
+                entry['nw_proto'] = 17
+
+            rules.append({
+                'rule': entry
+            })
+        return rules
+
+    def _make_faucet(self, domain):
+        return {
+            'vlans': self._make_vlans(),
+            'dps': self._make_dps(domain),
+            'include': [self._UNIFORM_FILE_NAME],
             'version': 2
         }
 
@@ -120,39 +160,44 @@ class TopologyGenerator():
         return t1_dp_names + t2_dp_names
 
     def _make_t1_dps(self, domain):
-        t1_defaults = self._site['tier1']['defaults']
         t1_conf = self._site['tier1']['domains'][domain]
         dp_name = self._get_t1_dp_name(domain)
         return {
             dp_name: {
                 'dp_id': t1_conf['dp_id'],
-                'hardware': t1_defaults['hardware'],
+                'combinatorial_port_flood': self._setup['combinatorial_port_flood'],
+                'faucet_dp_mac': self._make_faucet_dp_mac(domain, 1),
+                'hardware': self._site['tier1']['defaults']['hardware'],
+                'lacp_timeout': self._setup['lacp_timeout'],
                 'lldp_beacon': self._get_switch_lldp_beacon(),
-                'name': dp_name,
                 'interfaces': self._make_t1_dp_interfaces(t1_conf, domain),
                 'stack': {
-                    'priority': 1
+                    'priority': 1,
+                    'upstream_lacp': self._setup['upstream_lacp'],
                 }
             }
         }
 
+    def _make_faucet_dp_mac(self, domain, tier):
+        return self._setup['faucet_dp_mac_format'] % (int(domain), tier)
+
     def _make_t1_dp_interfaces(self, t1_conf, domain):
         interfaces = {}
-        uplink_port = self._site['tier1']['defaults']['uplink_port']
-        interfaces.update({uplink_port: self._make_uplink_interface(t1_conf['uplink'])})
+        for uplink_port in self._site['tier1']['uplink_ports']:
+            interfaces.update({uplink_port: self._make_uplink_interface()})
         interfaces.update(self._make_t1_stack_interfaces(domain))
         return interfaces
 
-    def _make_uplink_interface(self, uplink):
+    def _make_uplink_interface(self):
         interface = {}
         interface.update(self._setup['uplink_iface'])
-        interface['name'] = uplink
-        interface['tagged_vlans'] = [self._site['vlan_id']]
+        interface.update(self._site['tier1']['uplink_port'])
         return interface
 
     def _make_device_interface(self):
         return {
             'description': self._setup['device_description'],
+            'acl_in': self._UNIFORM_ACL_NAME,
             'native_vlan': self._site['vlan_id']
         }
 
@@ -177,6 +222,7 @@ class TopologyGenerator():
         dp_name = self._get_t2_dp_name(tier2_spec)
         return {
             'lldp_beacon': self._get_port_lldp_beacon(),
+            'receive_lldp': self._setup['receive_lldp'],
             'stack': {
                 'dp': dp_name,
                 'port': port
@@ -185,7 +231,6 @@ class TopologyGenerator():
 
     def _make_t2_cross_interface(self):
         return {
-            'lldp_beacon': self._get_port_lldp_beacon(),
             'loop_protect_external': self._setup['loop_protect_external'],
             'tagged_vlans': [self._site['vlan_id']]
         }
@@ -205,11 +250,13 @@ class TopologyGenerator():
         dp_name = self._get_t2_dp_name(t2_conf)
         return {
             'dp_id': t2_conf['dp_id'],
+            'combinatorial_port_flood': self._setup['combinatorial_port_flood'],
+            'faucet_dp_mac': self._make_faucet_dp_mac(t2_conf['domain'], 2),
             'hardware': t2_defaults['hardware'],
+            'lacp_timeout': self._setup['lacp_timeout'],
             'lldp_beacon': self._get_switch_lldp_beacon(),
             'interface_ranges': self._make_t2_interface_ranges(),
-            'interfaces': self._make_t2_interfaces(t2_conf, t1_port),
-            'name': dp_name,
+            'interfaces': self._make_t2_interfaces(t2_conf, t1_port)
         }
 
     def _make_t2_interface_ranges(self):
@@ -226,6 +273,7 @@ class TopologyGenerator():
         t1_dp_name = self._get_t1_dp_name(t2_conf['domain'])
         return {
             'lldp_beacon': self._get_port_lldp_beacon(),
+            'receive_lldp': self._setup['receive_lldp'],
             'stack': {
                 'dp': t1_dp_name,
                 'port': t1_port
@@ -241,36 +289,29 @@ class TopologyGenerator():
     def _get_ctl_name(self, target):
         site_name = self._site['site_name']
         switch_type = self._setup['naming']['ctl']
-        return site_name + switch_type + target['location'] + target['domain']
+        return site_name + switch_type + target.get('location', '') + target['domain']
 
     def _get_t1_dp_name(self, domain):
         site_name = self._site['site_name']
         switch_type = self._setup['naming']['tier1']
         t1_conf = self._site['tier1']['domains'][domain]
-        return site_name + switch_type + t1_conf['location'] + domain
+        return site_name + switch_type + t1_conf.get('location', '') + domain
 
     def _get_t2_dp_name(self, t2_conf):
         site_name = self._site['site_name']
         switch_type = self._setup['naming']['tier2']
-        return site_name + switch_type + t2_conf['location'] + t2_conf['domain']
+        return site_name + switch_type + t2_conf.get('location', '') + t2_conf['domain']
 
     def _make_vlans(self):
         return {
-            'version': 2,
-            'vlans': {
-                self._setup['vlan']['name']: {
-                    'description': self._setup['vlan']['description'],
-                    'vid': self._site['vlan_id']
-                }
+            self._setup['vlan']['name']: {
+                'description': self._setup['vlan']['description'],
+                'vid': self._site['vlan_id']
             }
         }
 
     def _make_dps(self, domain):
-        return {
-            'version': 2,
-            'dps': {**self._make_t1_dps(domain), **self._make_t2_dps(domain)}
-        }
-
+        return {**self._make_t1_dps(domain), **self._make_t2_dps(domain)}
 
 
 if __name__ == '__main__':

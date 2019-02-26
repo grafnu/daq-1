@@ -1,10 +1,15 @@
 # Changelog
 
+* Next Version
 * 0.9.3
+	* Device description capability for report generation.
 	* Fixes for broken local_switch setup and docs.
 	* Build and release documentation updates.
-	* Port debounce feature for flaky switch connections.
+	* Dual stacking topology tests.
+	* Port debounce feature for flaky ports.
+	* Updates to FCU example status messages.
 	* Debugging fail_hook setting.
+	* Faucet update to version 1.8.34.
 * 0.9.2
 	* Stacking topology generator.
 	* SWITCH_PORT env variable available to tests.
