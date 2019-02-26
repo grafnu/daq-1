@@ -1,7 +1,7 @@
 # Changelog
 
 * Next Version
-	* Moved device configuration data under `site_path`.
+	* Move device configuration data under `site_path` paramter.
 * 0.9.3
 	* Device description capability for report generation.
 	* Fixes for broken local_switch setup and docs.
