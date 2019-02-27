@@ -29,7 +29,7 @@ Open port tests
 01: ['01:nmap:1']
 01: []
 External switch tests
-02: []
+02: ['02:switch:1']
     dp_id: 1
     dp_id: 4886718345
 Switch test with port 2.
