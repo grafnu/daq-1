@@ -10,8 +10,6 @@ cmd/run -s device_path=misc/
 more inst/result.log | tee -a $TEST_RESULTS
 sed s/Started.*00:00/XXX/ inst/reports/report_9a02571e8f00_*.txt | tee -a $TEST_RESULTS
 
-exit 0
-
 # Test block for open-port failures.
 (
     echo Open port tests | tee -a $TEST_RESULTS
