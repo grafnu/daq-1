@@ -2,6 +2,7 @@
 
 * Next Version
 	* Move device configuration data under `site_path` paramter.
+	* Switch-based tests (port errors, port negotiation)
 * 0.9.3
 	* Device description capability for report generation.
 	* Fixes for broken local_switch setup and docs.
