@@ -1,6 +1,7 @@
 # Changelog
 
 * Next Version
+	* Faucet update to 1.8.35
 * 0.9.3
 	* Device description capability for report generation.
 	* Fixes for broken local_switch setup and docs.
