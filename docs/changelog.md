@@ -2,6 +2,7 @@
 
 * Next Version
 	* Faucet update to 1.8.35
+	* Move device configuration data under `site_path` parameter.
 	* Switch-based tests (port errors, port negotiation)
 * 0.9.3
 	* Device description capability for report generation.
