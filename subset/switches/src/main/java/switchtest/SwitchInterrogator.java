@@ -45,24 +45,14 @@ public class SwitchInterrogator implements Runnable {
   };
 
   String[] command = {
-    "enable",
-    "show interface port1.0.",
-    "show platform port port1.0.",
-    "show run",
-    "show stack"
+    "enable", "show interface port1.0.", "show platform port port1.0.", "show run", "show stack"
   };
 
   int interfacePos = 1;
   int platformPos = 2;
 
   String[] show_stack_expected = {
-    "ID",
-    "Pending ID",
-    "MAC address",
-    "Priority",
-    "Status",
-    "Role",
-    "\n"
+    "ID", "Pending ID", "MAC address", "Priority", "Status", "Role", "\n"
   };
 
   int[] show_stack_pointers = new int[7];
@@ -214,14 +204,15 @@ public class SwitchInterrogator implements Runnable {
       System.out.println(
           java.time.LocalTime.now() + "receiveDataLen:" + data.length() + "receiveData:" + data);
     }
+    if (data != null) {
+      Runnable runnable =
+          () -> {
+            parseData(data);
+          };
+      Thread parseThread = new Thread(runnable);
 
-    Runnable runnable =
-        () -> {
-          parseData(data);
-        };
-    Thread parseThread = new Thread(runnable);
-
-    parseThread.start();
+      parseThread.start();
+    }
   }
 
   private void parse_packet(String raw_data, String[] show_expected, int[] show_pointers) {
@@ -250,7 +241,8 @@ public class SwitchInterrogator implements Runnable {
     }
   }
 
-  private void parse_single(String raw_data, String[] expected_array, int[] pointers_array, String[] data_array) {
+  private void parse_single(
+      String raw_data, String[] expected_array, int[] pointers_array, String[] data_array) {
     int start = 0;
     for (int x = 0; x < expected_array.length; x++) {
       start = recursive_data(raw_data, expected_array[x], start);
@@ -285,7 +277,8 @@ public class SwitchInterrogator implements Runnable {
     }
   }
 
-  private void parse_inline(String raw_data, String[] expected, int[] pointers, String[] data_array) {
+  private void parse_inline(
+      String raw_data, String[] expected, int[] pointers, String[] data_array) {
     int start = 0;
 
     for (int x = 0; x < expected.length; x++) {
@@ -390,6 +383,7 @@ public class SwitchInterrogator implements Runnable {
                 requestFlag += 1;
               } else {
                 System.out.println("finished running configuration requests");
+                validateTests();
                 System.exit(0);
               }
             } else {
@@ -443,6 +437,49 @@ public class SwitchInterrogator implements Runnable {
     data = data.replace("\n\n", "\n");
     data = data.replace("end", "");
     return data;
+  }
+
+  private void validateTests() {
+    try {
+      System.out.println("Tests validating....");
+      // switch.port.link test passes is "Link is UP" and dropped packets being equal to 0.
+      if (show_interface_data[1].equals("UP") && Integer.parseInt(show_interface_data[12]) == 0) {
+        login_report += "\nswitch.port.link=true";
+      } else {
+        login_report += "\nswitch.port.link=false";
+      }
+
+      // switch.port.speed test passes is "configured speed to auto" to ensure the switch is
+      // configured to auto negotiate speed and value of auto-negotiated speed "current speed" is
+      // greater or equal than 10 Mbps.
+      if (show_interface_data[4] != null) {
+        if (show_interface_data[7].equals("auto")
+            && Integer.parseInt(show_interface_data[4]) >= 10) {
+          login_report += "\nswitch.port.speed=true";
+        } else {
+          login_report += "\nswitch.port.speed=false";
+        }
+      } else {
+        login_report += "\nswitch.port.speed=false";
+      }
+
+      // switch.port.duplex test passes is "configured duplex auto" to ensure the switch is
+      // configured to auto negotiate duplex and "current duplex" is full.
+      if (show_interface_data[3] != null) {
+        if (show_interface_data[6].equals("auto") && show_interface_data[3].equals("full")) {
+          login_report += "\nswitch.port.duplex=true";
+        } else {
+          login_report += "\nswitch.port.duplex=false";
+        }
+      } else {
+        login_report += "\nswitch.port.duplex=false";
+      }
+
+      writeReport();
+    } catch (Exception e) {
+      System.err.println("Exception validateTests:" + e.getMessage());
+      // System.exit(0);
+    }
   }
 
   private void writeReport() {
