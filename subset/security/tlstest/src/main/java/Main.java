@@ -5,7 +5,7 @@ public class Main {
 
     try {
       if (args.length > 0) {
-        if (args[0].length > 0) {
+        if (args[0].length() > 0) {
           ipAddress = args[0];
         }
       }
