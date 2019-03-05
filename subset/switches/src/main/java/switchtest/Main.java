@@ -8,12 +8,12 @@ public class Main {
     int interfacePort = 10;
 
     try {
-      if (args != null) {
-        if (args[0] != null) {
+      if (args.length > 0) {
+        if (args[0].length() > 0) {
           ipAddress = args[0];
         }
 
-        if (args[1] != null) {
+        if (args[1].length() > 0) {
           interfacePort = Integer.parseInt(args[1]);
         }
       }

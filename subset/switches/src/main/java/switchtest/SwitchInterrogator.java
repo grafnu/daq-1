@@ -205,12 +205,7 @@ public class SwitchInterrogator implements Runnable {
           java.time.LocalTime.now() + "receiveDataLen:" + data.length() + "receiveData:" + data);
     }
     if (data != null) {
-      Runnable runnable =
-          () -> {
-            parseData(data);
-          };
-      Thread parseThread = new Thread(runnable);
-
+      Thread parseThread = new Thread(() -> parseData(data));
       parseThread.start();
     }
   }
@@ -441,20 +436,23 @@ public class SwitchInterrogator implements Runnable {
 
   private void validateTests() {
     try {
-      System.out.println("Tests validating....");
-      // switch.port.link test passes is "Link is UP" and dropped packets being equal to 0.
-      if (show_interface_data[1].equals("UP") && Integer.parseInt(show_interface_data[12]) == 0) {
+      String link_status = show_interface_data[1];
+      String dropped_packets = show_interface_data[12];
+
+      String current_speed = show_interface_data[4];
+      String configured_speed = show_interface_data[7];
+
+      String current_duplex = show_interface_data[3];
+      String configured_duplex = show_interface_data[6];
+
+      if (link_status.equals("UP") && Integer.parseInt(dropped_packets) == 0) {
         login_report += "\nswitch.port.link=true";
       } else {
         login_report += "\nswitch.port.link=false";
       }
 
-      // switch.port.speed test passes is "configured speed to auto" to ensure the switch is
-      // configured to auto negotiate speed and value of auto-negotiated speed "current speed" is
-      // greater or equal than 10 Mbps.
-      if (show_interface_data[4] != null) {
-        if (show_interface_data[7].equals("auto")
-            && Integer.parseInt(show_interface_data[4]) >= 10) {
+      if (current_speed != null) {
+        if (configured_speed.equals("auto") && Integer.parseInt(current_speed) >= 10) {
           login_report += "\nswitch.port.speed=true";
         } else {
           login_report += "\nswitch.port.speed=false";
@@ -463,10 +461,8 @@ public class SwitchInterrogator implements Runnable {
         login_report += "\nswitch.port.speed=false";
       }
 
-      // switch.port.duplex test passes is "configured duplex auto" to ensure the switch is
-      // configured to auto negotiate duplex and "current duplex" is full.
-      if (show_interface_data[3] != null) {
-        if (show_interface_data[6].equals("auto") && show_interface_data[3].equals("full")) {
+      if (current_duplex != null) {
+        if (configured_duplex.equals("auto") && current_duplex.equals("full")) {
           login_report += "\nswitch.port.duplex=true";
         } else {
           login_report += "\nswitch.port.duplex=false";
@@ -478,7 +474,6 @@ public class SwitchInterrogator implements Runnable {
       writeReport();
     } catch (Exception e) {
       System.err.println("Exception validateTests:" + e.getMessage());
-      // System.exit(0);
     }
   }
 
