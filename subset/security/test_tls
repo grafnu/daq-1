@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+if [ -n "$TARGET_IP" ]; then
+    echo tls test with ip address: $TARGET_IP
+    echo ls
+    ls -la
+    echo ls security
+    ls security
+    echo ls security/tlstest
+    ls security/tlstest
+    echo ls security/tlstest/build
+    ls security/tlstest/build
+    java -jar security/tlstest/build/libs/tlstest.jar $TARGET_IP
+    cp -r tmp/report.txt /tmp/report.txt
+else
+    echo TARGET_IP not configured,tls test fail | tee /tmp/report.txt
+fi
