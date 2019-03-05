@@ -4,8 +4,8 @@ public class Main {
     String ipAddress = "127.0.0.1";
 
     try {
-      if (args != null) {
-        if (args[0] != null) {
+      if (args.length > 0) {
+        if (args[0].length > 0) {
           ipAddress = args[0];
         }
       }
