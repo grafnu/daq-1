@@ -2,12 +2,6 @@
 
 if [ -n "$TARGET_IP" ]; then
     echo Collecting TLS cert from target address $TARGET_IP.
-	
-    echo ls
-    ls
-    echo ls tlstest
-    ls tlstest
-	
     java -jar tlstest/build/libs/tlstest.jar $TARGET_IP
     cp -r tmp/report.txt /tmp/report.txt
 else

@@ -1,17 +1,17 @@
 import socket, ssl, pprint
 
-hostname='0.0.0.0'
-port=443
+hostname = '0.0.0.0'
+port = 443
 
-filenameCert='certs/server.crt'
-filenameKey='certs/server.key'
+filename_cert = 'certs/server.crt'
+filename_key = 'certs/server.key'
 
 context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-context.load_cert_chain(certfile=filenameCert, keyfile=filenameKey)
+context.load_cert_chain(certfile = filename_cert, keyfile = filename_key)
 
-bindsocket = socket.socket()
-bindsocket.bind((hostname,port))
-bindsocket.listen(5)
+bind_socket = socket.socket()
+bind_socket.bind((hostname,port))
+bind_socket.listen(5)
 
 #PROTOCOL_TLSv1
 #PROTOCOL_TLSv1_1
@@ -28,22 +28,23 @@ bindsocket.listen(5)
 #OP_NO_TLSv1_2
 #OP_NO_TLSv1_3
 
-def do_something(connstream,data):
-	print "do_something:",data
+def parse_data(connstream,data):
+	print "parse_data:",data
 	return false
 
-def deal_with_client(connstream):
+def read_client_data(connstream):
 	data = connstream.read()
 	while data:
-		if not do_something(connstream,data):
+		if not parse_data(connstream,data):
 			break
 		data=connstream.read()
 
+print "SSL Server started..."
 while True:
-	newsocket, fromaddr = bindsocket.accept()
+	newsocket, fromaddr = bind_socket.accept()
 	connstream = context.wrap_socket(newsocket,server_side=True)
 	try:
-		deal_with_client(connstream)
+		read_client_data(connstream)
 	finally:
 		connstream.shutdown(socket.SHUT_RDWR)
 		connstream.close()
