@@ -87,6 +87,10 @@ elif [ -n "${options[nobrute]}" ]; then
     (python pentests/brute_server.py good 10000; echo Brute done.) &
 fi
 
+if [ -n "${options[tls]}" ]; then
+  (python tlsfaux/server.py; echo tls done.) &
+fi
+
 conf_file=/config/start_faux.sh
 if [ -f $conf_file ]; then
     echo Loading $conf_file...

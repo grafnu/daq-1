@@ -28,6 +28,7 @@ RUN $AG update && cd /tmp && ln -s ~/bin bin && $AG download resolvconf && mv re
 COPY --from=bacnet_build /root/bacnet4j/*.jar bacnet4j/
 
 COPY subset/pentests/brute_server.py pentests/
+COPY subset/security/tlsfaux tlsfaux/
 COPY misc/start_faux bin/
 COPY misc/bacnet_discover bin/
 
