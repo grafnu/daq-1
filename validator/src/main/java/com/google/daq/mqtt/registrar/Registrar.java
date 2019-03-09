@@ -3,25 +3,25 @@ package com.google.daq.mqtt.registrar;
 import com.google.daq.mqtt.util.CloudDevice;
 import com.google.daq.mqtt.util.CloudIotManager;
 import com.google.daq.mqtt.util.ExceptionMap;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Registrar {
 
-  private String deviceDirectory;
-  private String gcpCredFile;
+  public static final String CLOUD_IOT_CONFIG_JSON = "cloud_iot_config.json";
+  private String gcpCredPath;
   private CloudIotManager cloudIotManager;
-  private String cloudIotConfigFile;
+  private String siteConfigPath;
 
   public static void main(String[] args) {
     Registrar registrar = new Registrar();
     try {
-      if (args.length != 3) {
-        throw new IllegalArgumentException("Args: [gcp_cred_file] [project_config] [devices]");
+      if (args.length != 2) {
+        throw new IllegalArgumentException("Args: [gcp_cred_file] [site_dir]");
       }
-      registrar.setGcpCredFile(args[0]);
-      registrar.setCloudIotConfigFile(args[1]);
-      registrar.setDevicesDirectory(args[2]);
+      registrar.setGcpCredPath(args[0]);
+      registrar.setSiteConfigPath(args[1]);
       registrar.registerDevices();
     } catch (ExceptionMap em) {
       System.exit(2);
@@ -32,12 +32,13 @@ public class Registrar {
     System.exit(0);
   }
 
-  private void setCloudIotConfigFile(String cloudIotConfigFile) {
-    this.cloudIotConfigFile = cloudIotConfigFile;
+  private void setSiteConfigPath(String siteConfigPath) {
+    this.siteConfigPath = siteConfigPath;
   }
 
   private void registerDevices() {
-    cloudIotManager = new CloudIotManager(gcpCredFile, cloudIotConfigFile);
+    File cloudIotConfig = new File(siteConfigPath, CLOUD_IOT_CONFIG_JSON);
+    cloudIotManager = new CloudIotManager(new File(gcpCredPath), cloudIotConfig);
     Map<String, LocalDevice> localDevices = getLocalDevices();
     Map<String, CloudDevice> cloudDevices = getCloudDevices();
     if (localDevices.size() != cloudDevices.size()) {
@@ -53,11 +54,7 @@ public class Registrar {
     return new HashMap<>();
   }
 
-  private void setDevicesDirectory(String deviceDirectory) {
-    this.deviceDirectory = deviceDirectory;
-  }
-
-  private void setGcpCredFile(String gcpConfigPath) {
-    this.gcpCredFile = gcpConfigPath;
+  private void setGcpCredPath(String gcpConfigPath) {
+    this.gcpCredPath = gcpConfigPath;
   }
 }

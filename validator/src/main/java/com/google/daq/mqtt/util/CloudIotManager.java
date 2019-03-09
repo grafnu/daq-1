@@ -41,11 +41,11 @@ public class CloudIotManager {
   private String projectPath;
   private CloudIot.Projects.Locations.Registries cloudIotRegistries;
 
-  public CloudIotManager(String gcpCredPath, String cloudIotPath) {
-    configuration = readGcpCreds(gcpCredPath);
-    cloudIotConfig = readCloudIotConfig(cloudIotPath);
+  public CloudIotManager(File gcpCred, File cloudIotConfig) {
+    configuration = readGcpCreds(gcpCred);
+    this.cloudIotConfig = readCloudIotConfig(cloudIotConfig);
     loadPublicKeyData();
-    initializeCloudIoT(gcpCredPath);
+    initializeCloudIoT(gcpCred);
     Set<String> registryList = makeProjectRegistryList();
     System.err.print("Available Registries:\n  ");
     System.err.println(Joiner.on("\n  ").join(registryList));
@@ -59,26 +59,20 @@ public class CloudIotManager {
     }
   }
 
-  static GcpCreds readGcpCreds(String configPath) {
-    File configFile = new File(configPath);
-    final GcpCreds configuration;
+  static GcpCreds readGcpCreds(File configFile) {
     try {
-      configuration = OBJECT_MAPPER.readValue(configFile, GcpCreds.class);
+      return OBJECT_MAPPER.readValue(configFile, GcpCreds.class);
     } catch (Exception e) {
       throw new RuntimeException("While reading config file "+ configFile.getAbsolutePath(), e);
     }
-    return configuration;
   }
 
-  static CloudIotConfig readCloudIotConfig(String configPath) {
-    File configFile = new File(configPath);
-    final CloudIotConfig configuration;
+  static CloudIotConfig readCloudIotConfig(File configFile) {
     try {
-      configuration = OBJECT_MAPPER.readValue(configFile, CloudIotConfig.class);
+      return OBJECT_MAPPER.readValue(configFile, CloudIotConfig.class);
     } catch (Exception e) {
       throw new RuntimeException("While reading config file "+ configFile.getAbsolutePath(), e);
     }
-    return configuration;
   }
 
   private void loadPublicKeyData() {
@@ -113,8 +107,7 @@ public class CloudIotManager {
     return getRegistryPath(registryId) + "/devices/" + deviceId;
   }
 
-  private GoogleCredential authorizeServiceAccount(String gcpCredPath) throws IOException {
-    File credFile = new File(gcpCredPath);
+  private GoogleCredential authorizeServiceAccount(File credFile) {
     try (FileInputStream credStream = new FileInputStream(credFile)) {
       return GoogleCredential
           .fromStream(credStream)
@@ -124,10 +117,10 @@ public class CloudIotManager {
     }
   }
 
-  private void initializeCloudIoT(String gcpCredPath) {
+  private void initializeCloudIoT(File gcpCredFile) {
     projectPath = "projects/" + configuration.project_id + "/locations/" + cloudIotConfig.cloud_region;
     try {
-      GoogleCredential credential = authorizeServiceAccount(gcpCredPath);
+      GoogleCredential credential = authorizeServiceAccount(gcpCredFile);
       System.err.println(String.format("Using service account %s/%s",
           credential.getServiceAccountId(), credential.getServiceAccountUser()));
       JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
