@@ -112,17 +112,18 @@ public class CloudIotManager {
     }
   }
 
-  public Device registerDevice(String deviceId, List<DeviceCredential> credentials) throws Exception {
+  public boolean registerDevice(String deviceId, List<DeviceCredential> credentials) {
     try {
       Preconditions.checkNotNull(cloudIotService, "CloudIoT service not initialized");
       Device device = fetchDevice(deviceId);
       if (device == null) {
-        return createDevice(deviceId, credentials);
+        createDevice(deviceId, credentials);
+        return true;
       } else {
         device.setBlocked(false);
         device.setCredentials(credentials);
         updateDevice(device);
-        return device;
+        return false;
       }
     } catch (Exception e) {
       throw new RuntimeException("While registering device " + deviceId, e);
@@ -131,7 +132,6 @@ public class CloudIotManager {
 
   public void blockDevice(String deviceId) {
     try {
-      System.err.println("Blocking device " + registryId + "/" + deviceId);
       Device device = new Device();
       device.setBlocked(true);
       String path = getDevicePath(registryId, deviceId);
@@ -144,7 +144,8 @@ public class CloudIotManager {
   public void updateDevice(Device device) {
     String deviceId = device.getId();
     try {
-      System.err.println("Blocking device " + registryId + "/" + deviceId);
+      device.setId(null);
+      device.setNumId(null);
       String path = getDevicePath(registryId, deviceId);
       cloudIotRegistries.devices().patch(path, device).setUpdateMask("credentials,blocked").execute();
     } catch (Exception e) {

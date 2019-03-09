@@ -50,10 +50,12 @@ public class Registrar {
       Map<String, Device> cloudDevices = makeCloudDevices();
       Set<String> extraDevices = new HashSet<>(cloudDevices.keySet());
       for (String localName : localDevices.keySet()) {
-        if (!extraDevices.remove(localName)) {
-          LocalDevice localDevice = localDevices.get(localName);
-          System.err.println("Registering device " + localName);
-          Device device = cloudIotManager.registerDevice(localName, localDevice.credentials());
+        extraDevices.remove(localName);
+        LocalDevice localDevice = localDevices.get(localName);
+        if (cloudIotManager.registerDevice(localName, localDevice.loadCredentials())) {
+          System.err.println("Created new device entry " + localName);
+        } else {
+          System.err.println("Updated device entry " + localName);
         }
       }
       for (String extraName : extraDevices) {
