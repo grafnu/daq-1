@@ -14,9 +14,7 @@ import com.google.api.services.cloudiot.v1.CloudIotScopes;
 import com.google.api.services.cloudiot.v1.model.Device;
 import com.google.api.services.cloudiot.v1.model.DeviceCredential;
 import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,20 +33,19 @@ public class CloudIotManager {
 
   private final GcpCreds configuration;
   private final CloudIotConfig cloudIotConfig;
+  private final String registryId;
 
   private Map<String, Set<String>> registryDevices = new HashMap<>();
   private CloudIot cloudIotService;
   private String projectPath;
   private CloudIot.Projects.Locations.Registries cloudIotRegistries;
 
-  public CloudIotManager(File gcpCred, File cloudIotConfig) {
+  public CloudIotManager(File gcpCred, File iotConfigFile) {
     configuration = readGcpCreds(gcpCred);
-    this.cloudIotConfig = readCloudIotConfig(cloudIotConfig);
+    cloudIotConfig = readCloudIotConfig(iotConfigFile);
+    registryId = cloudIotConfig.registry_id;
     loadPublicKeyData();
     initializeCloudIoT(gcpCred);
-    Set<String> registryList = makeProjectRegistryList();
-    System.err.print("Available Registries:\n  ");
-    System.err.println(Joiner.on("\n  ").join(registryList));
   }
 
   private void blockRemainingDevices() {
@@ -85,9 +82,8 @@ public class CloudIotManager {
     // }
   }
 
-  private Set<String> makeProjectRegistryList() {
+  private Set<String> fetchRegistries() {
     try {
-      System.err.println("Listing project registries for " + projectPath);
       List<DeviceRegistry>
           existingRegistries =
           cloudIotRegistries.list(projectPath).execute().getDeviceRegistries();
@@ -95,7 +91,7 @@ public class CloudIotManager {
       existingRegistries.forEach(registry -> remainingRegistries.add(registry.getId()));
       return remainingRegistries;
     } catch (Exception e) {
-      throw new RuntimeException("While making the Cloud IoT project registries list", e);
+      throw new RuntimeException("While fetching Cloud IoT project registries list", e);
     }
   }
 
@@ -138,7 +134,7 @@ public class CloudIotManager {
 
   private void registerDevice(String registryId, String deviceId) throws Exception {
     Preconditions.checkNotNull(cloudIotService, "CloudIoT service not initialized");
-    Device device = getDevice(registryId, deviceId);
+    Device device = fetchDevice(deviceId);
     if (device == null) {
       createDevice(registryId, deviceId);
     } else if (!Boolean.FALSE.equals(device.getBlocked())) {
@@ -147,10 +143,6 @@ public class CloudIotManager {
       }
       updateDevice(registryId, deviceId, false);
     }
-  }
-
-  private boolean isDefined(String parameter) {
-    return !Strings.isNullOrEmpty(parameter);
   }
 
   private void updateDevice(String registryId, String deviceId,
@@ -193,7 +185,7 @@ public class CloudIotManager {
     return ImmutableList.of(deviceCredential);
   }
 
-  public List<Device> listDevices(String registryId) {
+  public List<Device> fetchDevices() {
     Preconditions.checkNotNull(cloudIotService, "CloudIoT service not initialized");
     try {
       List<Device> devices = cloudIotRegistries
@@ -218,7 +210,7 @@ public class CloudIotManager {
     }
   }
 
-  public Device getDevice(String registryId, String deviceId) throws IOException {
+  public Device fetchDevice(String deviceId) throws IOException {
     try {
       return cloudIotRegistries.devices().get(getDevicePath(registryId, deviceId)).execute();
     } catch (GoogleJsonResponseException e) {
@@ -228,15 +220,4 @@ public class CloudIotManager {
       throw new RuntimeException("Remote error getting device: " + e.getDetails().getMessage());
     }
   }
-
-  private Set<String> setupRegistry(String registryId) {
-    try {
-      Set<String> devices = new HashSet<>();
-      devices.addAll(listDevices(registryId).stream().map(Device::getId).collect(toSet()));
-      return devices;
-    } catch (Exception e) {
-      throw new RuntimeException("While listing devices for registry " + registryId, e);
-    }
-  }
-
 }
