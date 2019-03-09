@@ -1,6 +1,6 @@
 package com.google.daq.mqtt.util;
 
-import static java.util.stream.Collectors.toSet;
+import static sun.audio.AudioDevice.device;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
@@ -14,15 +14,14 @@ import com.google.api.services.cloudiot.v1.CloudIotScopes;
 import com.google.api.services.cloudiot.v1.model.Device;
 import com.google.api.services.cloudiot.v1.model.DeviceCredential;
 import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
+import com.google.api.services.cloudiot.v1.model.PublicKeyCredential;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,12 +29,12 @@ import java.util.Set;
 public class CloudIotManager {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  public static final String RSA_PUBLIC_PEM = "rsa_public.pem";
 
   private final GcpCreds configuration;
   private final CloudIotConfig cloudIotConfig;
   private final String registryId;
 
-  private Map<String, Set<String>> registryDevices = new HashMap<>();
   private CloudIot cloudIotService;
   private String projectPath;
   private CloudIot.Projects.Locations.Registries cloudIotRegistries;
@@ -44,16 +43,7 @@ public class CloudIotManager {
     configuration = readGcpCreds(gcpCred);
     cloudIotConfig = readCloudIotConfig(iotConfigFile);
     registryId = cloudIotConfig.registry_id;
-    loadPublicKeyData();
     initializeCloudIoT(gcpCred);
-  }
-
-  private void blockRemainingDevices() {
-    for (String registryId : registryDevices.keySet()) {
-      for (String deviceId : registryDevices.get(registryId)) {
-        updateDevice(registryId, deviceId, true);
-      }
-    }
   }
 
   static GcpCreds readGcpCreds(File configFile) {
@@ -70,16 +60,6 @@ public class CloudIotManager {
     } catch (Exception e) {
       throw new RuntimeException("While reading config file "+ configFile.getAbsolutePath(), e);
     }
-  }
-
-  private void loadPublicKeyData() {
-    // Preconditions.checkNotNull(configuration.public_key_file, "Configuration public_key_file");
-    // File keyFile = new File(configuration.public_key_file);
-    // try {
-    //   configuration.public_key_data = IOUtils.toString(new FileInputStream(keyFile), Charset.defaultCharset());
-    // } catch (Exception e) {
-    //   throw new RuntimeException("Fetching public key file " + keyFile.getAbsolutePath(), e);
-    // }
   }
 
   private Set<String> fetchRegistries() {
@@ -132,56 +112,66 @@ public class CloudIotManager {
     }
   }
 
-  private void registerDevice(String registryId, String deviceId) throws Exception {
-    Preconditions.checkNotNull(cloudIotService, "CloudIoT service not initialized");
-    Device device = fetchDevice(deviceId);
-    if (device == null) {
-      createDevice(registryId, deviceId);
-    } else if (!Boolean.FALSE.equals(device.getBlocked())) {
-      if (registryDevices.containsKey(registryId)) {
-        registryDevices.get(registryId).remove(deviceId);
-      }
-      updateDevice(registryId, deviceId, false);
-    }
-  }
-
-  private void updateDevice(String registryId, String deviceId,
-      boolean isBlocked) {
+  public Device registerDevice(String deviceId, List<DeviceCredential> credentials) throws Exception {
     try {
-      System.err.println("Update device " + registryId + "/" + deviceId + ", blocked=" + isBlocked);
-      Device device = new Device();
-      device.setBlocked(isBlocked);
-      device.setCredentials(getCredentials());
-      String path = getDevicePath(registryId, deviceId);
-      cloudIotRegistries.devices().patch(path, device).setUpdateMask("blocked,credentials").execute();
+      Preconditions.checkNotNull(cloudIotService, "CloudIoT service not initialized");
+      Device device = fetchDevice(deviceId);
+      if (device == null) {
+        return createDevice(deviceId, credentials);
+      } else {
+        device.setBlocked(false);
+        device.setCredentials(credentials);
+        updateDevice(device);
+        return device;
+      }
     } catch (Exception e) {
-      throw new RuntimeException(String.format("While updating device %s/%s", registryId, deviceId), e);
+      throw new RuntimeException("While registering device " + deviceId, e);
     }
   }
 
-  private void createDevice(String registryId, String deviceId) throws IOException {
+  public void blockDevice(String deviceId) {
+    try {
+      System.err.println("Blocking device " + registryId + "/" + deviceId);
+      Device device = new Device();
+      device.setBlocked(true);
+      String path = getDevicePath(registryId, deviceId);
+      cloudIotRegistries.devices().patch(path, device).setUpdateMask("blocked").execute();
+    } catch (Exception e) {
+      throw new RuntimeException(String.format("While blocking device %s/%s", registryId, deviceId), e);
+    }
+  }
+
+  public void updateDevice(Device device) {
+    String deviceId = device.getId();
+    try {
+      System.err.println("Blocking device " + registryId + "/" + deviceId);
+      String path = getDevicePath(registryId, deviceId);
+      cloudIotRegistries.devices().patch(path, device).setUpdateMask("credentials,blocked").execute();
+    } catch (Exception e) {
+      throw new RuntimeException(String.format("While blocking device %s/%s", registryId, deviceId), e);
+    }
+  }
+
+  private Device createDevice(String deviceId, List<DeviceCredential> credentials) throws IOException {
     System.err.println("Create device " + registryId + "/" + deviceId);
     String parent = getRegistryPath(registryId);
     Device device = new Device().setId(deviceId);
-    device.setCredentials(getCredentials());
+    device.setCredentials(credentials);
     try {
       cloudIotRegistries.devices().create(parent, device).execute();
     } catch (GoogleJsonResponseException e) {
-      throw new RuntimeException("Remote error creating device: " + e.getDetails().getMessage());
+      throw new RuntimeException("Remote error creating device " + deviceId, e);
     }
+    return device;
   }
 
-  private List<DeviceCredential> getCredentials() {
-    // Preconditions.checkNotNull(configuration.public_key_format, "Key format not configured");
-    // Preconditions.checkNotNull(configuration.public_key_data, "Key data not configured");
-    //
-    // PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
-    // publicKeyCredential.setFormat(configuration.public_key_format);
-    // publicKeyCredential.setKey(configuration.public_key_data);
-    //
-    // DeviceCredential deviceCredential = new DeviceCredential();
-    // deviceCredential.setPublicKey(publicKeyCredential);
+  public static List<DeviceCredential> makeCredentials(String keyFormat, String keyData) {
+    PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
+    publicKeyCredential.setFormat(keyFormat);
+    publicKeyCredential.setKey(keyData);
+
     DeviceCredential deviceCredential = new DeviceCredential();
+    deviceCredential.setPublicKey(publicKeyCredential);
     return ImmutableList.of(deviceCredential);
   }
 
