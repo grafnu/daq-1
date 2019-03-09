@@ -12,8 +12,10 @@ Can be generated and downloaded from the Cloud IoT Service Account page.
 
 ## Theory Of Operation
 
-* The target set of _expected_ devices is determined from directory entries in {site_path}/devices/.
-* Existing devices that are not listed in the site config are blocked.
+* The target set of _expected_ devices is determined from directory entries in
+<code>_{site_path}_/devices/</code>.
+* Existing devices that are not listed in the site config are blocked (as per
+Cloud IoT device setting).
 * If a device directory does not have an appropriate key, one will be automaticaly generated.
 * Devices not found in the target registry are automatically created.
 * Existing device registy entries are unblocked and updated with the appropriate keys.
@@ -21,7 +23,7 @@ Can be generated and downloaded from the Cloud IoT Service Account page.
 ## Sample Output
 
 <pre>
-~/daq$ bin/registrar
+~/daq$ <b>bin/registrar</b>
 Loading config from local/system.conf
 
 > Task :compileJava 
