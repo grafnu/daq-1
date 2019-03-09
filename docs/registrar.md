@@ -30,6 +30,8 @@ Loading config from local/system.conf
 &hellip;
 BUILD SUCCESSFUL in 4s
 2 actionable tasks: 2 executed
+Using gcp credentials local/daq-testing-de56aa4b1e47.json
+Using site config dir misc/test_site
 Using service account daq-laptop@daq-testing.iam.gserviceaccount.com/null
 Created service for project daq-testing
 Updated device entry AHU-001

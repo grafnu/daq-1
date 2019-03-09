@@ -14,6 +14,9 @@ fi
 config_file=$1
 devices_dir=$2
 
+echo Using gcp credentials $config_file
+echo Using site config dir $devices_dir
+
 error=0
 java -cp $jarfile $mainclass $config_file $devices_dir || error=$?
 
