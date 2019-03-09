@@ -1,7 +1,5 @@
 package com.google.daq.mqtt.util;
 
-import static sun.audio.AudioDevice.device;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
