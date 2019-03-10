@@ -46,10 +46,10 @@ Registrar complete, exit 0
 Expected workflow to configure a registry using Registrar:
 
 * `Device`: Target IoT Device
-* `Local`: Local clone of site configuration repo.
-* `Registrar`: Utility program.
+* `Local`: Local clone of site configuration repo
+* `Registrar`: This utility program
 * `Registry`: Target Cloud IoT Core registry
-* `Repo`: Remote site configuration repo.
+* `Repo`: Remote site configuration repo
 
 All operations are manaul except those involving the `Registrar` tool.
 
