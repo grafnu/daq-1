@@ -27,7 +27,6 @@ import java.util.Set;
 public class CloudIotManager {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-  public static final String RSA_PUBLIC_PEM = "rsa_public.pem";
 
   private final GcpCreds configuration;
   private final CloudIotConfig cloudIotConfig;

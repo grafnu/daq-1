@@ -20,6 +20,14 @@ Cloud IoT device setting).
 * Devices not found in the target registry are automatically created.
 * Existing device registy entries are unblocked and updated with the appropriate keys.
 
+## File Structure
+
+The main site configuration files to be aware of are:
+
+* `{site_dir}/cloud_iot_config.json`: Cloud configuration parameters (`registry_id`, `cloud_region`, etc...).
+* `{site_dir}/devices/{device_id}/properties.json`: Device-specific properties (e.g. is it a gateway?).
+* `{site_dir}/devices/{device_id}/rsa_private.pem`: Generated private key for device (used on-device).
+
 ## Sample Output
 
 <pre>

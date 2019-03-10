@@ -13,8 +13,8 @@ import java.util.Set;
 
 public class Registrar {
 
-  public static final String CLOUD_IOT_CONFIG_JSON = "cloud_iot_config.json";
-  public static final String DEVICES_DIR = "devices";
+  private static final String CLOUD_IOT_CONFIG_JSON = "cloud_iot_config.json";
+  private static final String DEVICES_DIR = "devices";
   private String gcpCredPath;
   private CloudIotManager cloudIotManager;
   private File cloudIotConfig;
@@ -68,11 +68,13 @@ public class Registrar {
   }
 
   private Map<String,Device> makeCloudDevices() {
+    System.err.println("Fetching remote registry");
     List<Device> devices = cloudIotManager.fetchDevices();
     Map<String, Device> deviceMap = new HashMap<>();
     devices.stream().map(Device::getId)
         .forEach(deviceName -> {
           try {
+            System.err.println("Fetching remote device " + deviceName);
             deviceMap.put(deviceName, cloudIotManager.fetchDevice(deviceName));
           } catch (IOException e) {
             throw new RuntimeException("While fetching device " + deviceName, e);
@@ -89,6 +91,7 @@ public class Registrar {
       return localDevices;
     }
     for (String deviceName : devices) {
+      System.err.println("Loading local device " + deviceName);
       localDevices.put(deviceName, new LocalDevice(deviceName, devicesDir));
     }
     return localDevices;
