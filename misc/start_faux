@@ -88,7 +88,8 @@ elif [ -n "${options[nobrute]}" ]; then
 fi
 
 if [ -n "${options[tls]}" ]; then
-  (python tlsfaux/server.py; echo tls done.) &
+    echo Starting tls server.
+    (python tlsfaux/server.py; echo tls done.) &
 fi
 
 conf_file=/config/start_faux.sh
