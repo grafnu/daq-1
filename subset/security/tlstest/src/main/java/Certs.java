@@ -45,7 +45,7 @@ public class Certs {
           } catch (CertificateExpiredException cee) {
             certificateReport += "\nCertificate is expired";
           } catch (CertificateNotYetValidException e) {
-        	  System.err.println("X509Certificate CertificateNotYetValidException:" + e.getMessage());
+            System.err.println("X509Certificate CertificateNotYetValidException:" + e.getMessage());
           }
 
           certificateReport += "\n";
@@ -103,3 +103,4 @@ public class Certs {
     }
   }
 }
+

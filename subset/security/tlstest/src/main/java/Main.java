@@ -1,17 +1,12 @@
 public class Main {
 
-  public static void main(String[] args) {
-    String ipAddress = "127.0.0.1";
+  public static void main(String[] args) throws Exception {
 
-    try {
-      if (args.length > 0) {
-        if (args[0].length() > 0) {
-          ipAddress = args[0];
-        }
-      }
-    } catch (Exception e) {
-      System.err.println("Exception main parse args:" + e.getMessage());
+    if (args.length != 1) {
+      throw new IllegalArgumentException("Expected ipAddress && port as argument");
     }
+
+    String ipAddress = args[0];
 
     Certs certificate = new Certs("https://" + ipAddress);
 
@@ -23,3 +18,4 @@ public class Main {
     }
   }
 }
+
