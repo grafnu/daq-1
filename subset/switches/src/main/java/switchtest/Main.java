@@ -2,6 +2,8 @@ package switchtest;
 
 public class Main {
 
+  private static Thread switchInterrogatorThread;
+	
   public static void main(String[] args) {
 
     String ipAddress = "192.168.1.2";
