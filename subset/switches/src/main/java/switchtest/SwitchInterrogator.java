@@ -19,7 +19,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Set;
 
 public class SwitchInterrogator implements Runnable {
   SwitchTelnetClientSocket telnetClientSocket;
@@ -46,12 +45,15 @@ public class SwitchInterrogator implements Runnable {
   };
 
   String[] command = {
-    "enable", "show interface port1.0.", "show platform port port1.0.", "show run", "show stack", "show power inline power-consumption",
+    "enable",
+    "show interface port1.0.",
+    "show platform port port1.0.",
+    "show run",
+    "show stack",
+    "show power inline power-consumption",
   };
-  
-  String[] commandToggle = {
-    "interface ethernet port1.0.", "shutdown", "no shutdown"
-  };
+
+  String[] commandToggle = {"interface ethernet port1.0.", "shutdown", "no shutdown"};
 
   int interfacePos = 1;
   int platformPos = 2;
@@ -501,3 +503,4 @@ public class SwitchInterrogator implements Runnable {
     }
   }
 }
+
