@@ -1,0 +1,2 @@
+This file is to make sure the directory exists, but should be
+ignored by the registrar because there is no properties.json

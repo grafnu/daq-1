@@ -63,7 +63,6 @@ public class CloudIotManager {
   private static CloudIotConfig validate(CloudIotConfig cloudIotConfig) {
     Preconditions.checkNotNull(cloudIotConfig.registry_id, "registry_id not defined");
     Preconditions.checkNotNull(cloudIotConfig.cloud_region, "cloud_region not defined");
-    Preconditions.checkNotNull(cloudIotConfig.site_code, "site_code not defined");
     return cloudIotConfig;
   }
 
@@ -218,9 +217,5 @@ public class CloudIotManager {
       }
       throw new RuntimeException("Remote error getting device: " + e.getDetails().getMessage());
     }
-  }
-
-  public String getSiteCode() {
-    return cloudIotConfig.site_code;
   }
 }

@@ -84,7 +84,6 @@ public class Registrar {
   }
 
   private Map<String,LocalDevice> getLocalDevices() {
-    String siteCode = cloudIotManager.getSiteCode();
     HashMap<String, LocalDevice> localDevices = new HashMap<>();
     File devicesDir = new File(siteConfig, DEVICES_DIR);
     String[] devices = devicesDir.list();
@@ -92,8 +91,10 @@ public class Registrar {
       return localDevices;
     }
     for (String deviceName : devices) {
-      System.err.println("Loading local device " + deviceName);
-      localDevices.put(deviceName, new LocalDevice(deviceName, siteCode, devicesDir));
+      if (LocalDevice.deviceDefined(devicesDir, deviceName)) {
+        System.err.println("Loading local device " + deviceName);
+        localDevices.put(deviceName, new LocalDevice(devicesDir, deviceName));
+      }
     }
     return localDevices;
   }

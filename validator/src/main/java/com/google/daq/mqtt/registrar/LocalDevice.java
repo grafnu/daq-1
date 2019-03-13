@@ -20,21 +20,24 @@ public class LocalDevice {
   private static final String RSA256_X509_PEM = "RSA_X509_PEM";
   private static final String RSA_PUBLIC_PEM = "rsa_public.pem";
   private static final String PROPERTIES_JSON = "properties.json";
+
+  private static final String METADATA_JSON = "metadata.json";
   private static final String METADATA_LOCATION_KEY = "location";
-  private static final String METADATA_SITE_CODE_KEY = "site_code";
 
   private final String deviceId;
-  private final String siteCode;
   private final File deviceDir;
   private final Properties properties;
 
   private CloudDeviceSettings settings;
 
-  LocalDevice(String deviceId, String siteCode, File devicesDir) {
+  LocalDevice(File devicesDir, String deviceId) {
     this.deviceId = deviceId;
-    this.siteCode = siteCode;
     deviceDir = new File(devicesDir, deviceId);
     properties = readProperties();
+  }
+
+  public static boolean deviceDefined(File devicesDir, String deviceName) {
+    return new File(new File(devicesDir, deviceName), PROPERTIES_JSON).isFile();
   }
 
   private Properties readProperties() {
@@ -58,7 +61,6 @@ public class LocalDevice {
     } else {
       throw new RuntimeException("Unknown device mode " + mode);
     }
-    Preconditions.checkNotNull(properties.location, "location property not defined");
     return properties;
   }
 
@@ -89,26 +91,40 @@ public class LocalDevice {
   }
 
   private Map<String, String> loadMetadata() {
+    try {
       Map<String, String> metaMap = new HashMap<>();
-      metaMap.put(METADATA_SITE_CODE_KEY, siteCode);
-      metaMap.put(METADATA_LOCATION_KEY, properties.location);
+      File metadataFile = new File(deviceDir, METADATA_JSON);
+      Metadata metadata = OBJECT_MAPPER.readValue(metadataFile, Metadata.class);
+      metaMap.put(METADATA_LOCATION_KEY,
+          Preconditions.checkNotNull(metadata.location, "Location not defined"));
       return metaMap;
+    } catch (Exception e) {
+      throw new RuntimeException("While loading metadata", e);
+    }
   }
 
   CloudDeviceSettings getSettings() {
-    if (settings != null) {
-      return settings;
-    }
+    try {
+      if (settings != null) {
+        return settings;
+      }
 
-    settings = new CloudDeviceSettings();
-    settings.credentials = loadCredentials();
-    settings.metadata = loadMetadata();
-    return settings;
+      settings = new CloudDeviceSettings();
+      settings.credentials = loadCredentials();
+      settings.metadata = loadMetadata();
+      return settings;
+    } catch (Exception e) {
+      throw new RuntimeException("While getting settings for device " + deviceId, e);
+    }
   }
 
   private static class Properties {
     public String mode;
     public String gateway_id;
+  }
+
+  // TODO: This should be specified in schema file, not in code.
+  private static class Metadata {
     public String location;
   }
 }
