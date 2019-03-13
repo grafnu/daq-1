@@ -22,11 +22,22 @@ Cloud IoT device setting).
 
 ## Device Settings
 
-The main site configuration files to be aware of are:
+When registering or updating a device, the Registrar manipulates a few key pieces of device
+information:
+* Auth keys: Public authentiation keys for the device.
+* Metadata: Various information about a device (e.g. site-code, location in the building).
+* Gateway Config: A proxy-mode device's gateway settings and binding.
 
-* `{site_dir}/cloud_iot_config.json`: Cloud configuration parameters (`registry_id`, `cloud_region`, etc...).
-* `{site_dir}/devices/{device_id}/properties.json`: Device-specific properties (e.g. device mode, location).
-* `{site_dir}/devices/{device_id}/rsa_private.pem`: Generated private key for device (used on-device).
+This information is sourced from a few key files:
+
+* `{site_dir}/cloud_iot_config.json`:
+Cloud configuration parameters (`registry_id`, `cloud_region`, etc...).
+* `{site_dir}/devices/{device_id}/properties.json`:
+Device-specific properties (e.g. device mode).
+* `{site_dir}/devices/{device_id}/metadata.json`:
+Device metadata (e.g. location).
+* `{site_dir}/devices/{device_id}/rsa_private.pem`:
+Generated private key for device (used on-device).
 
 ### Device Properties
 
@@ -34,14 +45,10 @@ The main site configuration files to be aware of are:
   * `direct`: Device communicates directly with Cloud IoT, and requires its own auth key and MQTT channel.
   * `gateway`: Devie is a gateway that proxies for other devices.
   * `proxy`: Device is proxied through a gateway, and the `gateway_id` proerty must be set accordingly.
+
+### Device Metadata
+
 * `location`: Location of the device in the building.
-
-### Registration Operations
-
-When registering or updating a device, the Registrar manipulates a few key pieces of device information:
-* Auth keys: Public authentiation keys for the device.
-* Metadata: Various information about a device (e.g. site-code, location in the building).
-* Gateway Config: A proxy-mode device's gateway settings and binding.
 
 ## Sample Output
 
