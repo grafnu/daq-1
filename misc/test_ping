@@ -23,7 +23,7 @@ if [ -n "$LOCAL_IP" ]; then
     ip addr add $LOCAL_IP dev `hostname`-eth0
     echo Switch test with port $SWITCH_PORT.
     status=pass
-    ping -n -c 10 $SWITCH_IP || stats=fail
+    ping -n -c 10 $SWITCH_IP || status=fail
     echo RESULT $status base.switch.ping target $SWITCH_IP:$SWITCH_PORT >> $REPORT_FILE
 else
     echo LOCAL_IP not configured, assuming no network switch.
