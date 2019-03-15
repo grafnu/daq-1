@@ -7,6 +7,12 @@ XXX
 Sample device description.
 By default would be in local/devices/ rather than misc/.
 
+\|/          (__)
+     `\------(oo)
+       ||    (__)
+       ||w--||     \|/
+   \|/
+
 =============== Report summary
 
 skip base.switch.ping
