@@ -8,8 +8,7 @@ for option in $*; do
 done
 
 # Disable docker's built-in resolv mechanism and install standard resolvconf.
-# Can't do this at runtime since it requires permissions that aren't availble
-# at build time.
+# Do this at runtime since it requires permissions that aren't availble at build.
 umount /etc/resolv.conf
 dpkg -i resolvconf_*.deb
 
@@ -18,12 +17,11 @@ while ! ifconfig -a | fgrep -q BROADCAST; do
     sleep 1
 done
 
-intf_name=$(ip link | fgrep BROADCAST | sed -rn 's/^.* (.*?)(@.+)?:.*$/\1/p')
+intf_name=$(ip link | fgrep BROADCAST | sed -rn 's/^.* ([-a-z0-9]+).*$/\1/p')
 if [ -n "$intf_name" ]; then
     echo Local interface is $intf_name
 else
     echo Local interface not found.
-    tail -f /dev/null
     exit 1
 fi
 
