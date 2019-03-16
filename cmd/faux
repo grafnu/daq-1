@@ -63,9 +63,8 @@ echo DAQ autoclean docker kill $CONTAINER
 if [ -n "$realintf" ]; then
     echo Moving $realintf into $pid...
     sudo ip link set $realintf netns $pid
-    docker exec $CONTAINER ip link set $realintf name faux-eth0
-    docker exec $CONTAINER ip link set faux-eth0 up
-    docker exec $CONTAINER ip link show faux-eth0
+    docker exec $CONTAINER ip link set $realintf up
+    docker exec $CONTAINER ip link show $realintf
 else
     intf=faux$postfix
     echo Removing old interface $intf
