@@ -1,5 +1,7 @@
 # Changelog
 
+* Next Version:
+        * Process faucet include files in normalizer.
 * 0.9.5
 	* DAQ_TARGETS env variable for incremental builds.
 	* Report file cleanup, with embedded test results.
