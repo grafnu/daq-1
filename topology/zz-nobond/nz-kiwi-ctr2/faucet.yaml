@@ -22,7 +22,7 @@ dps:
     faucet_dp_mac: 0e:00:00:00:02:02
     hardware: Generic
     interface_ranges:
-      '1': {acl_in: uniform_acl, description: IoT Device, native_vlan: 100}
+      10-13: {acl_in: uniform_acl, description: IoT Device, native_vlan: 100}
     interfaces:
       49:
         loop_protect_external: true

@@ -101,14 +101,14 @@ add_br t1sw2 178 6673 # 0x930 6663
 add_br t2sw2 1296 6673 # 0x0b2 6663
 add_br corp  0x111 6683
 
-add_oeth t1sw1 5 corp-eth10
-add_oeth t1sw1 6 corp-eth11
+add_oeth t1sw1 28 corp-eth10
+add_oeth t1sw1 29 corp-eth11
 
 add_link t1sw1 7 t2sw1 49
 add_link t1sw1 9 t2sw2 49
 
-add_oeth t1sw2 5 corp-eth20
-add_oeth t1sw2 6 corp-eth21
+add_oeth t1sw2 28 corp-eth20
+add_oeth t1sw2 29 corp-eth21
 
 add_link t1sw2 7 t2sw1 50
 add_link t1sw2 9 t2sw2 50
@@ -152,5 +152,10 @@ docker exec daq-faux-3 ping -q -c 30 192.168.0.1 &
 
 echo Waiting for warm-ups to complete...
 wait
+
+echo Performing connectivity checks...
+docker exec daq-faux-1 ping -q -c 1 192.168.0.2
+docker exec daq-faux-2 ping -q -c 1 192.168.0.3
+docker exec daq-faux-3 ping -q -c 1 192.168.0.1
 
 echo Done with stack setup mode $mode.
