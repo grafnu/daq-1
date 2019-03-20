@@ -48,6 +48,7 @@ class Gateway():
         try:
             self._initialize()
         except:
+            LOGGER.error('Gateway initialization failed, terminating')
             self.terminate()
             raise
 
@@ -59,12 +60,15 @@ class Gateway():
         cls = docker_host.make_docker_host('daq/networking', prefix='daq', network='bridge')
         host = self.runner.add_host(host_name, port=host_port, cls=cls, tmpdir=self.tmpdir)
         host.activate()
-        LOGGER.info("Adding networking host %s on port %d at %s", host_name, host_port, host.IP())
+        self.host = host
+        LOGGER.info("Added networking host %s on port %d at %s", host_name, host_port, host.IP())
 
         dummy_name = 'dummy%02d' % self.port_set
         dummy_port = self._switch_port(self.DUMMY_OFFSET)
-        self.dummy = self.runner.add_host(dummy_name, port=dummy_port)
-        dummy = self.dummy
+        dummy = self.runner.add_host(dummy_name, port=dummy_port)
+        # Dummy does not use DHCP, so need to set default route manually.
+        dummy.cmd('route add -net 0.0.0.0 gw %s' % host.IP())
+        self.dummy = dummy
         LOGGER.info("Added dummy target %s on port %d at %s", dummy_name, dummy_port, dummy.IP())
 
         self.fake_target = self.TEST_IP_FORMAT % self.port_set
@@ -73,9 +77,6 @@ class Gateway():
         host.cmd('ip addr add %s dev %s' % (self.fake_target, self.host_intf))
 
         self._startup_scan(host)
-
-        # Dummy doesn't use DHCP, so need to set default route manually.
-        dummy.cmd('route add -net 0.0.0.0 gw %s' % host.IP())
 
         log_file = os.path.join(self.tmpdir, 'dhcp_monitor.txt')
         self.dhcp_monitor = dhcp_monitor.DhcpMonitor(self.runner, host,
@@ -94,10 +95,9 @@ class Gateway():
         assert self._ping_test(dummy, self.fake_target), 'fake ping failed'
         assert self._ping_test(host, dummy, src_addr=self.fake_target), 'reverse ping failed'
 
-        self.host = host
-
     def activate(self):
         """Mark this gateway as activated once all hosts are present"""
+        self.host.cmd('./increase_leasetime')
         self.activated = True
         self._scan_finalize()
 
@@ -149,6 +149,8 @@ class Gateway():
         return self.port_set * self.SET_SPACING + offset
 
     def _is_target_expected(self, target):
+        if not target:
+            return False
         target_mac = target['mac']
         for target_port in self.targets:
             if self.targets[target_port]['mac'] == target_mac:
@@ -156,16 +158,9 @@ class Gateway():
         LOGGER.warning('No target match found for %s in %s', target_mac, self.name)
         return False
 
-    def _dhcp_callback(self, state, target_ip=None, target_mac=None, exception=None):
-        target = {
-            'ip': target_ip,
-            'mac': target_mac
-        }
+    def _dhcp_callback(self, state, target, exception=None):
         if self._is_target_expected(target) or exception:
-            self.runner.dhcp_notify(state, target=target, exception=exception,
-                                    gateway_set=self.port_set)
-        else:
-            LOGGER.warning('Unexpected target %s for gateway %s', target_mac, self.name)
+            self.runner.dhcp_notify(state, target, self.port_set, exception=exception)
 
     def _setup_tmpdir(self, base_name):
         tmpdir = os.path.join('inst', base_name)

@@ -15,7 +15,7 @@ class DhcpMonitor():
     DHCP_TYPE_PATTERN = 'DHCP-Message Option 53, length 1: ([a-zA-Z]+)'
     DHCP_MAC_PATTERN = 'Client-Ethernet-Address ([a-z0-9:]+)'
     DHCP_PATTERN = '(%s)|(%s)|(%s)' % (DHCP_IP_PATTERN, DHCP_TYPE_PATTERN, DHCP_MAC_PATTERN)
-    DHCP_THRESHHOLD_SEC = 120
+    DHCP_THRESHHOLD_SEC = 80
 
     def __init__(self, runner, host, callback, log_file=None):
         self.runner = runner
@@ -78,9 +78,13 @@ class DhcpMonitor():
         delta = int(time.time()) - self.scan_start
         LOGGER.debug('DHCP monitor %s received reply after %ds: %s/%s',
                      self.name, delta, self.target_ip, self.target_mac)
-        weak_result = delta > self.DHCP_THRESHHOLD_SEC
-        state = 'weak' if weak_result else None
-        self.callback(state, target_ip=self.target_ip, target_mac=self.target_mac)
+        state = 'long' if delta > self.DHCP_THRESHHOLD_SEC else None
+        target = {
+            'ip': self.target_ip,
+            'mac': self.target_mac,
+            'delta': delta
+        }
+        self.callback(state, target)
         self.target_ip = None
         self.target_mac = None
         self.scan_start = int(time.time())
@@ -93,4 +97,4 @@ class DhcpMonitor():
         if self.dhcp_log:
             self.dhcp_log.write('Monitor error %s\n' % e)
         self.cleanup(forget=False)
-        self.callback('error', exception=e)
+        self.callback('error', None, exception=e)
