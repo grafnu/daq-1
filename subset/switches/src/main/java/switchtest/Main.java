@@ -4,15 +4,13 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
 
-    // if (args.length != 1) {
-    //    throw new IllegalArgumentException("Expected ipAddress && port as argument");
-    //
+    if (args.length != 2) {
+      throw new IllegalArgumentException("Expected ipAddress && port as arguments");
+    }
 
-    // String ipAddress = args[0];
-    String ipAddress = "192.168.1.2";
+    String ipAddress = args[0];
 
-    // int interfacePort = Integer.parseInt(args[1]);
-    int interfacePort = 23;
+    int interfacePort = Integer.parseInt(args[1]);
 
     SwitchInterrogator switchInterrogator = new SwitchInterrogator(ipAddress, interfacePort);
 
