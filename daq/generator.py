@@ -49,12 +49,8 @@ class TopologyGenerator():
             in_path = os.path.join(source_dir, filename)
             configs[filename] = self._load_config(in_path)
         self._flatten_configs(configs)
-        key_tracker = set(configs.keys())
         for config in configs:
             self._write_yaml(topo_dir, config, configs[config])
-            key_tracker.remove(config)
-        for config in key_tracker:
-            LOGGER.warning('Unused key %s', config)
 
     def _flatten_configs(self, configs):
         faucet_conf = configs['faucet.yaml']
