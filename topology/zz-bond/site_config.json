@@ -4,7 +4,7 @@
   "tier1": {
     "uplink_ports": [1, 2],
     "uplink_native": true,
-    'upstream_lacp': 1,
+    "upstream_lacp": 1,
     "defaults": {
       "hardware": "Generic"
     },
