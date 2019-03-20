@@ -317,11 +317,13 @@ public class SwitchTelnetClientSocket implements TelnetNotificationHandler, Runn
             String hostname = interrogator.getHostname();
             int requestFlag = interrogator.getRequestFlag() - 1;
 
-            boolean[] requestFlagIndexOf = {false, false, true, false};
-            String[] requestFlagExpected = {hostname, hostname, "end", hostname};
-            int[] requestFlagExpectedLength = {600, 600, 1000, 290};
-            int[] requestFlagCharLength = {hostname.length() + 1, hostname.length() + 1, 3, -1};
-            int[] requestFlagFlush = {0, 0, 15, 0};
+            boolean[] requestFlagIndexOf = {false, false, false, true, false};
+            String[] requestFlagExpected = {hostname, hostname, hostname, "end", hostname};
+            int[] requestFlagExpectedLength = {600, 600, 200, 1000, 290};
+            int[] requestFlagCharLength = {
+              hostname.length() + 1, hostname.length() + 1, hostname.length() + 1, 3, -1
+            };
+            int[] requestFlagFlush = {0, 0, 0, 15, 0};
 
             // login & enable process
             if (count < 3) {
@@ -418,4 +420,3 @@ public class SwitchTelnetClientSocket implements TelnetNotificationHandler, Runn
     }
   }
 }
-

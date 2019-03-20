@@ -31,6 +31,8 @@ public class SwitchInterrogator implements Runnable {
   int remotePort = 23;
   int interfacePort = 12;
 
+  boolean switchSupportsPoe = true;
+
   String reportFilename = "tmp/report.txt";
 
   int data_length = 32768;
@@ -48,15 +50,16 @@ public class SwitchInterrogator implements Runnable {
     "enable",
     "show interface port1.0.",
     "show platform port port1.0.",
+    "show power-inline interface port1.0.",
     "show run",
-    "show stack",
-    "show power inline power-consumption",
+    "show stack"
   };
 
   String[] commandToggle = {"interface ethernet port1.0.", "shutdown", "no shutdown"};
 
   int interfacePos = 1;
   int platformPos = 2;
+  int powerinlinePos = 3;
 
   String[] show_stack_expected = {
     "ID", "Pending ID", "MAC address", "Priority", "Status", "Role", "\n"
@@ -64,6 +67,13 @@ public class SwitchInterrogator implements Runnable {
 
   int[] show_stack_pointers = new int[7];
   String[] show_stack_data = new String[6];
+
+  String[] show_power_expected = {
+    "Interface", "Admin", "Pri", "Oper", "Power", "Device", "Class", "Max", "\n"
+  };
+
+  int[] show_power_pointers = new int[9];
+  String[] show_power_data = new String[8];
 
   String[] show_interface_expected = {
     "port1",
@@ -196,6 +206,7 @@ public class SwitchInterrogator implements Runnable {
     this.interfacePort = interfacePort;
     command[interfacePos] = command[interfacePos] + interfacePort;
     command[platformPos] = command[platformPos] + interfacePort;
+    command[powerinlinePos] = command[powerinlinePos] + interfacePort;
   }
 
   @Override
@@ -218,99 +229,111 @@ public class SwitchInterrogator implements Runnable {
   }
 
   private void parse_packet(String raw_data, String[] show_expected, int[] show_pointers) {
-    int start = 0;
-    for (int port = 0; port < number_switch_ports; port++) {
-      for (int x = 0; x < show_expected.length; x++) {
-        start = recursive_data(raw_data, show_expected[x], start);
-        show_pointers[x] = start;
+    try {
+      int start = 0;
+      for (int port = 0; port < number_switch_ports; port++) {
+        for (int x = 0; x < show_expected.length; x++) {
+          start = recursive_data(raw_data, show_expected[x], start);
+          show_pointers[x] = start;
+        }
+
+        int chunk_s = show_pointers[0];
+        int chunk_e = show_pointers[3];
+
+        if (chunk_e == -1) chunk_e = raw_data.length();
+
+        String temp_data = raw_data.substring(chunk_s, chunk_e);
+
+        if (debug) System.out.println("length" + temp_data.length() + "temp_data:" + temp_data);
+
+        if (requestFlag == (interfacePos + 1)) {
+          parse_single(
+              temp_data, show_interface_expected, show_interface_pointers, show_interface_data);
+        } else if (requestFlag == (platformPos + 1)) {
+          parse_single(
+              temp_data, show_platform_expected, show_platform_pointers, show_platform_data);
+        }
       }
-
-      int chunk_s = show_pointers[0];
-      int chunk_e = show_pointers[3];
-
-      if (chunk_e == -1) chunk_e = raw_data.length();
-
-      String temp_data = raw_data.substring(chunk_s, chunk_e);
-
-      if (debug) System.out.println("length" + temp_data.length() + "temp_data:" + temp_data);
-
-      if (requestFlag == (interfacePos + 1)) {
-        parse_single(
-            temp_data, show_interface_expected, show_interface_pointers, show_interface_data);
-      } else if (requestFlag == (platformPos + 1)) {
-        parse_single(temp_data, show_platform_expected, show_platform_pointers, show_platform_data);
-      }
+    } catch (Exception e) {
+      System.err.println("Exception parse_packet:" + e.getMessage());
     }
   }
 
   private void parse_single(
       String raw_data, String[] expected_array, int[] pointers_array, String[] data_array) {
-    int start = 0;
-    for (int x = 0; x < expected_array.length; x++) {
-      start = recursive_data(raw_data, expected_array[x], start);
-      if (start == -1) {
-        start = pointers_array[x - 1];
-        pointers_array[x] = -1;
-      } else {
-        pointers_array[x] = start;
+    try {
+      int start = 0;
+      for (int x = 0; x < expected_array.length; x++) {
+        start = recursive_data(raw_data, expected_array[x], start);
+        if (start == -1) {
+          start = pointers_array[x - 1];
+          pointers_array[x] = -1;
+        } else {
+          pointers_array[x] = start;
+        }
       }
-    }
 
-    for (int x = 0; x < data_array.length; x++) {
-      int chunk_start = x * 2;
-      int chunk_end = 1 + (x * 2);
+      for (int x = 0; x < data_array.length; x++) {
+        int chunk_start = x * 2;
+        int chunk_end = 1 + (x * 2);
 
-      int chunk_s = pointers_array[chunk_start];
-      int chunk_e = pointers_array[chunk_end];
+        int chunk_s = pointers_array[chunk_start];
+        int chunk_e = pointers_array[chunk_end];
 
-      if (chunk_s > 0) {
-        if (chunk_e == -1) chunk_e = raw_data.length();
+        if (chunk_s > 0) {
+          if (chunk_e == -1) chunk_e = raw_data.length();
 
-        data_array[x] = raw_data.substring(chunk_s, chunk_e);
+          data_array[x] = raw_data.substring(chunk_s, chunk_e);
 
-        data_array[x] = data_array[x].substring(expected_array[chunk_start].length());
+          data_array[x] = data_array[x].substring(expected_array[chunk_start].length());
 
-        String extracted_data = expected_array[chunk_start] + data_array[x];
+          String extracted_data = expected_array[chunk_start] + data_array[x];
 
-        if (debug) System.out.println(extracted_data);
+          if (debug) System.out.println(extracted_data);
 
-        login_report += extracted_data + "\n";
+          login_report += extracted_data + "\n";
+        }
       }
+    } catch (Exception e) {
+      System.err.println("Exception parse_single:" + e.getMessage());
     }
   }
 
   private void parse_inline(
       String raw_data, String[] expected, int[] pointers, String[] data_array) {
-    int start = 0;
+    try {
+      int start = 0;
 
-    for (int x = 0; x < expected.length; x++) {
-      start = recursive_data(raw_data, expected[x], start);
-      pointers[x] = start;
-      if (x > 0) {
-        pointers[x - 1] = pointers[x] - pointers[x - 1];
+      for (int x = 0; x < expected.length; x++) {
+        start = recursive_data(raw_data, expected[x], start);
+        pointers[x] = start;
+        if (x > 0) {
+          pointers[x - 1] = pointers[x] - pointers[x - 1];
+        }
       }
-    }
+      int chunk_start = pointers[pointers.length - 1];
+      int chunk_end = pointers[pointers.length - 1];
 
-    int chunk_start = pointers[pointers.length - 1];
-    int chunk_end = pointers[pointers.length - 1];
+      for (int x = 0; x < data_array.length; x++) {
+        chunk_start = chunk_end;
 
-    for (int x = 0; x < data_array.length; x++) {
-      chunk_start = chunk_end;
+        if (x > 0) {
+          chunk_start += 1;
+        }
 
-      if (x > 0) {
-        chunk_start += 1;
+        chunk_end += pointers[x];
+
+        if (x != data_array.length - 1) {
+          data_array[x] =
+              raw_data.substring(chunk_start, chunk_end).replace("\n", "").replace(" ", "");
+        } else {
+          chunk_end = recursive_data(raw_data, "\n", chunk_start);
+          data_array[x] = raw_data.substring(chunk_start, chunk_end).replace("\n", "");
+        }
+        login_report += expected[x] + ":" + data_array[x] + "\n";
       }
-
-      chunk_end += show_stack_pointers[x];
-
-      if (x != data_array.length - 1) {
-        data_array[x] =
-            raw_data.substring(chunk_start, chunk_end).replace("\n", "").replace(" ", "");
-      } else {
-        chunk_end = recursive_data(raw_data, "\n", chunk_start);
-        data_array[x] = raw_data.substring(chunk_start, chunk_end).replace("\n", "");
-      }
-      login_report += expected[x] + ":" + data_array[x] + "\n";
+    } catch (Exception e) {
+      System.err.println("Exception parse_inline:" + e.getMessage());
     }
   }
 
@@ -374,7 +397,12 @@ public class SwitchInterrogator implements Runnable {
           } else {
             // running configuration requests
             if (data.indexOf(device_hostname) >= 0 && data.length() < 20) {
-              int finish = 3;
+              int finish = 0;
+              if (switchSupportsPoe) {
+                finish = 4;
+              } else {
+                finish = 3;
+              }
               if (extendedTests) {
                 finish = command.length;
               }
@@ -396,41 +424,66 @@ public class SwitchInterrogator implements Runnable {
       }
     } catch (Exception e) {
       System.err.println("Exception parseData:" + e.getMessage());
-      System.exit(0);
     }
   }
 
   private void parseRequestFlag(String data, int requestFlag) {
-    switch (requestFlag) {
-      case 2:
-        // parse show interface
-        login_report += "show interface:\n";
-        parse_packet(data, show_interface_port_expected, show_interface_port_pointers);
-        writeReport();
-        telnetClientSocket.writeData("\n");
-        break;
-      case 3:
-        // parse show platform
-        login_report += "\nshow platform:\n";
-        parse_packet(data, show_platform_port_expected, show_platform_port_pointers);
-        writeReport();
-        telnetClientSocket.writeData("\n");
-        break;
-      case 4:
-        // parse show run
-        data = cleanShowRunData(data);
-        login_report += "\n" + data;
-        writeReport();
-        telnetClientSocket.writeData("\n");
-        break;
-      case 5:
-        // parse show stack
-        login_report += "\nshow stack:\n";
-        parse_inline(data, show_stack_expected, show_stack_pointers, show_stack_data);
-        writeReport();
-        telnetClientSocket.writeData("\n");
-        break;
+    try {
+      switch (requestFlag) {
+        case 2:
+          // parse show interface
+          login_report += "show interface:\n";
+          parse_packet(data, show_interface_port_expected, show_interface_port_pointers);
+          writeReport();
+          telnetClientSocket.writeData("\n");
+          break;
+        case 3:
+          // parse show platform
+          login_report += "\nshow platform:\n";
+          parse_packet(data, show_platform_port_expected, show_platform_port_pointers);
+          writeReport();
+          telnetClientSocket.writeData("\n");
+          break;
+        case 4:
+          // parse show power-inline
+          login_report += "\nshow power-inline:\n";
+          data = trash_line(trash_line(data, 0), 1);
+          parse_inline(data, show_power_expected, show_power_pointers, show_power_data);
+          writeReport();
+          telnetClientSocket.writeData("\n");
+          break;
+        case 5:
+          // parse show run
+          data = cleanShowRunData(data);
+          login_report += "\n" + data;
+          writeReport();
+          telnetClientSocket.writeData("\n");
+          break;
+        case 6:
+          // parse show stack
+          login_report += "\nshow stack:\n";
+          parse_inline(data, show_stack_expected, show_stack_pointers, show_stack_data);
+          writeReport();
+          telnetClientSocket.writeData("\n");
+          break;
+      }
+    } catch (Exception e) {
+      System.err.println("Exception parseRequestFlag:" + e.getMessage());
+      System.exit(0);
     }
+  }
+
+  private String trash_line(String data, int trash_line) {
+    String[] lineArray = data.split("\n");
+    String tempData = "";
+    for (int i = 0; i < lineArray.length; i++) {
+      if (i == trash_line) {
+
+      } else {
+        tempData += lineArray[i] + "\n";
+      }
+    }
+    return tempData;
   }
 
   private String cleanShowRunData(String data) {
@@ -451,6 +504,10 @@ public class SwitchInterrogator implements Runnable {
 
       String current_duplex = show_interface_data[3];
       String configured_duplex = show_interface_data[6];
+
+      String current_max_power = show_power_data[7];
+      String current_power = show_power_data[4];
+      String current_PoE_admin = show_power_data[1];
 
       if (link_status.equals("UP") && Integer.parseInt(dropped_packets) == 0) {
         login_report += "\nswitch.port.link=true";
@@ -478,6 +535,15 @@ public class SwitchInterrogator implements Runnable {
         login_report += "\nswitch.port.duplex=false";
       }
 
+      if (switchSupportsPoe) {
+        if (Integer.parseInt(current_max_power) > Integer.parseInt(current_power)
+            && current_PoE_admin.equals("Enabled")) {
+          login_report += "\nswitch.port.poe=true";
+        } else {
+          login_report += "\nswitch.port.poe=false";
+        }
+      }
+
       writeReport();
     } catch (Exception e) {
       System.err.println("Exception validateTests:" + e.getMessage());
@@ -503,4 +569,3 @@ public class SwitchInterrogator implements Runnable {
     }
   }
 }
-
