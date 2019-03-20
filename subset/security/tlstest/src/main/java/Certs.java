@@ -20,7 +20,7 @@ public class Certs {
     this.ipAddress = ipAddress;
   }
 
-  public void get_certificate() {
+  public boolean get_certificate() {
     try {
       Report report = new Report();
 
@@ -35,33 +35,39 @@ public class Certs {
       Principal peername = httpsURLConnection.getPeerPrincipal();
       String cipher = httpsURLConnection.getCipherSuite();
       java.security.cert.Certificate[] certificates = httpsURLConnection.getServerCertificates();
-      certificateReport += "Cipher:\n" + cipher;
+      certificateReport += "Cipher:\n" + cipher + "\n";
       for (java.security.cert.Certificate certificate : certificates) {
 
         if (certificate instanceof X509Certificate) {
           try {
             ((X509Certificate) certificate).checkValidity();
-            certificateReport += "\nCertificate is active for current date";
+            certificateReport += "Certificate is active for current date.";
           } catch (CertificateExpiredException cee) {
-            certificateReport += "\nCertificate is expired";
+            certificateReport += "Certificate is expired.";
+            return false;
           } catch (CertificateNotYetValidException e) {
-            System.err.println("X509Certificate CertificateNotYetValidException:" + e.getMessage());
+            certificateReport += "Certificate not yet valid.";
+            return false;
           }
 
           certificateReport += "\n";
 
-          certificateReport += "Certificate:\n" + certificate;
+          certificateReport += "Certificate:\n" + certificate + "\n";
 
         } else {
           System.err.println("Unknown certificate type: " + certificate);
+          return false;
         }
       }
 
       report.writeReport(certificateReport);
+      return true;
     } catch (MalformedURLException e) {
       e.printStackTrace();
+      return false;
     } catch (IOException e) {
       e.printStackTrace();
+      return false;
     }
   }
 
@@ -103,4 +109,3 @@ public class Certs {
     }
   }
 }
-

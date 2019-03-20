@@ -12,7 +12,7 @@ public class Report {
   public void writeReport(String certificateReport) {
     try {
       if (debug) {
-        System.out.println("login_report:" + certificateReport);
+        System.out.println("report:" + certificateReport);
       }
 
       String[] directory = reportFilename.split("/");
@@ -28,4 +28,3 @@ public class Report {
     }
   }
 }
-
