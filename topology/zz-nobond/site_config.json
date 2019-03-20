@@ -19,7 +19,7 @@
   "tier2": {
     "defaults": {
       "hardware": "Generic",
-      "device_ports": "1"
+      "device_ports": "10-13"
     },
     "tier1_ports": {
       7: {

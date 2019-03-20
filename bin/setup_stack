@@ -101,17 +101,17 @@ add_br t1sw2 178 6673 # 0x930 6663
 add_br t2sw2 1296 6673 # 0x0b2 6663
 add_br corp  0x111 6683
 
-add_oeth t1sw1 1 corp-eth10
-add_oeth t1sw1 2 corp-eth11
+add_oeth t1sw1 5 corp-eth10
+add_oeth t1sw1 6 corp-eth11
 
-add_link t1sw1 22 t2sw2 7
-add_link t1sw1 23 t2sw1 7
+add_link t1sw1 7 t2sw1 49
+add_link t1sw1 9 t2sw2 49
 
-add_oeth t1sw2 1 corp-eth20
-add_oeth t1sw2 2 corp-eth21
+add_oeth t1sw2 5 corp-eth20
+add_oeth t1sw2 6 corp-eth21
 
-add_link t1sw2 22 t2sw2 6
-add_link t1sw2 23 t2sw1 6
+add_link t1sw2 7 t2sw1 50
+add_link t1sw2 9 t2sw2 50
 
 sudo ip link del bond1 || true
 if [ $mode == bond ]; then
@@ -141,8 +141,8 @@ sudo ip link set up dev corp-eth20
 sudo ip link set up dev corp-eth21
 sudo ovs-vsctl add-port corp $upstream2 -- set interface $upstream2 ofport_request=20
 
-add_iface t2sw1 1 faux-1
-add_iface t2sw2 1 faux-2
+add_iface t2sw1 10 faux-1
+add_iface t2sw2 10 faux-2
 add_iface corp 1 faux-3
 
 echo Starting connection warm-up for 30s...
