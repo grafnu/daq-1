@@ -2,7 +2,7 @@
   "site_name": "nz-kiwi",
   "vlan_id": 100,
   "tier1": {
-    "uplink_ports": [1],
+    "uplink_ports": [28],
     "uplink_native": true,
     "defaults": {
       "hardware": "Generic"
@@ -22,17 +22,17 @@
       "device_ports": "1"
     },
     "tier1_ports": {
-      22: {
+      7: {
         "dp_id": 2352,
         "domain": "1",
-        "stack_port": 6,
-        "cross_port": 7
+        "stack_port": 49,
+        "cross_port": 50
       },
-      23: {
+      9: {
         "dp_id": 1296,
         "domain": "2",
-        "stack_port": 7,
-        "cross_port": 6
+        "stack_port": 50,
+        "cross_port": 49
       }
     }
   },
