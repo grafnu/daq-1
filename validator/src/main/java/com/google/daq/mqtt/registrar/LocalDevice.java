@@ -2,6 +2,7 @@ package com.google.daq.mqtt.registrar;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.services.cloudiot.v1.model.DeviceCredential;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.daq.mqtt.util.CloudDeviceSettings;
 import com.google.daq.mqtt.util.CloudIotManager;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.Schema;
+import org.everit.json.schema.ValidationException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -45,9 +47,18 @@ public class LocalDevice {
   private void validateMetadata() {
     File targetFile = new File(deviceDir, METADATA_JSON);
     try (InputStream targetStream = new FileInputStream(targetFile)) {
-      schema.validate(new JSONObject(new JSONTokener(targetStream)));
+      try {
+        schema.validate(new JSONObject(new JSONTokener(targetStream)));
+      } catch (ValidationException ve) {
+        if (ve.getAllMessages().size() == 1) {
+          throw new RuntimeException("Validation error: " + ve.getAllMessages().get(0));
+        } else {
+          throw new RuntimeException(
+              "Validation errors:\n" + Joiner.on('\n').join(ve.getAllMessages()));
+        }
+      }
     } catch (Exception e) {
-      throw new RuntimeException("Against input " + targetFile, e);
+      throw new RuntimeException("Processing input " + targetFile, e);
     }
   }
 
