@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sed -e 's/^.*table=/t=/' -e 's/, n_packets.*priority=/, p=/'
