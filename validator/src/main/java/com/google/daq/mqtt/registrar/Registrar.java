@@ -1,15 +1,23 @@
 package com.google.daq.mqtt.registrar;
 
 import com.google.api.services.cloudiot.v1.model.Device;
+import com.google.common.base.Preconditions;
 import com.google.daq.mqtt.util.CloudIotManager;
 import com.google.daq.mqtt.util.ExceptionMap;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.everit.json.schema.Schema;
+import org.everit.json.schema.loader.SchemaClient;
+import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 public class Registrar {
 
@@ -19,15 +27,18 @@ public class Registrar {
   private CloudIotManager cloudIotManager;
   private File cloudIotConfig;
   private File siteConfig;
+  private Schema schema;
+  private File schemaBase;
 
   public static void main(String[] args) {
     Registrar registrar = new Registrar();
     try {
-      if (args.length != 2) {
-        throw new IllegalArgumentException("Args: [gcp_cred_file] [site_dir]");
+      if (args.length != 3) {
+        throw new IllegalArgumentException("Args: [gcp_cred_file] [site_dir] [schema_file]");
       }
       registrar.setGcpCredPath(args[0]);
       registrar.setSiteConfigPath(args[1]);
+      registrar.setSchemaFile(args[2]);
       registrar.processDevices();
     } catch (ExceptionMap em) {
       System.exit(2);
@@ -93,7 +104,7 @@ public class Registrar {
     for (String deviceName : devices) {
       if (LocalDevice.deviceDefined(devicesDir, deviceName)) {
         System.err.println("Loading local device " + deviceName);
-        localDevices.put(deviceName, new LocalDevice(devicesDir, deviceName));
+        localDevices.put(deviceName, new LocalDevice(devicesDir, deviceName, schema));
       }
     }
     return localDevices;
@@ -101,5 +112,31 @@ public class Registrar {
 
   private void setGcpCredPath(String gcpConfigPath) {
     this.gcpCredPath = gcpConfigPath;
+  }
+
+  private void setSchemaFile(String path) {
+    File schemaFile = new File(path);
+    schemaBase = schemaFile.getParentFile();
+    try (InputStream schemaStream = new FileInputStream(schemaFile)) {
+      JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream));
+      schema = SchemaLoader.load(rawSchema, new Loader());
+    } catch (Exception e) {
+      throw new RuntimeException("While loading schema " + schemaFile.getAbsolutePath(), e);
+    }
+  }
+
+  private class Loader implements SchemaClient {
+
+    public static final String FILE_PREFIX = "file:";
+
+    @Override
+    public InputStream get(String schema) {
+      try {
+        Preconditions.checkArgument(schema.startsWith(FILE_PREFIX));
+        return new FileInputStream(new File(schemaBase, schema.substring(FILE_PREFIX.length())));
+      } catch (Exception e) {
+        throw new RuntimeException("While loading sub-schema " + schema, e);
+      }
+    }
   }
 }

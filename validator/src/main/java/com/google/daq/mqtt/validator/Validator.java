@@ -85,7 +85,7 @@ public class Validator {
     Map<String, Schema> schemaMap = new HashMap<>();
     for (File schemaFile : makeFileList(schemaSpec)) {
       Schema schema = getSchema(schemaFile);
-       String fullName = schemaFile.getName();
+      String fullName = schemaFile.getName();
       String schemaName = schemaFile.getName()
           .substring(0, fullName.length() - JSON_SUFFIX.length());
       schemaMap.put(schemaName, schema);
