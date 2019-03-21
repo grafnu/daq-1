@@ -9,6 +9,7 @@ build the executable, and register/update devices.
 * `gcp_creds`: Defines the target project and service account to use for configuration.
 Can be generated and downloaded from the Cloud IoT Service Account page.
 * `site_path`: Path of site-specific configuration. See example in `misc/test_site`.
+* `schema_path`: Path to metadata schema (for validation).
 
 ## Theory Of Operation
 
@@ -62,6 +63,7 @@ BUILD SUCCESSFUL in 4s
 2 actionable tasks: 2 executed
 Using gcp credentials local/daq-testing-de56aa4b1e47.json
 Using site config dir misc/test_site
+Using schema root dir schemas/udmi
 Using service account daq-laptop@daq-testing.iam.gserviceaccount.com/null
 Created service for project daq-testing
 Updated device entry AHU-001
