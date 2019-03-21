@@ -51,9 +51,9 @@ public class LocalDevice {
         schema.validate(new JSONObject(new JSONTokener(targetStream)));
       } catch (ValidationException ve) {
         if (ve.getAllMessages().size() == 1) {
-          throw new RuntimeException("Validation error: " + ve.getAllMessages().get(0));
+          throw new IllegalStateException(ve.getAllMessages().get(0));
         } else {
-          throw new RuntimeException(
+          throw new IllegalStateException(
               "Validation errors:\n" + Joiner.on('\n').join(ve.getAllMessages()));
         }
       }
