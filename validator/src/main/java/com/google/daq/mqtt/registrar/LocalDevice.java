@@ -163,8 +163,12 @@ public class LocalDevice {
   }
 
   private static class PhysicalTagMetadata {
-    public String inst_guid;
-    public String inst_name;
+    public AssetMetadata asset;
+  }
+
+  private static class AssetMetadata {
+    public String guid;
+    public String name;
   }
 
   private static class GcpMetadata {

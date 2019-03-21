@@ -14,29 +14,38 @@
         },
         "section": {
           "type": "string",
-          "pattern": "^[a-z0-9]+$"
+          "pattern": "^[a-z0-9-]+$"
         }
       },
       "required": [
-        "site_name"
+        "site_name",
+        "section"
       ]
     },
     "physical_tag": {
       "type": "object",
       "properties": {
-        "additionalProperties": false,
-        "inst_guid": {
-          "type": "string",
-          "pattern": "^[a-z]+://[0-9a-zA-Z_$]+$"
-        },
-        "inst_name": {
-          "type": "string",
-          "pattern": "^[A-Z]{2}-[A-Z]{3}-[A-Z0-9]+_[A-Z]{3}-[A-Z0-9]{3}$"
+        "asset": {
+          "type": "object",
+          "properties": {
+            "additionalProperties": false,
+            "guid": {
+              "type": "string",
+              "pattern": "^[a-z]+://[0-9a-zA-Z_$]+$"
+            },
+            "name": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}-[A-Z]{3}-[A-Z0-9]+_[A-Z]{3}-[A-Z0-9]{3}$"
+            }
+          },
+          "required": [
+            "guid",
+            "name"
+          ]
         }
       },
       "required": [
-        "inst_guid",
-        "inst_name"
+        "asset"
       ]
     }
   },
