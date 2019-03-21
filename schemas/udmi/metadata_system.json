@@ -6,10 +6,15 @@
   "properties": {
     "location": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "site_name": {
           "type": "string",
           "pattern": "^[A-Z]{2}-[A-Z]{3}-[A-Z0-9]+$"
+        },
+        "section": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+$"
         }
       },
       "required": [
@@ -19,6 +24,7 @@
     "physical_tag": {
       "type": "object",
       "properties": {
+        "additionalProperties": false,
         "inst_guid": {
           "type": "string",
           "pattern": "^[a-z]+://[0-9a-zA-Z_$]+$"
