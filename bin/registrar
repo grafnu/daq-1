@@ -15,9 +15,14 @@ if [ -z "$site_path" ]; then
     false
 fi
 
+if [ -z "$schema_path" ]; then
+    echo Need to define [schema_path] config variable.
+    false
+fi
+
 validator/bin/build.sh
 
 #export GOOGLE_APPLICATION_CREDENTIALS=$PWD/$gcp_cred
 #echo Using credentials from $GOOGLE_APPLICATION_CREDENTIALS
 
-validator/bin/registrar.sh $gcp_cred $site_path
+validator/bin/registrar.sh $gcp_cred $site_path $schema_path

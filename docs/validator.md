@@ -69,7 +69,7 @@ Streaming validation validates a stream of messages pulled from a GCP PubSub top
 There are three configuration values required in the `local/system.conf` file to make it work:
 * `gcp_cred`: The service account credentials, as per the general [DAQ Firebase setup](firebase.md).
 * `gcp_topic`: The _PubSub_ (not MQTT) topic name.
-* `gcp_schema`: Indicates which schema to validate against.
+* `schema_path`: Indicates which schema to validate against.
 
 You will need to add full Project Editor permissions for the service account.
 E.g., to validate messages on the `projects/gcp-account/topics/telemetry` topic,
@@ -79,7 +79,7 @@ there should be something like:
 ~/daq$ <b>fgrep gcp_ local/system.conf</b>
 gcp_cred=local/gcp-project-ce6716521378.json
 gcp_topic=telemetry_topic
-gcp_schema=validator/schemas/abacab/
+schema_path=schemas/abacab/
 </pre>
 
 Running `bin/validate` will parse the configuration file and automatically start

@@ -13,12 +13,14 @@ fi
 
 config_file=$1
 devices_dir=$2
+schema_dir=$3
 
 echo Using gcp credentials $config_file
 echo Using site config dir $devices_dir
+echo Using schema root dir $schema_dir
 
 error=0
-java -cp $jarfile $mainclass $config_file $devices_dir || error=$?
+java -cp $jarfile $mainclass $config_file $devices_dir $schema_dir || error=$?
 
 echo Registrar complete, exit $error
 exit $error

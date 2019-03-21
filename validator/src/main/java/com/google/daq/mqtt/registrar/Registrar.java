@@ -23,6 +23,7 @@ public class Registrar {
 
   private static final String CLOUD_IOT_CONFIG_JSON = "cloud_iot_config.json";
   private static final String DEVICES_DIR = "devices";
+  public static final String METADATA_JSON = "metadata.json";
   private String gcpCredPath;
   private CloudIotManager cloudIotManager;
   private File cloudIotConfig;
@@ -38,7 +39,7 @@ public class Registrar {
       }
       registrar.setGcpCredPath(args[0]);
       registrar.setSiteConfigPath(args[1]);
-      registrar.setSchemaFile(args[2]);
+      registrar.setSchemaBase(args[2]);
       registrar.processDevices();
     } catch (ExceptionMap em) {
       System.exit(2);
@@ -114,9 +115,9 @@ public class Registrar {
     this.gcpCredPath = gcpConfigPath;
   }
 
-  private void setSchemaFile(String path) {
-    File schemaFile = new File(path);
-    schemaBase = schemaFile.getParentFile();
+  private void setSchemaBase(String path) {
+    schemaBase = new File(path);
+    File schemaFile = new File(schemaBase, METADATA_JSON);
     try (InputStream schemaStream = new FileInputStream(schemaFile)) {
       JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream));
       schema = SchemaLoader.load(rawSchema, new Loader());
