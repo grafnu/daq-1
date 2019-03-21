@@ -69,7 +69,8 @@ function add_oeth {
 ###########################################################
 
 sudo rm -rf inst/faucet
-mkdir -p inst/faucet/corp-agg
+sudo mkdir -p inst/faucet/corp-agg
+sudo chown $USER -R inst/faucet
 sudo modprobe bonding
 
 echo Configuring mode $mode...
