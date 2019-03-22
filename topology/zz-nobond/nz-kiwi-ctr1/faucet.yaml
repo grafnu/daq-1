@@ -7,7 +7,7 @@ dps:
     interfaces:
       7:
         stack: {dp: nz-kiwi-t2sw1, port: 49}
-      9:
+      8:
         lldp_beacon: {enable: true}
         loop_protect_external: true
         receive_lldp: true

@@ -106,13 +106,13 @@ add_oeth t1sw1 28 corp-eth10
 add_oeth t1sw1 29 corp-eth11
 
 add_link t1sw1 7 t2sw1 49
-add_link t1sw1 9 t2sw2 49
+add_link t1sw1 8 t2sw2 49
 
 add_oeth t1sw2 28 corp-eth20
 add_oeth t1sw2 29 corp-eth21
 
 add_link t1sw2 7 t2sw1 50
-add_link t1sw2 9 t2sw2 50
+add_link t1sw2 8 t2sw2 50
 
 sudo ip link del bond1 || true
 if [ $mode == bond ]; then

@@ -10,7 +10,7 @@ dps:
         loop_protect_external: true
         receive_lldp: true
         tagged_vlans: [100]
-      9:
+      8:
         stack: {dp: nz-kiwi-t2sw2, port: 50}
       28: {description: egress, loop_protect_external: true, native_vlan: 100}
     lacp_timeout: 5
@@ -30,7 +30,7 @@ dps:
         receive_lldp: true
         tagged_vlans: [100]
       50:
-        stack: {dp: nz-kiwi-t1sw2, port: 9}
+        stack: {dp: nz-kiwi-t1sw2, port: 8}
     lacp_timeout: 5
     lldp_beacon: {max_per_interval: 5, send_interval: 5}
 include: [uniform.yaml]
