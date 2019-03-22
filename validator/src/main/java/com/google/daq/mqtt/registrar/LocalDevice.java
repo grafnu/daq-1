@@ -171,6 +171,7 @@ public class LocalDevice {
   private static class LocationMetadata {
     public String site_name;
     public String section;
+    public String position;
   }
 
   private static class PhysicalTagMetadata {

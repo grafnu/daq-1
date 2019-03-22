@@ -4,10 +4,12 @@ import com.google.api.services.cloudiot.v1.model.Device;
 import com.google.common.base.Preconditions;
 import com.google.daq.mqtt.util.CloudIotManager;
 import com.google.daq.mqtt.util.ExceptionMap;
+import com.google.daq.mqtt.util.ExceptionMap.ErrorTree;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +26,7 @@ public class Registrar {
   private static final String CLOUD_IOT_CONFIG_JSON = "cloud_iot_config.json";
   private static final String DEVICES_DIR = "devices";
   public static final String METADATA_JSON = "metadata.json";
+  public static final String ERROR_FORMAT_INDENT = "  ";
   private String gcpCredPath;
   private CloudIotManager cloudIotManager;
   private File cloudIotConfig;
@@ -42,6 +45,8 @@ public class Registrar {
       registrar.setSchemaBase(args[2]);
       registrar.processDevices();
     } catch (ExceptionMap em) {
+      ErrorTree errorTree = ExceptionMap.format(em, ERROR_FORMAT_INDENT);
+      errorTree.write(System.err);
       System.exit(2);
     } catch (Exception e) {
       e.printStackTrace();
@@ -57,26 +62,38 @@ public class Registrar {
   }
 
   private void processDevices() {
+    ExceptionMap exceptionMap = new ExceptionMap("Error processing local devices");
     try {
       Map<String, LocalDevice> localDevices = getLocalDevices();
       Map<String, Device> cloudDevices = makeCloudDevices();
       Set<String> extraDevices = new HashSet<>(cloudDevices.keySet());
       for (String localName : localDevices.keySet()) {
         extraDevices.remove(localName);
-        LocalDevice localDevice = localDevices.get(localName);
-        if (cloudIotManager.registerDevice(localName, localDevice.getSettings())) {
-          System.err.println("Created new device entry " + localName);
-        } else {
-          System.err.println("Updated device entry " + localName);
+        try {
+          LocalDevice localDevice = localDevices.get(localName);
+          if (cloudIotManager.registerDevice(localName, localDevice.getSettings())) {
+            System.err.println("Created new device entry " + localName);
+          } else {
+            System.err.println("Updated device entry " + localName);
+          }
+        } catch (Exception e) {
+          exceptionMap.put(localName, e);
         }
       }
       for (String extraName : extraDevices) {
-        System.err.println("Blocking extra device " + extraName);
-        cloudIotManager.blockDevice(extraName, true);
+        try {
+          System.err.println("Blocking extra device " + extraName);
+          cloudIotManager.blockDevice(extraName, true);
+        } catch (Exception e) {
+          exceptionMap.put(extraName, e);
+        }
       }
+    } catch (ExceptionMap em) {
+      throw em;
     } catch (Exception e) {
       throw new RuntimeException("While processing devices", e);
     }
+    exceptionMap.throwIfNotEmpty();
   }
 
   private Map<String,Device> makeCloudDevices() {
@@ -98,16 +115,22 @@ public class Registrar {
   private Map<String,LocalDevice> getLocalDevices() {
     HashMap<String, LocalDevice> localDevices = new HashMap<>();
     File devicesDir = new File(siteConfig, DEVICES_DIR);
+    ExceptionMap exceptionMap = new ExceptionMap("Error loading local devices");
     String[] devices = devicesDir.list();
     if (devices == null) {
       return localDevices;
     }
     for (String deviceName : devices) {
-      if (LocalDevice.deviceDefined(devicesDir, deviceName)) {
-        System.err.println("Loading local device " + deviceName);
-        localDevices.put(deviceName, new LocalDevice(devicesDir, deviceName, schema));
+      try {
+        if (LocalDevice.deviceDefined(devicesDir, deviceName)) {
+          System.err.println("Loading local device " + deviceName);
+          localDevices.put(deviceName, new LocalDevice(devicesDir, deviceName, schema));
+        }
+      } catch (Exception e) {
+        exceptionMap.put(deviceName, e);
       }
     }
+    exceptionMap.throwIfNotEmpty();
     return localDevices;
   }
 
