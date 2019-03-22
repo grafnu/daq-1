@@ -14,6 +14,7 @@ class ReportGenerator():
     """Generate a report for device qualification"""
 
     _NAME_FORMAT = "report_%s_%s.txt"
+    _SIMPLE_FORMAT = "device_report.md"
     _TEST_SEPARATOR = "\n=============== %s\n"
     _RESULT_REGEX = r'^RESULT (.*?)\s*(#.*)?$'
     _SUMMARY_LINE = "Report summary"
@@ -37,8 +38,10 @@ class ReportGenerator():
         if os.path.isfile(dev_path):
             self._writeln('')
             self._copy(dev_path)
+            self._alt_path = os.path.join(dev_base, self._clean_mac, self._SIMPLE_FORMAT)
         else:
             LOGGER.info('Device description not found in %s', dev_path)
+            self._alt_path = None
 
     def _writeln(self, msg):
         self._file.write(msg + '\n')
@@ -58,6 +61,8 @@ class ReportGenerator():
         self._writeln(self._TEST_SEPARATOR % self._REPORT_COMPLETE)
         self._file.close()
         self._file = None
+        if self._alt_path:
+            shutil.copyfile(self.path, self._alt_path)
 
     def _write_test_summary(self):
         self._writeln(self._TEST_SEPARATOR % self._SUMMARY_LINE)
