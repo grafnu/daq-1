@@ -17,6 +17,7 @@ function add_br {
     port=$3
     sudo ovs-vsctl --if-exists del-br $bname \
          -- add-br $bname \
+         -- set-fail-mode $bname secure \
          -- set bridge $bname other_config:datapath-id=$dpid
 
     if [ -n "$port" ]; then
