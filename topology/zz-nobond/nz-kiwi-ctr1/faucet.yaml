@@ -6,11 +6,11 @@ dps:
     hardware: Generic
     interfaces:
       7:
-        lldp_beacon: {enable: true}
-        receive_lldp: true
         stack: {dp: nz-kiwi-t2sw1, port: 49}
       9:
+        lldp_beacon: {enable: true}
         loop_protect_external: true
+        receive_lldp: true
         tagged_vlans: [100]
       28: {description: egress, loop_protect_external: true, native_vlan: 100}
     lacp_timeout: 5
@@ -25,11 +25,11 @@ dps:
       10-13: {acl_in: uniform_acl, description: IoT Device, native_vlan: 100}
     interfaces:
       49:
-        lldp_beacon: {enable: true}
-        receive_lldp: true
         stack: {dp: nz-kiwi-t1sw1, port: 7}
       50:
+        lldp_beacon: {enable: true}
         loop_protect_external: true
+        receive_lldp: true
         tagged_vlans: [100]
     lacp_timeout: 5
     lldp_beacon: {max_per_interval: 5, send_interval: 5}

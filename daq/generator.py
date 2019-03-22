@@ -224,7 +224,7 @@ class TopologyGenerator():
                 'hardware': self._make_t1_hardware(domain),
                 'lacp_timeout': self._setup['lacp_timeout'],
                 'lldp_beacon': self._get_switch_lldp_beacon(),
-                'interfaces': self._make_t1_dp_interfaces(t1_conf, domain),
+                'interfaces': self._make_t1_interfaces(domain),
                 'stack': stack
             }
         }
@@ -238,13 +238,6 @@ class TopologyGenerator():
 
     def _make_faucet_dp_mac(self, domain, tier):
         return self._setup['faucet_dp_mac_format'] % (int(domain), tier)
-
-    def _make_t1_dp_interfaces(self, t1_conf, domain):
-        interfaces = {}
-        for uplink_port in self._site['tier1']['uplink_ports']:
-            interfaces.update({uplink_port: self._make_uplink_interface(domain)})
-        interfaces.update(self._make_t1_stack_interfaces(domain))
-        return interfaces
 
     def _make_uplink_interface(self, domain):
         upstream_lacp = self._site['tier1'].get('upstream_lacp')
@@ -269,8 +262,10 @@ class TopologyGenerator():
             'native_vlan': self._site['vlan_id']
         }
 
-    def _make_t1_stack_interfaces(self, domain):
+    def _make_t1_interfaces(self, domain):
         interfaces = {}
+        for uplink_port in self._site['tier1']['uplink_ports']:
+            interfaces.update({uplink_port: self._make_uplink_interface(domain)})
         tier1_ports = self._site['tier2']['tier1_ports']
         for tier1_port in tier1_ports:
             tier2_spec = tier1_ports[tier1_port]
@@ -280,7 +275,7 @@ class TopologyGenerator():
                 })
             else:
                 interfaces.update({
-                    tier1_port: self._make_t2_cross_interface()
+                    tier1_port: self._make_t1_cross_interface()
                 })
 
         return interfaces
@@ -289,16 +284,19 @@ class TopologyGenerator():
         port = tier2_spec['stack_port']
         dp_name = self._get_t2_dp_name(tier2_spec)
         return {
-            'lldp_beacon': self._get_port_lldp_beacon(),
-            'receive_lldp': self._setup['receive_lldp'],
             'stack': {
                 'dp': dp_name,
                 'port': port
             }
         }
 
+    def _make_t1_cross_interface(self):
+        return self._make_t2_cross_interface()
+
     def _make_t2_cross_interface(self):
         return {
+            'lldp_beacon': self._get_port_lldp_beacon(),
+            'receive_lldp': self._setup['receive_lldp'],
             'loop_protect_external': self._setup['loop_protect_external'],
             'tagged_vlans': [self._site['vlan_id']]
         }
@@ -346,8 +344,6 @@ class TopologyGenerator():
     def _make_t2_stack_interface(self, t2_conf, t1_port):
         t1_dp_name = self._get_t1_dp_name(t2_conf['domain'])
         return {
-            'lldp_beacon': self._get_port_lldp_beacon(),
-            'receive_lldp': self._setup['receive_lldp'],
             'stack': {
                 'dp': t1_dp_name,
                 'port': t1_port
