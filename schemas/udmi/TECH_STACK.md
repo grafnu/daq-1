@@ -10,7 +10,7 @@ technology stack for compliant IoT devices.
   * Other transports (non-Google MQTT, CoAP, etc...) are acceptable with prior approval.
 * Utilizes the MQTT Topic table listed below.
 * Standard JSON payload encoding.
-* Folows the core [UDMI Schema](README.md) that specifies the semantic structure of the data.
+* Folows the core [UDMI Schema](README.md), specifying the semantic structure of the data.
 * Passes the [DAQ Validation Tool](../../docs/validator.md) for all requirements.
 
 # MQTT Topic Table
