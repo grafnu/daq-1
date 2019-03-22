@@ -8,9 +8,9 @@ technology stack for compliant IoT devices.
 * [Google Cloud's MQTT Protocol Bridge](https://cloud.google.com/iot/docs/how-tos/mqtt-bridge).
   * This is _not_ the same as a generic MQTT Broker, but it is compatible with standard client-side libraries.
   * Other transports (non-Google MQTT, CoAP, etc...) are acceptable with prior approval.
+  * Connected to a specific Cloud IoT Registry designated for each site-specific project.
 * Utilizes the MQTT Topic table listed below.
-* Standard JSON payload encoding.
-* Folows the core [UDMI Schema](README.md), specifying the semantic structure of the data.
+* JSON encoding folowing the core [UDMI Schema](README.md), specifying the semantic structure of the data.
 * Passes the [DAQ Validation Tool](../../docs/validator.md) for all requirements.
 
 # MQTT Topic Table
