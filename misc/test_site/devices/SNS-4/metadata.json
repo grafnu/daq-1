@@ -8,7 +8,7 @@
         "units" : "Bar"
       },
       "filter_differential_pressure_setpoint" : {
-        "units" : "Bar"
+        "units" : "Fizzes"
       }
     }
   },

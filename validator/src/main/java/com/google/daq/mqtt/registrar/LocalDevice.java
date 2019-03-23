@@ -13,6 +13,7 @@ import com.google.common.base.Preconditions;
 import com.google.daq.mqtt.util.CloudDeviceSettings;
 import com.google.daq.mqtt.util.CloudIotConfig;
 import com.google.daq.mqtt.util.CloudIotManager;
+import com.google.daq.mqtt.util.ExceptionMap;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -20,6 +21,7 @@ import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.Schema;
@@ -170,6 +172,17 @@ public class LocalDevice {
     Preconditions.checkState(desiredTag.equals(assetName),
         String.format(PHYSICAL_TAG_ERROR, assetName, desiredTag));
     Preconditions.checkState(expected_site_name.equals(siteName));
+    ExceptionMap exceptionMap = new ExceptionMap("Error validating units for " + deviceId);
+    for (Entry<String, PointMetadata> entry : metadata.pointset.points.entrySet()) {
+      try {
+        AllowedUnits.valueOf(entry.getValue().units);
+      } catch (Exception e) {
+        String key = entry.getKey();
+        Exception named = new IllegalStateException("For property " + key, e);
+        exceptionMap.put(key, named);
+      }
+    }
+    exceptionMap.throwIfNotEmpty();
   }
 
   private String makeNumId(Envelope envelope) {
@@ -225,12 +238,7 @@ public class LocalDevice {
   private static class LocationMetadata {
     public String site_name;
     public String section;
-    public PositionMetadata position;
-  }
-
-  private static class PositionMetadata {
-    public Double x;
-    public Double y;
+    public Object position;
   }
 
   private static class PhysicalTagMetadata {

@@ -5,10 +5,10 @@
         "units" : "Bar"
       },
       "filter_differential_pressure_sensor" : {
-        "units" : "Bar"
+        "units" : "Wonks"
       },
       "filter_differential_pressure_setpoint" : {
-        "units" : "Bar"
+        "units" : "Fwips"
       }
     }
   },
