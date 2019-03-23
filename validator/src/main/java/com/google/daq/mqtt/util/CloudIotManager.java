@@ -38,7 +38,6 @@ public class CloudIotManager {
   public CloudIotManager(File gcpCred, File iotConfigFile) {
     configuration = readGcpCreds(gcpCred);
     cloudIotConfig = readCloudIotConfig(iotConfigFile);
-    cloudIotConfig.addProject(configuration.project_id);
     registryId = cloudIotConfig.registry_id;
     initializeCloudIoT(gcpCred);
   }

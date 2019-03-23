@@ -18,6 +18,9 @@
         1
       ]
     },
+    "hash": {
+      "type": "number"
+    },
     "system": {
       "$ref": "file:metadata_system.json#"
     },

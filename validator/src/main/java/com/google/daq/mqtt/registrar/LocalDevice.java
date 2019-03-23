@@ -3,8 +3,11 @@ package com.google.daq.mqtt.registrar;
 import static com.google.daq.mqtt.registrar.Registrar.ENVELOPE_JSON;
 import static com.google.daq.mqtt.registrar.Registrar.METADATA_JSON;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.google.api.services.cloudiot.v1.model.DeviceCredential;
 import com.google.common.base.Preconditions;
 import com.google.daq.mqtt.util.CloudDeviceSettings;
@@ -14,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,14 +29,18 @@ import org.json.JSONTokener;
 public class LocalDevice {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-      .configure(SerializationFeature.INDENT_OUTPUT, true)
-      .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
-      .configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+      .enable(SerializationFeature.INDENT_OUTPUT)
+      .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
+      .enable(Feature.ALLOW_TRAILING_COMMA)
+      .enable(Feature.STRICT_DUPLICATE_DETECTION)
+      .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+      .setDateFormat(new ISO8601DateFormat())
+      .setSerializationInclusion(Include.NON_NULL);
 
   private static final String RSA256_X509_PEM = "RSA_X509_PEM";
   private static final String RSA_PUBLIC_PEM = "rsa_public.pem";
-  public static final String PHYSICAL_TAG_FORMAT = "%s_%s";
-  public static final String PHYSICAL_TAG_ERROR = "Physical asset name %s does not match expected %s";
+  private static final String PHYSICAL_TAG_FORMAT = "%s_%s";
+  private static final String PHYSICAL_TAG_ERROR = "Physical asset name %s does not match expected %s";
 
   private final String deviceId;
   private final Map<String, Schema> schemas;
@@ -72,6 +80,18 @@ public class LocalDevice {
       return validate(OBJECT_MAPPER.readValue(metadataFile, Metadata.class));
     } catch (Exception e) {
       throw new RuntimeException("While reading "+ metadataFile.getAbsolutePath(), e);
+    }
+  }
+
+  private int hashMetadata() {
+    try {
+      Integer savedHash = metadata.hash;
+      metadata.hash = null;
+      String json = OBJECT_MAPPER.writeValueAsString(metadata);
+      metadata.hash = savedHash;
+      return Objects.hash(json);
+    } catch (Exception e) {
+      throw new RuntimeException("Converting object to string", e);
     }
   }
 
@@ -128,7 +148,8 @@ public class LocalDevice {
       Envelope envelope = new Envelope();
       envelope.deviceId = deviceId;
       envelope.deviceRegistryId = cloudIotConfig.registry_id;
-      envelope.projectId = cloudIotConfig.getProjectId();
+      // Don't use actual project id because it should be abstracted away.
+      envelope.projectId = fakeProjectId();
       envelope.deviceNumId = makeNumId(envelope);
       String envelopeJson = OBJECT_MAPPER.writeValueAsString(envelope);
       schemas.get(ENVELOPE_JSON).validate(new JSONObject(new JSONTokener(envelopeJson)));
@@ -136,6 +157,10 @@ public class LocalDevice {
       throw new IllegalStateException("Validating envelope " + deviceId, e);
     }
     checkConsistency(cloudIotConfig.site_name);
+  }
+
+  private String fakeProjectId() {
+    return metadata.system.location.site_name.toLowerCase();
   }
 
   private void checkConsistency(String expected_site_name) {
@@ -152,10 +177,17 @@ public class LocalDevice {
     return Integer.toString(hash < 0 ? -hash : hash);
   }
 
-  public void writeNormlized() {
+  public boolean writeNormlized() {
     File metadataFile = metadataFile();
     try {
+      Integer writeHash = hashMetadata();
+      boolean update = metadata.hash == null || !metadata.hash.equals(writeHash);
+      if (update) {
+        metadata.timestamp = new Date();
+        metadata.hash = hashMetadata();
+      }
       OBJECT_MAPPER.writeValue(metadataFile, metadata);
+      return update;
     } catch (Exception e) {
       throw new RuntimeException("While writing "+ metadataFile.getAbsolutePath(), e);
     }
@@ -173,7 +205,8 @@ public class LocalDevice {
     public PointsetMetadata pointset;
     public SystemMetadata system;
     public Integer version;
-    public String timestamp;
+    public Date timestamp;
+    public Integer hash;
   }
 
   private static class PointsetMetadata {
