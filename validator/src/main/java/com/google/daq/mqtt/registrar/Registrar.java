@@ -128,13 +128,23 @@ public class Registrar {
           LocalDevice localDevice = new LocalDevice(devicesDir, deviceName, schemas);
           localDevice.validate(cloudIotManager.getCloudIotConfig());
           localDevices.put(deviceName, localDevice);
-          localDevice.writeNormlized();
         }
       } catch (Exception e) {
         exceptionMap.put(deviceName, e);
       }
     }
     exceptionMap.throwIfNotEmpty();
+
+    for (String deviceName : devices) {
+      try {
+        System.err.println("Writing normalized device " + deviceName);
+        localDevices.get(deviceName).writeNormlized();
+      } catch (Exception e) {
+        exceptionMap.put(deviceName, e);
+      }
+    }
+    exceptionMap.throwIfNotEmpty();
+
     return localDevices;
   }
 

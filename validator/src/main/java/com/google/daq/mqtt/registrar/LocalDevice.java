@@ -4,6 +4,7 @@ import static com.google.daq.mqtt.registrar.Registrar.ENVELOPE_JSON;
 import static com.google.daq.mqtt.registrar.Registrar.METADATA_JSON;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.api.services.cloudiot.v1.model.DeviceCredential;
 import com.google.common.base.Preconditions;
 import com.google.daq.mqtt.util.CloudDeviceSettings;
@@ -23,7 +24,10 @@ import org.json.JSONTokener;
 
 public class LocalDevice {
 
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+      .configure(SerializationFeature.INDENT_OUTPUT, true)
+      .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
+      .configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
 
   private static final String RSA256_X509_PEM = "RSA_X509_PEM";
   private static final String RSA_PUBLIC_PEM = "rsa_public.pem";
@@ -76,21 +80,6 @@ public class LocalDevice {
   }
 
   private Metadata validate(Metadata data) {
-    Preconditions.checkNotNull(data.system, "Metadata system subsection missing");
-    if (data.system.gcp != null) {
-      String mode = data.system.gcp.mode;
-      String gatewayId = data.system.gcp.gateway_id;
-      if (mode == null) {
-        Preconditions
-            .checkArgument(gatewayId == null, "direct (default) mode gateway_id should be null");
-      } else if ("gateway".equals(mode)) {
-        Preconditions.checkArgument(gatewayId == null, "gateway mode gateway_id should be null");
-      } else if ("proxy".equals(mode)) {
-        Preconditions.checkNotNull(gatewayId, "proxy mode needs gateway_id property specified");
-      } else {
-        throw new RuntimeException("Unknown device mode " + mode);
-      }
-    }
     return data;
   }
 
@@ -183,7 +172,7 @@ public class LocalDevice {
   private static class Metadata {
     public PointsetMetadata pointset;
     public SystemMetadata system;
-    public String version;
+    public Integer version;
     public String timestamp;
   }
 
@@ -192,7 +181,6 @@ public class LocalDevice {
   }
 
   private static class SystemMetadata {
-    public GcpMetadata gcp;
     public LocationMetadata location;
     public PhysicalTagMetadata physical_tag;
   }
@@ -219,10 +207,5 @@ public class LocalDevice {
   private static class AssetMetadata {
     public String guid;
     public String name;
-  }
-
-  private static class GcpMetadata {
-    public String mode;
-    public String gateway_id;
   }
 }
