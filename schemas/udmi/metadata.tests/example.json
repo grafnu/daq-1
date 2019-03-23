@@ -20,7 +20,7 @@
   "pointset": {
     "points": {
       "return_air_temperature_sensor": {
-        "units": "Celsius"
+        "units": "Degrees-Celsius"
       }
     }
   }
