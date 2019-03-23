@@ -83,13 +83,13 @@ public class LocalDevice {
     }
   }
 
-  private int hashMetadata() {
+  private String metadataHash() {
     try {
-      Integer savedHash = metadata.hash;
+      String savedHash = metadata.hash;
       metadata.hash = null;
       String json = OBJECT_MAPPER.writeValueAsString(metadata);
       metadata.hash = savedHash;
-      return Objects.hash(json);
+      return String.format("%08x", Objects.hash(json));
     } catch (Exception e) {
       throw new RuntimeException("Converting object to string", e);
     }
@@ -180,11 +180,11 @@ public class LocalDevice {
   public boolean writeNormlized() {
     File metadataFile = metadataFile();
     try {
-      Integer writeHash = hashMetadata();
+      String writeHash = metadataHash();
       boolean update = metadata.hash == null || !metadata.hash.equals(writeHash);
       if (update) {
         metadata.timestamp = new Date();
-        metadata.hash = hashMetadata();
+        metadata.hash = metadataHash();
       }
       OBJECT_MAPPER.writeValue(metadataFile, metadata);
       return update;
@@ -206,7 +206,7 @@ public class LocalDevice {
     public SystemMetadata system;
     public Integer version;
     public Date timestamp;
-    public Integer hash;
+    public String hash;
   }
 
   private static class PointsetMetadata {
