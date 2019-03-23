@@ -20,6 +20,8 @@ class ReportGenerator():
     _SUMMARY_LINE = "Report summary"
     _REPORT_COMPLETE = "Report complete"
     _REPORT_HEADER = "# DAQ scan report for device %s"
+    _PRE_START_MARKER = "```"
+    _PRE_END_MARKER = "```"
 
     def __init__(self, config, tmp_base, target_mac):
         self._reports = []
@@ -42,7 +44,7 @@ class ReportGenerator():
         dev_path = os.path.join(dev_base, 'mac_addrs', self._clean_mac, 'report_description.txt')
         if os.path.isfile(dev_path):
             self._writeln('')
-            self._copy(dev_path)
+            self._append_file(dev_path, add_pre=False)
         else:
             LOGGER.info('Device description %s not found', dev_path)
 
@@ -58,12 +60,14 @@ class ReportGenerator():
         self._file.write(msg + '\n')
         self._file.flush()
 
-    def _copy(self, input_path):
+    def _append_file(self, input_path, add_pre=True):
         LOGGER.info('Copying test report %s', input_path)
-        self._writeln('<pre>')
+        if add_pre:
+            self._writeln(self._PRE_START_MARKER)
         with open(input_path, 'r') as input_stream:
             shutil.copyfileobj(input_stream, self._file)
-        self._writeln('</pre>')
+        if add_pre:
+            self._writeln(self._PRE_END_MARKER)
 
     def finalize(self):
         """Finalize this report"""
@@ -89,7 +93,7 @@ class ReportGenerator():
     def _copy_test_reports(self):
         for (name, path) in self._reports:
             self._writeln(self._TEST_SEPARATOR % ("Module " + name))
-            self._copy(path)
+            self._append_file(path)
 
     def accumulate(self, test_name, report_path):
         """Accumulate a test report into the overall device report"""
