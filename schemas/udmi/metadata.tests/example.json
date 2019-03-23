@@ -5,12 +5,15 @@
     "location": {
       "site_name": "US-SFO-XYY",
       "section": "NW-2F",
-      "position": "10,-20"
+      "position": {
+        "x": 10,
+        "y": 20
+      }
     },
     "physical_tag": {
       "asset": {
         "guid": "bim://04aEp5ymD_$u5IxhJN2aGi",
-        "name": "US-SFO-XYY_AHU-A01"
+        "name": "US-SFO-XYY_AHU-1"
       }
     }
   },
