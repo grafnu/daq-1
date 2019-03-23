@@ -5,7 +5,7 @@ Approver: <approver_name>
 Test report date:     <test_timestamp>
 Test report revision: <revision_number>
 
-=============== Device identification
+## Device identification
 
 Device name:         <device_name>
 Device GUID:         <device_guid>
@@ -17,12 +17,14 @@ Device model:        <model>
 Serial number:       <serial_number>
 Firmware version:    <firmware_version>
 
-=============== Device description
+## Device description
 
 Free text including description of device and links to more information (datasheets, manuals, installation notes, etc.)
 
-=============== Test priorities
+## Test priorities
 
-category1.test1   REQUIRED
-category1.test2   RECOMMENDED
-category2.test1   REQUIRED
+| Test Name | Priority |
+|-----------|----------|
+| category1.test1 | REQUIRED |
+| category1.test2 | RECOMMENDED |
+| category2.test1 | REQUIRED |

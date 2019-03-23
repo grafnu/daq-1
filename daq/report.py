@@ -15,10 +15,11 @@ class ReportGenerator():
 
     _NAME_FORMAT = "report_%s_%s.txt"
     _SIMPLE_FORMAT = "device_report.md"
-    _TEST_SEPARATOR = "\n=============== %s\n"
+    _TEST_SEPARATOR = "\n## %s\n"
     _RESULT_REGEX = r'^RESULT (.*?)\s*(#.*)?$'
     _SUMMARY_LINE = "Report summary"
     _REPORT_COMPLETE = "Report complete"
+    _REPORT_HEADER = "# DAQ scan report for device %s"
 
     def __init__(self, config, tmp_base, target_mac):
         self._reports = []
@@ -34,7 +35,7 @@ class ReportGenerator():
         LOGGER.info('Creating report as %s', report_path)
         self.path = report_path
         self._file = open(report_path, "w")
-        self._writeln('DAQ scan report for device %s' % self._clean_mac)
+        self._writeln(self._REPORT_HEADER % self._clean_mac)
         self._writeln('Started %s' % report_when)
 
         dev_base = config.get('site_path', tmp_base)
