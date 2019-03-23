@@ -11,16 +11,13 @@ import com.google.api.services.cloudiot.v1.CloudIot;
 import com.google.api.services.cloudiot.v1.CloudIotScopes;
 import com.google.api.services.cloudiot.v1.model.Device;
 import com.google.api.services.cloudiot.v1.model.DeviceCredential;
-import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
 import com.google.api.services.cloudiot.v1.model.PublicKeyCredential;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  */
@@ -31,6 +28,7 @@ public class CloudIotManager {
 
   private final GcpCreds configuration;
   private final CloudIotConfig cloudIotConfig;
+
   private final String registryId;
 
   private CloudIot cloudIotService;
@@ -40,6 +38,7 @@ public class CloudIotManager {
   public CloudIotManager(File gcpCred, File iotConfigFile) {
     configuration = readGcpCreds(gcpCred);
     cloudIotConfig = readCloudIotConfig(iotConfigFile);
+    cloudIotConfig.addProject(configuration.project_id);
     registryId = cloudIotConfig.registry_id;
     initializeCloudIoT(gcpCred);
   }
@@ -64,19 +63,6 @@ public class CloudIotManager {
     Preconditions.checkNotNull(cloudIotConfig.registry_id, "registry_id not defined");
     Preconditions.checkNotNull(cloudIotConfig.cloud_region, "cloud_region not defined");
     return cloudIotConfig;
-  }
-
-  private Set<String> fetchRegistries() {
-    try {
-      List<DeviceRegistry>
-          existingRegistries =
-          cloudIotRegistries.list(projectPath).execute().getDeviceRegistries();
-      Set<String> remainingRegistries = new HashSet<>();
-      existingRegistries.forEach(registry -> remainingRegistries.add(registry.getId()));
-      return remainingRegistries;
-    } catch (Exception e) {
-      throw new RuntimeException("While fetching Cloud IoT project registries list", e);
-    }
   }
 
   private String getRegistryPath(String registryId) {
@@ -217,5 +203,9 @@ public class CloudIotManager {
       }
       throw new RuntimeException("Remote error getting device: " + e.getDetails().getMessage());
     }
+  }
+
+  public CloudIotConfig getCloudIotConfig() {
+    return cloudIotConfig;
   }
 }

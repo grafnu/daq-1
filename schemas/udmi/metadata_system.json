@@ -17,8 +17,20 @@
           "pattern": "^[A-Z0-9-]+$"
         },
         "position": {
-          "type": "string",
-          "pattern": "^-?[0-9]+,-?[0-9]+$"
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
         }
       },
       "required": [
@@ -39,7 +51,7 @@
             },
             "name": {
               "type": "string",
-              "pattern": "^[A-Z]{2}-[A-Z]{3}-[A-Z0-9]+_[A-Z]{3}-[A-Z0-9]{3}$"
+              "pattern": "^[A-Z]{2}-[A-Z]{3}-[A-Z0-9]+_[A-Z]{3}-[1-9][0-9]{0,2}$"
             }
           },
           "required": [

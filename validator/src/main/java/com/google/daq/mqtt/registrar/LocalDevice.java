@@ -1,21 +1,23 @@
 package com.google.daq.mqtt.registrar;
 
+import static com.google.daq.mqtt.registrar.Registrar.ENVELOPE_JSON;
+import static com.google.daq.mqtt.registrar.Registrar.METADATA_JSON;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.services.cloudiot.v1.model.DeviceCredential;
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.daq.mqtt.util.CloudDeviceSettings;
+import com.google.daq.mqtt.util.CloudIotConfig;
 import com.google.daq.mqtt.util.CloudIotManager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.Schema;
-import org.everit.json.schema.ValidationException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -25,54 +27,52 @@ public class LocalDevice {
 
   private static final String RSA256_X509_PEM = "RSA_X509_PEM";
   private static final String RSA_PUBLIC_PEM = "rsa_public.pem";
-
-  private static final String METADATA_JSON = "metadata.json";
-  private static final String METADATA_SECTION_KEY = "section";
+  public static final String PHYSICAL_TAG_FORMAT = "%s_%s";
+  public static final String PHYSICAL_TAG_ERROR = "Physical asset name %s does not match expected %s";
 
   private final String deviceId;
-  private final Schema schema;
+  private final Map<String, Schema> schemas;
   private final File deviceDir;
   private final Metadata metadata;
 
   private CloudDeviceSettings settings;
 
-  LocalDevice(File devicesDir, String deviceId, Schema schema) {
+  LocalDevice(File devicesDir, String deviceId, Map<String, Schema> schemas) {
     this.deviceId = deviceId;
-    this.schema = schema;
-    deviceDir = new File(devicesDir, deviceId);
+    this.schemas = schemas;
+    deviceDir = metadataFile(devicesDir, deviceId);
     validateMetadata();
     metadata = readMetadata();
   }
 
   private void validateMetadata() {
-    File targetFile = new File(deviceDir, METADATA_JSON);
-    try (InputStream targetStream = new FileInputStream(targetFile)) {
-      try {
-        schema.validate(new JSONObject(new JSONTokener(targetStream)));
-      } catch (ValidationException ve) {
-        if (ve.getAllMessages().size() == 1) {
-          throw new IllegalStateException(ve.getAllMessages().get(0));
-        } else {
-          throw new IllegalStateException(
-              "Validation errors:\n" + Joiner.on('\n').join(ve.getAllMessages()));
-        }
-      }
+    File metadataFile = metadataFile(deviceDir, METADATA_JSON);
+    try (InputStream targetStream = new FileInputStream(metadataFile)) {
+      schemas.get(METADATA_JSON).validate(new JSONObject(new JSONTokener(targetStream)));
     } catch (Exception e) {
-      throw new RuntimeException("Processing input " + targetFile, e);
+      throw new RuntimeException("Processing input " + metadataFile, e);
     }
   }
 
-  public static boolean deviceDefined(File devicesDir, String deviceName) {
-    return new File(new File(devicesDir, deviceName), METADATA_JSON).isFile();
+  static boolean deviceExists(File devicesDir, String deviceName) {
+    return new File(metadataFile(devicesDir, deviceName), METADATA_JSON).isFile();
+  }
+
+  private static File metadataFile(File devicesDir, String deviceName) {
+    return new File(devicesDir, deviceName);
   }
 
   private Metadata readMetadata() {
-    File configFile = new File(deviceDir, METADATA_JSON);
+    File metadataFile = metadataFile();
     try {
-      return validate(OBJECT_MAPPER.readValue(configFile, Metadata.class));
+      return validate(OBJECT_MAPPER.readValue(metadataFile, Metadata.class));
     } catch (Exception e) {
-      throw new RuntimeException("While reading properties file "+ configFile.getAbsolutePath(), e);
+      throw new RuntimeException("While reading "+ metadataFile.getAbsolutePath(), e);
     }
+  }
+
+  private File metadataFile() {
+    return new File(deviceDir, METADATA_JSON);
   }
 
   private Metadata validate(Metadata data) {
@@ -120,18 +120,6 @@ public class LocalDevice {
     }
   }
 
-  private Map<String, String> loadMetadata() {
-    try {
-      Map<String, String> metaMap = new HashMap<>();
-      metaMap.put(METADATA_SECTION_KEY,
-          Preconditions.checkNotNull(metadata.system.location.section,
-              "system.location.section not defined"));
-      return metaMap;
-    } catch (Exception e) {
-      throw new RuntimeException("While loading metadata", e);
-    }
-  }
-
   CloudDeviceSettings getSettings() {
     try {
       if (settings != null) {
@@ -140,11 +128,56 @@ public class LocalDevice {
 
       settings = new CloudDeviceSettings();
       settings.credentials = loadCredentials();
-      settings.metadata = loadMetadata();
       return settings;
     } catch (Exception e) {
       throw new RuntimeException("While getting settings for device " + deviceId, e);
     }
+  }
+
+  public void validate(CloudIotConfig cloudIotConfig) {
+    try {
+      Envelope envelope = new Envelope();
+      envelope.deviceId = deviceId;
+      envelope.deviceRegistryId = cloudIotConfig.registry_id;
+      envelope.projectId = cloudIotConfig.getProjectId();
+      envelope.deviceNumId = makeNumId(envelope);
+      String envelopeJson = OBJECT_MAPPER.writeValueAsString(envelope);
+      schemas.get(ENVELOPE_JSON).validate(new JSONObject(new JSONTokener(envelopeJson)));
+    } catch (Exception e) {
+      throw new IllegalStateException("Validating envelope " + deviceId, e);
+    }
+    checkConsistency(cloudIotConfig.site_name);
+  }
+
+  private void checkConsistency(String expected_site_name) {
+    String siteName = metadata.system.location.site_name;
+    String desiredTag = String.format(PHYSICAL_TAG_FORMAT, siteName, deviceId);
+    String assetName = metadata.system.physical_tag.asset.name;
+    Preconditions.checkState(desiredTag.equals(assetName),
+        String.format(PHYSICAL_TAG_ERROR, assetName, desiredTag));
+    Preconditions.checkState(expected_site_name.equals(siteName));
+  }
+
+  private String makeNumId(Envelope envelope) {
+    int hash = Objects.hash(deviceId, envelope.deviceRegistryId, envelope.projectId);
+    return Integer.toString(hash < 0 ? -hash : hash);
+  }
+
+  public void writeNormlized() {
+    File metadataFile = metadataFile();
+    try {
+      OBJECT_MAPPER.writeValue(metadataFile, metadata);
+    } catch (Exception e) {
+      throw new RuntimeException("While writing "+ metadataFile.getAbsolutePath(), e);
+    }
+  }
+
+  private static class Envelope {
+    public String deviceId;
+    public String deviceNumId;
+    public String deviceRegistryId;
+    public String projectId;
+    public final String subFolder = "metadata";
   }
 
   private static class Metadata {
@@ -171,7 +204,12 @@ public class LocalDevice {
   private static class LocationMetadata {
     public String site_name;
     public String section;
-    public String position;
+    public PositionMetadata position;
+  }
+
+  private static class PositionMetadata {
+    public Double x;
+    public Double y;
   }
 
   private static class PhysicalTagMetadata {

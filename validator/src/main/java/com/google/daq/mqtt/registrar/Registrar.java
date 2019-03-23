@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,15 +22,17 @@ import org.json.JSONTokener;
 
 public class Registrar {
 
+  static final String METADATA_JSON = "metadata.json";
+  static final String ENVELOPE_JSON = "envelope.json";
+
   private static final String CLOUD_IOT_CONFIG_JSON = "cloud_iot_config.json";
   private static final String DEVICES_DIR = "devices";
-  public static final String METADATA_JSON = "metadata.json";
-  public static final String ERROR_FORMAT_INDENT = "  ";
+  private static final String ERROR_FORMAT_INDENT = "  ";
   private String gcpCredPath;
   private CloudIotManager cloudIotManager;
   private File cloudIotConfig;
   private File siteConfig;
-  private Schema schema;
+  private Map<String, Schema> schemas = new HashMap<>();
   private File schemaBase;
 
   public static void main(String[] args) {
@@ -97,7 +98,7 @@ public class Registrar {
   }
 
   private Map<String,Device> makeCloudDevices() {
-    System.err.println("Fetching remote registry");
+    System.err.println("Fetching remote registry " + cloudIotManager.getCloudIotConfig().registry_id);
     List<Device> devices = cloudIotManager.fetchDevices();
     Map<String, Device> deviceMap = new HashMap<>();
     devices.stream().map(Device::getId)
@@ -122,9 +123,12 @@ public class Registrar {
     }
     for (String deviceName : devices) {
       try {
-        if (LocalDevice.deviceDefined(devicesDir, deviceName)) {
+        if (LocalDevice.deviceExists(devicesDir, deviceName)) {
           System.err.println("Loading local device " + deviceName);
-          localDevices.put(deviceName, new LocalDevice(devicesDir, deviceName, schema));
+          LocalDevice localDevice = new LocalDevice(devicesDir, deviceName, schemas);
+          localDevice.validate(cloudIotManager.getCloudIotConfig());
+          localDevices.put(deviceName, localDevice);
+          localDevice.writeNormlized();
         }
       } catch (Exception e) {
         exceptionMap.put(deviceName, e);
@@ -138,12 +142,17 @@ public class Registrar {
     this.gcpCredPath = gcpConfigPath;
   }
 
-  private void setSchemaBase(String path) {
-    schemaBase = new File(path);
-    File schemaFile = new File(schemaBase, METADATA_JSON);
+  private void setSchemaBase(String schemaBase) {
+    this.schemaBase = new File(schemaBase);
+    loadSchema(METADATA_JSON);
+    loadSchema(ENVELOPE_JSON);
+  }
+
+  private void loadSchema(String key) {
+    File schemaFile = new File(schemaBase, key);
     try (InputStream schemaStream = new FileInputStream(schemaFile)) {
       JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream));
-      schema = SchemaLoader.load(rawSchema, new Loader());
+      schemas.put(key, SchemaLoader.load(rawSchema, new Loader()));
     } catch (Exception e) {
       throw new RuntimeException("While loading schema " + schemaFile.getAbsolutePath(), e);
     }
