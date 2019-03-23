@@ -60,10 +60,10 @@ class ReportGenerator():
 
     def _copy(self, input_path):
         LOGGER.info('Copying test report %s', input_path)
-        self._write('<pre>')
+        self._writeln('<pre>')
         with open(input_path, 'r') as input_stream:
             shutil.copyfileobj(input_stream, self._file)
-        self._write('</pre>')
+        self._writeln('</pre>')
 
     def finalize(self):
         """Finalize this report"""
