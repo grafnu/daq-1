@@ -18,8 +18,10 @@ import com.google.daq.mqtt.util.CloudIotConfig;
 import com.google.daq.mqtt.util.CloudIotManager;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
@@ -32,12 +34,13 @@ import org.json.JSONTokener;
 
 public class LocalDevice {
 
+  private static final PrettyPrinter PROPER_PRETTY_PRINTER_POLICY = new ProperPrettyPrinterPolicy();
+
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
       .enable(SerializationFeature.INDENT_OUTPUT)
       .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
       .enable(Feature.ALLOW_TRAILING_COMMA)
       .enable(Feature.STRICT_DUPLICATE_DETECTION)
-      .setDefaultPrettyPrinter(new ProperPrettyPrinterPolicy())
       .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
       .setDateFormat(new ISO8601DateFormat())
       .setSerializationInclusion(Include.NON_NULL);
@@ -184,14 +187,18 @@ public class LocalDevice {
 
   public boolean writeNormlized() {
     File metadataFile = metadataFile();
-    try {
+    try (OutputStream outputStream = new FileOutputStream(metadataFile)) {
       String writeHash = metadataHash();
       boolean update = metadata.hash == null || !metadata.hash.equals(writeHash);
       if (update) {
         metadata.timestamp = new Date();
         metadata.hash = metadataHash();
       }
-      OBJECT_MAPPER.writeValue(metadataFile, metadata);
+      // Super annoying, but can't set this on the global static instance.
+      JsonGenerator generator = OBJECT_MAPPER.getFactory()
+          .createGenerator(outputStream)
+          .setPrettyPrinter(PROPER_PRETTY_PRINTER_POLICY);
+      OBJECT_MAPPER.writeValue(generator, metadata);
       return update;
     } catch (Exception e) {
       throw new RuntimeException("While writing "+ metadataFile.getAbsolutePath(), e);
