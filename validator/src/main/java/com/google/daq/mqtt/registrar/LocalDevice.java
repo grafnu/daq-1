@@ -4,7 +4,10 @@ import static com.google.daq.mqtt.registrar.Registrar.ENVELOPE_JSON;
 import static com.google.daq.mqtt.registrar.Registrar.METADATA_JSON;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.core.PrettyPrinter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
@@ -13,15 +16,14 @@ import com.google.common.base.Preconditions;
 import com.google.daq.mqtt.util.CloudDeviceSettings;
 import com.google.daq.mqtt.util.CloudIotConfig;
 import com.google.daq.mqtt.util.CloudIotManager;
-import com.google.daq.mqtt.util.ExceptionMap;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.Schema;
@@ -35,6 +37,7 @@ public class LocalDevice {
       .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
       .enable(Feature.ALLOW_TRAILING_COMMA)
       .enable(Feature.STRICT_DUPLICATE_DETECTION)
+      .setDefaultPrettyPrinter(new ProperPrettyPrinterPolicy())
       .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
       .setDateFormat(new ISO8601DateFormat())
       .setSerializationInclusion(Include.NON_NULL);
@@ -172,17 +175,6 @@ public class LocalDevice {
     Preconditions.checkState(desiredTag.equals(assetName),
         String.format(PHYSICAL_TAG_ERROR, assetName, desiredTag));
     Preconditions.checkState(expected_site_name.equals(siteName));
-    ExceptionMap exceptionMap = new ExceptionMap("Error validating units for " + deviceId);
-    for (Entry<String, PointMetadata> entry : metadata.pointset.points.entrySet()) {
-      try {
-        AllowedUnits.valueOf(entry.getValue().units);
-      } catch (Exception e) {
-        String key = entry.getKey();
-        Exception named = new IllegalStateException("For property " + key, e);
-        exceptionMap.put(key, named);
-      }
-    }
-    exceptionMap.throwIfNotEmpty();
   }
 
   private String makeNumId(Envelope envelope) {
@@ -248,5 +240,12 @@ public class LocalDevice {
   private static class AssetMetadata {
     public String guid;
     public String name;
+  }
+
+  private static class ProperPrettyPrinterPolicy extends DefaultPrettyPrinter {
+    @Override
+    public void writeObjectFieldValueSeparator(JsonGenerator jg) throws IOException {
+      jg.writeRaw(": ");
+    }
   }
 }
