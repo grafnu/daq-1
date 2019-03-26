@@ -1,5 +1,6 @@
 package com.google.daq.mqtt.util;
 
+import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Map;
@@ -57,6 +58,12 @@ public class ExceptionMap extends RuntimeException {
     if (errorTree.causes.isEmpty()) {
       errorTree.causes = null;
     }
+    if (errorTree.cause == null && errorTree.causes == null && errorTree.message == null) {
+      errorTree.message = e.toString();
+      if (e instanceof NullPointerException) {
+        e.printStackTrace();
+      }
+    }
     return errorTree;
   }
 
@@ -67,6 +74,9 @@ public class ExceptionMap extends RuntimeException {
     public Map<String, ErrorTree> causes = new TreeMap<>();
 
     public void write(PrintStream err) {
+      if (message == null && causes == null && cause == null) {
+        throw new RuntimeException("Empty ErrorTree object");
+      }
       try {
         if (message != null) {
           err.write(prefix.getBytes());

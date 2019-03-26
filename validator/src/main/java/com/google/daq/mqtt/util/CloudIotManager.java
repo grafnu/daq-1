@@ -61,6 +61,7 @@ public class CloudIotManager {
   private static CloudIotConfig validate(CloudIotConfig cloudIotConfig) {
     Preconditions.checkNotNull(cloudIotConfig.registry_id, "registry_id not defined");
     Preconditions.checkNotNull(cloudIotConfig.cloud_region, "cloud_region not defined");
+    Preconditions.checkNotNull(cloudIotConfig.site_name, "site_name not defined");
     return cloudIotConfig;
   }
 
