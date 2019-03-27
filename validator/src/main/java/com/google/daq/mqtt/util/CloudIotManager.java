@@ -1,5 +1,6 @@
 package com.google.daq.mqtt.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -17,6 +18,7 @@ import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,9 +28,10 @@ import java.util.Map;
 public class CloudIotManager {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-  public static final String DEVICE_UPDATE_MASK = "blocked,credentials,metadata";
-  public static final String METADATA_KEY = "schema";
-  public static final int LIST_PAGE_SIZE = 1000;
+  private static final String DEVICE_UPDATE_MASK = "blocked,credentials,metadata";
+  private static final String PROFILE_KEY = "profile";
+  private static final String SCHEMA_KEY = "schema_name";
+  private static final int LIST_PAGE_SIZE = 1000;
 
   private final GcpCreds configuration;
   private final CloudIotConfig cloudIotConfig;
@@ -39,11 +42,13 @@ public class CloudIotManager {
   private String projectPath;
   private CloudIot.Projects.Locations.Registries cloudIotRegistries;
   private Map<String, Device> deviceMap;
+  private String schemaName;
 
-  public CloudIotManager(File gcpCred, File iotConfigFile) {
+  public CloudIotManager(File gcpCred, File iotConfigFile, String schemaName) {
     configuration = readGcpCreds(gcpCred);
     cloudIotConfig = readCloudIotConfig(iotConfigFile);
     registryId = cloudIotConfig.registry_id;
+    this.schemaName = schemaName;
     initializeCloudIoT(gcpCred);
   }
 
@@ -141,7 +146,8 @@ public class CloudIotManager {
     if (metadataMap == null) {
       metadataMap = new HashMap<>();
     }
-    metadataMap.put(METADATA_KEY, settings.metadata);
+    metadataMap.put(PROFILE_KEY, settings.metadata);
+    metadataMap.put(SCHEMA_KEY, schemaName);
     return new Device()
         .setId(deviceId)
         .setCredentials(settings.credentials)

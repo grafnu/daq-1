@@ -7,11 +7,9 @@ import com.google.daq.mqtt.util.ExceptionMap;
 import com.google.daq.mqtt.util.ExceptionMap.ErrorTree;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.everit.json.schema.Schema;
@@ -34,6 +32,7 @@ public class Registrar {
   private File siteConfig;
   private Map<String, Schema> schemas = new HashMap<>();
   private File schemaBase;
+  private String schemaName;
 
   public static void main(String[] args) {
     Registrar registrar = new Registrar();
@@ -41,9 +40,9 @@ public class Registrar {
       if (args.length != 3) {
         throw new IllegalArgumentException("Args: [gcp_cred_file] [site_dir] [schema_file]");
       }
+      registrar.setSchemaBase(args[2]);
       registrar.setGcpCredPath(args[0]);
       registrar.setSiteConfigPath(args[1]);
-      registrar.setSchemaBase(args[2]);
       registrar.processDevices();
     } catch (ExceptionMap em) {
       ErrorTree errorTree = ExceptionMap.format(em, ERROR_FORMAT_INDENT);
@@ -57,9 +56,10 @@ public class Registrar {
   }
 
   private void setSiteConfigPath(String siteConfigPath) {
+    Preconditions.checkNotNull(schemaName, "schemaName not set yet");
     siteConfig = new File(siteConfigPath);
     cloudIotConfig = new File(siteConfig, CLOUD_IOT_CONFIG_JSON);
-    cloudIotManager = new CloudIotManager(new File(gcpCredPath), cloudIotConfig);
+    cloudIotManager = new CloudIotManager(new File(gcpCredPath), cloudIotConfig, schemaName);
   }
 
   private void processDevices() {
@@ -141,8 +141,9 @@ public class Registrar {
     this.gcpCredPath = gcpConfigPath;
   }
 
-  private void setSchemaBase(String schemaBase) {
-    this.schemaBase = new File(schemaBase);
+  private void setSchemaBase(String schemaBasePath) {
+    schemaBase = new File(schemaBasePath);
+    schemaName = schemaBase.getName();
     loadSchema(METADATA_JSON);
     loadSchema(ENVELOPE_JSON);
   }
