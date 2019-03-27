@@ -9,4 +9,4 @@ dps:
       10,20:
         native_vlan: 100
         unicast_flood: false
-        external_loop_protect: true
+        loop_protect_external: true

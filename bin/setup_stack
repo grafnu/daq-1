@@ -74,6 +74,10 @@ sudo mkdir -p inst/faucet/corp-agg
 sudo chown $USER -R inst/faucet
 sudo modprobe bonding
 
+echo Cleaning up old junks...
+sudo ovs-vsctl --if-exists del-br pri
+sudo ovs-vsctl --if-exists del-br sec
+
 echo Configuring mode $mode...
 cp misc/corp_$mode.yaml inst/faucet/corp-agg/faucet.yaml
 cp -a topology/zz-$mode/* inst/faucet/
