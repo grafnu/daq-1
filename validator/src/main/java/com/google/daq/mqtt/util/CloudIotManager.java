@@ -1,7 +1,8 @@
 package com.google.daq.mqtt.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static com.google.daq.mqtt.util.ConfigUtil.readCloudIotConfig;
+import static com.google.daq.mqtt.util.ConfigUtil.readGcpCreds;
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -9,16 +10,13 @@ import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudiot.v1.CloudIot;
-import com.google.api.services.cloudiot.v1.CloudIotScopes;
 import com.google.api.services.cloudiot.v1.model.Device;
 import com.google.api.services.cloudiot.v1.model.DeviceCredential;
 import com.google.api.services.cloudiot.v1.model.PublicKeyCredential;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +25,6 @@ import java.util.Map;
  */
 public class CloudIotManager {
 
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   private static final String DEVICE_UPDATE_MASK = "blocked,credentials,metadata";
   private static final String PROFILE_KEY = "profile";
   private static final String SCHEMA_KEY = "schema_name";
@@ -46,26 +43,10 @@ public class CloudIotManager {
 
   public CloudIotManager(File gcpCred, File iotConfigFile, String schemaName) {
     configuration = readGcpCreds(gcpCred);
-    cloudIotConfig = readCloudIotConfig(iotConfigFile);
+    cloudIotConfig = validate(readCloudIotConfig(iotConfigFile));
     registryId = cloudIotConfig.registry_id;
     this.schemaName = schemaName;
     initializeCloudIoT(gcpCred);
-  }
-
-  static GcpCreds readGcpCreds(File configFile) {
-    try {
-      return OBJECT_MAPPER.readValue(configFile, GcpCreds.class);
-    } catch (Exception e) {
-      throw new RuntimeException("While reading config file "+ configFile.getAbsolutePath(), e);
-    }
-  }
-
-  static CloudIotConfig readCloudIotConfig(File configFile) {
-    try {
-      return validate(OBJECT_MAPPER.readValue(configFile, CloudIotConfig.class));
-    } catch (Exception e) {
-      throw new RuntimeException("While reading config file "+ configFile.getAbsolutePath(), e);
-    }
   }
 
   private static CloudIotConfig validate(CloudIotConfig cloudIotConfig) {
@@ -83,20 +64,10 @@ public class CloudIotManager {
     return getRegistryPath(registryId) + "/devices/" + deviceId;
   }
 
-  private GoogleCredential authorizeServiceAccount(File credFile) {
-    try (FileInputStream credStream = new FileInputStream(credFile)) {
-      return GoogleCredential
-          .fromStream(credStream)
-          .createScoped(CloudIotScopes.all());
-    } catch (Exception e) {
-      throw new RuntimeException("While reading cred file " + credFile.getAbsolutePath(), e);
-    }
-  }
-
   private void initializeCloudIoT(File gcpCredFile) {
     projectPath = "projects/" + configuration.project_id + "/locations/" + cloudIotConfig.cloud_region;
     try {
-      GoogleCredential credential = authorizeServiceAccount(gcpCredFile);
+      GoogleCredential credential = ConfigUtil.authorizeServiceAccount(gcpCredFile);
       System.err.println(String.format("Using service account %s/%s",
           credential.getServiceAccountId(), credential.getServiceAccountUser()));
       JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();

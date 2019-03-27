@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.google.daq.mqtt.util.CloudIotManager;
 import com.google.daq.mqtt.util.ExceptionMap;
 import com.google.daq.mqtt.util.ExceptionMap.ErrorTree;
+import com.google.daq.mqtt.util.PubSubPusher;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -33,6 +34,7 @@ public class Registrar {
   private Map<String, Schema> schemas = new HashMap<>();
   private File schemaBase;
   private String schemaName;
+  private PubSubPusher pubSubPusher;
 
   public static void main(String[] args) {
     Registrar registrar = new Registrar();
@@ -60,6 +62,7 @@ public class Registrar {
     siteConfig = new File(siteConfigPath);
     cloudIotConfig = new File(siteConfig, CLOUD_IOT_CONFIG_JSON);
     cloudIotManager = new CloudIotManager(new File(gcpCredPath), cloudIotConfig, schemaName);
+    //pubSubPusher = new PubSubPusher(new File(gcpCredPath), cloudIotConfig);
   }
 
   private void processDevices() {

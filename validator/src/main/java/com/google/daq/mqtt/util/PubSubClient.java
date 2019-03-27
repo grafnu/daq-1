@@ -35,7 +35,6 @@ public class PubSubClient {
       REFRESH_ERROR_FORMAT = "While refreshing subscription to topic %s subscription %s";
 
   private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
-  private static final int REFRESH_DELAY_MS = 5000;
 
   private final AtomicBoolean active = new AtomicBoolean();
   private final BlockingQueue<PubsubMessage> messages = new LinkedBlockingDeque<>();
