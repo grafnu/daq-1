@@ -99,18 +99,7 @@ public class Registrar {
 
   private Map<String,Device> makeCloudDevices() {
     System.err.println("Fetching remote registry " + cloudIotManager.getCloudIotConfig().registry_id);
-    List<Device> devices = cloudIotManager.fetchDevices();
-    Map<String, Device> deviceMap = new HashMap<>();
-    devices.stream().map(Device::getId)
-        .forEach(deviceName -> {
-          try {
-            System.err.println("Fetching remote device " + deviceName);
-            deviceMap.put(deviceName, cloudIotManager.fetchDevice(deviceName));
-          } catch (IOException e) {
-            throw new RuntimeException("While fetching device " + deviceName, e);
-          }
-        });
-    return deviceMap;
+    return cloudIotManager.fetchDevices();
   }
 
   private Map<String,LocalDevice> getLocalDevices() {

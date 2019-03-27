@@ -17,7 +17,9 @@ import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  */
@@ -25,6 +27,8 @@ public class CloudIotManager {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   public static final String DEVICE_UPDATE_MASK = "blocked,credentials,metadata";
+  public static final String METADATA_KEY = "schema";
+  public static final int LIST_PAGE_SIZE = 1000;
 
   private final GcpCreds configuration;
   private final CloudIotConfig cloudIotConfig;
@@ -34,6 +38,7 @@ public class CloudIotManager {
   private CloudIot cloudIotService;
   private String projectPath;
   private CloudIot.Projects.Locations.Registries cloudIotRegistries;
+  private Map<String, Device> deviceMap;
 
   public CloudIotManager(File gcpCred, File iotConfigFile) {
     configuration = readGcpCreds(gcpCred);
@@ -105,12 +110,13 @@ public class CloudIotManager {
   public boolean registerDevice(String deviceId, CloudDeviceSettings settings) {
     try {
       Preconditions.checkNotNull(cloudIotService, "CloudIoT service not initialized");
-      Device device = fetchDevice(deviceId);
+      Preconditions.checkNotNull(deviceMap, "deviceMap not initialized");
+      Device device = deviceMap.get(deviceId);
       if (device == null) {
         createDevice(deviceId, settings);
         return true;
       } else {
-        updateDevice(deviceId, settings);
+        updateDevice(deviceId, settings, device);
       }
       return false;
     } catch (Exception e) {
@@ -129,25 +135,32 @@ public class CloudIotManager {
     }
   }
 
-  private Device makeDevice(String deviceId, CloudDeviceSettings settings) {
+  private Device makeDevice(String deviceId, CloudDeviceSettings settings,
+      Device oldDevice) {
+    Map<String, String> metadataMap = oldDevice == null ? null : oldDevice.getMetadata();
+    if (metadataMap == null) {
+      metadataMap = new HashMap<>();
+    }
+    metadataMap.put(METADATA_KEY, settings.metadata);
     return new Device()
         .setId(deviceId)
         .setCredentials(settings.credentials)
-        .setMetadata(settings.metadata);
+        .setMetadata(metadataMap);
   }
 
   private void createDevice(String deviceId, CloudDeviceSettings settings) throws IOException {
     try {
       cloudIotRegistries.devices().create(getRegistryPath(registryId),
-          makeDevice(deviceId, settings)).execute();
+          makeDevice(deviceId, settings, null)).execute();
     } catch (GoogleJsonResponseException e) {
       throw new RuntimeException("Remote error creating device " + deviceId, e);
     }
   }
 
-  private void updateDevice(String deviceId, CloudDeviceSettings settings) {
+  private void updateDevice(String deviceId, CloudDeviceSettings settings,
+      Device oldDevice) {
     try {
-      Device device = makeDevice(deviceId, settings)
+      Device device = makeDevice(deviceId, settings, oldDevice)
           .setId(null)
           .setNumId(null);
       cloudIotRegistries
@@ -169,15 +182,29 @@ public class CloudIotManager {
     return ImmutableList.of(deviceCredential);
   }
 
-  public List<Device> fetchDevices() {
+  public Map<String, Device> fetchDevices() {
     Preconditions.checkNotNull(cloudIotService, "CloudIoT service not initialized");
     try {
       List<Device> devices = cloudIotRegistries
           .devices()
           .list(getRegistryPath(registryId))
+          .setPageSize(LIST_PAGE_SIZE)
           .execute()
           .getDevices();
-      return devices == null ? ImmutableList.of() : devices;
+      if (devices.size() == LIST_PAGE_SIZE) {
+        throw new RuntimeException("Returned exact page size, likely not fetched all devices");
+      }
+      deviceMap = new HashMap<>();
+      devices.stream().map(Device::getId)
+          .forEach(deviceName -> {
+            try {
+              System.err.println("Fetching remote device " + deviceName);
+              deviceMap.put(deviceName, fetchDevice(deviceName));
+            } catch (IOException e) {
+              throw new RuntimeException("While fetching device " + deviceName, e);
+            }
+          });
+      return deviceMap;
     } catch (Exception e) {
       throw new RuntimeException("While listing devices for registry " + registryId, e);
     }
@@ -194,7 +221,7 @@ public class CloudIotManager {
     }
   }
 
-  public Device fetchDevice(String deviceId) throws IOException {
+  private Device fetchDevice(String deviceId) throws IOException {
     try {
       return cloudIotRegistries.devices().get(getDevicePath(registryId, deviceId)).execute();
     } catch (GoogleJsonResponseException e) {

@@ -95,7 +95,7 @@ public class LocalDevice {
     try {
       String savedHash = metadata.hash;
       metadata.hash = null;
-      String json = OBJECT_MAPPER.writeValueAsString(metadata);
+      String json = metadataString();
       metadata.hash = savedHash;
       return String.format("%08x", Objects.hash(json));
     } catch (Exception e) {
@@ -145,9 +145,18 @@ public class LocalDevice {
 
       settings = new CloudDeviceSettings();
       settings.credentials = loadCredentials();
+      settings.metadata = metadataString();
       return settings;
     } catch (Exception e) {
       throw new RuntimeException("While getting settings for device " + deviceId, e);
+    }
+  }
+
+  private String metadataString() {
+    try {
+      return OBJECT_MAPPER.writeValueAsString(metadata);
+    } catch (Exception e) {
+      throw new RuntimeException("While converting metadata to string", e);
     }
   }
 
