@@ -229,6 +229,10 @@ public class LocalDevice {
     }
   }
 
+  public String getName() {
+    return deviceId;
+  }
+
   private static class Envelope {
     public String deviceId;
     public String deviceNumId;

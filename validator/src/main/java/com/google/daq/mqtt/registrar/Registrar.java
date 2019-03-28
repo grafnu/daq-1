@@ -120,9 +120,15 @@ public class Registrar {
   }
 
   private void validateFiles(Map<String, LocalDevice> localDevices) {
+    ExceptionMap exceptionMap = new ExceptionMap("Error loading local devices");
     for (LocalDevice device : localDevices.values()) {
-      device.validatedDeviceDir();
+      try {
+        device.validatedDeviceDir();
+      } catch (Exception e) {
+        exceptionMap.put(device.getName(), e);
+      }
     }
+    exceptionMap.throwIfNotEmpty();
   }
 
   private void writeNormalized(Map<String, LocalDevice> localDevices) {
