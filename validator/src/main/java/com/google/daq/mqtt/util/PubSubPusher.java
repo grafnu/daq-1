@@ -29,6 +29,7 @@ public class PubSubPusher {
   private final String registrar_topic;
 
   {
+    // Why this needs to be done there is no rhyme or reason.
     LoadBalancerRegistry.getDefaultRegistry().register(new PickFirstLoadBalancerProvider());
   }
 
