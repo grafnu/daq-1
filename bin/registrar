@@ -22,7 +22,7 @@ fi
 
 validator/bin/build.sh
 
-#export GOOGLE_APPLICATION_CREDENTIALS=$PWD/$gcp_cred
-#echo Using credentials from $GOOGLE_APPLICATION_CREDENTIALS
+export GOOGLE_APPLICATION_CREDENTIALS=$PWD/$gcp_cred
+echo Using credentials from $GOOGLE_APPLICATION_CREDENTIALS
 
 validator/bin/registrar.sh $gcp_cred $site_path $schema_path

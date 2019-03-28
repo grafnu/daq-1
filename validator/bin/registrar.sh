@@ -19,8 +19,10 @@ echo Using gcp credentials $config_file
 echo Using site config dir $devices_dir
 echo Using schema root dir $schema_dir
 
+JAVA=/usr/lib/jvm/java-8-openjdk-amd64/bin/java
+
 error=0
-java -cp $jarfile $mainclass $config_file $devices_dir $schema_dir || error=$?
+$JAVA -cp $jarfile $mainclass $config_file $devices_dir $schema_dir || error=$?
 
 echo Registrar complete, exit $error
 exit $error
