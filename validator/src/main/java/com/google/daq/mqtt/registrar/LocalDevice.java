@@ -89,16 +89,20 @@ public class LocalDevice {
   }
 
   public void validatedDeviceDir() {
-    String[] files = deviceDir.list();
-    Preconditions.checkNotNull(files, "No files found in " + deviceDir.getAbsolutePath());
-    ImmutableSet<String> actualFiles = ImmutableSet.copyOf(files);
-    SetView<String> missing = Sets.difference(allowedFiles, actualFiles);
-    if (!missing.isEmpty()) {
-      throw new RuntimeException("Missing files: " + missing);
-    }
-    SetView<String> extra = Sets.difference(actualFiles, allowedFiles);
-    if (!extra.isEmpty()) {
-      throw new RuntimeException("Extra files: " + extra);
+    try {
+      String[] files = deviceDir.list();
+      Preconditions.checkNotNull(files, "No files found in " + deviceDir.getAbsolutePath());
+      ImmutableSet<String> actualFiles = ImmutableSet.copyOf(files);
+      SetView<String> missing = Sets.difference(allowedFiles, actualFiles);
+      if (!missing.isEmpty()) {
+        throw new RuntimeException("Missing files: " + missing);
+      }
+      SetView<String> extra = Sets.difference(actualFiles, allowedFiles);
+      if (!extra.isEmpty()) {
+        throw new RuntimeException("Extra files: " + extra);
+      }
+    } catch (Exception e) {
+      throw new RuntimeException("While validating device directory " + deviceId, e);
     }
   }
 

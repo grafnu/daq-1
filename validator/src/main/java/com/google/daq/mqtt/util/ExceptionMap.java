@@ -45,20 +45,20 @@ public class ExceptionMap extends RuntimeException {
     final String newPrefix = prefix + indent;
     if (e instanceof ExceptionMap) {
       if (e.getCause() != null) {
-        errorTree.cause = format(e.getCause(), newPrefix, indent);
+        errorTree.child = format(e.getCause(), newPrefix, indent);
       }
       ((ExceptionMap) e).forEach(
-          (key, sub) -> errorTree.causes.put(key, format(sub, newPrefix, indent)));
+          (key, sub) -> errorTree.children.put(key, format(sub, newPrefix, indent)));
     } else if (e instanceof ValidationException) {
       ((ValidationException) e).getCausingExceptions().forEach(
-          sub -> errorTree.causes.put(sub.getMessage(), format(sub, newPrefix, indent)));
+          sub -> errorTree.children.put(sub.getMessage(), format(sub, newPrefix, indent)));
     } else if (e.getCause() != null) {
-      errorTree.cause = format(e.getCause(), newPrefix, indent);
+      errorTree.child = format(e.getCause(), newPrefix, indent);
     }
-    if (errorTree.causes.isEmpty()) {
-      errorTree.causes = null;
+    if (errorTree.children.isEmpty()) {
+      errorTree.children = null;
     }
-    if (errorTree.cause == null && errorTree.causes == null && errorTree.message == null) {
+    if (errorTree.child == null && errorTree.children == null && errorTree.message == null) {
       errorTree.message = e.toString();
       if (e instanceof NullPointerException) {
         e.printStackTrace();
@@ -70,35 +70,27 @@ public class ExceptionMap extends RuntimeException {
   public static class ErrorTree {
     public String prefix;
     public String message;
-    public ErrorTree cause;
-    public Map<String, ErrorTree> causes = new TreeMap<>();
+    public ErrorTree child;
+    public Map<String, ErrorTree> children = new TreeMap<>();
 
     public void write(PrintStream err) {
-      write(null, err);
-    }
-
-    public void write(String key, PrintStream err) {
-      if (message == null && causes == null && cause == null) {
+      if (message == null && children == null && child == null) {
         throw new RuntimeException("Empty ErrorTree object");
       }
       try {
-        err.write(prefix.getBytes());
-        if (key != null) {
-          err.write(key.getBytes());
-          err.write(SEPARATOR_BYTES);
-        }
         if (message != null) {
+          err.write(prefix.getBytes());
           err.write(message.getBytes());
           err.write(NEWLINE_BYTES);
         }
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
-      if (cause != null) {
-        cause.write(err);
+      if (child != null) {
+        child.write(err);
       }
-      if (causes != null) {
-        causes.forEach((key2, value) -> value.write(key2, err));
+      if (children != null) {
+        children.forEach((key, value) -> value.write(err));
       }
     }
   }
