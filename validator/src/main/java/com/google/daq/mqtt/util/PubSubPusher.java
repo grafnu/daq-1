@@ -1,13 +1,9 @@
 package com.google.daq.mqtt.util;
 
-import static com.google.daq.mqtt.util.ConfigUtil.authorizeServiceAccount;
 import static com.google.daq.mqtt.util.ConfigUtil.readCloudIotConfig;
 import static com.google.daq.mqtt.util.ConfigUtil.readGcpCreds;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.core.ApiFuture;
-import com.google.auth.Credentials;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.common.base.Preconditions;
@@ -15,14 +11,12 @@ import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.PubsubMessage.Builder;
-import io.netty.util.concurrent.SingleThreadEventExecutor;
+import io.grpc.LoadBalancerProvider;
+import io.grpc.LoadBalancerRegistry;
+import io.grpc.internal.AutoConfiguredLoadBalancerFactory;
+import io.grpc.internal.PickFirstLoadBalancerProvider;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class PubSubPusher {
 
@@ -33,6 +27,10 @@ public class PubSubPusher {
   private final CloudIotConfig cloudIotConfig;
   private final Publisher publisher;
   private final String registrar_topic;
+
+  {
+    LoadBalancerRegistry.getDefaultRegistry().register(new PickFirstLoadBalancerProvider());
+  }
 
   public PubSubPusher(File gcpCred, File iotConfigFile) {
     try {
