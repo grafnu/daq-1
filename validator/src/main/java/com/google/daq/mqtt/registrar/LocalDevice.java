@@ -48,7 +48,8 @@ public class LocalDevice {
       .setDateFormat(new ISO8601DateFormat())
       .setSerializationInclusion(Include.NON_NULL);
 
-  private static final String RSA256_X509_PEM = "RSA_X509_PEM";
+  private static final String RSA256_KEY_FORMAT = "RSA_PEM";
+  private static final String KEY_TYPE = RSA256_KEY_FORMAT;
   private static final String RSA_PUBLIC_PEM = "rsa_public.pem";
   private static final String RSA_PRIVATE_PEM = "rsa_private.pem";
   private static final String RSA_PRIVATE_PKCS8 = "rsa_private.pkcs8";
@@ -57,6 +58,7 @@ public class LocalDevice {
 
   private static final Set<String> allowedFiles = ImmutableSet.of(METADATA_JSON, RSA_PUBLIC_PEM, RSA_PRIVATE_PEM,
       RSA_PRIVATE_PKCS8);
+  private static final String KEYGEN_EXEC_FORMAT = "validator/bin/keygen.sh %s %s";
 
   private final String deviceId;
   private final Map<String, Schema> schemas;
@@ -139,7 +141,7 @@ public class LocalDevice {
       if (!deviceKeyFile.exists()) {
         generateNewKey();
       }
-      return CloudIotManager.makeCredentials(RSA256_X509_PEM,
+      return CloudIotManager.makeCredentials(KEY_TYPE,
           IOUtils.toString(new FileInputStream(deviceKeyFile), Charset.defaultCharset()));
     } catch (Exception e) {
       throw new RuntimeException("While loading credential for local device " + deviceId, e);
@@ -149,8 +151,9 @@ public class LocalDevice {
   private void generateNewKey() {
     String absolutePath = deviceDir.getAbsolutePath();
     try {
-      System.err.println("Generating device credential in " + absolutePath);
-      int exitCode = Runtime.getRuntime().exec("validator/bin/keygen.sh " + absolutePath).waitFor();
+      String command = String.format(KEYGEN_EXEC_FORMAT, KEY_TYPE, absolutePath);
+      System.err.println(command);
+      int exitCode = Runtime.getRuntime().exec(command).waitFor();
       if (exitCode != 0) {
         throw new RuntimeException("Keygen exit code " + exitCode);
       }
