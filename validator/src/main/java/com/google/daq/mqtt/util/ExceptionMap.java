@@ -1,6 +1,5 @@
 package com.google.daq.mqtt.util;
 
-import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Map;
@@ -11,6 +10,7 @@ import org.everit.json.schema.ValidationException;
 public class ExceptionMap extends RuntimeException {
 
   private static final byte[] NEWLINE_BYTES = "\n".getBytes();
+  private static final byte[] SEPARATOR_BYTES = ": ".getBytes();
 
   final Map<String, Exception> exceptions = new TreeMap<>();
 
@@ -74,12 +74,20 @@ public class ExceptionMap extends RuntimeException {
     public Map<String, ErrorTree> causes = new TreeMap<>();
 
     public void write(PrintStream err) {
+      write(null, err);
+    }
+
+    public void write(String key, PrintStream err) {
       if (message == null && causes == null && cause == null) {
         throw new RuntimeException("Empty ErrorTree object");
       }
       try {
+        err.write(prefix.getBytes());
+        if (key != null) {
+          err.write(key.getBytes());
+          err.write(SEPARATOR_BYTES);
+        }
         if (message != null) {
-          err.write(prefix.getBytes());
           err.write(message.getBytes());
           err.write(NEWLINE_BYTES);
         }
@@ -90,7 +98,7 @@ public class ExceptionMap extends RuntimeException {
         cause.write(err);
       }
       if (causes != null) {
-        causes.forEach((key, value) -> value.write(err));
+        causes.forEach((key2, value) -> value.write(key2, err));
       }
     }
   }

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.google.api.services.cloudiot.v1.model.DeviceCredential;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import com.google.daq.mqtt.util.CloudDeviceSettings;
 import com.google.daq.mqtt.util.CloudIotConfig;
 import com.google.daq.mqtt.util.CloudIotManager;
@@ -23,10 +24,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.Schema;
 import org.json.JSONObject;
@@ -47,8 +51,11 @@ public class LocalDevice {
 
   private static final String RSA256_X509_PEM = "RSA_X509_PEM";
   private static final String RSA_PUBLIC_PEM = "rsa_public.pem";
+  private static final String RSA_PRIVATE_PEM = "rsa_private.pem";
   private static final String PHYSICAL_TAG_FORMAT = "%s_%s";
   private static final String PHYSICAL_TAG_ERROR = "Physical asset name %s does not match expected %s";
+
+  private static final Set<String> allowedFiles = ImmutableSet.of(METADATA_JSON, RSA_PUBLIC_PEM, RSA_PRIVATE_PEM);
 
   private final String deviceId;
   private final Map<String, Schema> schemas;
@@ -58,15 +65,19 @@ public class LocalDevice {
   private CloudDeviceSettings settings;
 
   LocalDevice(File devicesDir, String deviceId, Map<String, Schema> schemas) {
-    this.deviceId = deviceId;
-    this.schemas = schemas;
-    deviceDir = metadataFile(devicesDir, deviceId);
-    validateMetadata();
-    metadata = readMetadata();
+    try {
+      this.deviceId = deviceId;
+      this.schemas = schemas;
+      deviceDir = validatedDeviceDir(devicesDir, deviceId);
+      validateMetadata();
+      metadata = readMetadata();
+    } catch (Exception e) {
+      throw new RuntimeException("While loading local device " + deviceId, e);
+    }
   }
 
   private void validateMetadata() {
-    File metadataFile = metadataFile(deviceDir, METADATA_JSON);
+    File metadataFile = new File(deviceDir, METADATA_JSON);
     try (InputStream targetStream = new FileInputStream(metadataFile)) {
       schemas.get(METADATA_JSON).validate(new JSONObject(new JSONTokener(targetStream)));
     } catch (Exception e) {
@@ -75,15 +86,23 @@ public class LocalDevice {
   }
 
   static boolean deviceExists(File devicesDir, String deviceName) {
-    return new File(metadataFile(devicesDir, deviceName), METADATA_JSON).isFile();
+    return new File(validatedDeviceDir(devicesDir, deviceName), METADATA_JSON).isFile();
   }
 
-  private static File metadataFile(File devicesDir, String deviceName) {
-    return new File(devicesDir, deviceName);
+  private static File validatedDeviceDir(File devicesDir, String deviceName) {
+    File deviceDir = new File(devicesDir, deviceName);
+    String[] files = deviceDir.list();
+    Set<String> extraFiles = Arrays.stream(Objects.requireNonNull(files, "No files found"))
+        .filter(name -> !allowedFiles.contains(name))
+        .collect(Collectors.toSet());
+    if (!extraFiles.isEmpty()) {
+      throw new RuntimeException("Extra files found in device dir: " + extraFiles);
+    }
+    return deviceDir;
   }
 
   private Metadata readMetadata() {
-    File metadataFile = metadataFile();
+    File metadataFile = validatedDeviceDir();
     try {
       return validate(OBJECT_MAPPER.readValue(metadataFile, Metadata.class));
     } catch (Exception e) {
@@ -103,7 +122,7 @@ public class LocalDevice {
     }
   }
 
-  private File metadataFile() {
+  private File validatedDeviceDir() {
     return new File(deviceDir, METADATA_JSON);
   }
 
@@ -111,7 +130,7 @@ public class LocalDevice {
     return data;
   }
 
-  private List<DeviceCredential> loadCredentials() {
+  private DeviceCredential loadCredential() {
     try {
       File deviceKeyFile = new File(deviceDir, RSA_PUBLIC_PEM);
       if (!deviceKeyFile.exists()) {
@@ -120,20 +139,20 @@ public class LocalDevice {
       return CloudIotManager.makeCredentials(RSA256_X509_PEM,
           IOUtils.toString(new FileInputStream(deviceKeyFile), Charset.defaultCharset()));
     } catch (Exception e) {
-      throw new RuntimeException("While loading credentials for local device " + deviceId, e);
+      throw new RuntimeException("While loading credential for local device " + deviceId, e);
     }
   }
 
   private void generateNewKey() {
     String absolutePath = deviceDir.getAbsolutePath();
     try {
-      System.err.println("Generating device credentials in " + absolutePath);
+      System.err.println("Generating device credential in " + absolutePath);
       int exitCode = Runtime.getRuntime().exec("validator/bin/keygen.sh " + absolutePath).waitFor();
       if (exitCode != 0) {
         throw new RuntimeException("Keygen exit code " + exitCode);
       }
     } catch (Exception e) {
-      throw new RuntimeException("While generating new credentials for " + deviceId, e);
+      throw new RuntimeException("While generating new credential for " + deviceId, e);
     }
   }
 
@@ -144,7 +163,7 @@ public class LocalDevice {
       }
 
       settings = new CloudDeviceSettings();
-      settings.credentials = loadCredentials();
+      settings.credential = loadCredential();
       settings.metadata = metadataString();
       return settings;
     } catch (Exception e) {
@@ -195,7 +214,7 @@ public class LocalDevice {
   }
 
   public boolean writeNormlized() {
-    File metadataFile = metadataFile();
+    File metadataFile = validatedDeviceDir();
     try (OutputStream outputStream = new FileOutputStream(metadataFile)) {
       String writeHash = metadataHash();
       boolean update = metadata.hash == null || !metadata.hash.equals(writeHash);

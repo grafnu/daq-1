@@ -121,7 +121,7 @@ public class CloudIotManager {
     metadataMap.put(SCHEMA_KEY, schemaName);
     return new Device()
         .setId(deviceId)
-        .setCredentials(settings.credentials)
+        .setCredentials(ImmutableList.of(settings.credential))
         .setMetadata(metadataMap);
   }
 
@@ -149,14 +149,14 @@ public class CloudIotManager {
     }
   }
 
-  public static List<DeviceCredential> makeCredentials(String keyFormat, String keyData) {
+  public static DeviceCredential makeCredentials(String keyFormat, String keyData) {
     PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
     publicKeyCredential.setFormat(keyFormat);
     publicKeyCredential.setKey(keyData);
 
     DeviceCredential deviceCredential = new DeviceCredential();
     deviceCredential.setPublicKey(publicKeyCredential);
-    return ImmutableList.of(deviceCredential);
+    return deviceCredential;
   }
 
   public Map<String, Device> fetchDevices() {

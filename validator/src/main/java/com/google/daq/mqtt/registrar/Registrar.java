@@ -1,7 +1,10 @@
 package com.google.daq.mqtt.registrar;
 
 import com.google.api.services.cloudiot.v1.model.Device;
+import com.google.api.services.cloudiot.v1.model.DeviceCredential;
 import com.google.common.base.Preconditions;
+import com.google.daq.mqtt.util.CloudDeviceSettings;
+import com.google.daq.mqtt.util.CloudIotConfig;
 import com.google.daq.mqtt.util.CloudIotManager;
 import com.google.daq.mqtt.util.ExceptionMap;
 import com.google.daq.mqtt.util.ExceptionMap.ErrorTree;
@@ -12,6 +15,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.loader.SchemaClient;
@@ -75,7 +79,8 @@ public class Registrar {
         extraDevices.remove(localName);
         try {
           LocalDevice localDevice = localDevices.get(localName);
-          if (cloudIotManager.registerDevice(localName, localDevice.getSettings())) {
+          CloudDeviceSettings localDeviceSettings = localDevice.getSettings();
+          if (cloudIotManager.registerDevice(localName, localDeviceSettings)) {
             System.err.println("Created new device entry " + localName);
           } else {
             System.err.println("Updated device entry " + localName);
@@ -123,6 +128,18 @@ public class Registrar {
         }
       } catch (Exception e) {
         exceptionMap.put(deviceName, e);
+      }
+    }
+    exceptionMap.throwIfNotEmpty();
+
+    Map<DeviceCredential, String> privateKeys = new HashMap<>();
+    for (String deviceName : devices) {
+      CloudDeviceSettings settings = localDevices.get(deviceName).getSettings();
+      String previous = privateKeys.put(settings.credential, deviceName);
+      if (previous != null) {
+        RuntimeException exception = new RuntimeException(
+            String.format("Duplicate credentials found for %s & %s", previous, deviceName));
+        exceptionMap.put(deviceName, exception);
       }
     }
     exceptionMap.throwIfNotEmpty();

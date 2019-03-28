@@ -4,6 +4,6 @@ import com.google.api.services.cloudiot.v1.model.DeviceCredential;
 import java.util.List;
 
 public class CloudDeviceSettings {
-  public List<DeviceCredential> credentials;
+  public DeviceCredential credential;
   public String metadata;
 }
