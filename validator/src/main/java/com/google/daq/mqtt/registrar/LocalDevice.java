@@ -51,10 +51,12 @@ public class LocalDevice {
   private static final String RSA256_X509_PEM = "RSA_X509_PEM";
   private static final String RSA_PUBLIC_PEM = "rsa_public.pem";
   private static final String RSA_PRIVATE_PEM = "rsa_private.pem";
+  private static final String RSA_PRIVATE_PKCS8 = "rsa_private.pkcs8";
   private static final String PHYSICAL_TAG_FORMAT = "%s_%s";
   private static final String PHYSICAL_TAG_ERROR = "Physical asset name %s does not match expected %s";
 
-  private static final Set<String> allowedFiles = ImmutableSet.of(METADATA_JSON, RSA_PUBLIC_PEM, RSA_PRIVATE_PEM);
+  private static final Set<String> allowedFiles = ImmutableSet.of(METADATA_JSON, RSA_PUBLIC_PEM, RSA_PRIVATE_PEM,
+      RSA_PRIVATE_PKCS8);
 
   private final String deviceId;
   private final Map<String, Schema> schemas;
