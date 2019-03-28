@@ -114,8 +114,15 @@ public class Registrar {
     Preconditions.checkNotNull(devices, "No devices found in " + devicesDir.getAbsolutePath());
     Map<String, LocalDevice> localDevices = loadDevices(devicesDir, devices);
     validateKeys(localDevices);
+    validateFiles(localDevices);
     writeNormalized(localDevices);
     return localDevices;
+  }
+
+  private void validateFiles(Map<String, LocalDevice> localDevices) {
+    for (LocalDevice device : localDevices.values()) {
+      device.validatedDeviceDir();
+    }
   }
 
   private void writeNormalized(Map<String, LocalDevice> localDevices) {

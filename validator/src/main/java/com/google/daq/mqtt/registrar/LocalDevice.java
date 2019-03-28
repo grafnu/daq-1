@@ -26,13 +26,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.everit.json.schema.Schema;
 import org.json.JSONObject;
@@ -70,7 +67,7 @@ public class LocalDevice {
     try {
       this.deviceId = deviceId;
       this.schemas = schemas;
-      deviceDir = validatedDeviceDir(devicesDir, deviceId);
+      deviceDir = new File(devicesDir, deviceId);
       validateMetadata();
       metadata = readMetadata();
     } catch (Exception e) {
@@ -88,11 +85,10 @@ public class LocalDevice {
   }
 
   static boolean deviceExists(File devicesDir, String deviceName) {
-    return new File(validatedDeviceDir(devicesDir, deviceName), METADATA_JSON).isFile();
+    return new File(new File(devicesDir, deviceName), METADATA_JSON).isFile();
   }
 
-  private static File validatedDeviceDir(File devicesDir, String deviceName) {
-    File deviceDir = new File(devicesDir, deviceName);
+  public void validatedDeviceDir() {
     String[] files = deviceDir.list();
     Preconditions.checkNotNull(files, "No files found in " + deviceDir.getAbsolutePath());
     ImmutableSet<String> actualFiles = ImmutableSet.copyOf(files);
@@ -104,11 +100,10 @@ public class LocalDevice {
     if (!extra.isEmpty()) {
       throw new RuntimeException("Extra files: " + extra);
     }
-    return deviceDir;
   }
 
   private Metadata readMetadata() {
-    File metadataFile = validatedDeviceDir();
+    File metadataFile = new File(deviceDir, METADATA_JSON);
     try {
       return validate(OBJECT_MAPPER.readValue(metadataFile, Metadata.class));
     } catch (Exception e) {
@@ -126,10 +121,6 @@ public class LocalDevice {
     } catch (Exception e) {
       throw new RuntimeException("Converting object to string", e);
     }
-  }
-
-  private File validatedDeviceDir() {
-    return new File(deviceDir, METADATA_JSON);
   }
 
   private Metadata validate(Metadata data) {
@@ -220,7 +211,7 @@ public class LocalDevice {
   }
 
   public boolean writeNormlized() {
-    File metadataFile = validatedDeviceDir();
+    File metadataFile = new File(deviceDir, METADATA_JSON);
     try (OutputStream outputStream = new FileOutputStream(metadataFile)) {
       String writeHash = metadataHash();
       boolean update = metadata.hash == null || !metadata.hash.equals(writeHash);
