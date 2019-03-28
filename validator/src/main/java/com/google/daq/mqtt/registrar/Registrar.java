@@ -49,6 +49,7 @@ public class Registrar {
       registrar.setGcpCredPath(args[0]);
       registrar.setSiteConfigPath(args[1]);
       registrar.processDevices();
+      registrar.shutdown();
     } catch (ExceptionMap em) {
       ErrorTree errorTree = ExceptionMap.format(em, ERROR_FORMAT_INDENT);
       errorTree.write(System.err);
@@ -65,7 +66,7 @@ public class Registrar {
     siteConfig = new File(siteConfigPath);
     cloudIotConfig = new File(siteConfig, CLOUD_IOT_CONFIG_JSON);
     cloudIotManager = new CloudIotManager(new File(gcpCredPath), cloudIotConfig, schemaName);
-    //pubSubPusher = new PubSubPusher(new File(gcpCredPath), cloudIotConfig);
+    pubSubPusher = new PubSubPusher(new File(gcpCredPath), cloudIotConfig);
   }
 
   private void processDevices() {
@@ -78,12 +79,8 @@ public class Registrar {
         extraDevices.remove(localName);
         try {
           LocalDevice localDevice = localDevices.get(localName);
-          CloudDeviceSettings localDeviceSettings = localDevice.getSettings();
-          if (cloudIotManager.registerDevice(localName, localDeviceSettings)) {
-            System.err.println("Created new device entry " + localName);
-          } else {
-            System.err.println("Updated device entry " + localName);
-          }
+          updateCloudIoT(localDevice);
+          sendMetadataMessage(localDevice);
         } catch (Exception e) {
           exceptionMap.put(localName, e);
         }
@@ -102,6 +99,25 @@ public class Registrar {
       throw new RuntimeException("While processing devices", e);
     }
     exceptionMap.throwIfNotEmpty();
+  }
+
+  private void sendMetadataMessage(LocalDevice localDevice) {
+    System.err.println("Sending metadata message for " + localDevice.getName());
+    pubSubPusher.sendMessage(localDevice.getName(), localDevice.getSettings().metadata);
+  }
+
+  private void updateCloudIoT(LocalDevice localDevice) {
+    String localName = localDevice.getName();
+    CloudDeviceSettings localDeviceSettings = localDevice.getSettings();
+    if (cloudIotManager.registerDevice(localName, localDeviceSettings)) {
+      System.err.println("Created new device entry " + localName);
+    } else {
+      System.err.println("Updated device entry " + localName);
+    }
+  }
+
+  private void shutdown() {
+    pubSubPusher.shutdown();
   }
 
   private Map<String,Device> makeCloudDevices() {

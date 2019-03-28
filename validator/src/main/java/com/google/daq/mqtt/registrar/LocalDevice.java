@@ -267,6 +267,7 @@ public class LocalDevice {
   private static class Properties {
     public String key_type;
     public String connect;
+    public Integer version;
   }
 
   private static class PointsetMetadata {
