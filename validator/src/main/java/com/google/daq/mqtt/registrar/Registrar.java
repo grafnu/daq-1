@@ -130,7 +130,7 @@ public class Registrar {
     for (String deviceName : localDevices.keySet()) {
       try {
         System.err.println("Writing normalized device " + deviceName);
-        localDevices.get(deviceName).writeNormlized();
+        localDevices.get(deviceName).writeNormalized();
       } catch (Exception e) {
         exceptionMap.put(deviceName, e);
       }

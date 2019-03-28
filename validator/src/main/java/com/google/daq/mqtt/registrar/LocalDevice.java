@@ -210,7 +210,7 @@ public class LocalDevice {
     return Integer.toString(hash < 0 ? -hash : hash);
   }
 
-  public boolean writeNormlized() {
+  void writeNormalized() {
     File metadataFile = new File(deviceDir, METADATA_JSON);
     try (OutputStream outputStream = new FileOutputStream(metadataFile)) {
       String writeHash = metadataHash();
@@ -224,7 +224,6 @@ public class LocalDevice {
           .createGenerator(outputStream)
           .setPrettyPrinter(PROPER_PRETTY_PRINTER_POLICY);
       OBJECT_MAPPER.writeValue(generator, metadata);
-      return update;
     } catch (Exception e) {
       throw new RuntimeException("While writing "+ metadataFile.getAbsolutePath(), e);
     }
