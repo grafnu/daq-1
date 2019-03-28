@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.google.api.services.cloudiot.v1.model.DeviceCredential;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
 import com.google.daq.mqtt.util.CloudDeviceSettings;
 import com.google.daq.mqtt.util.CloudIotConfig;
 import com.google.daq.mqtt.util.CloudIotManager;
@@ -26,7 +28,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -92,11 +94,15 @@ public class LocalDevice {
   private static File validatedDeviceDir(File devicesDir, String deviceName) {
     File deviceDir = new File(devicesDir, deviceName);
     String[] files = deviceDir.list();
-    Set<String> extraFiles = Arrays.stream(Objects.requireNonNull(files, "No files found"))
-        .filter(name -> !allowedFiles.contains(name))
-        .collect(Collectors.toSet());
-    if (!extraFiles.isEmpty()) {
-      throw new RuntimeException("Extra files found in device dir: " + extraFiles);
+    Preconditions.checkNotNull(files, "No files found in " + deviceDir.getAbsolutePath());
+    ImmutableSet<String> actualFiles = ImmutableSet.copyOf(files);
+    SetView<String> missing = Sets.difference(allowedFiles, actualFiles);
+    if (!missing.isEmpty()) {
+      throw new RuntimeException("Missing files: " + missing);
+    }
+    SetView<String> extra = Sets.difference(actualFiles, allowedFiles);
+    if (!extra.isEmpty()) {
+      throw new RuntimeException("Extra files: " + extra);
     }
     return deviceDir;
   }

@@ -4,7 +4,6 @@ import com.google.api.services.cloudiot.v1.model.Device;
 import com.google.api.services.cloudiot.v1.model.DeviceCredential;
 import com.google.common.base.Preconditions;
 import com.google.daq.mqtt.util.CloudDeviceSettings;
-import com.google.daq.mqtt.util.CloudIotConfig;
 import com.google.daq.mqtt.util.CloudIotManager;
 import com.google.daq.mqtt.util.ExceptionMap;
 import com.google.daq.mqtt.util.ExceptionMap.ErrorTree;
@@ -15,7 +14,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.loader.SchemaClient;
@@ -111,13 +109,48 @@ public class Registrar {
   }
 
   private Map<String,LocalDevice> getLocalDevices() {
-    HashMap<String, LocalDevice> localDevices = new HashMap<>();
     File devicesDir = new File(siteConfig, DEVICES_DIR);
-    ExceptionMap exceptionMap = new ExceptionMap("Error loading local devices");
     String[] devices = devicesDir.list();
-    if (devices == null) {
-      return localDevices;
+    Preconditions.checkNotNull(devices, "No devices found in " + devicesDir.getAbsolutePath());
+    Map<String, LocalDevice> localDevices = loadDevices(devicesDir, devices);
+    validateKeys(localDevices);
+    writeNormalized(localDevices);
+    return localDevices;
+  }
+
+  private void writeNormalized(Map<String, LocalDevice> localDevices) {
+    ExceptionMap exceptionMap = new ExceptionMap("Error loading local devices");
+    for (String deviceName : localDevices.keySet()) {
+      try {
+        System.err.println("Writing normalized device " + deviceName);
+        localDevices.get(deviceName).writeNormlized();
+      } catch (Exception e) {
+        exceptionMap.put(deviceName, e);
+      }
     }
+    exceptionMap.throwIfNotEmpty();
+  }
+
+  private void validateKeys(Map<String, LocalDevice> localDevices) {
+    ExceptionMap exceptionMap = new ExceptionMap("Error loading local devices");
+    Map<DeviceCredential, String> privateKeys = new HashMap<>();
+    for (String deviceName : localDevices.keySet()) {
+      CloudDeviceSettings settings = localDevices.get(deviceName).getSettings();
+      if (privateKeys.containsKey(settings.credential)) {
+        String previous = privateKeys.get(settings.credential);
+        RuntimeException exception = new RuntimeException(
+            String.format("Duplicate credentials found for %s & %s", previous, deviceName));
+        exceptionMap.put(deviceName, exception);
+      } else {
+        privateKeys.put(settings.credential, deviceName);
+      }
+    }
+    exceptionMap.throwIfNotEmpty();
+  }
+
+  private Map<String, LocalDevice> loadDevices(File devicesDir, String[] devices) {
+    ExceptionMap exceptionMap = new ExceptionMap("Error loading local devices");
+    HashMap<String, LocalDevice> localDevices = new HashMap<>();
     for (String deviceName : devices) {
       try {
         if (LocalDevice.deviceExists(devicesDir, deviceName)) {
@@ -131,29 +164,6 @@ public class Registrar {
       }
     }
     exceptionMap.throwIfNotEmpty();
-
-    Map<DeviceCredential, String> privateKeys = new HashMap<>();
-    for (String deviceName : devices) {
-      CloudDeviceSettings settings = localDevices.get(deviceName).getSettings();
-      String previous = privateKeys.put(settings.credential, deviceName);
-      if (previous != null) {
-        RuntimeException exception = new RuntimeException(
-            String.format("Duplicate credentials found for %s & %s", previous, deviceName));
-        exceptionMap.put(deviceName, exception);
-      }
-    }
-    exceptionMap.throwIfNotEmpty();
-
-    for (String deviceName : devices) {
-      try {
-        System.err.println("Writing normalized device " + deviceName);
-        localDevices.get(deviceName).writeNormlized();
-      } catch (Exception e) {
-        exceptionMap.put(deviceName, e);
-      }
-    }
-    exceptionMap.throwIfNotEmpty();
-
     return localDevices;
   }
 
