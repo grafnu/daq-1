@@ -25,6 +25,7 @@ public class Registrar {
 
   static final String METADATA_JSON = "metadata.json";
   static final String ENVELOPE_JSON = "envelope.json";
+  static final String PROPERTIES_JSON = "properties.json";
 
   private static final String CLOUD_IOT_CONFIG_JSON = "cloud_iot_config.json";
   private static final String DEVICES_DIR = "devices";
@@ -189,6 +190,7 @@ public class Registrar {
     schemaName = schemaBase.getName();
     loadSchema(METADATA_JSON);
     loadSchema(ENVELOPE_JSON);
+    loadSchema(PROPERTIES_JSON);
   }
 
   private void loadSchema(String key) {

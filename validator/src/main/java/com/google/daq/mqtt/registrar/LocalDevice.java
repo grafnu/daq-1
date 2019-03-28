@@ -2,6 +2,7 @@ package com.google.daq.mqtt.registrar;
 
 import static com.google.daq.mqtt.registrar.Registrar.ENVELOPE_JSON;
 import static com.google.daq.mqtt.registrar.Registrar.METADATA_JSON;
+import static com.google.daq.mqtt.registrar.Registrar.PROPERTIES_JSON;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -48,8 +49,6 @@ public class LocalDevice {
       .setDateFormat(new ISO8601DateFormat())
       .setSerializationInclusion(Include.NON_NULL);
 
-  private static final String RSA256_KEY_FORMAT = "RSA_PEM";
-  private static final String KEY_TYPE = RSA256_KEY_FORMAT;
   private static final String RSA_PUBLIC_PEM = "rsa_public.pem";
   private static final String RSA_PRIVATE_PEM = "rsa_private.pem";
   private static final String RSA_PRIVATE_PKCS8 = "rsa_private.pkcs8";
@@ -57,13 +56,14 @@ public class LocalDevice {
   private static final String PHYSICAL_TAG_ERROR = "Physical asset name %s does not match expected %s";
 
   private static final Set<String> allowedFiles = ImmutableSet.of(METADATA_JSON, RSA_PUBLIC_PEM, RSA_PRIVATE_PEM,
-      RSA_PRIVATE_PKCS8);
+      RSA_PRIVATE_PKCS8, PROPERTIES_JSON);
   private static final String KEYGEN_EXEC_FORMAT = "validator/bin/keygen.sh %s %s";
 
   private final String deviceId;
   private final Map<String, Schema> schemas;
   private final File deviceDir;
   private final Metadata metadata;
+  private final Properties properties;
 
   private CloudDeviceSettings settings;
 
@@ -72,19 +72,10 @@ public class LocalDevice {
       this.deviceId = deviceId;
       this.schemas = schemas;
       deviceDir = new File(devicesDir, deviceId);
-      validateMetadata();
       metadata = readMetadata();
+      properties = readProperties();
     } catch (Exception e) {
       throw new RuntimeException("While loading local device " + deviceId, e);
-    }
-  }
-
-  private void validateMetadata() {
-    File metadataFile = new File(deviceDir, METADATA_JSON);
-    try (InputStream targetStream = new FileInputStream(metadataFile)) {
-      schemas.get(METADATA_JSON).validate(new JSONObject(new JSONTokener(targetStream)));
-    } catch (Exception e) {
-      throw new RuntimeException("Processing input " + metadataFile, e);
     }
   }
 
@@ -110,10 +101,29 @@ public class LocalDevice {
     }
   }
 
+  private Properties readProperties() {
+    File propertiesFile = new File(deviceDir, PROPERTIES_JSON);
+    try (InputStream targetStream = new FileInputStream(propertiesFile)) {
+      schemas.get(PROPERTIES_JSON).validate(new JSONObject(new JSONTokener(targetStream)));
+    } catch (Exception e) {
+      throw new RuntimeException("Processing input " + propertiesFile, e);
+    }
+    try {
+      return OBJECT_MAPPER.readValue(propertiesFile, Properties.class);
+    } catch (Exception e) {
+      throw new RuntimeException("While reading "+ propertiesFile.getAbsolutePath(), e);
+    }
+  }
+
   private Metadata readMetadata() {
     File metadataFile = new File(deviceDir, METADATA_JSON);
+    try (InputStream targetStream = new FileInputStream(metadataFile)) {
+      schemas.get(METADATA_JSON).validate(new JSONObject(new JSONTokener(targetStream)));
+    } catch (Exception e1) {
+      throw new RuntimeException("Processing input " + metadataFile, e1);
+    }
     try {
-      return validate(OBJECT_MAPPER.readValue(metadataFile, Metadata.class));
+      return OBJECT_MAPPER.readValue(metadataFile, Metadata.class);
     } catch (Exception e) {
       throw new RuntimeException("While reading "+ metadataFile.getAbsolutePath(), e);
     }
@@ -131,17 +141,13 @@ public class LocalDevice {
     }
   }
 
-  private Metadata validate(Metadata data) {
-    return data;
-  }
-
   private DeviceCredential loadCredential() {
     try {
       File deviceKeyFile = new File(deviceDir, RSA_PUBLIC_PEM);
       if (!deviceKeyFile.exists()) {
         generateNewKey();
       }
-      return CloudIotManager.makeCredentials(KEY_TYPE,
+      return CloudIotManager.makeCredentials(properties.key_type,
           IOUtils.toString(new FileInputStream(deviceKeyFile), Charset.defaultCharset()));
     } catch (Exception e) {
       throw new RuntimeException("While loading credential for local device " + deviceId, e);
@@ -151,7 +157,7 @@ public class LocalDevice {
   private void generateNewKey() {
     String absolutePath = deviceDir.getAbsolutePath();
     try {
-      String command = String.format(KEYGEN_EXEC_FORMAT, KEY_TYPE, absolutePath);
+      String command = String.format(KEYGEN_EXEC_FORMAT, properties.key_type, absolutePath);
       System.err.println(command);
       int exitCode = Runtime.getRuntime().exec(command).waitFor();
       if (exitCode != 0) {
@@ -256,6 +262,11 @@ public class LocalDevice {
     public Integer version;
     public Date timestamp;
     public String hash;
+  }
+
+  private static class Properties {
+    public String key_type;
+    public String connect;
   }
 
   private static class PointsetMetadata {
