@@ -1,6 +1,7 @@
 package com.google.daq.mqtt.registrar;
 
 import static com.google.daq.mqtt.registrar.LocalDevice.METADATA_SUBFOLDER;
+import static java.util.stream.Collectors.toSet;
 
 import com.google.api.services.cloudiot.v1.model.Device;
 import com.google.api.services.cloudiot.v1.model.DeviceCredential;
@@ -12,11 +13,15 @@ import com.google.daq.mqtt.util.ExceptionMap.ErrorTree;
 import com.google.daq.mqtt.util.PubSubPusher;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.loader.SchemaClient;
 import org.everit.json.schema.loader.SchemaLoader;
@@ -74,17 +79,22 @@ public class Registrar {
   private void processDevices() {
     ExceptionMap exceptionMap = new ExceptionMap("Error processing local devices");
     try {
-      Map<String, LocalDevice> localDevices = getLocalDevices();
-      Map<String, Device> cloudDevices = makeCloudDevices();
-      Set<String> extraDevices = new HashSet<>(cloudDevices.keySet());
+      Map<String, LocalDevice> localDevices = loadLocalDevices();
+      List<Device> cloudDevices = fetchDeviceList();
+      Set<String> extraDevices = cloudDevices.stream().map(Device::getId).collect(toSet());
       for (String localName : localDevices.keySet()) {
         try {
           extraDevices.remove(localName);
           LocalDevice localDevice = localDevices.get(localName);
-          localDevice.setDeviceNumId(cloudDevices.get(localName).getNumId().toString());
           updateCloudIoT(localDevice);
+          Device device = Preconditions.checkNotNull(fetchDevice(localName),
+              "missing device " + localName);
+          BigInteger numId = Preconditions.checkNotNull(device.getNumId(),
+              "missing deviceNumId for " + localName);
+          localDevice.setDeviceNumId(numId.toString());
           sendMetadataMessage(localDevice);
         } catch (Exception e) {
+          System.err.println("Deferring exception: " + e.toString());
           exceptionMap.put(localName, e);
         }
       }
@@ -96,12 +106,19 @@ public class Registrar {
           exceptionMap.put(extraName, e);
         }
       }
-    } catch (ExceptionMap em) {
-      throw em;
+      System.err.println(String.format("Processed %d devices", localDevices.size()));
     } catch (Exception e) {
       throw new RuntimeException("While processing devices", e);
     }
     exceptionMap.throwIfNotEmpty();
+  }
+
+  private Device fetchDevice(String localName) {
+    try {
+      return cloudIotManager.fetchDevice(localName);
+    } catch (Exception e) {
+      throw new RuntimeException("Fetching device " + localName, e);
+    }
   }
 
   private void sendMetadataMessage(LocalDevice localDevice) {
@@ -117,6 +134,7 @@ public class Registrar {
 
   private void updateCloudIoT(LocalDevice localDevice) {
     String localName = localDevice.getDeviceId();
+    fetchDevice(localName);
     CloudDeviceSettings localDeviceSettings = localDevice.getSettings();
     if (cloudIotManager.registerDevice(localName, localDeviceSettings)) {
       System.err.println("Created new device entry " + localName);
@@ -129,12 +147,12 @@ public class Registrar {
     pubSubPusher.shutdown();
   }
 
-  private Map<String,Device> makeCloudDevices() {
+  private List<Device> fetchDeviceList() {
     System.err.println("Fetching remote registry " + cloudIotManager.getRegistryId());
-    return cloudIotManager.fetchDevices();
+    return cloudIotManager.fetchDeviceList();
   }
 
-  private Map<String,LocalDevice> getLocalDevices() {
+  private Map<String,LocalDevice> loadLocalDevices() {
     File devicesDir = new File(siteConfig, DEVICES_DIR);
     String[] devices = devicesDir.list();
     Preconditions.checkNotNull(devices, "No devices found in " + devicesDir.getAbsolutePath());

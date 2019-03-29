@@ -159,9 +159,10 @@ public class CloudIotManager {
     return deviceCredential;
   }
 
-  public Map<String, Device> fetchDevices() {
+  public List<Device> fetchDeviceList() {
     Preconditions.checkNotNull(cloudIotService, "CloudIoT service not initialized");
     try {
+      deviceMap = new HashMap<>();
       List<Device> devices = cloudIotRegistries
           .devices()
           .list(getRegistryPath(registryId))
@@ -171,46 +172,26 @@ public class CloudIotManager {
       if (devices.size() == LIST_PAGE_SIZE) {
         throw new RuntimeException("Returned exact page size, likely not fetched all devices");
       }
-      deviceMap = new HashMap<>();
-      devices.stream().map(Device::getId)
-          .forEach(deviceName -> {
-            try {
-              System.err.println("Fetching remote device " + deviceName);
-              deviceMap.put(deviceName, fetchDevice(deviceName));
-            } catch (IOException e) {
-              throw new RuntimeException("While fetching device " + deviceName, e);
-            }
-          });
-      return deviceMap;
+      return devices;
     } catch (Exception e) {
       throw new RuntimeException("While listing devices for registry " + registryId, e);
     }
   }
 
-  public void removeDevice(String registryId, String deviceId) throws IOException {
-    try {
-      cloudIotRegistries.devices().delete(getDevicePath(registryId, deviceId)).execute();
-    } catch (GoogleJsonResponseException e) {
-      if (e.getDetails().getCode() == 404) {
-        return;
-      }
-      throw new RuntimeException("Remote error removing device: " + e.getDetails().getMessage());
-    }
+  public Device fetchDevice(String deviceId) {
+    return deviceMap.computeIfAbsent(deviceId, this::fetchDeviceFromCloud);
   }
 
-  private Device fetchDevice(String deviceId) throws IOException {
+  private Device fetchDeviceFromCloud(String deviceId) {
     try {
       return cloudIotRegistries.devices().get(getDevicePath(registryId, deviceId)).execute();
-    } catch (GoogleJsonResponseException e) {
-      if (e.getDetails().getCode() == 404) {
+    } catch (Exception e) {
+      if (e instanceof GoogleJsonResponseException
+          && ((GoogleJsonResponseException) e).getDetails().getCode() == 404) {
         return null;
       }
-      throw new RuntimeException("Remote error getting device: " + e.getDetails().getMessage());
+      throw new RuntimeException("While fetching " + deviceId, e);
     }
-  }
-
-  public CloudIotConfig getCloudIotConfig() {
-    return cloudIotConfig;
   }
 
   public String getRegistryId() {
