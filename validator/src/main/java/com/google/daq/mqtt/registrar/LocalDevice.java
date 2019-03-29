@@ -18,7 +18,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 import com.google.daq.mqtt.util.CloudDeviceSettings;
-import com.google.daq.mqtt.util.CloudIotConfig;
 import com.google.daq.mqtt.util.CloudIotManager;
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,12 +57,15 @@ public class LocalDevice {
   private static final Set<String> allowedFiles = ImmutableSet.of(METADATA_JSON, RSA_PUBLIC_PEM, RSA_PRIVATE_PEM,
       RSA_PRIVATE_PKCS8, PROPERTIES_JSON);
   private static final String KEYGEN_EXEC_FORMAT = "validator/bin/keygen.sh %s %s";
+  public static final String METADATA_SUBFOLDER = "metadata";
 
   private final String deviceId;
   private final Map<String, Schema> schemas;
   private final File deviceDir;
   private final Metadata metadata;
   private final Properties properties;
+
+  private String deviceNumId;
 
   private CloudDeviceSettings settings;
 
@@ -191,11 +193,11 @@ public class LocalDevice {
     }
   }
 
-  public void validate(CloudIotConfig cloudIotConfig) {
+  public void validate(String registryId, String siteName) {
     try {
       Envelope envelope = new Envelope();
       envelope.deviceId = deviceId;
-      envelope.deviceRegistryId = cloudIotConfig.registry_id;
+      envelope.deviceRegistryId = registryId;
       // Don't use actual project id because it should be abstracted away.
       envelope.projectId = fakeProjectId();
       envelope.deviceNumId = makeNumId(envelope);
@@ -204,7 +206,7 @@ public class LocalDevice {
     } catch (Exception e) {
       throw new IllegalStateException("Validating envelope " + deviceId, e);
     }
-    checkConsistency(cloudIotConfig.site_name);
+    checkConsistency(siteName);
   }
 
   private String fakeProjectId() {
@@ -244,8 +246,16 @@ public class LocalDevice {
     }
   }
 
-  public String getName() {
+  public String getDeviceId() {
     return deviceId;
+  }
+
+  public String getDeviceNumId() {
+    return Preconditions.checkNotNull(deviceNumId, "deviceNumId not set");
+  }
+
+  public void setDeviceNumId(String numId) {
+    deviceNumId = numId;
   }
 
   private static class Envelope {
@@ -253,7 +263,7 @@ public class LocalDevice {
     public String deviceNumId;
     public String deviceRegistryId;
     public String projectId;
-    public final String subFolder = "metadata";
+    public final String subFolder = METADATA_SUBFOLDER;
   }
 
   private static class Metadata {

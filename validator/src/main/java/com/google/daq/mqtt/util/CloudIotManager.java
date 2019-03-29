@@ -212,4 +212,16 @@ public class CloudIotManager {
   public CloudIotConfig getCloudIotConfig() {
     return cloudIotConfig;
   }
+
+  public String getRegistryId() {
+    return cloudIotConfig.registry_id;
+  }
+
+  public String getProjectId() {
+    return configuration.project_id;
+  }
+
+  public String getSiteName() {
+    return cloudIotConfig.site_name;
+  }
 }

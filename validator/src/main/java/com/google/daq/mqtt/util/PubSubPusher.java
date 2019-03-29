@@ -17,6 +17,7 @@ import io.grpc.internal.AutoConfiguredLoadBalancerFactory;
 import io.grpc.internal.PickFirstLoadBalancerProvider;
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 public class PubSubPusher {
 
@@ -48,16 +49,13 @@ public class PubSubPusher {
     }
   }
 
-  public String sendMessage(String deviceId, String message) {
+  public String sendMessage(Map<String, String> attributes, String body) {
     try {
-      Builder builder = PubsubMessage.newBuilder().setData(
-          ByteString.copyFrom(message, Charset.defaultCharset()));
-      builder.putAttributes("deviceId", deviceId);
-      builder.putAttributes("registryId", cloudIotConfig.registry_id);
-      builder.putAttributes("projectId", configuration.project_id);
-      builder.putAttributes("subFolder", "metadata");
-      PubsubMessage helloMessage = builder.build();
-      ApiFuture<String> publish = publisher.publish(helloMessage);
+      PubsubMessage message = PubsubMessage.newBuilder()
+          .setData(ByteString.copyFrom(body, Charset.defaultCharset()))
+          .putAllAttributes(attributes)
+          .build();
+      ApiFuture<String> publish = publisher.publish(message);
       return publish.get();
     } catch (Exception e) {
       throw new RuntimeException("While sending to topic " + registrar_topic, e);

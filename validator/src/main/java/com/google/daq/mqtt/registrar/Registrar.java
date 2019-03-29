@@ -1,5 +1,7 @@
 package com.google.daq.mqtt.registrar;
 
+import static com.google.daq.mqtt.registrar.LocalDevice.METADATA_SUBFOLDER;
+
 import com.google.api.services.cloudiot.v1.model.Device;
 import com.google.api.services.cloudiot.v1.model.DeviceCredential;
 import com.google.common.base.Preconditions;
@@ -76,9 +78,10 @@ public class Registrar {
       Map<String, Device> cloudDevices = makeCloudDevices();
       Set<String> extraDevices = new HashSet<>(cloudDevices.keySet());
       for (String localName : localDevices.keySet()) {
-        extraDevices.remove(localName);
         try {
+          extraDevices.remove(localName);
           LocalDevice localDevice = localDevices.get(localName);
+          localDevice.setDeviceNumId(cloudDevices.get(localName).getNumId().toString());
           updateCloudIoT(localDevice);
           sendMetadataMessage(localDevice);
         } catch (Exception e) {
@@ -102,12 +105,18 @@ public class Registrar {
   }
 
   private void sendMetadataMessage(LocalDevice localDevice) {
-    System.err.println("Sending metadata message for " + localDevice.getName());
-    pubSubPusher.sendMessage(localDevice.getName(), localDevice.getSettings().metadata);
+    System.err.println("Sending metadata message for " + localDevice.getDeviceId());
+    Map<String, String> attributes = new HashMap<>();
+    attributes.put("deviceId", localDevice.getDeviceId());
+    attributes.put("deviceNumId", localDevice.getDeviceNumId());
+    attributes.put("deviceRegistryId", cloudIotManager.getRegistryId());
+    attributes.put("projectId", cloudIotManager.getProjectId());
+    attributes.put("subFolder", METADATA_SUBFOLDER);
+    pubSubPusher.sendMessage(attributes, localDevice.getSettings().metadata);
   }
 
   private void updateCloudIoT(LocalDevice localDevice) {
-    String localName = localDevice.getName();
+    String localName = localDevice.getDeviceId();
     CloudDeviceSettings localDeviceSettings = localDevice.getSettings();
     if (cloudIotManager.registerDevice(localName, localDeviceSettings)) {
       System.err.println("Created new device entry " + localName);
@@ -121,7 +130,7 @@ public class Registrar {
   }
 
   private Map<String,Device> makeCloudDevices() {
-    System.err.println("Fetching remote registry " + cloudIotManager.getCloudIotConfig().registry_id);
+    System.err.println("Fetching remote registry " + cloudIotManager.getRegistryId());
     return cloudIotManager.fetchDevices();
   }
 
@@ -142,7 +151,7 @@ public class Registrar {
       try {
         device.validatedDeviceDir();
       } catch (Exception e) {
-        exceptionMap.put(device.getName(), e);
+        exceptionMap.put(device.getDeviceId(), e);
       }
     }
     exceptionMap.throwIfNotEmpty();
@@ -186,7 +195,7 @@ public class Registrar {
         if (LocalDevice.deviceExists(devicesDir, deviceName)) {
           System.err.println("Loading local device " + deviceName);
           LocalDevice localDevice = new LocalDevice(devicesDir, deviceName, schemas);
-          localDevice.validate(cloudIotManager.getCloudIotConfig());
+          localDevice.validate(cloudIotManager.getRegistryId(), cloudIotManager.getSiteName());
           localDevices.put(deviceName, localDevice);
         }
       } catch (Exception e) {
