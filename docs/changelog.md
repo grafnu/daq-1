@@ -4,6 +4,8 @@
         * Process faucet include files in normalizer.
 	* UDMI Tech Stack definition (MQTT + JSON + UDMI)
 	* Generate markdown-based reports in site device folder.
+	* Debian Stretch setup/install fixes.
+	* Update to Faucet 1.9.1.
 * 0.9.5
 	* DAQ_TARGETS env variable for incremental builds.
 	* Report file cleanup, with embedded test results.
