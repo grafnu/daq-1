@@ -114,7 +114,7 @@ export OVSVSCTL_ORIG=`which ovs-vsctl`
 export PATH=$ROOT/binhack:$PATH
 
 exit_code=0
-$runcmd daq/daq.py $LOCAL_CONFIG $@ || exit_code=$?
+timeout 10m $runcmd daq/daq.py $LOCAL_CONFIG $@ || exit_code=$?
 
 if [ -f "$cleanup_file" ]; then
     source $cleanup_file

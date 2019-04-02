@@ -17,7 +17,6 @@ function add_br {
     port=$3
     sudo ovs-vsctl --if-exists del-br $bname \
          -- add-br $bname \
-         -- set-fail-mode $bname secure \
          -- set bridge $bname other_config:datapath-id=$dpid
 
     if [ -n "$port" ]; then
@@ -70,13 +69,8 @@ function add_oeth {
 ###########################################################
 
 sudo rm -rf inst/faucet
-sudo mkdir -p inst/faucet/corp-agg
-sudo chown $USER -R inst/faucet
+mkdir -p inst/faucet/corp-agg
 sudo modprobe bonding
-
-echo Cleaning up old junks...
-sudo ovs-vsctl --if-exists del-br pri
-sudo ovs-vsctl --if-exists del-br sec
 
 echo Configuring mode $mode...
 cp misc/corp_$mode.yaml inst/faucet/corp-agg/faucet.yaml
@@ -107,17 +101,17 @@ add_br t1sw2 178 6673 # 0x930 6663
 add_br t2sw2 1296 6673 # 0x0b2 6663
 add_br corp  0x111 6683
 
-add_oeth t1sw1 28 corp-eth10
-add_oeth t1sw1 29 corp-eth11
+add_oeth t1sw1 1 corp-eth10
+add_oeth t1sw1 2 corp-eth11
 
-add_link t1sw1 7 t2sw1 49
-add_link t1sw1 8 t2sw2 49
+add_link t1sw1 22 t2sw2 7
+add_link t1sw1 23 t2sw1 7
 
-add_oeth t1sw2 28 corp-eth20
-add_oeth t1sw2 29 corp-eth21
+add_oeth t1sw2 1 corp-eth20
+add_oeth t1sw2 2 corp-eth21
 
-add_link t1sw2 7 t2sw1 50
-add_link t1sw2 8 t2sw2 50
+add_link t1sw2 22 t2sw2 6
+add_link t1sw2 23 t2sw1 6
 
 sudo ip link del bond1 || true
 if [ $mode == bond ]; then
@@ -147,8 +141,8 @@ sudo ip link set up dev corp-eth20
 sudo ip link set up dev corp-eth21
 sudo ovs-vsctl add-port corp $upstream2 -- set interface $upstream2 ofport_request=20
 
-add_iface t2sw1 10 faux-1
-add_iface t2sw2 10 faux-2
+add_iface t2sw1 1 faux-1
+add_iface t2sw2 1 faux-2
 add_iface corp 1 faux-3
 
 echo Starting connection warm-up for 30s...
@@ -158,10 +152,5 @@ docker exec daq-faux-3 ping -q -c 30 192.168.0.1 &
 
 echo Waiting for warm-ups to complete...
 wait
-
-echo Performing connectivity checks...
-docker exec daq-faux-1 ping -q -c 1 192.168.0.2
-docker exec daq-faux-2 ping -q -c 1 192.168.0.3
-docker exec daq-faux-3 ping -q -c 1 192.168.0.1
 
 echo Done with stack setup mode $mode.

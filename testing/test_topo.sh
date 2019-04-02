@@ -133,11 +133,29 @@ function run_test {
         cmd_file=$conf_dir/ping_runtime.sh
         test -d $conf_dir || (mkdir -p $conf_dir; echo sleep 30 >> $cmd_file)
     done
+    tcpdump -Uni lo port 6653 > tcpdump.log &
+    tcpdump_pid=$!
     cmd/run -s
+    kill $tcpdump_pid
     fgrep :ping: inst/result.log | tee -a $TEST_RESULTS
     cat inst/run-port-*/nodes/ping*${socket_file} | tee -a $TEST_RESULTS
     cat inst/run-port-*/nodes/ping*${bacnet_file} | tee -a $TEST_RESULTS
     more inst/run-port-*/nodes/ping*/activate.log | cat
+    echo Docker logs
+    docker logs daq-faucet
+    echo Faucet logs
+    cat inst/faucet.log
+    echo OVS logs
+    tail -50 /var/log/openvswitch/ovs-vswitchd.log
+    echo tcpdump logs
+    tail -50 tcpdump.log
+    echo OVS dump
+    ovs-vsctl show
+    ovs-ofctl show pri
+    ovs-ofctl show sec
+    ovs-ofctl dump-flows pri
+    ovs-ofctl dump-flows sec
+    echo End logs
 }
 
 generate open 3
