@@ -1,0 +1,15 @@
+#!/bin/bash
+
+for bridge in pri sec t1sw1 t1sw2 t2sw1 t2sw2 corp; do
+    echo Cleaning bridge $bridge...
+    sudo ovs-vsctl --if-exists del-br $bridge
+done 
+
+for image in daq/faucet daq/faux; do
+    echo Cleaning docker image $image...
+    images=$(docker ps --filter ancestor=$image -q)
+    if [ -n "$images" ]; then
+        docker kill $images
+    fi
+done
+

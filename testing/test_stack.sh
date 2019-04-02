@@ -84,7 +84,7 @@ function test_stack {
     bcount_eth50=$(tcpdump -en -r $t2sw1eth50_pcap | wc -l) 2>/dev/null
     bcount_total=$((bcount_eth49 + bcount_eth50))
     echo pcap $mode count is $bcount_eth49 $bcount_eth50 $bcount_total
-    echo pcap sane $((bcount_total > 100)) $((bcount_total < 130)) | tee -a $TEST_RESULTS
+    echo pcap sane $((bcount_total > 100)) $((bcount_total < 140)) | tee -a $TEST_RESULTS
     echo pcap t2sw1p7
     tcpdump -en -c 20 -r $t2sw1eth49_pcap
     echo pcap t2sw1eth50
@@ -95,7 +95,7 @@ function test_stack {
     telnet_eth50=$(tcpdump -en -r $t2sw1eth50_pcap vlan and port 23 | wc -l) 2>/dev/null
     https_eth49=$(tcpdump -en -r $t2sw1eth49_pcap vlan and port 443 | wc -l) 2>/dev/null
     https_eth50=$(tcpdump -en -r $t2sw1eth50_pcap vlan and port 443 | wc -l) 2>/dev/null
-    echo $mode telnet $((telnet_eth49 + telnet_eth50)) https $((http_eth49 + https_eth50)) \
+    echo $mode telnet $((telnet_eth49 + telnet_eth50)) https $((https_eth49 + https_eth50)) \
         | tee -a $TEST_RESULTS
 
     cat $nodes_dir/* | tee -a $TEST_RESULTS
