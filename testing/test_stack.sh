@@ -5,8 +5,8 @@ source testing/test_preamble.sh
 out_dir=out/daq-test_stack
 rm -rf $out_dir
 
-t2sw1p6_pcap=$out_dir/t2sw1-eth6.pcap
-t2sw1p7_pcap=$out_dir/t2sw1-eth7.pcap
+t2sw1eth49_pcap=$out_dir/t2sw1-eth49.pcap
+t2sw1eth50_pcap=$out_dir/t2sw1-eth50.pcap
 nodes_dir=$out_dir/nodes
 
 mkdir -p $out_dir $nodes_dir
@@ -49,9 +49,9 @@ function test_stack {
     # Restart one faucet instance to see if it goes crazy.
     #cmd/faucet nz-kiwi-ctr2 6673
 
-    echo Capturing pcap to $t2sw1p6_pcap for $cap_length seconds...
-    timeout $cap_length tcpdump -eni t2sw1-eth6 -w $t2sw1p6_pcap &
-    timeout $cap_length tcpdump -eni t2sw1-eth7 -w $t2sw1p7_pcap &
+    echo Capturing pcap to $t2sw1eth49_pcap for $cap_length seconds...
+    timeout $cap_length tcpdump -eni t2sw1-eth49 -w $t2sw1eth49_pcap &
+    timeout $cap_length tcpdump -eni t2sw1-eth50 -w $t2sw1eth50_pcap &
     sleep 5
 
     echo Executing 2nd warm-up
@@ -80,22 +80,23 @@ function test_stack {
     end_time=$(date +%s)
     echo Waited $((end_time - start_time))s.
 
-    bcount6=$(tcpdump -en -r $t2sw1p6_pcap | wc -l) 2>/dev/null
-    bcount7=$(tcpdump -en -r $t2sw1p7_pcap | wc -l) 2>/dev/null
-    bcount_total=$((bcount6 + bcount7))
-    echo pcap $mode count is $bcount6 $bcount7 $bcount_total
+    bcount_eth49=$(tcpdump -en -r $t2sw1eth49_pcap | wc -l) 2>/dev/null
+    bcount_eth50=$(tcpdump -en -r $t2sw1eth50_pcap | wc -l) 2>/dev/null
+    bcount_total=$((bcount_eth49 + bcount_eth50))
+    echo pcap $mode count is $bcount_eth49 $bcount_eth50 $bcount_total
     echo pcap sane $((bcount_total > 100)) $((bcount_total < 130)) | tee -a $TEST_RESULTS
-    echo pcap t2sw1p6
-    tcpdump -en -c 20 -r $t2sw1p6_pcap
     echo pcap t2sw1p7
-    tcpdump -en -c 200 -r $t2sw1p7_pcap
+    tcpdump -en -c 20 -r $t2sw1eth49_pcap
+    echo pcap t2sw1eth50
+    tcpdump -en -c 200 -r $t2sw1eth50_pcap
     echo pcap end
 
-    telnet6=$(tcpdump -en -r $t2sw1p6_pcap vlan and port 23 | wc -l) 2>/dev/null
-    https6=$(tcpdump -en -r $t2sw1p6_pcap vlan and port 443 | wc -l) 2>/dev/null
-    telnet7=$(tcpdump -en -r $t2sw1p7_pcap vlan and port 23 | wc -l) 2>/dev/null
-    https7=$(tcpdump -en -r $t2sw1p7_pcap vlan and port 443 | wc -l) 2>/dev/null
-    echo $mode telnet $((telnet6 + telnet)) https $((https6 + https7)) | tee -a $TEST_RESULTS
+    telnet_eth49=$(tcpdump -en -r $t2sw1eth49_pcap vlan and port 23 | wc -l) 2>/dev/null
+    telnet_eth50=$(tcpdump -en -r $t2sw1eth50_pcap vlan and port 23 | wc -l) 2>/dev/null
+    https_eth49=$(tcpdump -en -r $t2sw1eth49_pcap vlan and port 443 | wc -l) 2>/dev/null
+    https_eth50=$(tcpdump -en -r $t2sw1eth50_pcap vlan and port 443 | wc -l) 2>/dev/null
+    echo $mode telnet $((telnet_eth49 + telnet_eth50)) https $((http_eth49 + https_eth50)) \
+        | tee -a $TEST_RESULTS
 
     cat $nodes_dir/* | tee -a $TEST_RESULTS
 
