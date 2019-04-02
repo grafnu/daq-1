@@ -55,6 +55,7 @@ ipline=$(ip addr show | fgrep "inet " | fgrep -v 127.0.0.1)
 read -r -a parts <<< "$ipline"
 local_ip=${parts[1]%/*}
 broadcast_ip=${parts[3]}
+gateway_ip=$(ip route show default | sed -e 's/.*via //' -e 's/ dev.*//')
 
 echo Faux device at $local_ip bcast $broadcast_ip
 
@@ -86,10 +87,17 @@ if [ -n "${options[curl]}" ]; then
     (while true; do curl -o - http://google.com; sleep 1; done) &
 fi
 
+if [ -n "${options[webgw]}" ]; then
+    echo Starting web loop to gateway $gateway_ip:8000
+    (while true; do curl -o - http://$gateway_ip:8000; sleep 1; done) &
+fi
+
 if [ -n "${options[brute]}" ]; then
     echo Starting brute server.
     (python pentests/brute_server.py bad 10000; echo Brute done.) &
-elif [ -n "${options[nobrute]}" ]; then
+fi
+
+if [ -n "${options[nobrute]}" ]; then
     echo Starting nobrute server.
     (python pentests/brute_server.py good 10000; echo Brute done.) &
 fi
