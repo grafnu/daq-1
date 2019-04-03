@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+TARGET_IP=172.18.109.109
+
+REPORT=/tmp/report.txt
+
+ping -n -c 3 $TARGET_IP
+
+python network_min_capture.py 10
+
+sleep 1
+
+python network_min_send.py $TARGET_IP
+
+mv report.txt $REPORT
+
+cat $REPORT
