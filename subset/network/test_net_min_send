@@ -4,9 +4,11 @@ TARGET_IP=172.18.109.109
 
 REPORT=/tmp/report.txt
 
+FIVE_MINS = 300
+
 ping -n -c 3 $TARGET_IP
 
-python network_min_capture.py 10
+python network_min_capture.py $FIVE_MINS
 
 sleep 1
 
