@@ -1,7 +1,5 @@
 #!/bin/bash -e
 
-TARGET_IP=172.18.109.109
-
 REPORT=/tmp/report.txt
 
 FIVE_MINS = 300
