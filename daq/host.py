@@ -3,7 +3,6 @@
 import datetime
 import logging
 import os
-import pytz
 import shutil
 import time
 
@@ -20,7 +19,7 @@ class _STATE():
     ERROR = 'Error condition'
     INIT = 'Initizalization'
     READY = 'Ready but not active'
-    ACTIVE = 'Activated device'
+    WAITING = 'Waiting for activation'
     BASE = 'Baseline tests'
     MONITOR = 'Network monitor'
     NEXT = 'Ready for next'
@@ -36,7 +35,6 @@ class ConnectedHost():
     _STARTUP_MIN_TIME_SEC = 5
     _TMPDIR_BASE = "inst/"
     _FAIL_BASE_FORMAT = "inst/fail_%s"
-    _TEST_PREFIX = "\n#############\n"
 
     def __init__(self, runner, gateway, target, config):
         self.runner = runner
@@ -65,9 +63,7 @@ class ConnectedHost():
         self._tcp_monitor = None
         self.target_ip = None
         self.record_result('startup', state='run')
-        self._report = report.ReportGenerator(os.path.join(self._TMPDIR_BASE, 'reports'),
-                                              os.path.join(config.get('site_path'), 'devices'),
-                                              self.target_mac)
+        self._report = report.ReportGenerator(config, self._TMPDIR_BASE, self.target_mac)
         self._startup_time = None
         self._monitor_scan_sec = int(config.get('monitor_scan_sec', self._MONITOR_SCAN_SEC))
         self._fail_hook = config.get('fail_hook')
@@ -120,13 +116,13 @@ class ConnectedHost():
         """Return True if this host is running active test."""
         return self.state != _STATE.ERROR and self.state != _STATE.DONE
 
-    def is_active(self):
+    def is_waiting(self):
         """Return True if this host is ready to be activated."""
-        return self.state == _STATE.ACTIVE
+        return self.state == _STATE.WAITING
 
-    def _activate(self):
+    def _prepare(self):
         LOGGER.info('Target port %d waiting for dhcp as %s', self.target_port, self.target_mac)
-        self._state_transition(_STATE.ACTIVE, _STATE.INIT)
+        self._state_transition(_STATE.WAITING, _STATE.INIT)
         self.record_result('sanity')
         self._push_record('info', state=self.target_mac)
         self.record_result('dhcp', state='run')
@@ -152,21 +148,28 @@ class ConnectedHost():
     def idle_handler(self):
         """Trigger events from idle state"""
         if self.state == _STATE.INIT:
-            self._activate()
+            self._prepare()
         elif self.state == _STATE.BASE:
             self._base_start()
 
     def trigger_ready(self):
         """Check if this host is ready to be triggered"""
-        if self.state != _STATE.ACTIVE:
+        if self.state != _STATE.WAITING:
             return False
         timedelta = datetime.datetime.now() - self._startup_time
         if timedelta < datetime.timedelta(seconds=self._STARTUP_MIN_TIME_SEC):
             return False
         return True
 
-    def trigger(self, state, target_ip=None, exception=None):
+    def trigger(self, state, target_ip=None, exception=None, delta_sec=-1):
         """Handle completion of DHCP subtask"""
+        trigger_path = os.path.join(self.scan_base, 'dhcp_triggers.txt')
+        with open(trigger_path, 'a') as output_stream:
+            output_stream.write('%s %s %d\n' % (target_ip, state, delta_sec))
+        if self.target_ip:
+            LOGGER.debug('Target port %d already triggered', self.target_port)
+            assert self.target_ip == target_ip, "target_ip mismatch"
+            return True
         if not self.trigger_ready():
             LOGGER.warning('Target port %d ignoring premature trigger', self.target_port)
             return False
@@ -174,11 +177,11 @@ class ConnectedHost():
         self._push_record('info', state='%s/%s' % (self.target_mac, target_ip))
         self.record_result('dhcp', ip=target_ip, state=state, exception=exception)
         if exception:
-            self._state_transition(_STATE.ERROR, _STATE.ACTIVE)
+            self._state_transition(_STATE.ERROR, _STATE.WAITING)
             self.runner.target_set_error(self.target_port, exception)
         else:
             LOGGER.info('Target port %d triggered as %s', self.target_port, target_ip)
-            self._state_transition(_STATE.BASE, _STATE.ACTIVE)
+            self._state_transition(_STATE.BASE, _STATE.WAITING)
         return True
 
     def _ping_test(self, src, dst, src_addr=None):
@@ -295,7 +298,6 @@ class ConnectedHost():
             else:
                 LOGGER.info('Target port %d no more tests remaining', self.target_port)
                 self._state_transition(_STATE.DONE, _STATE.NEXT)
-                self._report.write(self._TEST_PREFIX)
                 self._report.finalize()
                 self.runner.gcp.upload_report(self._report.path)
                 self.record_result('finish', report=self._report.path)
@@ -346,9 +348,7 @@ class ConnectedHost():
             LOGGER.error('While writing result code: %s', e)
         report_path = os.path.join(self.tmpdir, 'nodes', host_name, 'tmp', 'report.txt')
         if os.path.isfile(report_path):
-            self._report.write(self._TEST_PREFIX)
-            self._report.write('Report for test %s' % self.test_name)
-            self._report.copy(report_path)
+            self._report.accumulate(self.test_name, report_path)
         self.test_host = None
         self.runner.release_test_port(self.target_port, self.test_port)
         if exception:

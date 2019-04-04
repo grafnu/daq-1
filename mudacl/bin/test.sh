@@ -6,9 +6,9 @@ SETUP=setup
 MUD_FILES=../mud_files/
 OUTDIR=out
 
-./gradlew shadow
+../bin/retry_cmd ./gradlew shadow
 
-echo Running regression test.
+echo Running mudacl regression test...
 rm -rf $OUTDIR || sudo rm -rf $OUTDIR
 mkdir -p $OUTDIR/acl_templates $OUTDIR/port_acls
 

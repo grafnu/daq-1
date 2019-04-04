@@ -1,30 +1,54 @@
 Running testing/test_base.sh
 Base Tests
 01: []
-DAQ scan report for device 9a02571e8f00
+# DAQ scan report for device 9a02571e8f00
 XXX
 
 Sample device description.
 By default would be in local/devices/ rather than misc/.
 
-#############
+\|/          (__)
+     `\------(oo)
+       ||    (__)
+       ||w--||     \|/
+   \|/
 
-Report for test nmap
+## Report summary
+
+skip base.switch.ping
+pass base.target.ping target
+pass security.ports.nmap
+
+## Module ping
+
+```
+Baseline ping test report
+
+RESULT skip base.switch.ping
+RESULT pass base.target.ping target
+```
+
+## Module nmap
+
+```
 No open ports found.
+RESULT pass security.ports.nmap
+```
 
-#############
+## Module brute
 
-Report for test brute
+```
 Target port 10000 not open.
+```
 
-#############
+## Module switch
 
-Report for test switch
+```
 LOCAL_IP not configured, assuming no network switch.
+```
 
-#############
+## Report complete
 
-Report complete.
 Open port tests
 01: ['01:nmap:1']
 01: []
