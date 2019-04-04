@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+REPORT=/tmp/report.txt
+
+FIVE_MINS = 300
+
+ping -n -c 3 $TARGET_IP
+
+python network_min_capture.py $FIVE_MINS
+
+sleep $FIVE_MINS
+
+python network_min_send.py $TARGET_IP
+
+mv report.txt $REPORT
+
+cat $REPORT
