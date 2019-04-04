@@ -10,7 +10,7 @@ python network_min_capture.py $FIVE_MINS
 
 sleep $FIVE_MINS
 
-python network_min_send.py $TARGET_IP
+python network_tests.py network.min_send capture.pcap $TARGET_IP
 
 mv report.txt $REPORT
 

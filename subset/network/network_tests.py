@@ -10,7 +10,7 @@ test_request = str(arguments[1])
 
 test_id = -1
 
-for x in range(0, len(name_of_tests) - 1):
+for x in range(0, len(name_of_tests)):
     if test_request == name_of_tests[x]:
         test_id = x
 
@@ -26,6 +26,7 @@ if test_id == 0:
 
 report_filename = 'report.txt'
 
+min_packet_length = 40
 packets_in_report = 10
 
 tcpdump_display_all_packets = 'tcpdump -n src host ' + device_address + ' -r ' + cap_pcap_file
@@ -66,26 +67,29 @@ def cut_packets_to_list(request_list, pointer_list):
         last_point = point + 1
 
 def validate_test(id):
-    file_open = open(report_filename, 'w')
     max = 0
-    min_packet_length = 40
-    if len(shell_result) > min_packet_length:
-        if packets_received > packets_in_report :
-            max = packets_in_report
-        else:
-            max = packets_received
-        i = 0
-        while i < max :
-            file_open.write(packet_request_list[i] + '\n')
-            i += 1
-        file_open.write('packets_sent=' + str(packets_received)  + '\n')
-        file_open.write(name_of_tests[id] + '=true\n')
+    if packets_received > packets_in_report :
+        max = packets_in_report
     else:
-        file_open.write(name_of_tests[id] + '=false\n')
-    file_open.close()
+        max = packets_received
+    i = 0
+    while i < max :
+        file_open.write(packet_request_list[i] + '\n')
+        i += 1
+    file_open.write('packets_sent=' + str(packets_received)  + '\n')
+    file_open.write(name_of_tests[id] + '=true\n')
 
 shell_result = shell_command_fb(tests[test_id], 0, False)
-find_char_pointer(shell_result, '\n', pointer_list_line_end)
-cut_packets_to_list(packet_request_list,pointer_list_line_end)
-packets_received = len(packet_request_list)
-validate_test(test_id)
+file_open = open(report_filename, 'w')
+
+if not shell_result is None:
+    if len(shell_result) > min_packet_length:
+        find_char_pointer(shell_result, '\n', pointer_list_line_end)
+        cut_packets_to_list(packet_request_list,pointer_list_line_end)
+        packets_received = len(packet_request_list)
+        validate_test(test_id)
+else:
+    file_open.write(name_of_tests[test_id] + '=false\n')
+
+file_open.close()
+
