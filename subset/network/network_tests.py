@@ -17,7 +17,6 @@ for x in range(0, len(name_of_tests)):
 print('test_id=' + str(test_id))
 
 cap_pcap_file = str(arguments[2])
-#capture.pcap
 
 device_address = '127.0.0.1'
 
@@ -36,7 +35,10 @@ tcpdump_display_ntp_packets = 'tcpdump dst port 123 -r ' + cap_pcap_file
 
 tests = [tcpdump_display_all_packets, tcpdump_display_udp_bacnet_packets, tcpdump_display_arp_packets, tcpdump_display_ntp_packets]
 
-def shell_command_fb(command, wait_time, terminate_flag):
+pointer_list_line_end = []
+packet_request_list = []
+
+def shell_command_feedback(command, wait_time, terminate_flag):
     process = subprocess.Popen(command, universal_newlines=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     text = process.stdout.read()
     retcode = process.wait()
@@ -46,19 +48,15 @@ def shell_command_fb(command, wait_time, terminate_flag):
     if len(text) > 0:
         return text
 
-pointer_list_line_end = []
-
 def find_char_pointer(value, find_text, pointer_list):
     pointer = 0
-    while pointer != -1:
+    while True:
         pointer = value.find(find_text, pointer)
         if pointer == -1:
             break
         else:
             pointer_list.append(pointer)
         pointer += 1
-
-packet_request_list = []
 
 def cut_packets_to_list(request_list, pointer_list):
     last_point = 0
@@ -72,14 +70,12 @@ def validate_test(id):
         max = packets_in_report
     else:
         max = packets_received
-    i = 0
-    while i < max :
+    for i in range(0, max):
         file_open.write(packet_request_list[i] + '\n')
-        i += 1
     file_open.write('packets_sent=' + str(packets_received)  + '\n')
     file_open.write(name_of_tests[id] + '=true\n')
 
-shell_result = shell_command_fb(tests[test_id], 0, False)
+shell_result = shell_command_feedback(tests[test_id], 0, False)
 file_open = open(report_filename, 'w')
 
 if not shell_result is None:
