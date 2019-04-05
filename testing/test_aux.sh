@@ -22,6 +22,7 @@ fail_hook=misc/dump_network.sh
 test_config=misc/runtime_configs/long_wait
 site_path=misc/test_site
 site_report=local/tmp
+host_tests=misc/all_tests.conf
 EOF
 DAQ_FAUX1_OPTS=brute DAQ_FAUX2_OPTS=nobrute cmd/run -s
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
