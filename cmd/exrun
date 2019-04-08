@@ -42,9 +42,6 @@ fi
 
 export PYTHONPATH=$FAUCET:$MININET
 
-# Dump configuration settings for debugging.
-set | egrep ^[a-z][a-z_]*=
-
 if [ ! -d $FAUCET ]; then
     echo Faucet directory $FAUCET not found.
     false
