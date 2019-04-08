@@ -15,9 +15,8 @@ sed 's/Started.*00:00/XXX/' inst/reports/report_9a02571e8f00_*.txt |
 (
     echo Open port tests | tee -a $TEST_RESULTS
 
-    export DAQ_FAUX_OPTS=telnet
     # Check that an open port causes the appropriate failure.
-    cmd/run -s
+    cmd/run -s faux_opts=telnet
     more inst/result.log | tee -a $TEST_RESULTS
     cat inst/run-port-01/nodes/nmap01/activate.log
 

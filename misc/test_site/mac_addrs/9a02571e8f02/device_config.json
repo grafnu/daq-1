@@ -1,0 +1,12 @@
+{
+  "servers": {
+    "tcp": {
+      "ports": {
+        23: {
+          "allowed": true
+        }
+      }
+    }
+  }
+}
+
