@@ -15,7 +15,7 @@ sed 's/\s*%%.*//' inst/reports/report_9a02571e8f00_*.md | tee -a $TEST_RESULTS
     echo Open port tests | tee -a $TEST_RESULTS
 
     # Check that an open port causes the appropriate failure.
-    cmd/run -s faux_opts=telnet
+    cmd/run -s startup_faux_opts=telnet
     more inst/result.log | tee -a $TEST_RESULTS
     cat inst/run-port-01/nodes/nmap01/activate.log
 

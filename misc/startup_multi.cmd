@@ -1,3 +1,3 @@
-autostart cmd/faux 1 $faux_opts_1
-autostart cmd/faux 2 $faux_opts_2
-autostart cmd/faux 3 $faux_opts_3
+autostart cmd/faux 1 $startup_faux_1_opts
+autostart cmd/faux 2 $startup_faux_2_opts
+autostart cmd/faux 3 $startup_faux_3_opts
