@@ -5,7 +5,6 @@ misc setup tasks."""
 
 import logging
 import os
-import re
 import signal
 import sys
 
