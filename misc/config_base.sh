@@ -12,4 +12,4 @@ if [ ! -f "$LOCAL_SYSTEM" ]; then
 fi
 
 echo Loading config from $LOCAL_SYSTEM
-eval $(python3 daq/configurator.py $LOCAL_SYSTEM)
+eval $(python3 daq/configurator.py $LOCAL_SYSTEM $run_args)
