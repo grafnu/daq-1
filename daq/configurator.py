@@ -1,15 +1,9 @@
 #!/usr/bin/env python3
 
-"""Main entrypoint for DAQ. Handles command line parsing and other
-misc setup tasks."""
+"""Configuraiton manager class for daqy-things."""
 
-import logging
-import os
 import re
-import signal
 import sys
-
-LOGGER = logging.getLogger('config')
 
 FLAG_MAP = {
     'c': 'use_console',
@@ -24,20 +18,23 @@ FLAG_MAP = {
 }
 
 def show_help():
+    """Show help information on the console output."""
     print("Common run options:")
     for option in FLAG_MAP:
         print("  -%s: %s" % (option, FLAG_MAP[option]))
     print("See misc/system.conf for a detailed accounting of potential options.")
 
 def print_config(config):
-    list=[]
+    """Dump config info as key=value to console out."""
+    config_list = []
     for key in sorted(config.keys()):
-        value=config[key]
-        quote='"' if ' ' in str(value) else ''
-        list.append("%s=%s%s%s" % (key, quote, config[key], quote))
-    print(*list, sep='\n')
+        value = config[key]
+        quote = '"' if ' ' in str(value) else ''
+        config_list.append("%s=%s%s%s" % (key, quote, config[key], quote))
+    print(*config_list, sep='\n')
 
 class Configurator():
+    """Manager class for system configuration."""
 
     def __init__(self, verbose=False):
         self._verbose = verbose
@@ -80,5 +77,5 @@ class Configurator():
         return config
 
 if __name__ == '__main__':
-    configurator = Configurator()
-    print_config(configurator.parse_args(sys.argv))
+    CONFIG = Configurator()
+    print_config(CONFIG.parse_args(sys.argv))
