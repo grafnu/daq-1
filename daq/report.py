@@ -92,13 +92,15 @@ class ReportGenerator():
         self._writeln(self._TEST_SEPARATOR % self._SUMMARY_LINE)
         self._write_table(self._SUMMARY_HEADERS)
         self._write_table([self._TABLE_DIV] * len(self._SUMMARY_HEADERS))
+        matches = {}
         for (_, path) in self._reports:
             with open(path) as stream:
                 for line in stream:
                     match = re.search(self._RESULT_REGEX, line)
                     if match:
-                        parts = [match.group(1), match.group(2), match.group(3)]
-                        self._write_table(parts)
+                        matches[match.group(2)] = [match.group(2), match.group(1), match.group(3)]
+        for match in sorted(matches.keys()):
+            self._write_table(matches[match])
 
     def _copy_test_reports(self):
         for (name, path) in self._reports:

@@ -43,6 +43,7 @@ Free text including description of device and links to more information
 |---|---|---|
 |skip|base.switch.ping||
 |pass|base.target.ping|target |
+|fail|network.brute||
 |pass|security.ports.nmap||
 
 ## Module ping
