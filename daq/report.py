@@ -25,7 +25,7 @@ class ReportGenerator():
     _PRE_END_MARKER = "```"
     _TABLE_DIV = "---"
     _TABLE_MARK = '|'
-    _SUMMARY_HEADERS = ["Result", "Test", "Notes"]
+    _SUMMARY_HEADERS = ["Test", "Result", "Notes"]
 
     def __init__(self, config, tmp_base, target_mac):
         self._reports = []

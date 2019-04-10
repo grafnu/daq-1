@@ -39,12 +39,12 @@ Free text including description of device and links to more information
 
 ## Report summary
 
-|Result|Test|Notes|
+|Test|Result|Notes|
 |---|---|---|
-|skip|base.switch.ping||
-|pass|base.target.ping|target |
-|fail|network.brute||
-|pass|security.ports.nmap||
+|base.switch.ping|skip||
+|base.target.ping|pass|target |
+|network.brute|fail||
+|security.ports.nmap|pass||
 
 ## Module ping
 
