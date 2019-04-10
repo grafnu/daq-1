@@ -33,7 +33,7 @@ RESULT pass base.target.ping target
 ## Module nmap
 
 ```
-No open ports found.
+No invalid ports found.
 RESULT pass security.ports.nmap
 ```
 

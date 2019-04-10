@@ -41,7 +41,7 @@ Free text including description of device and links to more information
 
 skip base.switch.ping
 pass base.target.ping target %% 10.20.10.38
-fail security.ports.nmap
+pass security.ports.nmap
 
 ## Module ping
 
@@ -55,8 +55,9 @@ RESULT pass base.target.ping target %% 10.20.10.38
 ## Module nmap
 
 ```
-10000/open/tcp//snet-sensor-mgmt///
-RESULT fail security.ports.nmap
+Allowing 10000 open tcp snet-sensor-mgmt
+No invalid ports found.
+RESULT pass security.ports.nmap
 ```
 
 ## Module brute
