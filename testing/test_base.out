@@ -17,11 +17,11 @@ By default would be in local/site/ rather than misc/test_site/.
 
 ## Report summary
 
-```
-skip base.switch.ping
-pass base.target.ping target
-pass security.ports.nmap
-```
+|Result|Test|Notes|
+|---|---|---|
+|skip|base.switch.ping||
+|pass|base.target.ping|target |
+|pass|security.ports.nmap||
 
 ## Module ping
 
@@ -45,19 +45,13 @@ RESULT pass security.ports.nmap
 Target port 10000 not open.
 ```
 
-## Module switch
-
-```
-LOCAL_IP not configured, assuming no network switch.
-```
-
 ## Report complete
 
 Open port tests
 01: ['01:nmap:1']
 01: []
 External switch tests
-02: ['02:switch:1']
+02: []
     dp_id: 1
     dp_id: 4886718345
 Switch test with port 2.
