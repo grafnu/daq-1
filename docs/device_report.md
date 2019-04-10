@@ -39,9 +39,11 @@ Free text including description of device and links to more information
 
 ## Report summary
 
+```
 skip base.switch.ping
 pass base.target.ping target %% 10.20.10.38
 pass security.ports.nmap
+```
 
 ## Module ping
 
