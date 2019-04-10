@@ -26,6 +26,7 @@ site_reports=local/tmp
 startup_faux_1_opts=brute
 startup_faux_2_opts=nobrute
 EOF
+cmd/build # Needed because of including all_tests.conf
 cmd/run -s
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
 more inst/run-port-*/scans/dhcp_triggers.txt | cat
