@@ -20,6 +20,7 @@ cp misc/system_multi.conf local/system.conf
 cat <<EOF >> local/system.conf
 fail_hook=misc/dump_network.sh
 test_config=misc/runtime_configs/long_wait
+host_tests=misc/all_tests.conf
 site_path=misc/test_site
 site_reports=local/tmp
 startup_faux_1_opts=brute
