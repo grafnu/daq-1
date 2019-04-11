@@ -1,5 +1,5 @@
 # DAQ scan report for device 9a02571e8f01
-Started %% 2019-04-08 16:45:36+00:00
+Started %% 2019-04-11 04:47:05+00:00
 
 |  Role  |      Name       |
 |--------|-----------------|
@@ -39,20 +39,20 @@ Free text including description of device and links to more information
 
 ## Report summary
 
-|Test|Result|Notes|
+|Result|Test|Notes|
 |---|---|---|
-|base.switch.ping|skip||
-|base.target.ping|pass|target |
-|network.brute|fail||
-|security.ports.nmap|pass||
+|skip|base.switch.ping||
+|pass|base.target.ping|target |
+|fail|network.brute||
+|pass|security.ports.nmap||
 
 ## Module ping
 
 ```
 Baseline ping test report
-%% 38 packets captured.
+%% 46 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.10.38
+RESULT pass base.target.ping target %% 10.20.35.38
 ```
 
 ## Module nmap
@@ -66,9 +66,7 @@ RESULT pass security.ports.nmap
 ## Module brute
 
 ```
-Username:manager
-Password:friend
-Login success!
+RESULT fail network.brute
 ```
 
 ## Module switch
