@@ -25,7 +25,7 @@ class ReportGenerator():
     _PRE_END_MARKER = "```"
     _TABLE_DIV = "---"
     _TABLE_MARK = '|'
-    _SUMMARY_HEADERS = ["Test", "Result", "Notes"]
+    _SUMMARY_HEADERS = ["Result", "Test", "Notes"]
 
     def __init__(self, config, tmp_base, target_mac):
         self._reports = []
@@ -98,7 +98,7 @@ class ReportGenerator():
                 for line in stream:
                     match = re.search(self._RESULT_REGEX, line)
                     if match:
-                        matches[match.group(2)] = [match.group(2), match.group(1), match.group(3)]
+                        matches[match.group(2)] = [match.group(1), match.group(2), match.group(3)]
         for match in sorted(matches.keys()):
             self._write_table(matches[match])
 
