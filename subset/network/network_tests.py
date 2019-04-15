@@ -2,26 +2,11 @@ import subprocess
 import time
 import sys
 
-name_of_tests = ['network.min_send', 'network.application.min_send', 'dhcp.long', 'ntp.update']
-
 arguments = sys.argv
 
 test_request = str(arguments[1])
-
-test_id = -1
-
-for x in range(0, len(name_of_tests)):
-    if test_request == name_of_tests[x]:
-        test_id = x
-
-print('test_id=' + str(test_id))
-
 cap_pcap_file = str(arguments[2])
-
-device_address = '127.0.0.1'
-
-if test_id == 0:
-    device_address = str(arguments[3])
+device_address = str(arguments[3])
 
 report_filename = 'report.txt'
 
@@ -33,12 +18,17 @@ tcpdump_display_udp_bacnet_packets = 'tcpdump -n udp dst portrange 47808-47809 '
 tcpdump_display_arp_packets = 'tcpdump -v arp -r ' + cap_pcap_file
 tcpdump_display_ntp_packets = 'tcpdump dst port 123 -r ' + cap_pcap_file
 
-tests = [tcpdump_display_all_packets, tcpdump_display_udp_bacnet_packets, tcpdump_display_arp_packets, tcpdump_display_ntp_packets]
+tests = {
+'network.min_send' : tcpdump_display_all_packets,
+'network.application.min_send' : tcpdump_display_udp_bacnet_packets, 
+'dhcp.long' : tcpdump_display_arp_packets, 
+'ntp.update' : tcpdump_display_ntp_packets
+}
 
 pointer_list_line_end = []
 packet_request_list = []
 
-def shell_command_feedback(command, wait_time, terminate_flag):
+def shell_command_with_result(command, wait_time, terminate_flag):
     process = subprocess.Popen(command, universal_newlines=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     text = process.stdout.read()
     retcode = process.wait()
@@ -73,9 +63,9 @@ def validate_test(id):
     for i in range(0, max):
         file_open.write(packet_request_list[i] + '\n')
     file_open.write('packets_sent=' + str(packets_received)  + '\n')
-    file_open.write(name_of_tests[id] + '=true\n')
+    file_open.write(tests[test_request] + '=true\n')
 
-shell_result = shell_command_feedback(tests[test_id], 0, False)
+shell_result = shell_command_with_result(tests[test_request], 0, False)
 file_open = open(report_filename, 'w')
 
 if not shell_result is None:
@@ -83,9 +73,9 @@ if not shell_result is None:
         find_char_pointer(shell_result, '\n', pointer_list_line_end)
         cut_packets_to_list(packet_request_list,pointer_list_line_end)
         packets_received = len(packet_request_list)
-        validate_test(test_id)
+        validate_test(test_request)
 else:
-    file_open.write(name_of_tests[test_id] + '=false\n')
+    file_open.write(tests[test_request] + '=false\n')
 
 file_open.close()
 
