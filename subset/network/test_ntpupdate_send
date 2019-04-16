@@ -8,7 +8,7 @@ ping -n -c 3 $TARGET_IP
 
 python network_min_capture.py $SECONDS
 
-python network_tests.py ntp.update capture.pcap $TARGET_IP
+python network_tests.py network.ntp.update capture.pcap $TARGET_IP
 
 mkdir /tmp
 

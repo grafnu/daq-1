@@ -19,10 +19,10 @@ tcpdump_display_arp_packets = 'tcpdump -v arp -r ' + cap_pcap_file
 tcpdump_display_ntp_packets = 'tcpdump dst port 123 -r ' + cap_pcap_file
 
 tests = {
-'network.min_send' : tcpdump_display_all_packets,
-'network.application.min_send' : tcpdump_display_udp_bacnet_packets, 
-'dhcp.long' : tcpdump_display_arp_packets, 
-'ntp.update' : tcpdump_display_ntp_packets
+'connection.min_send' : tcpdump_display_all_packets,
+'protocol.app_min_send' : tcpdump_display_udp_bacnet_packets, 
+'connection.dhcp_long' : tcpdump_display_arp_packets, 
+'network.ntp.update' : tcpdump_display_ntp_packets
 }
 
 def shell_command_with_result(command, wait_time, terminate_flag):
