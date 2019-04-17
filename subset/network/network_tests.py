@@ -64,7 +64,7 @@ def validate_test():
     for i in range(0, max):
         file_open.write(packet_request_list[i] + '\n')
     file_open.write('packets_sent=' + str(packets_received)  + '\n')
-    file_open.write(test_request + '=true\n')
+    file_open.write('RESULT ' + 'pass ' + test_request + '\n')
 
 shell_result = shell_command_with_result(tests[test_request], 0, False)
 file_open = open(report_filename, 'w')
@@ -76,6 +76,6 @@ if not shell_result is None:
         packets_received = len(packet_request_list)
         validate_test()
 else:
-    file_open.write(test_request + '=false\n')
+    file_open.write('RESULT ' + 'fail ' + test_request + '\n')
 
 file_open.close()

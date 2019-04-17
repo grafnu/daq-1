@@ -4,7 +4,7 @@ REPORT=/tmp/report.txt
 
 ping -n -c 3 $TARGET_IP
 
-mv /scans/monitor.pcap capture.pcap
+cp /scans/monitor.pcap capture.pcap
 
 python network_tests.py connection.dhcp_long capture.pcap $TARGET_IP
 
