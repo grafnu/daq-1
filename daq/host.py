@@ -33,7 +33,7 @@ class ConnectedHost():
 
     _MONITOR_SCAN_SEC = 30
     _STARTUP_MIN_TIME_SEC = 5
-    _TMPDIR_BASE = "inst/"
+    _INST_DIR = "inst/"
     _FAIL_BASE_FORMAT = "inst/fail_%s"
 
     def __init__(self, runner, gateway, target, config):
@@ -43,9 +43,9 @@ class ConnectedHost():
         self.target_port = target['port']
         self.target_mac = target['mac']
         self.fake_target = target['fake']
-        self.tmpdir = self._initialize_tempdir()
+        self.devdir = self._init_devdir()
         self.run_id = '%06x' % int(time.time())
-        self.scan_base = os.path.abspath(os.path.join(self.tmpdir, 'scans'))
+        self.scan_base = os.path.abspath(os.path.join(self.devdir, 'scans'))
         self._conf_base = self._get_conf_base()
         self._dev_base = self._get_dev_base()
         self.state = None
@@ -64,16 +64,16 @@ class ConnectedHost():
         self._tcp_monitor = None
         self.target_ip = None
         self.record_result('startup', state='run')
-        self._report = report.ReportGenerator(config, self._TMPDIR_BASE, self.target_mac)
+        self._report = report.ReportGenerator(config, self._INST_DIR, self.target_mac)
         self._startup_time = None
         self._monitor_scan_sec = int(config.get('monitor_scan_sec', self._MONITOR_SCAN_SEC))
         self._fail_hook = config.get('fail_hook')
 
-    def _initialize_tempdir(self):
-        tmpdir = os.path.join(self._TMPDIR_BASE, 'run-port-%02d' % self.target_port)
-        shutil.rmtree(tmpdir, ignore_errors=True)
-        os.makedirs(tmpdir)
-        return tmpdir
+    def _init_devdir(self):
+        devdir = os.path.join(self._INST_DIR, 'run-port-%02d' % self.target_port)
+        shutil.rmtree(devdir, ignore_errors=True)
+        os.makedirs(devdir)
+        return devdir
 
     def _get_conf_base(self):
         test_config = self.config.get('test_config')
@@ -101,7 +101,7 @@ class ConnectedHost():
         LOGGER.info('Target port %d initializing...', self.target_port)
         # There is a race condition here with ovs assigning ports, so wait a bit.
         time.sleep(2)
-        shutil.rmtree(self.tmpdir, ignore_errors=True)
+        shutil.rmtree(self.devdir, ignore_errors=True)
         os.makedirs(self.scan_base)
         network = self.runner.network
         self._mirror_intf_name = network.create_mirror_interface(self.target_port)
@@ -348,7 +348,7 @@ class ConnectedHost():
         return self.test_host.host_name if self.test_host else 'unknown'
 
     def _host_dir_path(self):
-        return os.path.join(self.tmpdir, 'nodes', self._host_name())
+        return os.path.join(self.devdir, 'nodes', self._host_name())
 
     def _docker_callback(self, return_code=None, exception=None):
         host_name = self._host_name()

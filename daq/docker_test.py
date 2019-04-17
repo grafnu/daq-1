@@ -15,7 +15,7 @@ class DockerTest():
 
     def __init__(self, runner, parent, test_name):
         self.target_port = parent.target_port
-        self.tmpdir = parent.tmpdir
+        self.tmpdir = parent.devdir
         self.test_name = test_name
         self.runner = runner
         self.host_name = '%s%02d' % (test_name, self.target_port)
