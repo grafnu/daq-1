@@ -333,7 +333,8 @@ class ConnectedHost():
             'scan_base': self.scan_base
         }
 
-        self.test_host = docker_test.DockerTest(self.runner, self, test_name)
+        self.test_host = docker_test.DockerTest(self.runner, self.target_port, self.devdir,
+                                                test_name)
         self.test_port = self.runner.allocate_test_port(self.target_port)
         host_name = self.test_host.host_name if self.test_host else 'unknown'
         if 'ext_loip' in self.config:
@@ -342,6 +343,7 @@ class ConnectedHost():
             params['switch_ip'] = self.config['ext_addr']
             params['switch_port'] = str(self.target_port)
         LOGGER.debug('test_host start %s/%s', self.test_name, host_name)
+        self._make_test_config()
         self.test_host.start(self.test_port, params, self._docker_callback)
 
     def _host_name(self):
@@ -349,6 +351,9 @@ class ConnectedHost():
 
     def _host_dir_path(self):
         return os.path.join(self.devdir, 'nodes', self._host_name())
+
+    def _host_tmp_path(self):
+        return os.path.join(self._host_dir_path(), 'tmp')
 
     def _docker_callback(self, return_code=None, exception=None):
         host_name = self._host_name()
@@ -365,7 +370,7 @@ class ConnectedHost():
                 output_stream.write(str(return_code) + '\n')
         except Exception as e:
             LOGGER.error('While writing result code: %s', e)
-        report_path = os.path.join(self._host_dir_path(), 'tmp', 'report.txt')
+        report_path = os.path.join(self._host_tmp_path(), 'report.txt')
         if os.path.isfile(report_path):
             self._report.accumulate(self.test_name, report_path)
         self.test_host = None
@@ -376,6 +381,13 @@ class ConnectedHost():
         else:
             self._state_transition(_STATE.NEXT, _STATE.TESTING)
             self._run_next_test()
+
+    def _make_test_config(self):
+        tmp_dir = self._host_tmp_dir()
+        os.makedirs(tmp_dir)
+        conf_file = os.path.join(tmp_dir, 'test_config.json')
+        with open(conf_file, 'w') as output_stream:
+            output_stream.write('rocket\n')
 
     def record_result(self, name, **kwargs):
         """Record a named result for this test"""
