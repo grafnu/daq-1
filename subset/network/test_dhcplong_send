@@ -11,3 +11,9 @@ python network_tests.py connection.dhcp_long capture.pcap $TARGET_IP
 mv report.txt $REPORT
 
 cat $REPORT
+
+#To understand how to adjust DAQ DHCP leasetime the following docs are useful
+#daq/misc/increase_leasetime
+#daq/testing/test_many.sh
+#daq/misc/runtime_configs/long_wait/port-01/ping_runtime.sh
+#system.conf >> parameter >> monitor_scan_sec=5
