@@ -344,22 +344,28 @@ class ConnectedHost():
         LOGGER.debug('test_host start %s/%s', self.test_name, host_name)
         self.test_host.start(self.test_port, params, self._docker_callback)
 
+    def _host_name(self):
+        return self.test_host.host_name if self.test_host else 'unknown'
+
+    def _host_dir_path(self):
+        return os.path.join(self.tmpdir, 'nodes', self._host_name())
+
     def _docker_callback(self, return_code=None, exception=None):
-        host_name = self.test_host.host_name if self.test_host else 'unknown'
+        host_name = self._host_name()
         LOGGER.debug('test_host callback %s/%s was %s with %s',
                      self.test_name, host_name, return_code, exception)
         if (return_code or exception) and self._fail_hook:
-            fail_file = self._FAIL_BASE_FORMAT % self.test_host.host_name
+            fail_file = self._FAIL_BASE_FORMAT % host_name
             LOGGER.warning('Executing fail_hook: %s %s', self._fail_hook, fail_file)
             os.system('%s %s 2>&1 > %s.out' % (self._fail_hook, fail_file, fail_file))
         self.record_result(self.test_name, code=return_code, exception=exception)
-        result_path = os.path.join(self.tmpdir, 'nodes', host_name, 'return_code.txt')
+        result_path = os.path.join(self._host_dir_path(), 'return_code.txt')
         try:
             with open(result_path, 'a') as output_stream:
                 output_stream.write(str(return_code) + '\n')
         except Exception as e:
             LOGGER.error('While writing result code: %s', e)
-        report_path = os.path.join(self.tmpdir, 'nodes', host_name, 'tmp', 'report.txt')
+        report_path = os.path.join(self._host_dir_path(), 'tmp', 'report.txt')
         if os.path.isfile(report_path):
             self._report.accumulate(self.test_name, report_path)
         self.test_host = None
