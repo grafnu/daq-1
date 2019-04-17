@@ -40,10 +40,11 @@ def print_config(config):
     print(*config_list, sep='\n')
 
 def load_and_merge(base, filename):
+    """Load a config file and merge with an existing base"""
     if not os.path.exists(filename):
-        LOGGER.info('Skipping missing %s' % filename)
+        LOGGER.info('Skipping missing %s', filename)
         return base
-    LOGGER.info('Loading config from %s' % filename)
+    LOGGER.info('Loading config from %s', filename)
     with open(filename) as data_file:
         return yaml.safe_load(data_file)
 

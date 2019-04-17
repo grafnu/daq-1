@@ -53,7 +53,7 @@ class GcpManager():
     def _parse_creds(self, cred_file):
         """Parse JSON credential file"""
         with open(cred_file) as data_file:
-            cred = json.safe_load(data_file)
+            cred = json.load(data_file)
         project = cred['project_id']
         assert project == self._project, 'inconsistent credential projects'
         client_email = cred['client_email']

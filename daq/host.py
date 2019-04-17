@@ -389,7 +389,7 @@ class ConnectedHost():
         tmp_dir = self._host_tmp_path()
         os.makedirs(tmp_dir)
         conf_file = os.path.join(tmp_dir, self._TEST_CONFIG)
-        LOGGER.info('Creating %s' % conf_file)
+        LOGGER.info('Writing test config %s', conf_file)
         with open(conf_file, 'w') as output_stream:
             output_stream.write(json.dumps(self._load_test_config()))
 
