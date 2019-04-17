@@ -2,8 +2,13 @@
 
 """Configuraiton manager class for daqy-things."""
 
+import logging
+import os
 import re
 import sys
+import yaml
+
+LOGGER = logging.getLogger('config')
 
 FLAG_MAP = {
     'b': 'build_tests',
@@ -33,6 +38,14 @@ def print_config(config):
         quote = '"' if ' ' in str(value) else ''
         config_list.append("%s=%s%s%s" % (key, quote, config[key], quote))
     print(*config_list, sep='\n')
+
+def load_and_merge(base, filename):
+    if not os.path.exists(filename):
+        LOGGER.info('Skipping missing %s' % filename)
+        return base
+    LOGGER.info('Loading config from %s' % filename)
+    with open(filename) as data_file:
+        return yaml.safe_load(data_file)
 
 class Configurator():
     """Manager class for system configuration."""

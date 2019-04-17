@@ -1,6 +1,7 @@
 """Represent a device-under-test"""
 
 import datetime
+import json
 import logging
 import os
 import shutil
@@ -8,6 +9,7 @@ import time
 
 from clib import tcpdump_helper
 
+import configurator
 import docker_test
 import report
 
@@ -35,6 +37,7 @@ class ConnectedHost():
     _STARTUP_MIN_TIME_SEC = 5
     _INST_DIR = "inst/"
     _FAIL_BASE_FORMAT = "inst/fail_%s"
+    _TEST_CONFIG = "test_config.json"
 
     def __init__(self, runner, gateway, target, config):
         self.runner = runner
@@ -46,8 +49,8 @@ class ConnectedHost():
         self.devdir = self._init_devdir()
         self.run_id = '%06x' % int(time.time())
         self.scan_base = os.path.abspath(os.path.join(self.devdir, 'scans'))
-        self._conf_base = self._get_conf_base()
-        self._dev_base = self._get_dev_base()
+        self._port_base = self._get_port_base()
+        self._device_base = self._get_device_base()
         self.state = None
         self.no_test = config.get('no_test', False)
         self._state_transition(_STATE.READY if self.no_test else _STATE.INIT)
@@ -75,7 +78,7 @@ class ConnectedHost():
         os.makedirs(devdir)
         return devdir
 
-    def _get_conf_base(self):
+    def _get_port_base(self):
         test_config = self.config.get('test_config')
         if not test_config:
             return None
@@ -85,7 +88,7 @@ class ConnectedHost():
             return None
         return conf_base
 
-    def _get_dev_base(self):
+    def _get_device_base(self):
         dev_base = self.config.get('site_path')
         if not dev_base:
             return None
@@ -328,8 +331,8 @@ class ConnectedHost():
             'target_mac': self.target_mac,
             'gateway_ip': self.gateway.IP(),
             'gateway_mac': self.gateway.MAC(),
-            'conf_base': self._conf_base,
-            'dev_base': self._dev_base,
+            'conf_base': self._port_base,
+            'dev_base': self._device_base,
             'scan_base': self.scan_base
         }
 
@@ -343,7 +346,7 @@ class ConnectedHost():
             params['switch_ip'] = self.config['ext_addr']
             params['switch_port'] = str(self.target_port)
         LOGGER.debug('test_host start %s/%s', self.test_name, host_name)
-        self._make_test_config()
+        self._write_test_config()
         self.test_host.start(self.test_port, params, self._docker_callback)
 
     def _host_name(self):
@@ -382,12 +385,27 @@ class ConnectedHost():
             self._state_transition(_STATE.NEXT, _STATE.TESTING)
             self._run_next_test()
 
-    def _make_test_config(self):
-        tmp_dir = self._host_tmp_dir()
+    def _write_test_config(self):
+        tmp_dir = self._host_tmp_path()
         os.makedirs(tmp_dir)
-        conf_file = os.path.join(tmp_dir, 'test_config.json')
+        conf_file = os.path.join(tmp_dir, self._TEST_CONFIG)
+        LOGGER.info('Creating %s' % conf_file)
         with open(conf_file, 'w') as output_stream:
-            output_stream.write('rocket\n')
+            output_stream.write(json.dumps(self._load_test_config()))
+
+    def _load_test_config(self):
+        base = self._load_base_config()
+        site = self._merge_test_config(base, self.config.get('site_path'))
+        device = self._merge_test_config(site, self._device_base)
+        return self._merge_test_config(device, self._port_base)
+
+    def _merge_test_config(self, base, path):
+        if not path:
+            return base
+        return configurator.load_and_merge(base, os.path.join(path, self._TEST_CONFIG))
+
+    def _load_base_config(self):
+        return configurator.load_and_merge({}, self.config.get('base_conf'))
 
     def record_result(self, name, **kwargs):
         """Record a named result for this test"""
