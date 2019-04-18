@@ -1,0 +1,24 @@
+#!/bin/bash -e
+
+JAR=bacnet4j/bacnet4j.jar
+TARGET_IP=$1
+TARGET="Object name = BACnet device"
+TMPOUT=`tempfile`
+
+echo Scanning bacnet $broadcast_ip
+
+java -jar $JAR $TARGET_IP
+
+bacnet_runtime=/config/bacnet_runtime.sh
+if [ -f $bacnet_runtime ]; then
+    echo Processing $bacnet_runtime
+    source $bacnet_runtime
+fi
+
+if [ -z "$BACNET_EXPECTED" ]; then
+    # For testing, consider the presense of bacnet a failure.
+    ! fgrep "$TARGET" $TMPOUT
+else
+    echo Bacnet expected!
+    fgrep "$TARGET" $TMPOUT
+fi
