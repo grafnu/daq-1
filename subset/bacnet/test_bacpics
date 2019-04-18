@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-JAR=bacnet4j/bacnet4j.jar
+JAR=bacnet4j/bacnet4j-8jdk.jar
 CLASS=com.serotonin.bacnet4j.test.RedstoneTest.Test5
 TARGET_IP=$1
 TARGET="Object name = BACnet device"
