@@ -1,13 +1,29 @@
 #!/bin/bash -e
 
 JAR=bacnet4j/bacnet4j.jar
+CLASS=com.serotonin.bacnet4j.test.RedstoneTest.Test5
 TARGET_IP=$1
 TARGET="Object name = BACnet device"
 TMPOUT=`tempfile`
 
-echo Scanning bacnet $broadcast_ip
+if [ "$1" == "loop" ]; then
+    shift
+    subcmd=loop
+else
+    subcmd=noloop
+fi
 
-java -jar $JAR $TARGET_IP
+# Pick the one not-lo inet v4 address.
+line=$(ip addr show | fgrep "inet " | fgrep -v 127.0.0.1)
+
+read -r -a parts <<< "$line"
+
+local_ip=${parts[1]%/*}
+broadcast_ip=${parts[3]}
+
+echo Scanning bacnet $broadcast_ip from $local_ip
+
+java -cp $JAR $CLASS $broadcast_ip $local_ip $subcmd | tee $TMPOUT
 
 bacnet_runtime=/config/bacnet_runtime.sh
 if [ -f $bacnet_runtime ]; then
