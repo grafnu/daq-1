@@ -39,14 +39,24 @@ def print_config(config):
         config_list.append("%s=%s%s%s" % (key, quote, config[key], quote))
     print(*config_list, sep='\n')
 
+def deep_update(base, adding):
+    for key in sorted(adding.keys()):
+        value = adding[key]
+        if value and isinstance(value, dict) and key in base:
+            LOGGER.info('Merging %s as dict', key)
+            deep_update(base[key], value)
+        else:
+            LOGGER.info('Overwrite %s', key)
+            base[key] = value
+
 def load_and_merge(base, filename):
     """Load a config file and merge with an existing base"""
     if not os.path.exists(filename):
         LOGGER.info('Skipping missing %s', filename)
-        return base
+        return
     LOGGER.info('Loading config from %s', filename)
     with open(filename) as data_file:
-        return yaml.safe_load(data_file)
+        deep_update(base, yaml.safe_load(data_file))
 
 class Configurator():
     """Manager class for system configuration."""

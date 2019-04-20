@@ -37,7 +37,7 @@ class ConnectedHost():
     _STARTUP_MIN_TIME_SEC = 5
     _INST_DIR = "inst/"
     _FAIL_BASE_FORMAT = "inst/fail_%s"
-    _TEST_CONFIG = "test_config.json"
+    _MODULE_CONFIG = "module_config.json"
 
     def __init__(self, runner, gateway, target, config):
         self.runner = runner
@@ -346,7 +346,7 @@ class ConnectedHost():
             params['switch_ip'] = self.config['ext_addr']
             params['switch_port'] = str(self.target_port)
         LOGGER.debug('test_host start %s/%s', self.test_name, host_name)
-        self._write_test_config()
+        self._write_module_config(self._load_module_config())
         self.test_host.start(self.test_port, params, self._docker_callback)
 
     def _host_name(self):
@@ -385,27 +385,29 @@ class ConnectedHost():
             self._state_transition(_STATE.NEXT, _STATE.TESTING)
             self._run_next_test()
 
-    def _write_test_config(self):
+    def _write_module_config(self, loaded_config):
         tmp_dir = self._host_tmp_path()
         os.makedirs(tmp_dir)
-        conf_file = os.path.join(tmp_dir, self._TEST_CONFIG)
-        LOGGER.info('Writing test config %s', conf_file)
+        conf_file = os.path.join(tmp_dir, self._MODULE_CONFIG)
+        LOGGER.info('Writing module config to %s', conf_file)
         with open(conf_file, 'w') as output_stream:
-            output_stream.write(json.dumps(self._load_test_config()))
+            output_stream.write(json.dumps(loaded_config, indent=4, sort_keys=True))
 
-    def _load_test_config(self):
-        base = self._load_base_config()
-        site = self._merge_test_config(base, self.config.get('site_path'))
-        device = self._merge_test_config(site, self._device_base)
-        return self._merge_test_config(device, self._port_base)
+    def _load_module_config(self):
+        config = self._load_base_config()
+        self._merge_module_config(config, self.config.get('site_path'))
+        self._merge_module_config(config, self._device_base)
+        self._merge_module_config(config, self._port_base)
+        return config
 
-    def _merge_test_config(self, base, path):
-        if not path:
-            return base
-        return configurator.load_and_merge(base, os.path.join(path, self._TEST_CONFIG))
+    def _merge_module_config(self, base, path):
+        if path:
+            configurator.load_and_merge(base, os.path.join(path, self._MODULE_CONFIG))
 
     def _load_base_config(self):
-        return configurator.load_and_merge({}, self.config.get('base_conf'))
+        base = {}
+        configurator.load_and_merge(base, self.config.get('base_conf'))
+        return base
 
     def record_result(self, name, **kwargs):
         """Record a named result for this test"""
