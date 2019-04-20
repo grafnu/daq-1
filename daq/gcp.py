@@ -1,5 +1,6 @@
 """Class for working with GCP connections (e.g. Pub/Sub messages)"""
 
+import datetime
 import json
 import logging
 
@@ -60,17 +61,21 @@ class GcpManager():
         (client, dummy_other) = client_email.split('@', 2)
         return client
 
-    def publish_message(self, topic, message):
+    def publish_message(self, topic, message_type, message):
         """Publish a message to pub/sub topic"""
         if not self._pubber:
             LOGGER.debug('Ignoring message publish: not configured')
             return
-        if 'encode' not in message:
-            message = json.dumps(message)
-        LOGGER.debug('Sending to topic_path %s/%s: %s', self._project, topic, message)
+        envelope = {
+            'type': message_type,
+            'timestamp': datetime.datetime.now().isoformat(),
+            'payload': message
+        }
+        message_str = json.dumps(envelope)
+        LOGGER.debug('Sending to topic_path %s/%s: %s', self._project, topic, message_str)
         #pylint: disable=no-member
         topic_path = self._pubber.topic_path(self._project, topic)
-        future = self._pubber.publish(topic_path, message.encode('utf-8'),
+        future = self._pubber.publish(topic_path, message_str.encode('utf-8'),
                                       projectId=self._project, origin=self._client_name)
         LOGGER.debug('Publish future result %s', future.result())
 

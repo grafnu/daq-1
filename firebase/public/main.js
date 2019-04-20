@@ -320,7 +320,7 @@ function triggerOrigin(db, origin_id) {
   }
 
   ref = db.collection('origin').doc(origin_id);
-  ref.collection('port').doc('port-undefined').onSnapshot((result) => {
+  ref.collection('heartbeat').doc('latest').onSnapshot((result) => {
     const message = result.data().message;
     ensureColumns(message.tests);
     document.querySelector('#description').innerHTML = message.description;

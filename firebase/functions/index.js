@@ -31,39 +31,55 @@ function deleteRun(port, port_doc, runid) {
 exports.daq_firestore = functions.pubsub.topic('daq_runner').onPublish((event) => {
   const message = event.json;
   const origin = event.attributes.origin;
+  const message_type = message.type;
+  const payload = message.payload;
+
+  if (message_type == 'test_result') {
+    handle_test_result(origin, payload);
+  } else if (message_type == 'heartbeat') {
+    handle_heartbeat(origin, payload);
+  } else {
+    throw `Unknown message type ${message_type} from ${origin}`
+  }
+  return null;
+})
+
+function handle_test_result(origin, message) {
   const port = 'port-' + message.port;
-  const timestr = new Date().toTimeString();
-  const timestamp = Date.now();
-  const expired = timestamp - EXPIRY_MS;
+  const now = Date.now()
+  const timestamp = new Date(now).toJSON();
+  const expired = new Date(now - EXPIRY_MS).toJSON();
 
   console.log('updating', timestamp, origin, port, message.runid, message.name);
 
   const origin_doc = db.collection('origin').doc(origin);
-  origin_doc.set({'updated': timestr});
+  origin_doc.set({'updated': timestamp});
   const port_doc = origin_doc.collection('port').doc(port);
-  if (message.runid) {
-    port_doc.set({'updated': timestr});
-    const run_doc = port_doc.collection('runid').doc(message.runid);
-    run_doc.set({'updated': timestr, 'timestamp': timestamp});
-    const test_doc = run_doc.collection('test').doc(message.name);
-    test_doc.set(message);
+  port_doc.set({'updated': timestamp});
+  const run_doc = port_doc.collection('runid').doc(message.runid);
+  run_doc.set({'updated': timestamp});
+  const test_doc = run_doc.collection('test').doc(message.name);
+  test_doc.set(message);
 
-    port_doc.collection('runid').where('timestamp', '<', expired)
-      .get().then(function(snapshot) {
-        snapshot.forEach(function(old_doc) {
-          deleteRun(port, port_doc, old_doc.id)
-        });
+  port_doc.collection('runid').where('timestamp', '<', expired)
+    .get().then(function(snapshot) {
+      snapshot.forEach(function(old_doc) {
+        deleteRun(port, port_doc, old_doc.id)
       });
-  } else {
-    port_doc.set({
-      'updated': timestr,
-      'timestamp': timestamp,
-      'message': message
     });
-  }
+}
 
-  return null;
-});
+function handle_heartbeat(origin, message) {
+  const timestamp = new Date().toJSON();
+  console.log('heartbeat', timestamp, origin)
+  const origin_doc = db.collection('origin').doc(origin);
+  origin_doc.set({'updated': timestamp});
+  const port_doc = origin_doc.collection('heartbeat').doc('latest')
+  port_doc.set({
+    'updated': timestamp,
+    'message': message
+  });
+}
 
 function get_device_doc(registryId, deviceId) {
   const timestr = new Date().toTimeString();

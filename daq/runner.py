@@ -68,7 +68,7 @@ class DAQRunner():
         return open(RESULT_LOG_FILE, 'w')
 
     def _send_heartbeat(self, test_list=None):
-        self.gcp.publish_message('daq_runner', {
+        self.gcp.publish_message('daq_runner', 'heartbeat', {
             'name': 'status',
             'tests': test_list,
             'ports': list(self.active_ports.keys()),
