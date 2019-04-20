@@ -40,6 +40,7 @@ def print_config(config):
     print(*config_list, sep='\n')
 
 def deep_update(base, adding):
+    """Update a dict object and follow nested objects"""
     for key in sorted(adding.keys()):
         value = adding[key]
         if value and isinstance(value, dict) and key in base:

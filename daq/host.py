@@ -391,7 +391,8 @@ class ConnectedHost():
         conf_file = os.path.join(tmp_dir, self._MODULE_CONFIG)
         LOGGER.info('Writing module config to %s', conf_file)
         with open(conf_file, 'w') as output_stream:
-            output_stream.write(json.dumps(loaded_config, indent=4, sort_keys=True))
+            output_stream.write(json.dumps(loaded_config, indent=2, sort_keys=True))
+            output_stream.write('\n')
 
     def _load_module_config(self):
         config = self._load_base_config()
