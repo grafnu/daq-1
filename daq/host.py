@@ -346,7 +346,7 @@ class ConnectedHost():
             params['switch_ip'] = self.config['ext_addr']
             params['switch_port'] = str(self.target_port)
         LOGGER.debug('test_host start %s/%s', self.test_name, host_name)
-        self._write_module_config(self._load_module_config())
+        self._set_module_config(test_name, self._load_module_config())
         self.test_host.start(self.test_port, params, self._docker_callback)
 
     def _host_name(self):
@@ -385,7 +385,7 @@ class ConnectedHost():
             self._state_transition(_STATE.NEXT, _STATE.TESTING)
             self._run_next_test()
 
-    def _write_module_config(self, loaded_config):
+    def _set_module_config(self, name, loaded_config):
         tmp_dir = self._host_tmp_path()
         os.makedirs(tmp_dir)
         conf_file = os.path.join(tmp_dir, self._MODULE_CONFIG)
@@ -393,6 +393,7 @@ class ConnectedHost():
         with open(conf_file, 'w') as output_stream:
             output_stream.write(json.dumps(loaded_config, indent=2, sort_keys=True))
             output_stream.write('\n')
+        self._publish_module_config(name, loaded_config)
 
     def _load_module_config(self):
         config = self._load_base_config()
@@ -428,10 +429,21 @@ class ConnectedHost():
             'name': name,
             'runid': self.run_id,
             'started': self.test_start,
-            'timestamp': current,
+            'timestamp': datetime.datetime.fromtimestamp(current).isoformat(),
             'port': self.target_port
         }
         for arg in kwargs:
             result[arg] = None if kwargs[arg] is None else str(kwargs[arg])
         self.results[name] = result
         self.runner.gcp.publish_message('daq_runner', 'test_result', result)
+
+    def _publish_module_config(self, name, loaded_config):
+        current = int(time.time())
+        result = {
+            'name': name,
+            'runid': self.run_id,
+            'timestamp': datetime.datetime.fromtimestamp(current).isoformat(),
+            'port': self.target_port,
+            'config': loaded_config
+        }
+        self.runner.gcp.publish_message('daq_runner', 'module_config', result)
