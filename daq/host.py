@@ -106,6 +106,8 @@ class ConnectedHost():
         time.sleep(2)
         shutil.rmtree(self.devdir, ignore_errors=True)
         os.makedirs(self.scan_base)
+        self._loaded_config = self._load_module_config()
+        self._publish_module_config(None, self._loaded_config)
         network = self.runner.network
         self._mirror_intf_name = network.create_mirror_interface(self.target_port)
         if self.no_test:
@@ -346,7 +348,7 @@ class ConnectedHost():
             params['switch_ip'] = self.config['ext_addr']
             params['switch_port'] = str(self.target_port)
         LOGGER.debug('test_host start %s/%s', self.test_name, host_name)
-        self._set_module_config(test_name, self._load_module_config())
+        self._set_module_config(test_name, self._loaded_config)
         self.test_host.start(self.test_port, params, self._docker_callback)
 
     def _host_name(self):
@@ -393,23 +395,13 @@ class ConnectedHost():
         with open(conf_file, 'w') as output_stream:
             output_stream.write(json.dumps(loaded_config, indent=2, sort_keys=True))
             output_stream.write('\n')
-        self._publish_module_config(name, loaded_config)
+        self._publish_module_config(name, self._loaded_config)
 
     def _load_module_config(self):
-        config = self._load_base_config()
-        self._merge_module_config(config, self.config.get('site_path'))
-        self._merge_module_config(config, self._device_base)
-        self._merge_module_config(config, self._port_base)
+        config = self.runner.get_base_config()
+        configurator.load_and_merge(config, self._device_base, self._MODULE_CONFIG)
+        configurator.load_and_merge(config, self._port_base, self._MODULE_CONFIG)
         return config
-
-    def _merge_module_config(self, base, path):
-        if path:
-            configurator.load_and_merge(base, os.path.join(path, self._MODULE_CONFIG))
-
-    def _load_base_config(self):
-        base = {}
-        configurator.load_and_merge(base, self.config.get('base_conf'))
-        return base
 
     def record_result(self, name, **kwargs):
         """Record a named result for this test"""

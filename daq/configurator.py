@@ -50,13 +50,16 @@ def deep_update(base, adding):
             LOGGER.info('Overwrite %s', key)
             base[key] = value
 
-def load_and_merge(base, filename):
+def load_and_merge(base, path, filename):
     """Load a config file and merge with an existing base"""
-    if not os.path.exists(filename):
-        LOGGER.info('Skipping missing %s', filename)
+    if not path:
         return
-    LOGGER.info('Loading config from %s', filename)
-    with open(filename) as data_file:
+    config_file = os.path.join(path, filename)
+    if not os.path.exists(config_file):
+        LOGGER.info('Skipping missing %s', config_file)
+        return
+    LOGGER.info('Loading config from %s', config_file)
+    with open(config_file) as data_file:
         deep_update(base, yaml.safe_load(data_file))
 
 class Configurator():

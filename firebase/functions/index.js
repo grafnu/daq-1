@@ -60,7 +60,8 @@ function handle_result(origin, message, doc_type) {
   port_doc.set({'updated': timestamp});
   const run_doc = port_doc.collection('runid').doc(message.runid);
   run_doc.set({'updated': timestamp});
-  const result_doc = run_doc.collection(doc_type).doc(message.name);
+  message_name = message.name || 'default'
+  const result_doc = run_doc.collection(doc_type).doc(message_name);
   result_doc.set(message);
 
   port_doc.collection('runid').where('timestamp', '<', expired)

@@ -1,11 +1,13 @@
 """Main test runner for DAQ"""
 
+import datetime
 import logging
 import os
 import re
 import time
 import traceback
 
+import configurator
 import faucet_event_client
 import gateway as gateway_manager
 import gcp
@@ -23,6 +25,7 @@ class DAQRunner():
     class owns the main event loop and shards out work to subclasses."""
 
     MAX_GATEWAYS = 10
+    _MODULE_CONFIG = "module_config.json"
 
     def __init__(self, config):
         self.config = config
@@ -34,6 +37,7 @@ class DAQRunner():
         self._device_groups = {}
         self._gateway_sets = {}
         self._target_mac_ip = {}
+        self._base_config = self._load_base_config()
         self.gcp = gcp.GcpManager(self.config)
         self.description = config.get('site_description', '').strip("\"")
         self.version = os.environ['DAQ_VERSION']
@@ -580,3 +584,12 @@ class DAQRunner():
         if failures or exception:
             return 1
         return 0
+
+    def _load_base_config(self):
+        base = {}
+        configurator.load_and_merge(base, self.config.get('base_conf'), self._MODULE_CONFIG)
+        configurator.load_and_merge(base, self.config.get('site_path'), self._MODULE_CONFIG)
+        return base
+
+    def get_base_config(self):
+        return self._base_config

@@ -316,7 +316,7 @@ function setupTriggers() {
 
 function triggerOrigin(db, origin_id) {
   const latest = (ref) => {
-    return ref.orderBy('timestamp', 'desc').limit(3);
+    return ref.orderBy('updated', 'desc').limit(3);
   }
 
   ref = db.collection('origin').doc(origin_id);
