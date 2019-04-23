@@ -411,37 +411,58 @@ function interval_updater() {
   }
 }
 
-function loadJsoneditor() {
+function getJsonEditor() {
   const container = document.getElementById('jsoneditor');
   const options = {
-    mode: 'view'
+    //mode: 'view'
   };
+  return new JSONEditor(container, options);
+}
+
+function loadJsoneditor() {
   const subtitle = device_id
         ? `${origin_id} device ${device_id}`
         : `${origin_id} system`;
   document.getElementById('title_origin').innerHTML = subtitle;
-  jsonEditor = new JSONEditor(container, options);
+
   const db = getFirestoreDb();
   const origin_doc = db.collection('origin').doc(origin_id);
-  const config_doc = device_id
-        ? origin_doc.collection('device').doc(device_id).collection('config').doc('latest')
-        : origin_doc.collection('runner').doc('config');
+  const config_doc = origin_doc.collection('runner').doc('config');
   config_doc.get().then((snapshot) => {
-    const data = snapshot.exists ? snapshot.data() : getDefaultDeviceConfig();
-    if (!snapshot.exists) {
-      config_doc.set(data);
+    if (device_id) {
+      loadDeviceConfig(origin_doc, snapshot.data().config);
+    } else {
+      const jsonEditor = getJsonEditor();
+      jsonEditor.set(snapshot.data().config);
+      jsonEditor.setName('system_config');
+      jsonEditor.expandAll();
     }
-    jsonEditor.set(data.config);
-    jsonEditor.setName('config');
+  });
+}
+
+function loadDeviceConfig(origin_doc, runner_config) {
+  const device_doc = origin_doc.collection('device').doc(device_id).collection('config').doc('latest')
+  device_doc.get().then((snapshot) => {
+    const jsonEditor = getJsonEditor();
+    if (snapshot.exists) {
+      jsonEditor.set(snapshot.data().config);
+    } else {
+      device_config = makeDeviceConfig(runner_config);
+      device_doc.set(device_config);
+      jsonEditor.set(device_config.config);
+    }
+    jsonEditor.setName('device_config');
     jsonEditor.expandAll();
   });
 }
 
-function getDefaultDeviceConfig() {
+function makeDeviceConfig(runner_config) {
+  runner_config['device'] = {
+    'name': 'Device Name',
+    'mac_addr': device_id
+  };
   return {
-    'config': {
-      'hello': 'default'
-    },
+    'config': runner_config,
     'updated': new Date().toJSON()
   };
 }
