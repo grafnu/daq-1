@@ -438,4 +438,4 @@ class ConnectedHost():
             'port': self.target_port,
             'config': loaded_config
         }
-        self.runner.gcp.publish_message('daq_runner', 'module_config', result)
+        self.runner.gcp.publish_message('daq_runner', 'runner_config', result)

@@ -34,10 +34,12 @@ exports.daq_firestore = functions.pubsub.topic('daq_runner').onPublish((event) =
   const message_type = message.type;
   const payload = message.payload;
 
-  if (message_type == 'test_result') {
-    handle_result(origin, payload, 'test');
+  if (message_type == 'runner_config') {
+    handle_runner_config(origin, payload);
+  } else if (message_type == 'test_result') {
+    handle_result('test', origin, payload);
   } else if (message_type == 'module_config') {
-    handle_result(origin, payload, 'config');
+    handle_result('config', origin, payload);
   } else if (message_type == 'heartbeat') {
     handle_heartbeat(origin, payload);
   } else {
@@ -46,11 +48,26 @@ exports.daq_firestore = functions.pubsub.topic('daq_runner').onPublish((event) =
   return null;
 });
 
-function handle_result(origin, message, doc_type) {
-  const port = 'port-' + message.port;
+function handle_runner_config(origin, message) {
+  const now = Date.now()
+  const timestamp = new Date(now).toJSON();
+
+  console.log('updating runner config', timestamp, origin, message.timestamp);
+
+  const origin_doc = db.collection('origin').doc(origin);
+  const runner_doc = origin_doc.collection('runner').doc('config')
+  runner_doc.set({
+    'updated': timestamp,
+    'timestamp': message.timestamp,
+    'config': message.config
+  });
+}
+
+function handle_result(doc_type, origin, message) {
   const now = Date.now()
   const timestamp = new Date(now).toJSON();
   const expired = new Date(now - EXPIRY_MS).toJSON();
+  const port = 'port-' + message.port;
 
   console.log('updating', doc_type, timestamp, origin, port, message.runid, message.name);
 
@@ -77,7 +94,7 @@ function handle_heartbeat(origin, message) {
   console.log('heartbeat', timestamp, origin)
   const origin_doc = db.collection('origin').doc(origin);
   origin_doc.set({'updated': timestamp});
-  const port_doc = origin_doc.collection('heartbeat').doc('latest')
+  const port_doc = origin_doc.collection('runner').doc('heartbeat')
   port_doc.set({
     'updated': timestamp,
     'message': message

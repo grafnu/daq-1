@@ -81,9 +81,17 @@ class DAQRunner():
             'timestamp': int(time.time()),
         })
 
+    def _publish_config(self):
+        current = int(time.time())
+        self.gcp.publish_message('daq_runner', 'module_config', {
+            'timestamp': datetime.datetime.fromtimestamp(current).isoformat(),
+            'config': self._base_config
+        })
+
     def initialize(self):
         """Initialize DAQ instance"""
         self._send_heartbeat()
+        self._publish_config()
 
         self.network.initialize()
 
