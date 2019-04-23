@@ -286,7 +286,7 @@ function listDevices(db, registryId) {
     }).catch((e) => statusUpdate('registry list error', e));
 }
 
-function setupTriggers() {
+function dashboardSetup() {
   var db = firebase.firestore();
   const settings = {
     timestampsInSnapshots: true
@@ -312,6 +312,8 @@ function setupTriggers() {
     listOrigins(db);
     listRegistries(db);
   }
+
+  return origin_id;
 }
 
 function triggerOrigin(db, origin_id) {
@@ -323,7 +325,7 @@ function triggerOrigin(db, origin_id) {
   ref.collection('heartbeat').doc('latest').onSnapshot((result) => {
     const message = result.data().message;
     ensureColumns(message.tests);
-    document.querySelector('#description').innerHTML = message.description;
+    document.querySelector('#description .description').innerHTML = message.description;
     const version = `DAQ v${message.version}`
     document.querySelector('#version').innerHTML = version
   });
@@ -390,10 +392,20 @@ function interval_updater() {
   }
 }
 
+function loadJsoneditor() {
+  const container = document.getElementById('jsoneditor');
+  const options = {};
+  return new JSONEditor(container, options);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   try {
+    if (document.getElementById('jsoneditor')) {
+      loadJsoneditor();
+    } else {
+      dashboardSetup();
+    }
     statusUpdate('System initialized.');
-    setupTriggers();
     setInterval(interval_updater, 1000);
   } catch (e) {
     statusUpdate('Loading error', e)
