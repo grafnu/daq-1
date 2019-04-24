@@ -39,28 +39,32 @@ def print_config(config):
         config_list.append("%s=%s%s%s" % (key, quote, config[key], quote))
     print(*config_list, sep='\n')
 
-def deep_update(base, adding):
+def merge_config(base, adding):
     """Update a dict object and follow nested objects"""
+    if not adding:
+        return
     for key in sorted(adding.keys()):
         value = adding[key]
         if value and isinstance(value, dict) and key in base:
-            LOGGER.info('Merging %s as dict', key)
-            deep_update(base[key], value)
+            merge_config(base[key], value)
         else:
-            LOGGER.info('Overwrite %s', key)
             base[key] = value
 
-def load_and_merge(base, path, filename):
-    """Load a config file and merge with an existing base"""
+def load_config(path, filename):
+    """Load a config file"""
     if not path:
         return
     config_file = os.path.join(path, filename)
     if not os.path.exists(config_file):
         LOGGER.info('Skipping missing %s', config_file)
-        return
+        return None
     LOGGER.info('Loading config from %s', config_file)
     with open(config_file) as data_file:
-        deep_update(base, yaml.safe_load(data_file))
+        return yaml.safe_load(data_file)
+
+def load_and_merge(base, path, filename):
+    """Load a config file and merge with an existing base"""
+    merge_config(base, load_config(path, filename))
 
 class Configurator():
     """Manager class for system configuration."""

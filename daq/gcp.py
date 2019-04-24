@@ -46,6 +46,15 @@ class GcpManager():
         LOGGER.info('Dashboard at %s', dashboard_url)
         return firestore.client()
 
+    def _on_snapshot(self, doc_snapshot, changed, read_time):
+        print('snapshot')
+
+    def write_device_config(self, device_id, config, callback=None):
+        config_doc = self.firestore.document('origin/%s/device_configs/%s' % (self._client_name, device_id))
+        config_doc.set(config)
+        if callback:
+            return config_doc.on_snapshot(self._on_snapshot)
+
     def _message_callback(self, topic, message, callback):
         LOGGER.info('Received topic %s message: %s', topic, message)
         callback(message)

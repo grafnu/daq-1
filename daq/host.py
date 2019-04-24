@@ -397,9 +397,14 @@ class ConnectedHost():
             output_stream.write('\n')
         self._publish_module_config(name, self._loaded_config)
 
+    def _doc_callback(self, document):
+        print(document)
+
     def _load_module_config(self):
         config = self.runner.get_base_config()
-        configurator.load_and_merge(config, self._device_base, self._MODULE_CONFIG)
+        device_config = configurator.load_config(self._device_base, self._MODULE_CONFIG)
+        self.runner.gcp.write_device_config(self.target_mac, device_config, callback=self._doc_callback)
+        configurator.merge_config(config, device_config)
         configurator.load_and_merge(config, self._port_base, self._MODULE_CONFIG)
         return config
 
