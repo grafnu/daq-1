@@ -1,0 +1,34 @@
+#!/bin/bash -e
+
+JAR=bacnet4j/bacnet4j.jar
+CLASS=com.serotonin.bacnet4j.test.RedstoneTest.Test5
+TARGET="Object name = BACnet device"
+TMPOUT=`tempfile`
+
+# Pick the one not-lo inet v4 address.
+line=$(ip addr show | fgrep "inet " | fgrep -v 127.0.0.1)
+
+read -r -a parts <<< "$line"
+
+local_ip=${parts[1]%/*}
+broadcast_ip=${parts[3]}
+test_id="bacnet_VERSION"
+
+echo Scanning bacnet $broadcast_ip from $local_ip
+echo testId: $test_id broadcastIp: $broadcast_ip localIp: $local_ip
+
+java -cp $JAR $CLASS $test_id $broadcast_ip $local_ip | tee $TMPOUT
+
+bacnet_runtime=/config/bacnet_runtime.sh
+if [ -f $bacnet_runtime ]; then
+    echo Processing $bacnet_runtime
+    source $bacnet_runtime
+fi
+
+if [ -z "$BACNET_EXPECTED" ]; then
+    # For testing, consider the presense of bacnet a failure.
+    ! fgrep "$TARGET" $TMPOUT
+else
+    echo Bacnet expected!
+    fgrep "$TARGET" $TMPOUT
+fi
