@@ -27,6 +27,8 @@ class DAQRunner():
 
     MAX_GATEWAYS = 10
     _MODULE_CONFIG = "module_config.json"
+    _DEVICE_PATH = "devices/%s"
+    _RUNNER_CONFIG_PATH = ''
 
     def __init__(self, config):
         self.config = config
@@ -38,8 +40,8 @@ class DAQRunner():
         self._device_groups = {}
         self._gateway_sets = {}
         self._target_mac_ip = {}
-        self._base_config = self._load_base_config()
         self.gcp = gcp.GcpManager(self.config)
+        self._base_config = self._load_base_config()
         self.description = config.get('site_description', '').strip('\"')
         self.version = os.environ['DAQ_VERSION']
         self.network = network.TestNetwork(config)
@@ -166,17 +168,17 @@ class DAQRunner():
             self._MODULE_CONFIG, dev_config)
 
     def _activate_port(self, port, state):
-        LOGGER.info('Activate %s as %s', port, state)
         if state:
             self._active_ports[port] = state
             if state is not True:
                 dev_config = self._load_device_config(state)
-                LOGGER.info('Loaded dev_config %s', dev_config)
-                self.gcp.register_device_config(state, dev_config, self._dev_config_updated)
+                self.gcp.register_config(self._DEVICE_PATH % state,
+                                         dev_config,
+                                         lambda *args: self._dev_config_updated(state, *args))
         elif port in self._active_ports:
             mac_addr = self._active_ports[port]
             if mac_addr is not True:
-                self.gcp.release_device_config(mac_addr)
+                self.gcp.release_config(self._DEVICE_PATH % mac_addr)
             del self._active_ports[port]
 
     def _load_device_config(self, mac_addr):
@@ -609,6 +611,7 @@ class DAQRunner():
 
     def finalize(self):
         """Finalize this instance, returning error result code"""
+        self.gcp.release_config(self._RUNNER_CONFIG_PATH)
         exception = self.exception
         failures = self._combine_results()
         if failures:
@@ -619,10 +622,14 @@ class DAQRunner():
             return 1
         return 0
 
+    def _base_config_changed(self, new_config):
+        LOGGER.info('Base config changed: %s' % new_config)
+
     def _load_base_config(self):
         base = {}
         configurator.load_and_merge(base, self.config.get('base_conf'), self._MODULE_CONFIG)
         configurator.load_and_merge(base, self.config.get('site_path'), self._MODULE_CONFIG)
+        self.gcp.register_config(self._RUNNER_CONFIG_PATH, base, self._base_config_changed)
         return base
 
     def get_base_config(self):

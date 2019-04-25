@@ -40,7 +40,7 @@ class GcpManager:
         self._storage = storage.Client(project=self._project, credentials=self._credentials)
         self._report_bucket_name = self.REPORT_BUCKET_FORMAT % self._project
         self._ensure_report_bucket()
-        self._device_callbacks = {}
+        self._config_callbacks = {}
 
     def _initialize_firestore(self, cred_file):
         cred = credentials.Certificate(cred_file)
@@ -51,39 +51,40 @@ class GcpManager:
         return firestore.client()
 
     @staticmethod
-    def _on_snapshot(callback, device_id, doc_snapshot, changed, read_time):
+    def _on_snapshot(callback, doc_snapshot, changed, read_time):
         for doc in doc_snapshot:
-            callback(device_id, doc.to_dict()['config'])
+            callback(doc.to_dict()['config'])
 
-    def register_device_config(self, device_id, config, callback=None):
+    def register_config(self, path, config, callback=None):
         if not self._firestore:
             return
 
-        if device_id in self._device_callbacks:
-            LOGGER.info('Unsubscribe callback %s', device_id)
-            self._device_callbacks[device_id].unsubscribe()
-            del self._device_callbacks[device_id]
+        if path in self._config_callbacks:
+            LOGGER.info('Unsubscribe callback %s', path)
+            self._config_callbacks[path].unsubscribe()
+            del self._config_callbacks[path]
 
-        config_doc = self._firestore.document('origin/%s/device/%s/config/definition' %
-                                              (self._client_name, device_id))
+        separator = '/' if path else ''
+        config_doc = self._firestore.document('origin/%s/%s%sconfig/definition' %
+                                              (self._client_name, path, separator))
         if config is not None:
-            LOGGER.info('Registering device %s' % device_id)
+            LOGGER.info('Registering %s' % path)
             config_doc.set({
                 'config': config,
                 'timestamp': datetime.datetime.now().isoformat()
             })
         else:
-            LOGGER.info('Releasing device %s' % device_id)
+            LOGGER.info('Releasing %s' % path)
             config_doc.delete()
 
         if callback:
             assert config is not None, 'callback defined when deleting config??!?!'
             snapshot_future = config_doc.on_snapshot(
-              lambda *args: self._on_snapshot(callback, device_id, *args))
-            self._device_callbacks[device_id] = snapshot_future
+              lambda *args: self._on_snapshot(callback, *args))
+            self._config_callbacks[path] = snapshot_future
 
-    def release_device_config(self, path):
-        self.register_device_config(path, None)
+    def release_config(self, path):
+        self.register_config(path, None)
 
     def _parse_creds(self, cred_file):
         """Parse JSON credential file"""
