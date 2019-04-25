@@ -15,11 +15,9 @@ import network
 import stream_monitor
 
 LOGGER = logging.getLogger('runner')
-RESULT_LOG_FILE = 'inst/result.log'
-_DEFAULT_TESTS_FILE = "misc/host_tests.conf"
 
 
-class DAQRunner():
+class DAQRunner:
     """Main runner class controlling DAQ. Primarily mediates between
     faucet events, connected hosts (to test), and gcp for logging. This
     class owns the main event loop and shards out work to subclasses."""
@@ -28,6 +26,8 @@ class DAQRunner():
     _MODULE_CONFIG = "module_config.json"
     _DEVICE_PATH = "devices/%s"
     _RUNNER_CONFIG_PATH = ''
+    _DEFAULT_TESTS_FILE = "misc/host_tests.conf"
+    _RESULT_LOG_FILE = 'inst/result.log'
 
     def __init__(self, config):
         self.config = config
@@ -58,7 +58,7 @@ class DAQRunner():
         self.result_log = self._open_result_log()
         self._system_active = False
 
-        test_list = self._get_test_list(config.get('host_tests', _DEFAULT_TESTS_FILE), [])
+        test_list = self._get_test_list(config.get('host_tests', self._DEFAULT_TESTS_FILE), [])
         if self.config.get('keep_hold'):
             test_list.append('hold')
         config['test_list'] = test_list
@@ -71,7 +71,7 @@ class DAQRunner():
                 pass
 
     def _open_result_log(self):
-        return open(RESULT_LOG_FILE, 'w')
+        return open(self._RESULT_LOG_FILE, 'w')
 
     def _send_heartbeat(self, test_list=None):
         self.gcp.publish_message('daq_runner', 'heartbeat', {
@@ -381,7 +381,7 @@ class DAQRunner():
         self._device_groups[group_name] = gateway
         try:
             gateway.initialize()
-        except:
+        except Exception:
             LOGGER.error('Cleaning up from failed gateway initialization')
             LOGGER.debug('Clearing target %s gateway group %s for %s',
                          target_port, set_num, group_name)
@@ -391,7 +391,7 @@ class DAQRunner():
         return gateway
 
     def dhcp_notify(self, state, target, gateway_set, exception=None):
-        """Handle a DHCP notificaiton"""
+        """Handle a DHCP notification"""
         if exception or not target:
             LOGGER.error('DHCP exception for gw%02d: %s', gateway_set, exception)
             LOGGER.exception(exception)
@@ -436,19 +436,19 @@ class DAQRunner():
     def _should_activate_target(self, target_mac, target_ip, gateway_set):
         if target_mac not in self.mac_targets:
             LOGGER.warning('DHCP targets missing %s', target_mac)
-            return (False, False)
+            return False, False
 
         group_name = self._gateway_sets[gateway_set]
         gateway = self._device_groups[group_name]
 
         if gateway.activated:
             LOGGER.info('DHCP activation group %s already activated', group_name)
-            return (gateway, True)
+            return gateway, True
 
         target_host = self.mac_targets[target_mac]
         if not target_host.is_waiting():
             LOGGER.info('DHCP device %s ignoring spurious notify', target_mac)
-            return (gateway, False)
+            return gateway, False
 
         ready_devices = gateway.target_ready(target_mac)
         group_size = self.network.device_group_size(group_name)
@@ -456,7 +456,7 @@ class DAQRunner():
         remaining = group_size - len(ready_devices)
         if remaining and self.run_tests:
             LOGGER.info('DHCP waiting for %d additional members of group %s', remaining, group_name)
-            return (gateway, False)
+            return gateway, False
 
         ready_trigger = True
         for ready_mac in ready_devices:
@@ -464,9 +464,9 @@ class DAQRunner():
             ready_trigger = ready_trigger and ready_host.trigger_ready()
         if not ready_trigger:
             LOGGER.warning('DHCP device group %s not ready to trigger', group_name)
-            return (gateway, False)
+            return gateway, False
 
-        return (gateway, ready_devices)
+        return gateway, ready_devices
 
     def _terminate_gateway_set(self, gateway_set):
         if not gateway_set in self._gateway_sets:
@@ -487,7 +487,8 @@ class DAQRunner():
                 return entry
         raise Exception('Could not allocate open gateway set')
 
-    def ping_test(self, src, dst, src_addr=None):
+    @staticmethod
+    def ping_test(src, dst, src_addr=None):
         """Test ping between hosts"""
         dst_name = dst if isinstance(dst, str) else dst.name
         dst_ip = dst if isinstance(dst, str) else dst.IP()
@@ -582,7 +583,8 @@ class DAQRunner():
         """Forget monitoring a stream"""
         return self.stream_monitor.forget(stream)
 
-    def _extract_exception(self, result):
+    @staticmethod
+    def _extract_exception(result):
         key = 'exception'
         return key if key in result and result[key] is not None else None
 
@@ -623,12 +625,14 @@ class DAQRunner():
 
     def _base_config_changed(self, new_config):
         LOGGER.info('Base config changed: %s', new_config)
+        configurator.write_config(self.config.get('site_path'), self._MODULE_CONFIG, new_config)
 
     def _load_base_config(self):
         base = {}
         configurator.load_and_merge(base, self.config.get('base_conf'), self._MODULE_CONFIG)
-        configurator.load_and_merge(base, self.config.get('site_path'), self._MODULE_CONFIG)
-        self.gcp.register_config(self._RUNNER_CONFIG_PATH, base, self._base_config_changed)
+        site_config = configurator.load_config(self.config.get('site_path'), self._MODULE_CONFIG)
+        self.gcp.register_config(self._RUNNER_CONFIG_PATH, site_config, self._base_config_changed)
+        configurator.merge_config(base, site_config)
         return base
 
     def get_base_config(self):

@@ -1,11 +1,9 @@
 {
   "modules": {
-    "nmap": {
-    },
+    "brute": {},
+    "nmap": {},
     "switch": {
-      "enabled": false
-    },
-    "brute": {
+      "enabled": true
     }
   }
 }

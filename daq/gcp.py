@@ -66,16 +66,16 @@ class GcpManager:
             del self._config_callbacks[path]
 
         separator = '/' if path else ''
-        config_doc = self._firestore.document('origin/%s/%s%sconfig/definition' %
-                                              (self._client_name, path, separator))
+        full_path = 'origin/%s/%s%sconfig/definition' % (self._client_name, path, separator)
+        config_doc = self._firestore.document(full_path)
         if config is not None:
-            LOGGER.info('Registering %s', path)
+            LOGGER.info('Registering %s', full_path)
             config_doc.set({
                 'config': config,
                 'timestamp': datetime.datetime.now().isoformat()
             })
         else:
-            LOGGER.info('Releasing %s', path)
+            LOGGER.info('Releasing %s', full_path)
             config_doc.delete()
 
         if callback:
