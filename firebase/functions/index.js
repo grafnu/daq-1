@@ -37,9 +37,7 @@ exports.daq_firestore = functions.pubsub.topic('daq_runner').onPublish((event) =
   if (message_type == 'runner_config') {
     handle_runner_config(origin, payload);
   } else if (message_type == 'test_result') {
-    handle_result('test', origin, payload);
-  } else if (message_type == 'module_config') {
-    handle_result('config', origin, payload);
+    handle_test_result(origin, payload);
   } else if (message_type == 'heartbeat') {
     handle_heartbeat(origin, payload);
   } else {
@@ -63,13 +61,13 @@ function handle_runner_config(origin, message) {
   });
 }
 
-function handle_result(doc_type, origin, message) {
+function handle_test_result(origin, message) {
   const now = Date.now()
   const timestamp = new Date(now).toJSON();
   const expired = new Date(now - EXPIRY_MS).toJSON();
   const port = 'port-' + message.port;
 
-  console.log('updating', doc_type, timestamp, origin, port, message.runid, message.name);
+  console.log('test_result', timestamp, origin, port, message.runid, message.name);
 
   const origin_doc = db.collection('origin').doc(origin);
   origin_doc.set({'updated': timestamp});
@@ -77,8 +75,7 @@ function handle_result(doc_type, origin, message) {
   port_doc.set({'updated': timestamp});
   const run_doc = port_doc.collection('runid').doc(message.runid);
   run_doc.set({'updated': timestamp});
-  message_name = message.name || 'default'
-  const result_doc = run_doc.collection(doc_type).doc(message_name);
+  const result_doc = run_doc.collection('test').doc(message.name);
   result_doc.set(message);
 
   port_doc.collection('runid').where('timestamp', '<', expired)

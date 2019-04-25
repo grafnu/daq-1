@@ -63,6 +63,7 @@ class GcpManager:
             LOGGER.info('Unsubscribe callback %s', device_id)
             self._device_callbacks[device_id].unsubscribe()
             del self._device_callbacks[device_id]
+
         config_doc = self._firestore.document('origin/%s/device/%s/config/definition' %
                                               (self._client_name, device_id))
         if config is not None:
@@ -81,8 +82,8 @@ class GcpManager:
               lambda *args: self._on_snapshot(callback, device_id, *args))
             self._device_callbacks[device_id] = snapshot_future
 
-    def release_device_config(self, device_id):
-        self.register_device_config(device_id, None)
+    def release_device_config(self, path):
+        self.register_device_config(path, None)
 
     def _parse_creds(self, cred_file):
         """Parse JSON credential file"""

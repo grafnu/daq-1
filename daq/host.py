@@ -416,6 +416,8 @@ class ConnectedHost:
     def _push_record(self, name, current=None, **kwargs):
         if not current:
             current = int(time.time())
+        assert self.run_id, 'run_id undefined'
+        assert self.target_port, 'target_port undefined'
         result = {
             'name': name,
             'runid': self.run_id,
@@ -430,6 +432,8 @@ class ConnectedHost:
 
     def _publish_module_config(self, name, loaded_config):
         current = int(time.time())
+        assert self.run_id, 'run_id undefined'
+        assert self.target_port, 'target_port undefined'
         result = {
             'name': name,
             'runid': self.run_id,
