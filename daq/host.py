@@ -48,6 +48,7 @@ class ConnectedHost:
         self.devdir = self._init_devdir()
         self.run_id = '%06x' % int(time.time())
         self.scan_base = os.path.abspath(os.path.join(self.devdir, 'scans'))
+        self._loaded_config = None
         self._port_base = self._get_port_base()
         self._device_base = self.get_device_base(config, self.target_mac)
         self.state = None
@@ -89,6 +90,7 @@ class ConnectedHost:
 
     @staticmethod
     def get_device_base(config, target_mac):
+        """Get the base config for a host device"""
         dev_base = config.get('site_path')
         if not dev_base:
             return None
@@ -96,7 +98,6 @@ class ConnectedHost:
         dev_path = os.path.abspath(os.path.join(dev_base, 'mac_addrs', clean_mac))
         if not os.path.isdir(dev_path):
             LOGGER.warning('Device config dir not found: %s', dev_path)
-            #return None
         return dev_path
 
     def initialize(self):

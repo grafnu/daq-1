@@ -1,6 +1,5 @@
 """Main test runner for DAQ"""
 
-import datetime
 import logging
 import os
 import re
@@ -172,9 +171,9 @@ class DAQRunner():
             self._active_ports[port] = state
             if state is not True:
                 dev_config = self._load_device_config(state)
-                self.gcp.register_config(self._DEVICE_PATH % state,
-                                         dev_config,
-                                         lambda *args: self._dev_config_updated(state, *args))
+                self.gcp.register_config(self._DEVICE_PATH % state, dev_config,
+                                         lambda new_config:
+                                         self._dev_config_updated(state, new_config))
         elif port in self._active_ports:
             mac_addr = self._active_ports[port]
             if mac_addr is not True:
@@ -183,8 +182,8 @@ class DAQRunner():
 
     def _load_device_config(self, mac_addr):
         device_config = configurator.load_config(
-          connected_host.ConnectedHost.get_device_base(self.config, mac_addr),
-          self._MODULE_CONFIG)
+            connected_host.ConnectedHost.get_device_base(self.config, mac_addr),
+            self._MODULE_CONFIG)
         return device_config if device_config else {}
 
     def _direct_port_traffic(self, mac, port, target):
@@ -623,7 +622,7 @@ class DAQRunner():
         return 0
 
     def _base_config_changed(self, new_config):
-        LOGGER.info('Base config changed: %s' % new_config)
+        LOGGER.info('Base config changed: %s', new_config)
 
     def _load_base_config(self):
         base = {}
@@ -633,4 +632,5 @@ class DAQRunner():
         return base
 
     def get_base_config(self):
+        """Get the base configuration for this install"""
         return self._base_config

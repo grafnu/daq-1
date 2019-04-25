@@ -42,6 +42,7 @@ def print_config(config):
         config_list.append("%s=%s%s%s" % (key, quote, config[key], quote))
     print(*config_list, sep='\n')
 
+
 def merge_config(base, adding):
     """Update a dict object and follow nested objects"""
     if not adding:
@@ -53,10 +54,11 @@ def merge_config(base, adding):
         else:
             base[key] = value
 
+
 def load_config(path, filename):
     """Load a config file"""
     if not path:
-        return
+        return None
     config_file = os.path.join(path, filename)
     if not os.path.exists(config_file):
         LOGGER.info('Skipping missing %s', config_file)
@@ -65,9 +67,11 @@ def load_config(path, filename):
     with open(config_file) as data_file:
         return yaml.safe_load(data_file)
 
+
 def load_and_merge(base, path, filename):
     """Load a config file and merge with an existing base"""
     merge_config(base, load_config(path, filename))
+
 
 def write_config(path, filename, config):
     """Write a config file"""
