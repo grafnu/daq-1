@@ -392,9 +392,6 @@ class ConnectedHost:
         configurator.write_config(tmp_dir, self._MODULE_CONFIG, loaded_config)
         self._publish_module_config(name, self._loaded_config)
 
-    def _doc_callback(self, document):
-        print(document)
-
     def _load_module_config(self):
         config = self.runner.get_base_config()
         device_config = configurator.load_config(self._device_base, self._MODULE_CONFIG)
