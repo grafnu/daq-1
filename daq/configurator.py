@@ -2,6 +2,7 @@
 
 """Configuration manager class for daqy-things."""
 
+import json
 import logging
 import os
 import re
@@ -67,6 +68,18 @@ def load_config(path, filename):
 def load_and_merge(base, path, filename):
     """Load a config file and merge with an existing base"""
     merge_config(base, load_config(path, filename))
+
+def write_config(path, filename, config):
+    """Write a config file"""
+    if not path:
+        return
+    if not os.path.exists(path):
+        os.makedirs(path)
+    config_file = os.path.join(path, filename)
+    LOGGER.info('Writing config to %s', config_file)
+    with open(config_file, 'w') as output_stream:
+        output_stream.write(json.dumps(config, indent=2, sort_keys=True))
+        output_stream.write('\n')
 
 
 class Configurator:

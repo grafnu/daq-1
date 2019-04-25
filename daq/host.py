@@ -1,7 +1,6 @@
 """Represent a device-under-test"""
 
 import datetime
-import json
 import logging
 import os
 import shutil
@@ -16,7 +15,7 @@ import report
 LOGGER = logging.getLogger('host')
 
 
-class _STATE():
+class _STATE:
     """Host state enum for testing cycle"""
     ERROR = 'Error condition'
     INIT = 'Initizalization'
@@ -30,7 +29,7 @@ class _STATE():
     TERM = 'Host terminated'
 
 
-class ConnectedHost():
+class ConnectedHost:
     """Class managing a device-under-test"""
 
     _MONITOR_SCAN_SEC = 30
@@ -50,7 +49,7 @@ class ConnectedHost():
         self.run_id = '%06x' % int(time.time())
         self.scan_base = os.path.abspath(os.path.join(self.devdir, 'scans'))
         self._port_base = self._get_port_base()
-        self._device_base = self._get_device_base()
+        self._device_base = self.get_device_base(config, self.target_mac)
         self.state = None
         self.no_test = config.get('no_test', False)
         self._state_transition(_STATE.READY if self.no_test else _STATE.INIT)
@@ -88,15 +87,16 @@ class ConnectedHost():
             return None
         return conf_base
 
-    def _get_device_base(self):
-        dev_base = self.config.get('site_path')
+    @staticmethod
+    def get_device_base(config, target_mac):
+        dev_base = config.get('site_path')
         if not dev_base:
             return None
-        clean_mac = self.target_mac.replace(':', '')
+        clean_mac = target_mac.replace(':', '')
         dev_path = os.path.abspath(os.path.join(dev_base, 'mac_addrs', clean_mac))
         if not os.path.isdir(dev_path):
             LOGGER.warning('Device config dir not found: %s', dev_path)
-            return None
+            #return None
         return dev_path
 
     def initialize(self):
@@ -389,12 +389,7 @@ class ConnectedHost():
 
     def _set_module_config(self, name, loaded_config):
         tmp_dir = self._host_tmp_path()
-        os.makedirs(tmp_dir)
-        conf_file = os.path.join(tmp_dir, self._MODULE_CONFIG)
-        LOGGER.info('Writing module config to %s', conf_file)
-        with open(conf_file, 'w') as output_stream:
-            output_stream.write(json.dumps(loaded_config, indent=2, sort_keys=True))
-            output_stream.write('\n')
+        configurator.write_config(tmp_dir, self._MODULE_CONFIG, loaded_config)
         self._publish_module_config(name, self._loaded_config)
 
     def _doc_callback(self, document):
@@ -403,7 +398,6 @@ class ConnectedHost():
     def _load_module_config(self):
         config = self.runner.get_base_config()
         device_config = configurator.load_config(self._device_base, self._MODULE_CONFIG)
-        self.runner.gcp.write_device_config(self.target_mac, device_config, callback=self._doc_callback)
         configurator.merge_config(config, device_config)
         configurator.load_and_merge(config, self._port_base, self._MODULE_CONFIG)
         return config

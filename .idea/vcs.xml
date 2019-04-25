@@ -30,6 +30,7 @@
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/faucet" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/local" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/local/site" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/mininet" vcs="Git" />
   </component>
 </project>

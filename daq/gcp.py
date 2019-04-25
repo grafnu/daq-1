@@ -26,6 +26,7 @@ class GcpManager:
             LOGGER.info('No gcp_cred credential specified in config')
             self._pubber = None
             self._storage = None
+            self._firestore = None
             return
         cred_file = self.config['gcp_cred']
         LOGGER.info('Loading gcp credentials from %s', cred_file)
@@ -35,10 +36,11 @@ class GcpManager:
         self._client_name = self._parse_creds(cred_file)
         self._pubber = pubsub_v1.PublisherClient(credentials=self._credentials)
         LOGGER.info('Initialized gcp pub/sub %s:%s', self._project, self._client_name)
-        self.firestore = self._initialize_firestore(cred_file)
+        self._firestore = self._initialize_firestore(cred_file)
         self._storage = storage.Client(project=self._project, credentials=self._credentials)
         self._report_bucket_name = self.REPORT_BUCKET_FORMAT % self._project
         self._ensure_report_bucket()
+        self._device_callbacks = {}
 
     def _initialize_firestore(self, cred_file):
         cred = credentials.Certificate(cred_file)
@@ -48,14 +50,39 @@ class GcpManager:
         LOGGER.info('Dashboard at %s', dashboard_url)
         return firestore.client()
 
-    def _on_snapshot(self, doc_snapshot, changed, read_time):
-        print('snapshot')
+    @staticmethod
+    def _on_snapshot(callback, device_id, doc_snapshot, changed, read_time):
+        for doc in doc_snapshot:
+            callback(device_id, doc.to_dict()['config'])
 
-    def write_device_config(self, device_id, config, callback=None):
-        config_doc = self.firestore.document('origin/%s/device_configs/%s' % (self._client_name, device_id))
-        config_doc.set(config)
+    def register_device_config(self, device_id, config, callback=None):
+        if not self._firestore:
+            return
+
+        if device_id in self._device_callbacks:
+            LOGGER.info('Unsubscribe callback %s', device_id)
+            self._device_callbacks[device_id].unsubscribe()
+            del self._device_callbacks[device_id]
+        config_doc = self._firestore.document('origin/%s/device/%s/config/definition' %
+                                              (self._client_name, device_id))
+        if config is not None:
+            LOGGER.info('Registering device %s' % device_id)
+            config_doc.set({
+                'config': config,
+                'timestamp': datetime.datetime.now().isoformat()
+            })
+        else:
+            LOGGER.info('Releasing device %s' % device_id)
+            config_doc.delete()
+
         if callback:
-            return config_doc.on_snapshot(self._on_snapshot)
+            assert config is not None, 'callback defined when deleting config??!?!'
+            snapshot_future = config_doc.on_snapshot(
+              lambda *args: self._on_snapshot(callback, device_id, *args))
+            self._device_callbacks[device_id] = snapshot_future
+
+    def release_device_config(self, device_id):
+        self.register_device_config(device_id, None)
 
     def _parse_creds(self, cred_file):
         """Parse JSON credential file"""
