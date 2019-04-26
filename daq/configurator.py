@@ -49,7 +49,7 @@ def merge_config(base, adding):
         return
     for key in sorted(adding.keys()):
         value = adding[key]
-        if value and isinstance(value, dict) and key in base:
+        if isinstance(value, dict) and key in base:
             merge_config(base[key], value)
         else:
             base[key] = value
