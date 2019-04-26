@@ -10,7 +10,7 @@ const pubsub = new PubSub();
 const EXPIRY_MS = 1000 * 60 * 60 * 24;
 
 admin.initializeApp(functions.config().firebase);
-var db = admin.firestore();
+const db = admin.firestore();
 
 function deleteRun(port, port_doc, runid) {
   const rundoc = port_doc.collection('runid').doc(runid);
@@ -34,11 +34,11 @@ exports.daq_firestore = functions.pubsub.topic('daq_runner').onPublish((event) =
   const message_type = message.type;
   const payload = message.payload;
 
-  if (message_type == 'runner_config') {
+  if (message_type === 'runner_config') {
     handle_runner_config(origin, payload);
-  } else if (message_type == 'test_result') {
+  } else if (message_type === 'test_result') {
     handle_test_result(origin, payload);
-  } else if (message_type == 'heartbeat') {
+  } else if (message_type === 'heartbeat') {
     handle_heartbeat(origin, payload);
   } else {
     throw `Unknown message type ${message_type} from ${origin}`
@@ -47,7 +47,7 @@ exports.daq_firestore = functions.pubsub.topic('daq_runner').onPublish((event) =
 });
 
 function handle_runner_config(origin, message) {
-  const now = Date.now()
+  const now = Date.now();
   const timestamp = new Date(now).toJSON();
 
   console.log('updating runner config', timestamp, origin, message.timestamp);
@@ -62,7 +62,7 @@ function handle_runner_config(origin, message) {
 }
 
 function handle_test_result(origin, message) {
-  const now = Date.now()
+  const now = Date.now();
   const timestamp = new Date(now).toJSON();
   const expired = new Date(now - EXPIRY_MS).toJSON();
   const port = 'port-' + message.port;
@@ -77,6 +77,11 @@ function handle_test_result(origin, message) {
   run_doc.set({'updated': timestamp});
   const result_doc = run_doc.collection('test').doc(message.name);
   result_doc.set(message);
+
+  if (message.config) {
+    console.log('updating config', port, message.runid, typeof(message.config), message.config);
+    run_doc.collection('config').doc('latest').set(message.config);
+  }
 
   port_doc.collection('runid').where('timestamp', '<', expired)
     .get().then(function(snapshot) {

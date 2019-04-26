@@ -66,8 +66,8 @@ class GcpManager:
         if not self._firestore:
             return
 
-        separator = '/' if path else ''
-        full_path = 'origin/%s/%s%sconfig/definition' % (self._client_name, path, separator)
+        assert path, 'empty config path'
+        full_path = 'origin/%s/%s/config/definition' % (self._client_name, path)
 
         if full_path in self._config_callbacks:
             LOGGER.info('Unsubscribe callback %s', path)

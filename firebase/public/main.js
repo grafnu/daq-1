@@ -4,7 +4,7 @@
  */
 
 const PORT_ROW_COUNT = 25;
-const ROW_TIMEOUT_SEC = 500
+const ROW_TIMEOUT_SEC = 500;
 
 const display_columns = [ ];
 const display_rows = [ ];
@@ -88,7 +88,7 @@ function ensureGridRow(label, content, max_rows) {
 
 function setGridValue(row, column, runid, value) {
   const selector = `#testgrid table tr[label="${row}"] td[label="${column}"]`;
-  const targetElement = document.querySelector(selector)
+  const targetElement = document.querySelector(selector);
 
   if (targetElement) {
     const previous = targetElement.getAttribute('runid');
@@ -101,7 +101,7 @@ function setGridValue(row, column, runid, value) {
         targetElement.setAttribute('status', value);
       }
     }
-    const rowElement = document.querySelector(`#testgrid table tr[label="${row}"]`)
+    const rowElement = document.querySelector(`#testgrid table tr[label="${row}"]`);
     const rowTime = rowElement.getAttribute('runid');
     const rowPrev = rowElement.getAttribute('prev');
     updateTimeClass(targetElement, rowTime, rowPrev);
@@ -121,7 +121,7 @@ function setRowState(row, new_runid) {
   let runid = rowElement.getAttribute('runid') || 0;
   let prev = rowElement.getAttribute('prev') || 0;
   console.log('rowstate', row, 'mudgee', new_runid, runid, prev);
-  if (runid == new_runid) {
+  if (runid === new_runid) {
     return;
   } else if (!runid || new_runid > runid) {
     rowElement.setAttribute('prev', runid);
@@ -145,10 +145,10 @@ function updateTimeClass(entry, target, prev) {
   const row = entry.getAttribute('row');
   const column = entry.getAttribute('label');
   console.log('update', row, column, value, target, prev);
-  if (value == target) {
+  if (value === target) {
     entry.classList.add('current');
     entry.classList.remove('old', 'gone');
-  } else if (value == prev) {
+  } else if (value === prev) {
     entry.classList.add('old');
     entry.classList.remove('current', 'gone');
   } else {
@@ -196,13 +196,10 @@ function handleOriginResult(origin, port, runid, test, result) {
   statusUpdate(`Updating ${port} ${test} run ${runid} with '${status}'.`)
   setRowState(port, runid);
   const gridElement = setGridValue(port, test, runid, status);
-  if (result.info) {
-    setGridValue(port, 'info', runid, result.info);
-  }
   if (result.report) {
     addReportBucket(origin, port, runid, result.report);
   }
-  if (test == 'info') {
+  if (test === 'info') {
     makeConfigLink(gridElement, status);
   }
 }
@@ -256,9 +253,9 @@ function watcherAdd(ref, collection, limit, handler) {
   const base = ref.collection(collection)
   const target = limit ? limit(base) : base;
   target.onSnapshot((snapshot) => {
-    delay = 100;
+    let delay = 100;
     snapshot.docChanges.forEach((change) => {
-      if (change.type == 'added') {
+      if (change.type === 'added') {
         setTimeout(() => handler(ref.collection(collection).doc(change.doc.id), change.doc.id), delay);
         delay = delay + 100;
       }
@@ -314,7 +311,7 @@ function getFirestoreDb() {
 }
 
 function dashboardSetup() {
-  var db = getFirestoreDb();
+  const db = getFirestoreDb();
   if (port_id) {
     ensureGridRow('header');
     ensureGridColumn('row', port_id);
@@ -336,9 +333,9 @@ function dashboardSetup() {
 function triggerOrigin(db, origin_id) {
   const latest = (ref) => {
     return ref.orderBy('updated', 'desc').limit(3);
-  }
+  };
 
-  ref = db.collection('origin').doc(origin_id);
+  let ref = db.collection('origin').doc(origin_id);
   ref.collection('runner').doc('heartbeat').onSnapshot((result) => {
     const message = result.data().message;
     ensureColumns(message.tests);
@@ -411,15 +408,15 @@ function interval_updater() {
   }
 }
 
-function getJsonEditor() {
+function getJsonEditor(viewOnly) {
   const container = document.getElementById('jsoneditor');
   const options = {
-    //mode: 'view'
+    mode: viewOnly ? 'view' : undefined
   };
   return new JSONEditor(container, options);
 }
 
-function loadJsoneditor() {
+function loadJsonEditor() {
   const subtitle = device_id
         ? `${origin_id} device ${device_id}`
         : `${origin_id} system`;
@@ -443,11 +440,11 @@ function loadJsoneditor() {
 function loadDeviceConfig(origin_doc, runner_config) {
   const device_doc = origin_doc.collection('device').doc(device_id).collection('config').doc('latest')
   device_doc.get().then((snapshot) => {
-    const jsonEditor = getJsonEditor();
+    const jsonEditor = getJsonEditor(true);
     if (snapshot.exists) {
       jsonEditor.set(snapshot.data().config);
     } else {
-      device_config = makeDeviceConfig(runner_config);
+      const device_config = makeDeviceConfig(runner_config);
       device_doc.set(device_config);
       jsonEditor.set(device_config.config);
     }
@@ -470,7 +467,7 @@ function makeDeviceConfig(runner_config) {
 document.addEventListener('DOMContentLoaded', function() {
   try {
     if (document.getElementById('jsoneditor')) {
-      loadJsoneditor();
+      loadJsonEditor();
     } else {
       dashboardSetup();
     }

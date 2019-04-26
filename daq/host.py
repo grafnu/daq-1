@@ -48,7 +48,6 @@ class ConnectedHost:
         self.devdir = self._init_devdir()
         self.run_id = '%06x' % int(time.time())
         self.scan_base = os.path.abspath(os.path.join(self.devdir, 'scans'))
-        self._loaded_config = None
         self._port_base = self._get_port_base()
         self._device_base = self.get_device_base(config, self.target_mac)
         self.state = None
@@ -66,7 +65,9 @@ class ConnectedHost:
         self._mirror_intf_name = None
         self._tcp_monitor = None
         self.target_ip = None
+        self._loaded_config = self._load_module_config()
         self.record_result('startup', state='run')
+        self._push_record('info', state=self.target_mac, config=self._make_config_message())
         self._report = report.ReportGenerator(config, self._INST_DIR, self.target_mac)
         self._startup_time = None
         self._monitor_scan_sec = int(config.get('monitor_scan_sec', self._MONITOR_SCAN_SEC))
@@ -88,6 +89,12 @@ class ConnectedHost:
             return None
         return conf_base
 
+    def _make_config_message(self):
+        return {
+            'config': self._loaded_config,
+            'timestamp': self._get_timestamp()
+        }
+
     @staticmethod
     def get_device_base(config, target_mac):
         """Get the base config for a host device"""
@@ -107,7 +114,6 @@ class ConnectedHost:
         time.sleep(2)
         shutil.rmtree(self.devdir, ignore_errors=True)
         os.makedirs(self.scan_base)
-        self._loaded_config = self._load_module_config()
         self._publish_module_config(None, self._loaded_config)
         network = self.runner.network
         self._mirror_intf_name = network.create_mirror_interface(self.target_port)
@@ -193,7 +199,7 @@ class ConnectedHost:
             return False
         self.target_ip = target_ip
         self._push_record('info', state='%s/%s' % (self.target_mac, target_ip))
-        self.record_result('dhcp', ip=target_ip, state=state, exception=exception)
+        self.record_result('dhcp', ip=target_ip, state=state, exception=str(exception))
         if exception:
             self._state_transition(_STATE.ERROR, _STATE.WAITING)
             self.runner.target_set_error(self.target_port, exception)
@@ -252,7 +258,7 @@ class ConnectedHost:
     def _monitor_error(self, e):
         LOGGER.error('Target port %d monitor error: %s', self.target_port, e)
         self._monitor_cleanup(forget=False)
-        self.record_result(self.test_name, exception=e)
+        self.record_result(self.test_name, exception=str(e))
         self._state_transition(_STATE.ERROR)
         self.runner.target_set_error(self.target_port, e)
 
@@ -303,7 +309,7 @@ class ConnectedHost:
             if not success1 or not success2:
                 return False
         except Exception as e:
-            self.record_result('base', exception=e)
+            self.record_result('base', exception=str(e))
             self._monitor_cleanup()
             raise
         self.record_result('base')
@@ -369,7 +375,7 @@ class ConnectedHost:
             fail_file = self._FAIL_BASE_FORMAT % host_name
             LOGGER.warning('Executing fail_hook: %s %s', self._fail_hook, fail_file)
             os.system('%s %s 2>&1 > %s.out' % (self._fail_hook, fail_file, fail_file))
-        self.record_result(self.test_name, code=return_code, exception=exception)
+        self.record_result(self.test_name, code=return_code, exception=str(exception))
         result_path = os.path.join(self._host_dir_path(), 'return_code.txt')
         try:
             with open(result_path, 'a') as output_stream:
@@ -412,31 +418,33 @@ class ConnectedHost:
             self._push_record(name, current, **kwargs)
 
     def _push_record(self, name, current=None, **kwargs):
-        if not current:
-            current = int(time.time())
         assert self.run_id, 'run_id undefined'
         assert self.target_port, 'target_port undefined'
         result = {
             'name': name,
             'runid': self.run_id,
             'started': self.test_start,
-            'timestamp': datetime.datetime.fromtimestamp(current).isoformat(),
+            'timestamp': self._get_timestamp(current),
             'port': self.target_port
         }
         for arg in kwargs:
-            result[arg] = None if kwargs[arg] is None else str(kwargs[arg])
+            result[arg] = None if kwargs[arg] is None else kwargs[arg]
         self.results[name] = result
         self.runner.gcp.publish_message('daq_runner', 'test_result', result)
 
     def _publish_module_config(self, name, loaded_config):
-        current = int(time.time())
         assert self.run_id, 'run_id undefined'
         assert self.target_port, 'target_port undefined'
         result = {
             'name': name,
             'runid': self.run_id,
-            'timestamp': datetime.datetime.fromtimestamp(current).isoformat(),
+            'timestamp': self._get_timestamp(),
             'port': self.target_port,
             'config': loaded_config
         }
         self.runner.gcp.publish_message('daq_runner', 'runner_config', result)
+
+    def _get_timestamp(self, current=None):
+        if not current:
+            current = int(time.time())
+        return datetime.datetime.fromtimestamp(current).isoformat()

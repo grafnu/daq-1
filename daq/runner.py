@@ -24,8 +24,8 @@ class DAQRunner:
 
     MAX_GATEWAYS = 10
     _MODULE_CONFIG = "module_config.json"
-    _DEVICE_PATH = "devices/%s"
-    _RUNNER_CONFIG_PATH = ''
+    _DEVICE_PATH = "device/%s"
+    _RUNNER_CONFIG_PATH = 'runner/setup'
     _DEFAULT_TESTS_FILE = "misc/host_tests.conf"
     _RESULT_LOG_FILE = 'inst/result.log'
 
@@ -469,7 +469,7 @@ class DAQRunner:
         return gateway, ready_devices
 
     def _terminate_gateway_set(self, gateway_set):
-        if not gateway_set in self._gateway_sets:
+        if gateway_set not in self._gateway_sets:
             LOGGER.warning('Gateway set %s not found in %s', gateway_set, self._gateway_sets)
             return
         group_name = self._gateway_sets[gateway_set]
@@ -626,12 +626,14 @@ class DAQRunner:
     def _base_config_changed(self, new_config):
         LOGGER.info('Base config changed: %s', new_config)
         configurator.write_config(self.config.get('site_path'), self._MODULE_CONFIG, new_config)
+        self._base_config = self._load_base_config(register=False)
 
-    def _load_base_config(self):
+    def _load_base_config(self, register=True):
         base = {}
-        configurator.load_and_merge(base, self.config.get('base_conf'), self._MODULE_CONFIG)
+        configurator.load_and_merge(base, self.config.get('base_conf'))
         site_config = configurator.load_config(self.config.get('site_path'), self._MODULE_CONFIG)
-        self.gcp.register_config(self._RUNNER_CONFIG_PATH, site_config, self._base_config_changed)
+        if register:
+            self.gcp.register_config(self._RUNNER_CONFIG_PATH, site_config, self._base_config_changed)
         configurator.merge_config(base, site_config)
         return base
 

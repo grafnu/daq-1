@@ -55,11 +55,11 @@ def merge_config(base, adding):
             base[key] = value
 
 
-def load_config(path, filename):
+def load_config(path, filename=None):
     """Load a config file"""
     if not path:
         return None
-    config_file = os.path.join(path, filename)
+    config_file = os.path.join(path, filename) if filename else path
     if not os.path.exists(config_file):
         LOGGER.info('Skipping missing %s', config_file)
         return None
@@ -68,7 +68,7 @@ def load_config(path, filename):
         return yaml.safe_load(data_file)
 
 
-def load_and_merge(base, path, filename):
+def load_and_merge(base, path, filename=None):
     """Load a config file and merge with an existing base"""
     merge_config(base, load_config(path, filename))
 
