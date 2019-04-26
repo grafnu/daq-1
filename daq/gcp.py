@@ -53,26 +53,35 @@ class GcpManager:
     @staticmethod
     def _on_snapshot(callback, doc_snapshot):
         for doc in doc_snapshot:
-            callback(doc.to_dict()['config'])
+            doc_data = doc.to_dict()
+            timestamp = doc_data['timestamp']
+            if doc_data['saved'] != timestamp:
+                callback(doc_data['config'])
+                doc.reference.update({
+                    'saved': timestamp
+                })
 
     def register_config(self, path, config, callback=None):
         """Register a config blob with callback"""
         if not self._firestore:
             return
 
-        if path in self._config_callbacks:
-            LOGGER.info('Unsubscribe callback %s', path)
-            self._config_callbacks[path].unsubscribe()
-            del self._config_callbacks[path]
-
         separator = '/' if path else ''
         full_path = 'origin/%s/%s%sconfig/definition' % (self._client_name, path, separator)
+
+        if full_path in self._config_callbacks:
+            LOGGER.info('Unsubscribe callback %s', path)
+            self._config_callbacks[full_path].unsubscribe()
+            del self._config_callbacks[full_path]
+
         config_doc = self._firestore.document(full_path)
         if config is not None:
+            timestamp = datetime.datetime.now().isoformat()
             LOGGER.info('Registering %s', full_path)
             config_doc.set({
                 'config': config,
-                'timestamp': datetime.datetime.now().isoformat()
+                'saved': timestamp,
+                'timestamp': timestamp
             })
         else:
             LOGGER.info('Releasing %s', full_path)
@@ -82,7 +91,7 @@ class GcpManager:
             assert config is not None, 'callback defined when deleting config??!?!'
             snapshot_future = config_doc.on_snapshot(
                 lambda doc_snapshot, changed, read_time: self._on_snapshot(callback, doc_snapshot))
-            self._config_callbacks[path] = snapshot_future
+            self._config_callbacks[full_path] = snapshot_future
 
     def release_config(self, path):
         """Release a config blob and remove it from the live data system"""
