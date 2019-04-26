@@ -409,12 +409,21 @@ function interval_updater() {
   }
 }
 
-function getJsonEditor(container_id, viewOnly) {
+function getJsonEditor(container_id, onChange) {
   const container = document.getElementById(container_id);
   const options = {
-    mode: viewOnly ? 'view' : undefined
+    mode: onChange ? undefined : 'view',
+    onChangeJSON: onChange
   };
   return new JSONEditor(container, options);
+}
+
+function onConfigChange(config_doc, json) {
+  config_doc.update({
+    'config': json,
+    'timestamp': new Date().toJSON()
+  });
+  console.log('device updated', json);
 }
 
 function loadJsonEditor() {
@@ -429,23 +438,23 @@ function loadJsonEditor() {
     const config_doc = origin_doc.collection('device').doc(device_id).collection('config').doc('definition');
     const run_doc = origin_doc.collection('port').doc(port_id).collection('runid').doc(run_id);
     const latest_doc = run_doc.collection('config').doc('latest');
-    loadConfigEditor(config_doc, latest_doc);
+    loadConfigEditor(config_doc, latest_doc, json => onConfigChange(config_doc, json));
   } else {
     const config_doc = origin_doc.collection('runner').doc('setup').collection('config').doc('definition');
     const latest_doc = origin_doc.collection('runner').doc('config');
-    loadConfigEditor(config_doc, latest_doc);
+    loadConfigEditor(config_doc, latest_doc, json => onConfigChange(config_doc, json))
   }
 }
 
-function loadConfigEditor(config_doc, latest_doc) {
+function loadConfigEditor(config_doc, latest_doc, onConfigChange) {
   config_doc.get().then((snapshot) => {
-    const jsonEditor = getJsonEditor('config_editor');
+    const jsonEditor = getJsonEditor('config_editor', onConfigChange);
     jsonEditor.set(snapshot.data().config);
     jsonEditor.setName('config');
     jsonEditor.expandAll();
   });
   latest_doc.get().then((snapshot) => {
-    const jsonEditor = getJsonEditor('latest_editor', true);
+    const jsonEditor = getJsonEditor('latest_editor');
     jsonEditor.set(snapshot.data().config);
     jsonEditor.setName('latest');
     jsonEditor.expandAll();
