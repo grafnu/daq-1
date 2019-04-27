@@ -24,7 +24,6 @@ class DAQRunner:
 
     MAX_GATEWAYS = 10
     _MODULE_CONFIG = "module_config.json"
-    _DEVICE_PATH = "device/%s"
     _RUNNER_CONFIG_PATH = 'runner/setup'
     _DEFAULT_TESTS_FILE = "misc/host_tests.conf"
     _RESULT_LOG_FILE = 'inst/result.log'
@@ -86,6 +85,7 @@ class DAQRunner:
     def initialize(self):
         """Initialize DAQ instance"""
         self._send_heartbeat()
+        self._publish_runner_config(self._base_config)
 
         self.network.initialize()
 
@@ -160,31 +160,11 @@ class DAQRunner:
                     self._direct_port_traffic(self._active_ports[port], port, None)
                 self._activate_port(port, None)
 
-    def _dev_config_updated(self, device_id, dev_config):
-        LOGGER.info('Device config update: %s %s', device_id, dev_config)
-        configurator.write_config(
-            connected_host.ConnectedHost.get_device_base(self.config, device_id),
-            self._MODULE_CONFIG, dev_config)
-
     def _activate_port(self, port, state):
         if state:
             self._active_ports[port] = state
-            if state is not True:
-                dev_config = self._load_device_config(state)
-                self.gcp.register_config(self._DEVICE_PATH % state, dev_config,
-                                         lambda new_config:
-                                         self._dev_config_updated(state, new_config))
         elif port in self._active_ports:
-            mac_addr = self._active_ports[port]
-            if mac_addr is not True:
-                self.gcp.release_config(self._DEVICE_PATH % mac_addr)
             del self._active_ports[port]
-
-    def _load_device_config(self, mac_addr):
-        device_config = configurator.load_config(
-            connected_host.ConnectedHost.get_device_base(self.config, mac_addr),
-            self._MODULE_CONFIG)
-        return device_config if device_config else {}
 
     def _direct_port_traffic(self, mac, port, target):
         self.network.direct_port_traffic(mac, port, target)
@@ -510,12 +490,13 @@ class DAQRunner:
         LOGGER.warning('Target port %d (%s) exception: %s', target_port, active, e)
         message = ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
         LOGGER.error('Exception: %s', message)
+        err_str = str(e)
         if active:
             target_set = self.port_targets[target_port]
-            target_set.record_result(target_set.test_name, exception=e)
-            self.target_set_complete(target_set, str(e))
+            target_set.record_result(target_set.test_name, exception=err_str)
+            self.target_set_complete(target_set, err_str)
         else:
-            self._target_set_finalize(target_port, {'exception': {'exception': str(e)}}, str(e))
+            self._target_set_finalize(target_port, {'exception': {'exception': err_str}}, err_str)
 
     def target_set_complete(self, target_set, reason):
         """Handle completion of a target_set"""
@@ -627,6 +608,7 @@ class DAQRunner:
         LOGGER.info('Base config changed: %s', new_config)
         configurator.write_config(self.config.get('site_path'), self._MODULE_CONFIG, new_config)
         self._base_config = self._load_base_config(register=False)
+        self._publish_runner_config(self._base_config)
 
     def _load_base_config(self, register=True):
         base = {}
@@ -640,3 +622,10 @@ class DAQRunner:
     def get_base_config(self):
         """Get the base configuration for this install"""
         return self._base_config
+
+    def _publish_runner_config(self, loaded_config):
+        result = {
+            'timestamp': gcp.get_timestamp(),
+            'config': loaded_config
+        }
+        self.gcp.publish_message('daq_runner', 'runner_config', result)

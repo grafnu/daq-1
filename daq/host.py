@@ -36,11 +36,13 @@ class ConnectedHost:
     _MONITOR_SCAN_SEC = 30
     _STARTUP_MIN_TIME_SEC = 5
     _INST_DIR = "inst/"
+    _DEVICE_PATH = "device/%s"
     _FAIL_BASE_FORMAT = "inst/fail_%s"
     _MODULE_CONFIG = "module_config.json"
 
     def __init__(self, runner, gateway, target, config):
         self.runner = runner
+        self._gcp = runner.gcp
         self.gateway = gateway
         self.config = config
         self.target_port = target['port']
@@ -50,7 +52,7 @@ class ConnectedHost:
         self.run_id = '%06x' % int(time.time())
         self.scan_base = os.path.abspath(os.path.join(self.devdir, 'scans'))
         self._port_base = self._get_port_base()
-        self._device_base = self.get_device_base(config, self.target_mac)
+        self._device_base = self._get_device_base(config, self.target_mac)
         self.state = None
         self.no_test = config.get('no_test', False)
         self._state_transition(_STATE.READY if self.no_test else _STATE.INIT)
@@ -90,15 +92,15 @@ class ConnectedHost:
             return None
         return conf_base
 
-    def _make_config_message(self):
+    def _make_config_message(self, config=None):
         return {
-            'config': self._loaded_config,
+            'config': config if config else self._loaded_config,
             'timestamp': gcp.get_timestamp()
         }
 
     @staticmethod
-    def get_device_base(config, target_mac):
-        """Get the base config for a host device"""
+    def _get_device_base(config, target_mac):
+        """Get the base config path for a host device"""
         dev_base = config.get('site_path')
         if not dev_base:
             return None
@@ -115,7 +117,7 @@ class ConnectedHost:
         time.sleep(2)
         shutil.rmtree(self.devdir, ignore_errors=True)
         os.makedirs(self.scan_base)
-        self._publish_module_config(None, self._loaded_config)
+        self._initialize_device_config()
         network = self.runner.network
         self._mirror_intf_name = network.create_mirror_interface(self.target_port)
         if self.no_test:
@@ -155,6 +157,7 @@ class ConnectedHost:
     def terminate(self, trigger=True):
         """Terminate this host"""
         LOGGER.info('Target port %d terminate, trigger %s', self.target_port, trigger)
+        self._release_device_config()
         self._state_transition(_STATE.TERM)
         self.record_result(self.test_name, state='disconnect')
         self._monitor_cleanup()
@@ -322,7 +325,7 @@ class ConnectedHost:
                 LOGGER.info('Target port %d no more tests remaining', self.target_port)
                 self._state_transition(_STATE.DONE, _STATE.NEXT)
                 self._report.finalize()
-                self.runner.gcp.upload_report(self._report.path)
+                self._gcp.upload_report(self._report.path)
                 self.record_result('finish', report=self._report.path)
                 self._report = None
                 self.record_result(None)
@@ -396,12 +399,11 @@ class ConnectedHost:
     def _set_module_config(self, name, loaded_config):
         tmp_dir = self._host_tmp_path()
         configurator.write_config(tmp_dir, self._MODULE_CONFIG, loaded_config)
-        self._publish_module_config(name, self._loaded_config)
+        self._push_record(name, config=self._loaded_config)
 
     def _load_module_config(self):
         config = self.runner.get_base_config()
-        device_config = configurator.load_config(self._device_base, self._MODULE_CONFIG)
-        configurator.merge_config(config, device_config)
+        configurator.load_and_merge(config, self._device_base, self._MODULE_CONFIG)
         configurator.load_and_merge(config, self._port_base, self._MODULE_CONFIG)
         return config
 
@@ -417,28 +419,34 @@ class ConnectedHost:
             self._push_record(name, current, **kwargs)
 
     def _push_record(self, name, current=None, **kwargs):
-        assert self.run_id, 'run_id undefined'
-        assert self.target_port, 'target_port undefined'
+        runid = self.run_id if name else None
+        port = self.target_port if name else None
         result = {
             'name': name,
-            'runid': self.run_id,
+            'runid': runid,
+            'device_id': self.target_mac,
             'started': self.test_start,
             'timestamp': current if current else gcp.get_timestamp(),
-            'port': self.target_port
+            'port': port
         }
         for arg in kwargs:
             result[arg] = None if kwargs[arg] is None else kwargs[arg]
-        self.results[name] = result
-        self.runner.gcp.publish_message('daq_runner', 'test_result', result)
+        if name:
+            self.results[name] = result
+        self._gcp.publish_message('daq_runner', 'test_result', result)
 
-    def _publish_module_config(self, name, loaded_config):
-        assert self.run_id, 'run_id undefined'
-        assert self.target_port, 'target_port undefined'
-        result = {
-            'name': name,
-            'runid': self.run_id,
-            'timestamp': gcp.get_timestamp(),
-            'port': self.target_port,
-            'config': loaded_config
-        }
-        self.runner.gcp.publish_message('daq_runner', 'runner_config', result)
+    def _dev_config_updated(self, device_id, dev_config):
+        LOGGER.info('Device config update: %s %s', device_id, dev_config)
+        configurator.write_config(self._device_base, self._MODULE_CONFIG, dev_config)
+        self._push_record(None, config=self._make_config_message(dev_config))
+
+    def _initialize_device_config(self):
+        dev_config = self._load_module_config()
+        self._gcp.register_config(self._DEVICE_PATH % self.target_mac, dev_config,
+                                 lambda new_config:
+                                 self._dev_config_updated(self.target_mac, new_config))
+        self._push_record(None, config=self._make_config_message(dev_config))
+
+    def _release_device_config(self):
+        self._gcp.release_config(self._DEVICE_PATH % self.target_mac)
+

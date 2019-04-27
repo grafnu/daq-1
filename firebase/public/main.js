@@ -478,11 +478,10 @@ function loadJsonEditors() {
   const origin_doc = db.collection('origin').doc(origin_id);
   if (device_id) {
     config_doc = origin_doc.collection('device').doc(device_id).collection('config').doc('definition');
-    const run_doc = origin_doc.collection('port').doc(port_id).collection('runid').doc(run_id);
-    latest_doc = run_doc.collection('config').doc('latest');
+    latest_doc = origin_doc.collection('device').doc(device_id).collection('config').doc('latest');
   } else {
     config_doc = origin_doc.collection('runner').doc('setup').collection('config').doc('definition');
-    latest_doc = origin_doc.collection('runner').doc('config');
+    latest_doc = origin_doc.collection('runner').doc('setup').collection('config').doc('latest');
   }
   loadEditor(config_doc, 'config_editor', 'config', json => onConfigChange(config_doc, json));
   loadEditor(latest_doc, 'latest_editor', 'latest', null);

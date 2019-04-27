@@ -53,7 +53,7 @@ function handle_runner_config(origin, message) {
   console.log('updating runner config', timestamp, origin, message.timestamp);
 
   const origin_doc = db.collection('origin').doc(origin);
-  const runner_doc = origin_doc.collection('runner').doc('config')
+  const runner_doc = origin_doc.collection('runner').doc('setup').collection('config').doc('latest');
   runner_doc.set({
     'updated': timestamp,
     'timestamp': message.timestamp,
@@ -71,6 +71,16 @@ function handle_test_result(origin, message) {
 
   const origin_doc = db.collection('origin').doc(origin);
   origin_doc.set({'updated': timestamp});
+
+  if (!message.name) {
+    console.log('latest config', message.device_id);
+    const device_doc = origin_doc.collection('device').doc(message.device_id);
+    device_doc.set({'updated': timestamp});
+    const conf_doc = device_doc.collection('config').doc('latest');
+    conf_doc.set(message);
+    return;
+  }
+
   const port_doc = origin_doc.collection('port').doc(port);
   port_doc.set({'updated': timestamp});
   const run_doc = port_doc.collection('runid').doc(message.runid);
