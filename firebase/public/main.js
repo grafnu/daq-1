@@ -418,15 +418,57 @@ function getJsonEditor(container_id, onChange) {
   return new JSONEditor(container, options);
 }
 
+function setSavingStatus(state) {
+  document.getElementById('config_body').classList.toggle('saving', state);
+}
+
+function setDatedStatus(updated, saved) {
+  const element = document.getElementById('config_body');
+  if (updated) {
+    element.setAttribute('updated', updated);
+  } else {
+    updated = element.getAttribute('updated');
+  }
+  if (saved) {
+    element.setAttribute('saved', saved);
+  } else {
+    saved = element.getAttribute('saved');
+  }
+  element.classList.toggle('dated', saved > updated);
+}
+
 function onConfigChange(config_doc, json) {
   config_doc.update({
     'config': json,
     'timestamp': new Date().toJSON()
   });
-  console.log('device updated', json);
+  setSavingStatus(true);
+  console.log('config updated', json)
 }
 
-function loadJsonEditor() {
+function loadEditor(config_doc, element_id, label, onConfigChange) {
+  const editor = getJsonEditor(element_id, onConfigChange);
+  editor.setName(label);
+  editor.set(null);
+  config_doc.onSnapshot((snapshot) => {
+    const firstUpdate = editor.get() == null;
+    let snapshot_data = snapshot.data();
+    editor.update(snapshot_data.config);
+    if (firstUpdate) {
+      editor.expandAll();
+    }
+    if (onConfigChange) {
+      setSavingStatus(snapshot_data.saved !== snapshot_data.timestamp);
+      setDatedStatus(null, snapshot_data.saved);
+    } else {
+      setDatedStatus(snapshot_data.updated, null);
+    }
+  });
+}
+
+function loadJsonEditors() {
+  let latest_doc;
+  let config_doc;
   const subtitle = device_id
         ? `${origin_id} device ${device_id}`
         : `${origin_id} system`;
@@ -435,36 +477,21 @@ function loadJsonEditor() {
   const db = getFirestoreDb();
   const origin_doc = db.collection('origin').doc(origin_id);
   if (device_id) {
-    const config_doc = origin_doc.collection('device').doc(device_id).collection('config').doc('definition');
+    config_doc = origin_doc.collection('device').doc(device_id).collection('config').doc('definition');
     const run_doc = origin_doc.collection('port').doc(port_id).collection('runid').doc(run_id);
-    const latest_doc = run_doc.collection('config').doc('latest');
-    loadConfigEditor(config_doc, latest_doc, json => onConfigChange(config_doc, json));
+    latest_doc = run_doc.collection('config').doc('latest');
   } else {
-    const config_doc = origin_doc.collection('runner').doc('setup').collection('config').doc('definition');
-    const latest_doc = origin_doc.collection('runner').doc('config');
-    loadConfigEditor(config_doc, latest_doc, json => onConfigChange(config_doc, json))
+    config_doc = origin_doc.collection('runner').doc('setup').collection('config').doc('definition');
+    latest_doc = origin_doc.collection('runner').doc('config');
   }
-}
-
-function loadConfigEditor(config_doc, latest_doc, onConfigChange) {
-  config_doc.get().then((snapshot) => {
-    const jsonEditor = getJsonEditor('config_editor', onConfigChange);
-    jsonEditor.set(snapshot.data().config);
-    jsonEditor.setName('config');
-    jsonEditor.expandAll();
-  });
-  latest_doc.get().then((snapshot) => {
-    const jsonEditor = getJsonEditor('latest_editor');
-    jsonEditor.set(snapshot.data().config);
-    jsonEditor.setName('latest');
-    jsonEditor.expandAll();
-  });
+  loadEditor(config_doc, 'config_editor', 'config', json => onConfigChange(config_doc, json));
+  loadEditor(latest_doc, 'latest_editor', 'latest', null);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
   try {
     if (document.getElementById('config_editor')) {
-      loadJsonEditor();
+      loadJsonEditors();
     } else {
       dashboardSetup();
     }

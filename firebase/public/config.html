@@ -11,13 +11,13 @@
     <script src="lib/jsoneditor.js"></script>
     <link href="lib/jsoneditor.css" rel="stylesheet" type="text/css">
   </head>
-  <body>
+  <body id="config_body">
     <script>
     </script>
     <h1>Configuration Editor: <span id="title_origin"></span></h1>
-    <h2>Configuration definition:</h2>
+    <h2>Configuration definition: <span class="saving_indicator">Saving...</span></h2>
     <div id="config_editor"></div>
-    <h2>Last combined configuration:</h2>
+    <h2>Last combined configuration:  <span class="dated_indicator">Out of date!</span></h2>
     <div id="latest_editor"></div>
     <div class="daq-text" id="status">Initializing...</div>
     <div class="daq-text" id="update"></div>

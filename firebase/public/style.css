@@ -50,3 +50,21 @@ div {
 #testgrid table tr ~ tr td[label=timer] {
     background: #EEE;
 }
+
+#config_body .saving_indicator {
+    color: #f00;
+    opacity: 0;
+}
+
+#config_body.saving .saving_indicator {
+    opacity: 1;
+}
+
+#config_body .dated_indicator {
+    color: #f00;
+    opacity: 0;
+}
+
+#config_body.dated .dated_indicator {
+    opacity: 1;
+}

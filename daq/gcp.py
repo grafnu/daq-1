@@ -15,6 +15,10 @@ from google.auth import _default as google_auth
 LOGGER = logging.getLogger('gcp')
 
 
+def get_timestamp():
+    return datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+
+
 class GcpManager:
     """Manager class for working with GCP"""
 
@@ -76,7 +80,7 @@ class GcpManager:
 
         config_doc = self._firestore.document(full_path)
         if config is not None:
-            timestamp = datetime.datetime.now().isoformat()
+            timestamp = get_timestamp()
             LOGGER.info('Registering %s', full_path)
             config_doc.set({
                 'config': config,
@@ -114,7 +118,7 @@ class GcpManager:
             return
         envelope = {
             'type': message_type,
-            'timestamp': datetime.datetime.now().isoformat(),
+            'timestamp': get_timestamp(),
             'payload': message
         }
         message_str = json.dumps(envelope)

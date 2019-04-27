@@ -10,6 +10,7 @@ from clib import tcpdump_helper
 
 import configurator
 import docker_test
+import gcp
 import report
 
 LOGGER = logging.getLogger('host')
@@ -18,7 +19,7 @@ LOGGER = logging.getLogger('host')
 class _STATE:
     """Host state enum for testing cycle"""
     ERROR = 'Error condition'
-    INIT = 'Initizalization'
+    INIT = 'Initialization'
     READY = 'Ready but not active'
     WAITING = 'Waiting for activation'
     BASE = 'Baseline tests'
@@ -92,7 +93,7 @@ class ConnectedHost:
     def _make_config_message(self):
         return {
             'config': self._loaded_config,
-            'timestamp': self._get_timestamp()
+            'timestamp': gcp.get_timestamp()
         }
 
     @staticmethod
@@ -248,8 +249,7 @@ class ConnectedHost:
 
     def _monitor_cleanup(self, forget=True):
         if self._tcp_monitor:
-            now = datetime.datetime.now()
-            LOGGER.info('Target port %d monitor scan complete at %s', self.target_port, now)
+            LOGGER.info('Target port %d monitor scan complete', self.target_port)
             if forget:
                 self.runner.monitor_forget(self._tcp_monitor.stream())
             self._tcp_monitor.terminate()
@@ -270,9 +270,8 @@ class ConnectedHost:
             return
         self.record_result('monitor', time=self._monitor_scan_sec, state='run')
         monitor_file = os.path.join(self.scan_base, 'monitor.pcap')
-        now = datetime.datetime.now()
-        LOGGER.info('Target port %d background scan at %s for %ds',
-                    self.target_port, now, self._monitor_scan_sec)
+        LOGGER.info('Target port %d background scan for %ds',
+                    self.target_port, self._monitor_scan_sec)
         network = self.runner.network
         tcp_filter = ''
         intf_name = self._mirror_intf_name
@@ -408,7 +407,7 @@ class ConnectedHost:
 
     def record_result(self, name, **kwargs):
         """Record a named result for this test"""
-        current = int(time.time())
+        current = gcp.get_timestamp()
         if name != self.test_name:
             LOGGER.debug('Target port %d report %s start %d',
                          self.target_port, name, current)
@@ -424,7 +423,7 @@ class ConnectedHost:
             'name': name,
             'runid': self.run_id,
             'started': self.test_start,
-            'timestamp': self._get_timestamp(current),
+            'timestamp': current if current else gcp.get_timestamp(),
             'port': self.target_port
         }
         for arg in kwargs:
@@ -438,13 +437,8 @@ class ConnectedHost:
         result = {
             'name': name,
             'runid': self.run_id,
-            'timestamp': self._get_timestamp(),
+            'timestamp': gcp.get_timestamp(),
             'port': self.target_port,
             'config': loaded_config
         }
         self.runner.gcp.publish_message('daq_runner', 'runner_config', result)
-
-    def _get_timestamp(self, current=None):
-        if not current:
-            current = int(time.time())
-        return datetime.datetime.fromtimestamp(current).isoformat()

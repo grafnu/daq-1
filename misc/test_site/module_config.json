@@ -3,7 +3,7 @@
     "brute": {},
     "nmap": {},
     "switch": {
-      "enabled": true
+      "enabled": false
     }
   }
 }
