@@ -1,13 +1,21 @@
 {
-  "modules": {
-    "brute": {
-      "enabled": true
-    },
-    "nmap": {
-      "enabled": true
-    },
-    "switch": {
-      "enabled": false
+  "ports": {
+    "tcp": {
+      "443": {
+        "allowed": true,
+        "reason": "Administrative Web-Server"
+      }
     }
+  },
+  "device_info": {
+    "name": "*** Name ***",
+    "guid": "*** GUID ***",
+    "mac_addr": "*** MAC Address ***",
+    "hostname": "*** Network Hostname ***",
+    "type": "*** Type ***",
+    "make": "*** Make ***",
+    "model": "*** Model ***",
+    "serial": "*** Serial ***",
+    "version": "*** Version ***"
   }
 }

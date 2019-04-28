@@ -1,3 +1,7 @@
 {
-  "monkeys": "elephants"
+  "report_info": {
+    "operator": "*** Operator Name ***",
+    "reviewer": "*** Reviewer Name ***",
+    "approver": "*** Approver Name ***"
+  }  
 }
