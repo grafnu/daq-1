@@ -3,5 +3,16 @@
     "operator": "*** Operator Name ***",
     "reviewer": "*** Reviewer Name ***",
     "approver": "*** Approver Name ***"
-  }  
+  },
+  "modules": {
+    "nmap": {
+      "enabled": true
+    },
+    "switch": {
+      "enabled": true
+    },
+    "brute": {
+      "enabled": true
+    }
+  }
 }
