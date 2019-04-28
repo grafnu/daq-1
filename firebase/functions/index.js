@@ -73,7 +73,7 @@ function handle_test_result(origin, message) {
   origin_doc.set({'updated': timestamp});
 
   if (!message.name) {
-    console.log('latest config', message.device_id);
+    console.log('latest config', message.device_id, message.runid);
     const device_doc = origin_doc.collection('device').doc(message.device_id);
     device_doc.set({'updated': timestamp});
     const conf_doc = device_doc.collection('config').doc('latest');
@@ -90,7 +90,7 @@ function handle_test_result(origin, message) {
 
   if (message.config) {
     console.log('updating config', port, message.runid, typeof(message.config), message.config);
-    run_doc.collection('config').doc('latest').set(message.config);
+    run_doc.collection('config').doc('latest').set(message);
   }
 
   port_doc.collection('runid').where('timestamp', '<', expired)

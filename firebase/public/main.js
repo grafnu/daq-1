@@ -10,6 +10,8 @@ const display_columns = [ ];
 const display_rows = [ ];
 const row_timestamps = {};
 
+const data_state = {};
+
 let last_result_time_sec = 0;
 
 const origin_id = getQueryParam('origin');
@@ -418,36 +420,31 @@ function getJsonEditor(container_id, onChange) {
   return new JSONEditor(container, options);
 }
 
-function setSavingStatus(state) {
-  document.getElementById('config_body').classList.toggle('saving', state);
-}
+function setDatedStatus(attribute, value) {
+  data_state[attribute] = value;
 
-function setDatedStatus(updated, saved) {
   const element = document.getElementById('config_body');
-  if (updated) {
-    element.setAttribute('updated', updated);
-  } else {
-    updated = element.getAttribute('updated');
-  }
-  if (saved) {
-    element.setAttribute('saved', saved);
-  } else {
-    saved = element.getAttribute('saved');
-  }
-  element.classList.toggle('dated', saved > updated);
+  element.classList.toggle('dirty', data_state.dirty > data_state.saved);
+  element.classList.toggle('saving', data_state.pushed > data_state.saved);
+  element.classList.toggle('dated', data_state.saved > data_state.updated);
 }
 
-function onConfigChange(config_doc, json) {
+function pushConfigChange(config_editor, config_doc) {
+  const json = config_editor.get();
+  const timestamp = new Date().toJSON();
   config_doc.update({
     'config': json,
-    'timestamp': new Date().toJSON()
+    'timestamp': timestamp
   });
-  setSavingStatus(true);
-  console.log('config updated', json)
+  setDatedStatus('pushed', timestamp);
 }
 
-function loadEditor(config_doc, element_id, label, onConfigChange) {
-  const editor = getJsonEditor(element_id, onConfigChange);
+function setDirtyState() {
+  setDatedStatus('dirty', new Date().toJSON());
+}
+
+function loadEditor(config_doc, element_id, label, onConfigEdit) {
+  const editor = getJsonEditor(element_id, onConfigEdit);
   editor.setName(label);
   editor.set(null);
   config_doc.onSnapshot((snapshot) => {
@@ -457,13 +454,13 @@ function loadEditor(config_doc, element_id, label, onConfigChange) {
     if (firstUpdate) {
       editor.expandAll();
     }
-    if (onConfigChange) {
-      setSavingStatus(snapshot_data.saved !== snapshot_data.timestamp);
-      setDatedStatus(null, snapshot_data.saved);
+    if (onConfigEdit) {
+      setDatedStatus('saved', snapshot_data.saved);
     } else {
-      setDatedStatus(snapshot_data.updated, null);
+      setDatedStatus('updated', snapshot_data.updated);
     }
   });
+  return editor;
 }
 
 function loadJsonEditors() {
@@ -483,8 +480,10 @@ function loadJsonEditors() {
     config_doc = origin_doc.collection('runner').doc('setup').collection('config').doc('definition');
     latest_doc = origin_doc.collection('runner').doc('setup').collection('config').doc('latest');
   }
-  loadEditor(config_doc, 'config_editor', 'config', json => onConfigChange(config_doc, json));
+  config_editor = loadEditor(config_doc, 'config_editor', 'config', setDirtyState);
   loadEditor(latest_doc, 'latest_editor', 'latest', null);
+
+  document.querySelector('#config_body .save_button').onclick = () => pushConfigChange(config_editor, config_doc)
 }
 
 document.addEventListener('DOMContentLoaded', function() {

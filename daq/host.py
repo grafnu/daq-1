@@ -418,16 +418,14 @@ class ConnectedHost:
         if name:
             self._push_record(name, current, **kwargs)
 
-    def _push_record(self, name, current=None, **kwargs):
-        runid = self.run_id if name else None
-        port = self.target_port if name else None
+    def _push_record(self, name, run_info=True, current=None, **kwargs):
         result = {
             'name': name,
-            'runid': runid,
+            'runid': (self.run_id if run_info else None),
             'device_id': self.target_mac,
             'started': self.test_start,
             'timestamp': current if current else gcp.get_timestamp(),
-            'port': port
+            'port': (self.target_port if run_info else None)
         }
         for arg in kwargs:
             result[arg] = None if kwargs[arg] is None else kwargs[arg]
@@ -438,14 +436,13 @@ class ConnectedHost:
     def _dev_config_updated(self, device_id, dev_config):
         LOGGER.info('Device config update: %s %s', device_id, dev_config)
         configurator.write_config(self._device_base, self._MODULE_CONFIG, dev_config)
-        self._push_record(None, config=self._make_config_message(dev_config))
+        self._push_record(None, run_info=False, config=self._make_config_message(dev_config))
 
     def _initialize_device_config(self):
-        dev_config = self._load_module_config()
-        self._gcp.register_config(self._DEVICE_PATH % self.target_mac, dev_config,
+        self._gcp.register_config(self._DEVICE_PATH % self.target_mac, self._loaded_config,
                                  lambda new_config:
                                  self._dev_config_updated(self.target_mac, new_config))
-        self._push_record(None, config=self._make_config_message(dev_config))
+        self._push_record(None, config=self._make_config_message())
 
     def _release_device_config(self):
         self._gcp.release_config(self._DEVICE_PATH % self.target_mac)

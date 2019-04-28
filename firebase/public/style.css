@@ -68,3 +68,12 @@ div {
 #config_body.dated .dated_indicator {
     opacity: 1;
 }
+
+#config_body .save_button {
+    color: #004ED0;
+    opacity: 0;
+}
+
+#config_body.dirty .save_button {
+    opacity: 1;
+}
