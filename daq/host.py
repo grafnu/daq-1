@@ -70,7 +70,7 @@ class ConnectedHost:
         self.target_ip = None
         self._loaded_config = self._load_module_config()
         self.record_result('startup', state='run')
-        self._push_record('info', state=self.target_mac, config=self._make_config_message())
+        self._push_record('info', state=self.target_mac, config=self._make_config_bundle())
         self._report = report.ReportGenerator(config, self._INST_DIR, self.target_mac)
         self._startup_time = None
         self._monitor_scan_sec = int(config.get('monitor_scan_sec', self._MONITOR_SCAN_SEC))
@@ -92,7 +92,7 @@ class ConnectedHost:
             return None
         return conf_base
 
-    def _make_config_message(self, config=None):
+    def _make_config_bundle(self, config=None):
         return {
             'config': config if config else self._loaded_config,
             'timestamp': gcp.get_timestamp()
@@ -436,14 +436,15 @@ class ConnectedHost:
     def _dev_config_updated(self, device_id, dev_config):
         LOGGER.info('Device config update: %s %s', device_id, dev_config)
         configurator.write_config(self._device_base, self._MODULE_CONFIG, dev_config)
-        self._push_record(None, run_info=False, config=self._make_config_message(dev_config))
+        config_bundle = self._make_config_bundle(self._load_module_config())
+        self._push_record(None, run_info=False, config=config_bundle)
 
     def _initialize_device_config(self):
-        self._gcp.register_config(self._DEVICE_PATH % self.target_mac, self._loaded_config,
+        dev_config = configurator.load_config(self._device_base, self._MODULE_CONFIG)
+        self._gcp.register_config(self._DEVICE_PATH % self.target_mac, dev_config,
                                  lambda new_config:
-                                 self._dev_config_updated(self.target_mac, new_config))
-        self._push_record(None, config=self._make_config_message())
+                                  self._dev_config_updated(self.target_mac, new_config))
+        self._push_record(None, config=self._make_config_bundle())
 
     def _release_device_config(self):
         self._gcp.release_config(self._DEVICE_PATH % self.target_mac)
-

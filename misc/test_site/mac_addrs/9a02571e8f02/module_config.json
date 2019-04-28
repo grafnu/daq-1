@@ -17,10 +17,5 @@
         "reason": "Administrative Web-Server"
       }
     }
-  },
-  "report_info": {
-    "approver": "*** Approver Name ***",
-    "operator": "*** Operator Name ***",
-    "reviewer": "*** Reviewer Name ***"
   }
 }

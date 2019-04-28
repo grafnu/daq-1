@@ -1,18 +1,18 @@
 {
-  "report_info": {
-    "operator": "*** Operator Name ***",
-    "reviewer": "*** Reviewer Name ***",
-    "approver": "*** Approver Name ***"
-  },
   "modules": {
-    "nmap": {
+    "brute": {
       "enabled": true
+    },
+    "nmap": {
+      "enabled": false
     },
     "switch": {
       "enabled": true
-    },
-    "brute": {
-      "enabled": true
     }
+  },
+  "report_info": {
+    "approver": "*** Approver Name ***",
+    "operator": "*** Operator Name ***",
+    "reviewer": "*** Reviewer Name ***"
   }
 }
