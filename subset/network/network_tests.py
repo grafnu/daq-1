@@ -29,6 +29,10 @@ tests = {
 'communication.type' : tcpdump_display_umb_packets
 }
 
+def write_report(string_to_append):
+    with open(report_filename, 'a+') as file_open:
+        file_open.write(string_to_append)
+
 def shell_command_with_result(command, wait_time, terminate_flag):
     process = subprocess.Popen(command, universal_newlines=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     text = process.stdout.read()
@@ -46,12 +50,11 @@ def validate_test():
     else:
         max = packets_received
     for i in range(0, max):
-        file_open.write(packet_request_list[i] + '\n')
-    file_open.write('packets_sent=' + str(packets_received)  + '\n')
-    file_open.write("RESULT pass %s\n" % test_request)
+        write_report(packet_request_list[i] + '\n')
+    write_report('packets_sent=' + str(packets_received)  + '\n')
+    write_report("RESULT pass %s\n" % test_request)
 
 shell_result = shell_command_with_result(tests[test_request], 0, False)
-file_open = open(report_filename, 'w')
 
 if not shell_result is None:
     if len(shell_result) > min_packet_length:
@@ -59,6 +62,4 @@ if not shell_result is None:
         packets_received = len(packet_request_list)
         validate_test()
 else:
-    file_open.write("RESULT fail %s\n" % test_request)
-
-file_open.close()
+    write_report("RESULT fail %s\n" % test_request)
