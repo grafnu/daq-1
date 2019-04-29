@@ -72,6 +72,7 @@ public class Registrar {
     Preconditions.checkNotNull(schemaName, "schemaName not set yet");
     siteConfig = new File(siteConfigPath);
     cloudIotConfig = new File(siteConfig, CLOUD_IOT_CONFIG_JSON);
+    System.err.println("Reading Cloud IoT config from " + cloudIotConfig.getAbsolutePath());
     cloudIotManager = new CloudIotManager(new File(gcpCredPath), cloudIotConfig, schemaName);
     pubSubPusher = new PubSubPusher(new File(gcpCredPath), cloudIotConfig);
   }
@@ -108,7 +109,7 @@ public class Registrar {
       }
       System.err.println(String.format("Processed %d devices", localDevices.size()));
     } catch (Exception e) {
-      throw new RuntimeException("While processing devices", e);
+      exceptionMap.put("Processing devices", e);
     }
     exceptionMap.throwIfNotEmpty();
   }
