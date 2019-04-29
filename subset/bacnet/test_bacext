@@ -4,7 +4,7 @@ JAR=bacnet4j/bacnet4j.jar
 CLASS=com.serotonin.bacnet4j.test.RedstoneTest.Test5
 TARGET="Object name = BACnet device"
 TMPOUT=`tempfile`
-REPORT = /tmp/report.txt
+REPORT=/tmp/report.txt
 
 if [ "$1" == "loop" ]; then
     shift
