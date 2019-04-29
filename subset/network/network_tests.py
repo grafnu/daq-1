@@ -17,12 +17,16 @@ tcpdump_display_all_packets = 'tcpdump -n src host ' + device_address + ' -r ' +
 tcpdump_display_udp_bacnet_packets = 'tcpdump -n udp dst portrange 47808-47809 ' + cap_pcap_file
 tcpdump_display_arp_packets = 'tcpdump -v arp -r ' + cap_pcap_file
 tcpdump_display_ntp_packets = 'tcpdump dst port 123 -r ' + cap_pcap_file
+tcpdump_display_eapol_packets = 'tcpdump port 1812 or port 1813 or port 3799 ' + cap_pcap_file
+tcpdump_display_umb_packets = 'tcpdump -n ether broadcast and ether multicast ' + cap_pcap_file
 
 tests = {
 'connection.min_send' : tcpdump_display_all_packets,
 'protocol.app_min_send' : tcpdump_display_udp_bacnet_packets, 
 'connection.dhcp_long' : tcpdump_display_arp_packets, 
-'network.ntp.update' : tcpdump_display_ntp_packets
+'network.ntp.update' : tcpdump_display_ntp_packets,
+'security.network.802_1x' : tcpdump_display_eapol_packets,
+'communication.type' : tcpdump_display_umb_packets
 }
 
 def shell_command_with_result(command, wait_time, terminate_flag):
@@ -64,7 +68,7 @@ def validate_test():
     for i in range(0, max):
         file_open.write(packet_request_list[i] + '\n')
     file_open.write('packets_sent=' + str(packets_received)  + '\n')
-    file_open.write('RESULT ' + 'pass ' + test_request + '\n')
+    file_open.write("RESULT pass %s\n" % test_request)
 
 shell_result = shell_command_with_result(tests[test_request], 0, False)
 file_open = open(report_filename, 'w')
@@ -76,6 +80,6 @@ if not shell_result is None:
         packets_received = len(packet_request_list)
         validate_test()
 else:
-    file_open.write('RESULT ' + 'fail ' + test_request + '\n')
+    file_open.write("RESULT fail %s\n" % test_request)
 
 file_open.close()

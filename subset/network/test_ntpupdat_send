@@ -2,12 +2,8 @@
 
 REPORT=/tmp/report.txt
 
-ping -n -c 3 $TARGET_IP
+cp /scans/monitor.pcap monitor.pcap
 
-cp /scans/monitor.pcap capture.pcap
+python network_tests.py network.ntp.update monitor.pcap $TARGET_IP
 
-python network_tests.py network.ntp.update capture.pcap $TARGET_IP
-
-mv report.txt $REPORT
-
-cat $REPORT
+cat report.txt >> $REPORT

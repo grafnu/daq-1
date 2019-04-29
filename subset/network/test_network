@@ -1,0 +1,8 @@
+#!/bin/bash -e
+
+sh ./test_dhcplong_send
+sh ./test_ntpupdat_send
+sh ./test_net_app_send
+sh ./test_net_min_send
+sh ./test_com_type
+sh ./test_sec_net_802

@@ -4,6 +4,6 @@ REPORT=/tmp/report.txt
 
 cp /scans/monitor.pcap monitor.pcap
 
-python network_tests.py connection.min_send monitor.pcap $TARGET_IP
+python network_tests.py security.network.802_1x monitor.pcap $TARGET_IP
 
 cat report.txt >> $REPORT

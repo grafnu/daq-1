@@ -4,13 +4,11 @@ REPORT=/tmp/report.txt
 
 ping -n -c 3 $TARGET_IP
 
-cp /scans/monitor.pcap capture.pcap
+cp /scans/monitor.pcap monitor.pcap
 
-python network_tests.py connection.dhcp_long capture.pcap $TARGET_IP
+python network_tests.py connection.dhcp_long monitor.pcap $TARGET_IP
 
-mv report.txt $REPORT
-
-cat $REPORT
+cat report.txt >> $REPORT
 
 #To understand how to adjust DAQ DHCP leasetime the following docs are useful
 #daq/misc/increase_leasetime

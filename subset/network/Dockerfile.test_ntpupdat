@@ -1,9 +1,0 @@
-FROM daq/aardvark:latest
-
-RUN $AG update && $AG install python netcat
-
-COPY subset/network/network_min_capture.py .
-COPY subset/network/network_tests.py .
-COPY subset/network/test_ntpupdat_send .
-
-CMD ["./test_ntpupdat_send"]
