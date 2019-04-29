@@ -4,6 +4,7 @@ JAR=bacnet4j/bacnet4j.jar
 CLASS=com.serotonin.bacnet4j.test.RedstoneTest.Test5
 TARGET="Object name = BACnet device"
 TMPOUT=`tempfile`
+REPORT = /tmp/report.txt
 
 if [ "$1" == "loop" ]; then
     shift
@@ -19,12 +20,17 @@ read -r -a parts <<< "$line"
 
 local_ip=${parts[1]%/*}
 broadcast_ip=${parts[3]}
-test_id="bacnet_ADDR_UNIQUE"
+
+pics_test_id="bacnet_PICS"
+addr_test_id="bacnet_ADDR_UNIQUE"
+version_test_id="bacnet_VERSION"
 
 echo Scanning bacnet $broadcast_ip from $local_ip
-echo testId: $test_id broadcastIp: $broadcast_ip localIp: $local_ip loop: $subcmd
 
-java -cp $JAR $CLASS $test_id $broadcast_ip $local_ip $subcmd | tee $TMPOUT
+java -cp $JAR $CLASS $pics_test_id $broadcast_ip $local_ip $subcmd | tee $TMPOUT
+java -cp $JAR $CLASS $addr_test_id $broadcast_ip $local_ip $subcmd | tee $TMPOUT
+java -cp $JAR $CLASS $version_test_id $broadcast_ip $local_ip | tee $TMPOUT
+
 
 bacnet_runtime=/config/bacnet_runtime.sh
 if [ -f $bacnet_runtime ]; then
@@ -41,7 +47,7 @@ else
 fi
 
 echo $(ls)
-
-cp -r tmp/DuplicatesTestReport.txt /tmp/report.text
-cd tmp
+echo ${cd tmp}
 echo $(ls)
+cat tmp/PICS.txt >> $REPORT
+cat tmp/DuplicatesTestReport.txt >> $REPORT

@@ -6,7 +6,7 @@ RUN $AG update && $AG install openjdk-8-jre
 RUN $AG update && $AG install openjdk-8-jdk git
 
 #This refer to a specific github commit on the repo
-ENV BACHASH=df41924719c45a28d04b4a7605cdefb08c290393
+ENV BACHASH=0e30f78839b0373bad84b8dc61889131967e2fc4
 
 RUN bin/retry_cmd git clone https://github.com/JoelRedstone/bacnet4j.git --single-branch \
   && cd bacnet4j && git reset --hard $BACHASH && ../bin/retry_cmd ./gradlew shadow
@@ -17,6 +17,6 @@ RUN $AG update && $AG install openjdk-8-jre
 
 COPY --from=bacnet_build /root/bacnet4j/*.jar bacnet4j/
 
-COPY subset/bacnet/picstest/test_bacpics .
+COPY subset/bacnet/test_bacnet .
 
-CMD ["./test_bacpics"]
+CMD ["./test_bacnet"]
