@@ -4,13 +4,6 @@ RUN $AG update && $AG install python netcat
 
 COPY subset/network/network_min_capture.py .
 COPY subset/network/network_tests.py .
-COPY subset/network/test_dhcplong_send .
-COPY subset/network/test_ntpupdat_send .
-COPY subset/network/test_net_app_send .
-COPY subset/network/test_net_min_send .
-COPY subset/network/test_com_type .
-COPY subset/network/test_sec_net_802 .
 COPY subset/network/test_network .
-
 
 CMD ["./test_network"]

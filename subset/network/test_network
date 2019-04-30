@@ -1,8 +1,15 @@
 #!/bin/bash -e
 
-sh ./test_dhcplong_send
-sh ./test_ntpupdat_send
-sh ./test_net_app_send
-sh ./test_net_min_send
-sh ./test_com_type
-sh ./test_sec_net_802
+REPORT=/tmp/report.txt
+
+#cp /scans/monitor.pcap monitor.pcap
+MONITOR=/scans/monitor.pcap
+
+python network_tests.py connection.dhcp_long $MONITOR $TARGET_IP
+python network_tests.py network.ntp.update $MONITOR $TARGET_IP
+python network_tests.py protocol.app_min_send $MONITOR $TARGET_IP
+python network_tests.py connection.min_send $MONITOR $TARGET_IP
+python network_tests.py communication.type $MONITOR $TARGET_IP
+python network_tests.py security.network.802_1x $MONITOR $TARGET_IP
+
+cat report.txt >> $REPORT

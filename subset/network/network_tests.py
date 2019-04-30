@@ -21,12 +21,12 @@ tcpdump_display_eapol_packets = 'tcpdump port 1812 or port 1813 or port 3799 ' +
 tcpdump_display_umb_packets = 'tcpdump -n ether broadcast and ether multicast ' + cap_pcap_file
 
 tests = {
-'connection.min_send' : tcpdump_display_all_packets,
-'protocol.app_min_send' : tcpdump_display_udp_bacnet_packets, 
-'connection.dhcp_long' : tcpdump_display_arp_packets, 
-'network.ntp.update' : tcpdump_display_ntp_packets,
-'security.network.802_1x' : tcpdump_display_eapol_packets,
-'communication.type' : tcpdump_display_umb_packets
+    'connection.min_send' : tcpdump_display_all_packets,
+    'protocol.app_min_send' : tcpdump_display_udp_bacnet_packets, 
+    'connection.dhcp_long' : tcpdump_display_arp_packets, 
+    'network.ntp.update' : tcpdump_display_ntp_packets,
+    'security.network.802_1x' : tcpdump_display_eapol_packets,
+    'communication.type' : tcpdump_display_umb_packets
 }
 
 def write_report(string_to_append):
