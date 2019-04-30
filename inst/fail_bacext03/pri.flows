@@ -1,72 +1,79 @@
 NXST_FLOW reply (xid=0x4):
- cookie=0x5adc15c0, duration=167.658s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20480,in_port=33,dl_dst=5c:f7:e6:8b:7a:d1 actions=output:1,output:1003,resubmit(,1)
- cookie=0x5adc15c0, duration=167.658s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20480,in_port=34,dl_dst=5c:f7:e6:8b:7a:d1 actions=output:1,output:1003,resubmit(,1)
- cookie=0x5adc15c0, duration=167.658s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20480,in_port=35,dl_dst=5c:f7:e6:8b:7a:d1 actions=output:1,output:1003,resubmit(,1)
- cookie=0x5adc15c0, duration=167.658s, table=0, n_packets=507, n_bytes=268471, idle_age=1, priority=20480,in_port=30,dl_dst=5c:f7:e6:8b:7a:d1 actions=output:1,output:1003,resubmit(,1)
- cookie=0x5adc15c0, duration=167.658s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20480,in_port=31,dl_dst=5c:f7:e6:8b:7a:d1 actions=output:1,output:1003,resubmit(,1)
- cookie=0x5adc15c0, duration=167.656s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20478,in_port=33,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:30,output:31,output:32,output:33,output:34,output:35
- cookie=0x5adc15c0, duration=167.656s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20478,in_port=34,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:30,output:31,output:32,output:33,output:34,output:35
- cookie=0x5adc15c0, duration=167.656s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20478,in_port=35,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:30,output:31,output:32,output:33,output:34,output:35
- cookie=0x5adc15c0, duration=167.656s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20478,in_port=30,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:30,output:31,output:32,output:33,output:34,output:35
- cookie=0x5adc15c0, duration=167.656s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20478,in_port=31,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:30,output:31,output:32,output:33,output:34,output:35
- cookie=0x5adc15c0, duration=38.561s, table=0, n_packets=0, n_bytes=0, idle_age=38, priority=20479,in_port=42,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:40,output:41,output:42,output:43,output:44,output:45
- cookie=0x5adc15c0, duration=38.561s, table=0, n_packets=0, n_bytes=0, idle_age=38, priority=20479,in_port=43,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:40,output:41,output:42,output:43,output:44,output:45
- cookie=0x5adc15c0, duration=38.561s, table=0, n_packets=0, n_bytes=0, idle_age=38, priority=20479,in_port=44,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:40,output:41,output:42,output:43,output:44,output:45
- cookie=0x5adc15c0, duration=38.561s, table=0, n_packets=0, n_bytes=0, idle_age=38, priority=20479,in_port=45,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:40,output:41,output:42,output:43,output:44,output:45
- cookie=0x5adc15c0, duration=192.193s, table=0, n_packets=90, n_bytes=12048, idle_age=8, priority=20480,in_port=1000 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=167.656s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20477,in_port=33 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=167.656s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20477,in_port=34 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=167.656s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20477,in_port=35 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=167.619s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20477,in_port=30 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=167.619s, table=0, n_packets=3, n_bytes=210, idle_age=65, priority=20477,in_port=31 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=38.561s, table=0, n_packets=0, n_bytes=0, idle_age=38, priority=20478,in_port=42 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=38.561s, table=0, n_packets=0, n_bytes=0, idle_age=38, priority=20478,in_port=43 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=38.561s, table=0, n_packets=0, n_bytes=0, idle_age=38, priority=20478,in_port=44 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=38.561s, table=0, n_packets=0, n_bytes=0, idle_age=38, priority=20478,in_port=45 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=20.875s, table=0, n_packets=8, n_bytes=542, idle_age=1, priority=20479,in_port=1 actions=drop
- cookie=0x5adc15c0, duration=20.875s, table=0, n_packets=60, n_bytes=11524, idle_age=1, priority=20480,in_port=1,dl_src=5c:f7:e6:8b:7a:d1 actions=output:30,output:31,output:32,output:33,output:34,output:35,output:1003
- cookie=0x5adc15c0, duration=167.656s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20479,arp,in_port=33 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=167.656s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20479,arp,in_port=34 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=167.656s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20479,arp,in_port=35 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=167.656s, table=0, n_packets=16, n_bytes=672, idle_age=1, priority=20479,arp,in_port=30 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=167.656s, table=0, n_packets=0, n_bytes=0, idle_age=167, priority=20479,arp,in_port=31 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=38.563s, table=0, n_packets=0, n_bytes=0, idle_age=38, priority=20480,arp,in_port=42 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=38.563s, table=0, n_packets=0, n_bytes=0, idle_age=38, priority=20480,arp,in_port=43 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=38.563s, table=0, n_packets=0, n_bytes=0, idle_age=38, priority=20480,arp,in_port=44 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=38.563s, table=0, n_packets=0, n_bytes=0, idle_age=38, priority=20480,arp,in_port=45 actions=resubmit(,1)
- cookie=0x5adc15c0, duration=192.190s, table=0, n_packets=27, n_bytes=3196, idle_age=40, priority=0 actions=drop
- cookie=0x5adc15c0, duration=38.238s, table=1, n_packets=0, n_bytes=0, idle_age=192, priority=9099,in_port=1004 actions=drop
- cookie=0x5adc15c0, duration=20.875s, table=1, n_packets=0, n_bytes=0, idle_age=20, priority=9000,in_port=1 actions=resubmit(,2)
- cookie=0x5adc15c0, duration=18.408s, table=1, n_packets=0, n_bytes=0, idle_age=168, priority=9099,in_port=1003 actions=drop
- cookie=0x5adc15c0, duration=20.875s, table=1, n_packets=0, n_bytes=0, idle_age=20, priority=9099,in_port=1,dl_dst=01:80:c2:00:00:00/ff:ff:ff:ff:ff:f0,dl_type=0x88cc actions=CONTROLLER:128
- cookie=0x5adc15c0, duration=192.191s, table=1, n_packets=90, n_bytes=12048, idle_age=8, priority=9000,in_port=1000,vlan_tci=0x0000/0x1fff actions=mod_vlan_vid:10,resubmit(,2)
- cookie=0x5adc15c0, duration=186.455s, table=1, n_packets=538, n_bytes=270445, idle_age=1, priority=9000,in_port=30,vlan_tci=0x0000/0x1fff actions=mod_vlan_vid:10,resubmit(,2)
- cookie=0x5adc15c0, duration=185.377s, table=1, n_packets=17, n_bytes=1414, idle_age=65, priority=9000,in_port=31,vlan_tci=0x0000/0x1fff actions=mod_vlan_vid:10,resubmit(,2)
- cookie=0x5adc15c0, duration=20.875s, table=1, n_packets=0, n_bytes=0, idle_age=20, priority=9001,in_port=1,vlan_tci=0x0000/0x1fff actions=drop
- cookie=0x5adc15c0, duration=192.190s, table=1, n_packets=0, n_bytes=0, idle_age=192, priority=0 actions=drop
- cookie=0x5adc15c0, duration=192.193s, table=2, n_packets=0, n_bytes=0, idle_age=192, priority=20490,dl_type=0x9000 actions=drop
- cookie=0x5adc15c0, duration=192.193s, table=2, n_packets=0, n_bytes=0, idle_age=192, priority=20480,dl_src=ff:ff:ff:ff:ff:ff actions=drop
- cookie=0x5adc15c0, duration=192.193s, table=2, n_packets=0, n_bytes=0, idle_age=192, priority=20480,dl_src=0e:00:00:00:00:01 actions=drop
- cookie=0x5adc15c0, duration=190.924s, table=2, n_packets=87, n_bytes=11695, hard_timeout=281, idle_age=8, priority=8191,in_port=1000,dl_vlan=10,dl_src=b4:9c:df:f3:3a:d9 actions=resubmit(,3)
- cookie=0x5adc15c0, duration=186.246s, table=2, n_packets=538, n_bytes=270445, hard_timeout=282, idle_age=1, priority=8191,in_port=30,dl_vlan=10,dl_src=ce:69:cb:08:e2:50 actions=resubmit(,3)
- cookie=0x5adc15c0, duration=185.223s, table=2, n_packets=17, n_bytes=1414, hard_timeout=317, idle_age=65, priority=8191,in_port=31,dl_vlan=10,dl_src=5e:23:f4:bf:af:e1 actions=resubmit(,3)
- cookie=0x5adc15c0, duration=171.939s, table=2, n_packets=1, n_bytes=70, hard_timeout=318, idle_age=104, priority=8191,in_port=1000,dl_vlan=10,dl_src=4e:17:0d:97:d7:d4 actions=resubmit(,3)
- cookie=0x5adc15c0, duration=192.190s, table=2, n_packets=7, n_bytes=569, idle_age=56, priority=4096,dl_vlan=10 actions=CONTROLLER:96,resubmit(,3)
- cookie=0x5adc15c0, duration=192.190s, table=2, n_packets=0, n_bytes=0, idle_age=192, priority=0 actions=resubmit(,3)
- cookie=0x5adc15c0, duration=190.924s, table=3, n_packets=0, n_bytes=0, idle_timeout=431, idle_age=190, priority=8192,dl_vlan=10,dl_dst=b4:9c:df:f3:3a:d9 actions=strip_vlan,output:1000
- cookie=0x5adc15c0, duration=186.246s, table=3, n_packets=12, n_bytes=1064, idle_timeout=432, idle_age=171, priority=8192,dl_vlan=10,dl_dst=ce:69:cb:08:e2:50 actions=strip_vlan,output:30
- cookie=0x5adc15c0, duration=185.223s, table=3, n_packets=11, n_bytes=1022, idle_timeout=467, idle_age=171, priority=8192,dl_vlan=10,dl_dst=5e:23:f4:bf:af:e1 actions=strip_vlan,output:31
- cookie=0x5adc15c0, duration=171.939s, table=3, n_packets=0, n_bytes=0, idle_timeout=468, idle_age=171, priority=8192,dl_vlan=10,dl_dst=4e:17:0d:97:d7:d4 actions=strip_vlan,output:1000
- cookie=0x5adc15c0, duration=192.190s, table=3, n_packets=689, n_bytes=312950, idle_age=1, priority=0 actions=resubmit(,4)
- cookie=0x5adc15c0, duration=15.935s, table=4, n_packets=0, n_bytes=0, idle_age=20, hard_age=0, priority=8241,in_port=1,dl_vlan=10,dl_dst=ff:ff:ff:ff:ff:ff actions=strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
- cookie=0x5adc15c0, duration=192.191s, table=4, n_packets=0, n_bytes=0, idle_age=192, priority=8240,dl_dst=01:00:0c:cc:cc:cc actions=drop
- cookie=0x5adc15c0, duration=192.191s, table=4, n_packets=0, n_bytes=0, idle_age=192, priority=8240,dl_dst=01:00:0c:cc:cc:cd actions=drop
- cookie=0x5adc15c0, duration=15.935s, table=4, n_packets=23, n_bytes=966, idle_age=1, hard_age=0, priority=8240,dl_vlan=10,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
- cookie=0x5adc15c0, duration=192.191s, table=4, n_packets=0, n_bytes=0, idle_age=192, priority=8236,dl_dst=01:80:c2:00:00:00/ff:ff:ff:ff:ff:f0 actions=drop
- cookie=0x5adc15c0, duration=15.935s, table=4, n_packets=0, n_bytes=0, idle_age=20, hard_age=0, priority=8217,in_port=1,dl_vlan=10,dl_dst=01:80:c2:00:00:00/ff:ff:ff:00:00:00 actions=strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
- cookie=0x5adc15c0, duration=15.935s, table=4, n_packets=0, n_bytes=0, idle_age=20, hard_age=0, priority=8217,in_port=1,dl_vlan=10,dl_dst=01:00:5e:00:00:00/ff:ff:ff:00:00:00 actions=strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
- cookie=0x5adc15c0, duration=15.935s, table=4, n_packets=0, n_bytes=0, idle_age=192, hard_age=0, priority=8216,dl_vlan=10,dl_dst=01:80:c2:00:00:00/ff:ff:ff:00:00:00 actions=output:1,strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
- cookie=0x5adc15c0, duration=15.935s, table=4, n_packets=86, n_bytes=11768, idle_age=8, hard_age=0, priority=8216,dl_vlan=10,dl_dst=01:00:5e:00:00:00/ff:ff:ff:00:00:00 actions=output:1,strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
- cookie=0x5adc15c0, duration=15.935s, table=4, n_packets=0, n_bytes=0, idle_age=20, hard_age=0, priority=8209,in_port=1,dl_vlan=10,dl_dst=33:33:00:00:00:00/ff:ff:00:00:00:00 actions=strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
- cookie=0x5adc15c0, duration=15.935s, table=4, n_packets=15, n_bytes=1110, idle_age=65, hard_age=0, priority=8208,dl_vlan=10,dl_dst=33:33:00:00:00:00/ff:ff:00:00:00:00 actions=output:1,strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
- cookie=0x5adc15c0, duration=192.190s, table=4, n_packets=565, n_bytes=299106, idle_age=1, priority=0 actions=drop
+ cookie=0x5adc15c0, duration=8.796s, table=0, n_packets=2, n_bytes=138, idle_age=6, priority=20480,in_port=1,dl_src=40:bd:32:eb:d5:7c actions=output:40,output:41,output:42,output:43,output:44,output:45,output:1004
+ cookie=0x5adc15c0, duration=8.796s, table=0, n_packets=72, n_bytes=22232, idle_age=0, priority=20479,in_port=1,dl_src=5c:f7:e6:8b:7a:d1 actions=output:30,output:31,output:32,output:33,output:34,output:35,output:1003
+ cookie=0x5adc15c0, duration=114.700s, table=0, n_packets=76, n_bytes=9828, idle_age=0, priority=20480,in_port=1000 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=114.700s, table=0, n_packets=0, n_bytes=0, idle_age=114, priority=20477,in_port=30 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=114.700s, table=0, n_packets=4, n_bytes=280, idle_age=10, priority=20477,in_port=31 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20477,in_port=40 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=3, n_bytes=210, idle_age=34, priority=20477,in_port=41 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20477,in_port=42 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20477,in_port=43 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=90.419s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20477,in_port=44 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=90.419s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20477,in_port=45 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=8.796s, table=0, n_packets=0, n_bytes=0, idle_age=8, priority=20478,in_port=1 actions=drop
+ cookie=0x5adc15c0, duration=114.700s, table=0, n_packets=1326, n_bytes=2760587, idle_age=0, priority=20480,in_port=30,dl_dst=5c:f7:e6:8b:7a:d1 actions=output:1,output:1003,resubmit(,1)
+ cookie=0x5adc15c0, duration=114.700s, table=0, n_packets=0, n_bytes=0, idle_age=114, priority=20480,in_port=31,dl_dst=5c:f7:e6:8b:7a:d1 actions=output:1,output:1003,resubmit(,1)
+ cookie=0x5adc15c0, duration=114.700s, table=0, n_packets=0, n_bytes=0, idle_age=114, priority=20478,in_port=30,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:30,output:31,output:32,output:33,output:34,output:35
+ cookie=0x5adc15c0, duration=114.700s, table=0, n_packets=0, n_bytes=0, idle_age=114, priority=20478,in_port=31,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:30,output:31,output:32,output:33,output:34,output:35
+ cookie=0x5adc15c0, duration=90.453s, table=0, n_packets=36, n_bytes=29892, idle_age=18, priority=20480,in_port=40,dl_dst=40:bd:32:eb:d5:7c actions=output:1,output:1004,resubmit(,1)
+ cookie=0x5adc15c0, duration=90.453s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20480,in_port=41,dl_dst=40:bd:32:eb:d5:7c actions=output:1,output:1004,resubmit(,1)
+ cookie=0x5adc15c0, duration=90.453s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20480,in_port=42,dl_dst=40:bd:32:eb:d5:7c actions=output:1,output:1004,resubmit(,1)
+ cookie=0x5adc15c0, duration=90.453s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20480,in_port=43,dl_dst=40:bd:32:eb:d5:7c actions=output:1,output:1004,resubmit(,1)
+ cookie=0x5adc15c0, duration=90.453s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20480,in_port=44,dl_dst=40:bd:32:eb:d5:7c actions=output:1,output:1004,resubmit(,1)
+ cookie=0x5adc15c0, duration=90.453s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20480,in_port=45,dl_dst=40:bd:32:eb:d5:7c actions=output:1,output:1004,resubmit(,1)
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20478,in_port=40,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:40,output:41,output:42,output:43,output:44,output:45
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20478,in_port=41,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:40,output:41,output:42,output:43,output:44,output:45
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20478,in_port=42,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:40,output:41,output:42,output:43,output:44,output:45
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20478,in_port=43,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:40,output:41,output:42,output:43,output:44,output:45
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20478,in_port=44,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:40,output:41,output:42,output:43,output:44,output:45
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20478,in_port=45,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,output:1000,output:40,output:41,output:42,output:43,output:44,output:45
+ cookie=0x5adc15c0, duration=114.700s, table=0, n_packets=3, n_bytes=126, idle_age=101, priority=20479,arp,in_port=30 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=114.700s, table=0, n_packets=0, n_bytes=0, idle_age=114, priority=20479,arp,in_port=31 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=90.453s, table=0, n_packets=3, n_bytes=126, idle_age=33, priority=20479,arp,in_port=40 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20479,arp,in_port=41 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20479,arp,in_port=42 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20479,arp,in_port=43 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20479,arp,in_port=44 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=90.451s, table=0, n_packets=0, n_bytes=0, idle_age=90, priority=20479,arp,in_port=45 actions=resubmit(,1)
+ cookie=0x5adc15c0, duration=114.696s, table=0, n_packets=24, n_bytes=2856, idle_age=26, priority=0 actions=drop
+ cookie=0x5adc15c0, duration=21.998s, table=1, n_packets=0, n_bytes=0, idle_age=114, priority=9099,in_port=1003 actions=drop
+ cookie=0x5adc15c0, duration=18.539s, table=1, n_packets=0, n_bytes=0, idle_age=91, priority=9099,in_port=1004 actions=drop
+ cookie=0x5adc15c0, duration=8.796s, table=1, n_packets=0, n_bytes=0, idle_age=8, priority=9000,in_port=1 actions=resubmit(,2)
+ cookie=0x5adc15c0, duration=8.796s, table=1, n_packets=0, n_bytes=0, idle_age=8, priority=9099,in_port=1,dl_dst=01:80:c2:00:00:00/ff:ff:ff:ff:ff:f0,dl_type=0x88cc actions=CONTROLLER:128
+ cookie=0x5adc15c0, duration=114.697s, table=1, n_packets=76, n_bytes=9828, idle_age=0, priority=9000,in_port=1000,vlan_tci=0x0000/0x1fff actions=mod_vlan_vid:10,resubmit(,2)
+ cookie=0x5adc15c0, duration=114.697s, table=1, n_packets=1329, n_bytes=2760713, idle_age=0, priority=9000,in_port=30,vlan_tci=0x0000/0x1fff actions=mod_vlan_vid:10,resubmit(,2)
+ cookie=0x5adc15c0, duration=114.697s, table=1, n_packets=4, n_bytes=280, idle_age=10, priority=9000,in_port=31,vlan_tci=0x0000/0x1fff actions=mod_vlan_vid:10,resubmit(,2)
+ cookie=0x5adc15c0, duration=99.109s, table=1, n_packets=52, n_bytes=31124, idle_age=18, priority=9000,in_port=40,vlan_tci=0x0000/0x1fff actions=mod_vlan_vid:10,resubmit(,2)
+ cookie=0x5adc15c0, duration=98.830s, table=1, n_packets=19, n_bytes=1594, idle_age=34, priority=9000,in_port=41,vlan_tci=0x0000/0x1fff actions=mod_vlan_vid:10,resubmit(,2)
+ cookie=0x5adc15c0, duration=8.796s, table=1, n_packets=0, n_bytes=0, idle_age=8, priority=9001,in_port=1,vlan_tci=0x0000/0x1fff actions=drop
+ cookie=0x5adc15c0, duration=114.696s, table=1, n_packets=0, n_bytes=0, idle_age=114, priority=0 actions=drop
+ cookie=0x5adc15c0, duration=114.700s, table=2, n_packets=0, n_bytes=0, idle_age=114, priority=20490,dl_type=0x9000 actions=drop
+ cookie=0x5adc15c0, duration=114.700s, table=2, n_packets=0, n_bytes=0, idle_age=114, priority=20480,dl_src=ff:ff:ff:ff:ff:ff actions=drop
+ cookie=0x5adc15c0, duration=114.700s, table=2, n_packets=0, n_bytes=0, idle_age=114, priority=20480,dl_src=0e:00:00:00:00:01 actions=drop
+ cookie=0x5adc15c0, duration=114.475s, table=2, n_packets=73, n_bytes=9618, hard_timeout=306, idle_age=0, priority=8191,in_port=1000,dl_vlan=10,dl_src=b4:9c:df:f3:3a:d9 actions=resubmit(,3)
+ cookie=0x5adc15c0, duration=113.303s, table=2, n_packets=4, n_bytes=280, hard_timeout=285, idle_age=10, priority=8191,in_port=31,dl_vlan=10,dl_src=b6:07:08:7b:a5:2b actions=resubmit(,3)
+ cookie=0x5adc15c0, duration=110.999s, table=2, n_packets=2, n_bytes=140, hard_timeout=310, idle_age=14, priority=8191,in_port=1000,dl_vlan=10,dl_src=0a:1f:09:c4:85:97 actions=resubmit(,3)
+ cookie=0x5adc15c0, duration=108.073s, table=2, n_packets=1328, n_bytes=2760671, hard_timeout=281, idle_age=0, priority=8191,in_port=30,dl_vlan=10,dl_src=a2:c5:5c:35:1a:ef actions=resubmit(,3)
+ cookie=0x5adc15c0, duration=98.825s, table=2, n_packets=51, n_bytes=31082, hard_timeout=303, idle_age=18, priority=8191,in_port=40,dl_vlan=10,dl_src=96:11:77:9d:6e:94 actions=resubmit(,3)
+ cookie=0x5adc15c0, duration=98.612s, table=2, n_packets=18, n_bytes=1524, hard_timeout=321, idle_age=34, priority=8191,in_port=41,dl_vlan=10,dl_src=b6:30:f3:de:c6:9c actions=resubmit(,3)
+ cookie=0x5adc15c0, duration=114.696s, table=2, n_packets=6, n_bytes=344, idle_age=98, priority=4096,dl_vlan=10 actions=CONTROLLER:96,resubmit(,3)
+ cookie=0x5adc15c0, duration=114.696s, table=2, n_packets=0, n_bytes=0, idle_age=114, priority=0 actions=resubmit(,3)
+ cookie=0x5adc15c0, duration=114.475s, table=3, n_packets=0, n_bytes=0, idle_timeout=456, idle_age=114, priority=8192,dl_vlan=10,dl_dst=b4:9c:df:f3:3a:d9 actions=strip_vlan,output:1000
+ cookie=0x5adc15c0, duration=113.303s, table=3, n_packets=0, n_bytes=0, idle_timeout=435, idle_age=113, priority=8192,dl_vlan=10,dl_dst=b6:07:08:7b:a5:2b actions=strip_vlan,output:31
+ cookie=0x5adc15c0, duration=110.999s, table=3, n_packets=0, n_bytes=0, idle_timeout=460, idle_age=110, priority=8192,dl_vlan=10,dl_dst=0a:1f:09:c4:85:97 actions=strip_vlan,output:1000
+ cookie=0x5adc15c0, duration=108.073s, table=3, n_packets=0, n_bytes=0, idle_timeout=431, idle_age=108, priority=8192,dl_vlan=10,dl_dst=a2:c5:5c:35:1a:ef actions=strip_vlan,output:30
+ cookie=0x5adc15c0, duration=98.825s, table=3, n_packets=12, n_bytes=1064, idle_timeout=453, idle_age=92, priority=8192,dl_vlan=10,dl_dst=96:11:77:9d:6e:94 actions=strip_vlan,output:40
+ cookie=0x5adc15c0, duration=98.612s, table=3, n_packets=11, n_bytes=1022, idle_timeout=471, idle_age=92, priority=8192,dl_vlan=10,dl_dst=b6:30:f3:de:c6:9c actions=strip_vlan,output:41
+ cookie=0x5adc15c0, duration=114.696s, table=3, n_packets=1461, n_bytes=2801705, idle_age=0, priority=0 actions=resubmit(,4)
+ cookie=0x5adc15c0, duration=8.796s, table=4, n_packets=0, n_bytes=0, idle_age=8, hard_age=0, priority=8241,in_port=1,dl_vlan=10,dl_dst=ff:ff:ff:ff:ff:ff actions=strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
+ cookie=0x5adc15c0, duration=114.697s, table=4, n_packets=0, n_bytes=0, idle_age=114, priority=8240,dl_dst=01:00:0c:cc:cc:cc actions=drop
+ cookie=0x5adc15c0, duration=114.697s, table=4, n_packets=0, n_bytes=0, idle_age=114, priority=8240,dl_dst=01:00:0c:cc:cc:cd actions=drop
+ cookie=0x5adc15c0, duration=8.796s, table=4, n_packets=9, n_bytes=378, idle_age=33, hard_age=0, priority=8240,dl_vlan=10,dl_dst=ff:ff:ff:ff:ff:ff actions=output:1,strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
+ cookie=0x5adc15c0, duration=114.697s, table=4, n_packets=0, n_bytes=0, idle_age=114, priority=8236,dl_dst=01:80:c2:00:00:00/ff:ff:ff:ff:ff:f0 actions=drop
+ cookie=0x5adc15c0, duration=8.796s, table=4, n_packets=0, n_bytes=0, idle_age=8, hard_age=0, priority=8217,in_port=1,dl_vlan=10,dl_dst=01:80:c2:00:00:00/ff:ff:ff:00:00:00 actions=strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
+ cookie=0x5adc15c0, duration=8.796s, table=4, n_packets=0, n_bytes=0, idle_age=8, hard_age=0, priority=8217,in_port=1,dl_vlan=10,dl_dst=01:00:5e:00:00:00/ff:ff:ff:00:00:00 actions=strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
+ cookie=0x5adc15c0, duration=8.795s, table=4, n_packets=0, n_bytes=0, idle_age=114, hard_age=0, priority=8216,dl_vlan=10,dl_dst=01:80:c2:00:00:00/ff:ff:ff:00:00:00 actions=output:1,strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
+ cookie=0x5adc15c0, duration=8.795s, table=4, n_packets=70, n_bytes=9408, idle_age=0, hard_age=0, priority=8216,dl_vlan=10,dl_dst=01:00:5e:00:00:00/ff:ff:ff:00:00:00 actions=output:1,strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
+ cookie=0x5adc15c0, duration=8.795s, table=4, n_packets=0, n_bytes=0, idle_age=8, hard_age=0, priority=8209,in_port=1,dl_vlan=10,dl_dst=33:33:00:00:00:00/ff:ff:00:00:00:00 actions=strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
+ cookie=0x5adc15c0, duration=8.795s, table=4, n_packets=19, n_bytes=1398, idle_age=10, hard_age=0, priority=8208,dl_vlan=10,dl_dst=33:33:00:00:00:00/ff:ff:00:00:00:00 actions=output:1,strip_vlan,output:10,output:11,output:12,output:13,output:14,output:15,output:20,output:21,output:22,output:23,output:24,output:25,output:30,output:31,output:32,output:33,output:34,output:35,output:40,output:41,output:42,output:43,output:44,output:45,output:50,output:51,output:52,output:53,output:54,output:55,output:1000
+ cookie=0x5adc15c0, duration=114.696s, table=4, n_packets=1363, n_bytes=2790521, idle_age=0, priority=0 actions=drop

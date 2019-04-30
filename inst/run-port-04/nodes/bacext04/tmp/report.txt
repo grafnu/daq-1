@@ -1,3 +1,4 @@
 RESULT fail protocol.bacnet.pic
 RESULT pass protocol.bacnet.addr_unique
-RESULT pass protocol.bacnet.versionProtocol version : 1
+RESULT pass protocol.bacnet.version
+Protocol version : 1

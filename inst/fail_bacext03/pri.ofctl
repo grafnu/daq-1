@@ -9,22 +9,37 @@ actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_d
      advertised: 10MB-HD 10MB-FD 100MB-HD 100MB-FD COPPER AUTO_NEG
      supported:  10MB-HD 10MB-FD 100MB-HD 100MB-FD COPPER AUTO_NEG
      speed: 100 Mbps now, 100 Mbps max
- 30(pri-eth30): addr:aa:3a:0a:5f:0a:d1
+ 30(pri-eth30): addr:c6:a7:bd:79:19:11
      config:     0
      state:      0
      current:    10GB-FD COPPER
      speed: 10000 Mbps now, 0 Mbps max
- 31(pri-eth31): addr:a2:fc:0b:c5:60:93
+ 31(pri-eth31): addr:92:68:37:48:42:00
      config:     0
      state:      0
      current:    10GB-FD COPPER
      speed: 10000 Mbps now, 0 Mbps max
- 1000(ctrl-pri): addr:62:c1:6b:d3:65:f7
+ 40(pri-eth40): addr:b6:22:b0:4c:25:d4
      config:     0
      state:      0
      current:    10GB-FD COPPER
      speed: 10000 Mbps now, 0 Mbps max
- 1003(mirror-3): addr:82:e4:2f:72:6d:cb
+ 41(pri-eth41): addr:2a:82:a8:da:19:f4
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 1000(ctrl-pri): addr:ce:d0:04:ef:33:bf
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 1003(mirror-3): addr:16:6a:b9:80:cd:0b
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ 1004(mirror-4): addr:46:f2:22:cb:2c:42
      config:     0
      state:      0
      current:    10GB-FD COPPER

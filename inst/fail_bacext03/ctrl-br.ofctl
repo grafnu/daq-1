@@ -2,12 +2,12 @@ OFPT_FEATURES_REPLY (xid=0x2): dpid:0000b49cdff33ad9
 n_tables:254, n_buffers:0
 capabilities: FLOW_STATS TABLE_STATS PORT_STATS QUEUE_STATS ARP_MATCH_IP
 actions: output enqueue set_vlan_vid set_vlan_pcp strip_vlan mod_dl_src mod_dl_dst mod_nw_src mod_nw_dst mod_nw_tos mod_tp_src mod_tp_dst
- 1(ctrl-alt): addr:4e:17:0d:97:d7:d4
+ 1(ctrl-alt): addr:0a:1f:09:c4:85:97
      config:     0
      state:      0
      current:    10GB-FD COPPER
      speed: 10000 Mbps now, 0 Mbps max
- 2(ctrl-swx): addr:4e:a2:4d:34:88:c1
+ 2(ctrl-swx): addr:06:7e:ee:ac:07:43
      config:     0
      state:      0
      current:    10GB-FD COPPER
