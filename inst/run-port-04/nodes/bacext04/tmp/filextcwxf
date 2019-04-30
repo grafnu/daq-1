@@ -1,12 +1,12 @@
-Creating LoopDevice id 695
-LoopDevice start changing valuesdevice-695
-Change values of LoopDevice device-695=695.24164
+Creating LoopDevice id 818
+LoopDevice start changing valuesdevice-818
+Change values of LoopDevice device-818=818.71185
 loopDevice iAmReceived
-Change values of LoopDevice device-695=695.03436
-Change values of LoopDevice device-695=695.9908
-Change values of LoopDevice device-695=695.0128
-Change values of LoopDevice device-695=695.8068
-Change values of LoopDevice device-695=695.27545
+Change values of LoopDevice device-818=818.6164
+Change values of LoopDevice device-818=818.052
+Change values of LoopDevice device-818=818.0184
+Change values of LoopDevice device-818=818.5132
+Change values of LoopDevice device-818=818.209
 Protocol version : 1
 Model name : ECY-303 Rev 1.0A
 Vendor identifier : 364
@@ -26,4 +26,4 @@ Object list : [Device 1010026
                Binary Input 101                  Binary Output 101  
                Binary Value 1]    
 Object name : UK-LON-S2_FCU-00Q
-Close LoopDevive device-695
+Close LoopDevive device-818
