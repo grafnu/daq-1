@@ -615,7 +615,8 @@ class DAQRunner:
         configurator.load_and_merge(base, self.config.get('base_conf'))
         site_config = configurator.load_config(self.config.get('site_path'), self._MODULE_CONFIG)
         if register:
-            self.gcp.register_config(self._RUNNER_CONFIG_PATH, site_config, self._base_config_changed)
+            self.gcp.register_config(self._RUNNER_CONFIG_PATH, site_config,
+                                     self._base_config_changed)
         configurator.merge_config(base, site_config)
         return base
 
