@@ -47,7 +47,8 @@ else
 fi
 
 echo $(ls)
-echo ${cd tmp}
+echo $(cd tmp)
 echo $(ls)
 cat tmp/PICS.txt >> $REPORT
 cat tmp/DuplicatesTestReport.txt >> $REPORT
+cat tmp/BacnetVersionTest.txt >> $REPORT

@@ -1,0 +1,603 @@
+10:53:24.448891 92:b9:4c:87:c8:6b > 33:33:00:00:00:16, ethertype IPv6 (0x86dd), length 90: (hlim 1, next-header Options (0) payload length: 36) :: > ff02::16: HBH (rtalert: 0x0000) (padn) [icmp6 sum ok] ICMP6, multicast listener report v2, 1 group record(s) [gaddr ff02::1:ff87:c86b to_ex, 0 source(s)]
+10:53:24.576815 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:16, ethertype IPv6 (0x86dd), length 90: (hlim 1, next-header Options (0) payload length: 36) fe80::78ec:9fff:feab:38f7 > ff02::16: HBH (rtalert: 0x0000) (padn) [icmp6 sum ok] ICMP6, multicast listener report v2, 1 group record(s) [gaddr ff02::1:ffab:38f7 to_ex, 0 source(s)]
+10:53:24.576930 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::78ec:9fff:feab:38f7 > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 7a:ec:9f:ab:38:f7
+10:53:24.596017 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:16, ethertype IPv6 (0x86dd), length 90: (hlim 1, next-header Options (0) payload length: 36) fe80::78ec:9fff:feab:38f7 > ff02::16: HBH (rtalert: 0x0000) (padn) [icmp6 sum ok] ICMP6, multicast listener report v2, 1 group record(s) [gaddr ff02::fb to_ex, 0 source(s)]
+10:53:24.715997 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:16, ethertype IPv6 (0x86dd), length 110: (hlim 1, next-header Options (0) payload length: 56) fe80::78ec:9fff:feab:38f7 > ff02::16: HBH (rtalert: 0x0000) (padn) [icmp6 sum ok] ICMP6, multicast listener report v2, 2 group record(s) [gaddr ff02::fb to_ex, 0 source(s)] [gaddr ff02::1:ffab:38f7 to_ex, 0 source(s)]
+10:53:24.740316 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 212: (flowlabel 0xf10d9, hlim 255, next-header UDP (17) payload length: 158) fe80::78ec:9fff:feab:38f7.5353 > ff02::fb.5353: [bad udp cksum 0x4fbd -> 0xee8a!] 0 [2q] [2n] ANY (QM)? 7.f.8.3.b.a.e.f.f.f.f.9.c.e.8.7.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. ANY (QM)? skynet.local. (150)
+10:53:24.808147 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:16, ethertype IPv6 (0x86dd), length 90: (hlim 1, next-header Options (0) payload length: 36) fe80::78ec:9fff:feab:38f7 > ff02::16: HBH (rtalert: 0x0000) (padn) [icmp6 sum ok] ICMP6, multicast listener report v2, 1 group record(s) [gaddr ff02::fb to_ex, 0 source(s)]
+10:53:24.960189 3a:20:e9:c5:3b:75 > ff:ff:ff:ff:ff:ff, ethertype ARP (0x0806), length 42: Ethernet (len 6), IPv4 (len 4), Request who-has 10.0.0.2 tell 10.0.0.1, length 28
+10:53:24.991183 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 212: (flowlabel 0xf10d9, hlim 255, next-header UDP (17) payload length: 158) fe80::78ec:9fff:feab:38f7.5353 > ff02::fb.5353: [bad udp cksum 0x4fbd -> 0xee8a!] 0 [2q] [2n] ANY (QM)? 7.f.8.3.b.a.e.f.f.f.f.9.c.e.8.7.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. ANY (QM)? skynet.local. (150)
+10:53:24.992205 92:b9:4c:87:c8:6b > 33:33:00:00:00:16, ethertype IPv6 (0x86dd), length 90: (hlim 1, next-header Options (0) payload length: 36) fe80::90b9:4cff:fe87:c86b > ff02::16: HBH (rtalert: 0x0000) (padn) [icmp6 sum ok] ICMP6, multicast listener report v2, 1 group record(s) [gaddr ff02::1:ff87:c86b to_ex, 0 source(s)]
+10:53:24.992744 92:b9:4c:87:c8:6b > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::90b9:4cff:fe87:c86b > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 92:b9:4c:87:c8:6b
+10:53:25.241858 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 212: (flowlabel 0xf10d9, hlim 255, next-header UDP (17) payload length: 158) fe80::78ec:9fff:feab:38f7.5353 > ff02::fb.5353: [bad udp cksum 0x4fbd -> 0xee8a!] 0 [2q] [2n] ANY (QM)? 7.f.8.3.b.a.e.f.f.f.f.9.c.e.8.7.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. ANY (QM)? skynet.local. (150)
+10:53:25.442537 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 200: (flowlabel 0xf10d9, hlim 255, next-header UDP (17) payload length: 146) fe80::78ec:9fff:feab:38f7.5353 > ff02::fb.5353: [bad udp cksum 0x4fb1 -> 0xecf8!] 0*- [0q] 2/0/0 7.f.8.3.b.a.e.f.f.f.f.9.c.e.8.7.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (Cache flush) PTR skynet.local., skynet.local. (Cache flush) AAAA fe80::78ec:9fff:feab:38f7 (138)
+10:53:25.984243 3a:20:e9:c5:3b:75 > ff:ff:ff:ff:ff:ff, ethertype ARP (0x0806), length 42: Ethernet (len 6), IPv4 (len 4), Request who-has 10.0.0.2 tell 10.0.0.1, length 28
+10:53:25.984549 92:b9:4c:87:c8:6b > 33:33:00:00:00:16, ethertype IPv6 (0x86dd), length 90: (hlim 1, next-header Options (0) payload length: 36) fe80::90b9:4cff:fe87:c86b > ff02::16: HBH (rtalert: 0x0000) (padn) [icmp6 sum ok] ICMP6, multicast listener report v2, 1 group record(s) [gaddr ff02::1:ff87:c86b to_ex, 0 source(s)]
+10:53:25.984926 92:b9:4c:87:c8:6b > 3a:20:e9:c5:3b:75, ethertype ARP (0x0806), length 42: Ethernet (len 6), IPv4 (len 4), Reply 10.0.0.2 is-at 92:b9:4c:87:c8:6b, length 28
+10:53:25.985008 3a:20:e9:c5:3b:75 > 92:b9:4c:87:c8:6b, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 28250, offset 0, flags [DF], proto ICMP (1), length 84)
+    10.0.0.1 > 10.0.0.2: ICMP echo request, id 23, seq 1, length 64
+10:53:25.985027 3a:20:e9:c5:3b:75 > 92:b9:4c:87:c8:6b, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 28344, offset 0, flags [DF], proto ICMP (1), length 84)
+    10.0.0.1 > 10.0.0.2: ICMP echo request, id 23, seq 2, length 64
+10:53:26.550909 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 200: (flowlabel 0xf10d9, hlim 255, next-header UDP (17) payload length: 146) fe80::78ec:9fff:feab:38f7.5353 > ff02::fb.5353: [bad udp cksum 0x4fb1 -> 0xecf8!] 0*- [0q] 2/0/0 7.f.8.3.b.a.e.f.f.f.f.9.c.e.8.7.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (Cache flush) PTR skynet.local., skynet.local. (Cache flush) AAAA fe80::78ec:9fff:feab:38f7 (138)
+10:53:26.944793 2a:8c:3e:f1:ae:a8 > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::288c:3eff:fef1:aea8 > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 2a:8c:3e:f1:ae:a8
+10:53:27.611093 b4:9c:df:f3:3a:d9 > 01:00:5e:7f:ff:fa, ethertype IPv4 (0x0800), length 213: (tos 0x0, ttl 1, id 51537, offset 0, flags [DF], proto UDP (17), length 199)
+    192.168.1.10.41886 > 239.255.255.250.1900: UDP, length 171
+10:53:28.614090 b4:9c:df:f3:3a:d9 > 01:00:5e:7f:ff:fa, ethertype IPv4 (0x0800), length 213: (tos 0x0, ttl 1, id 51747, offset 0, flags [DF], proto UDP (17), length 199)
+    192.168.1.10.41886 > 239.255.255.250.1900: UDP, length 171
+10:53:28.659701 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 200: (flowlabel 0xf10d9, hlim 255, next-header UDP (17) payload length: 146) fe80::78ec:9fff:feab:38f7.5353 > ff02::fb.5353: [bad udp cksum 0x4fb1 -> 0xecf8!] 0*- [0q] 2/0/0 7.f.8.3.b.a.e.f.f.f.f.9.c.e.8.7.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. (Cache flush) PTR skynet.local., skynet.local. (Cache flush) AAAA fe80::78ec:9fff:feab:38f7 (138)
+10:53:28.736236 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::78ec:9fff:feab:38f7 > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 7a:ec:9f:ab:38:f7
+10:53:28.736375 92:b9:4c:87:c8:6b > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::90b9:4cff:fe87:c86b > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 92:b9:4c:87:c8:6b
+10:53:29.615134 b4:9c:df:f3:3a:d9 > 01:00:5e:7f:ff:fa, ethertype IPv4 (0x0800), length 213: (tos 0x0, ttl 1, id 51814, offset 0, flags [DF], proto UDP (17), length 199)
+    192.168.1.10.41886 > 239.255.255.250.1900: UDP, length 171
+10:53:30.272322 b4:9c:df:f3:3a:d9 > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::b69c:dfff:fef3:3ad9 > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): b4:9c:df:f3:3a:d9
+10:53:30.613900 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 24381, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:53:30.614025 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 24382, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:53:30.615209 b4:9c:df:f3:3a:d9 > 01:00:5e:7f:ff:fa, ethertype IPv4 (0x0800), length 213: (tos 0x0, ttl 1, id 51919, offset 0, flags [DF], proto UDP (17), length 199)
+    192.168.1.10.41886 > 239.255.255.250.1900: UDP, length 171
+10:53:31.614640 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 24571, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:53:31.615487 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 24572, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:53:33.616045 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 24679, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:53:33.617154 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 24680, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:53:34.970038 3a:20:e9:c5:3b:75 > 92:b9:4c:87:c8:6b, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 29982, offset 0, flags [DF], proto ICMP (1), length 84)
+    10.0.0.1 > 10.0.0.2: ICMP echo request, id 37, seq 1, length 64
+10:53:34.970630 92:b9:4c:87:c8:6b > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 52278, offset 0, flags [none], proto ICMP (1), length 84)
+    10.0.0.2 > 10.0.0.1: ICMP echo reply, id 37, seq 1, length 64
+10:53:36.000336 3a:20:e9:c5:3b:75 > 92:b9:4c:87:c8:6b, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 30156, offset 0, flags [DF], proto ICMP (1), length 84)
+    10.0.0.1 > 10.0.0.2: ICMP echo request, id 37, seq 2, length 64
+10:53:36.000510 92:b9:4c:87:c8:6b > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 52419, offset 0, flags [none], proto ICMP (1), length 84)
+    10.0.0.2 > 10.0.0.1: ICMP echo reply, id 37, seq 2, length 64
+10:53:36.011076 3a:20:e9:c5:3b:75 > 92:b9:4c:87:c8:6b, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 30157, offset 0, flags [DF], proto ICMP (1), length 84)
+    10.0.0.1 > 10.0.0.2: ICMP echo request, id 38, seq 1, length 64
+10:53:36.011229 92:b9:4c:87:c8:6b > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 52420, offset 0, flags [none], proto ICMP (1), length 84)
+    10.0.0.2 > 10.0.0.1: ICMP echo reply, id 38, seq 1, length 64
+10:53:36.160317 92:b9:4c:87:c8:6b > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::90b9:4cff:fe87:c86b > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 92:b9:4c:87:c8:6b
+10:53:36.928218 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::78ec:9fff:feab:38f7 > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 7a:ec:9f:ab:38:f7
+10:53:37.024321 3a:20:e9:c5:3b:75 > 92:b9:4c:87:c8:6b, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 30335, offset 0, flags [DF], proto ICMP (1), length 84)
+    10.0.0.1 > 10.0.0.2: ICMP echo request, id 38, seq 2, length 64
+10:53:37.024468 92:b9:4c:87:c8:6b > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 52490, offset 0, flags [none], proto ICMP (1), length 84)
+    10.0.0.2 > 10.0.0.1: ICMP echo reply, id 38, seq 2, length 64
+10:53:37.034260 92:b9:4c:87:c8:6b > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 52492, offset 0, flags [DF], proto ICMP (1), length 84)
+    10.0.0.2 > 10.0.0.1: ICMP echo request, id 23484, seq 1, length 64
+10:53:37.034361 3a:20:e9:c5:3b:75 > 92:b9:4c:87:c8:6b, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 30336, offset 0, flags [none], proto ICMP (1), length 84)
+    10.0.0.1 > 10.0.0.2: ICMP echo reply, id 23484, seq 1, length 64
+10:53:38.048410 92:b9:4c:87:c8:6b > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 52701, offset 0, flags [DF], proto ICMP (1), length 84)
+    10.0.0.2 > 10.0.0.1: ICMP echo request, id 23484, seq 2, length 64
+10:53:38.048528 3a:20:e9:c5:3b:75 > 92:b9:4c:87:c8:6b, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 30475, offset 0, flags [none], proto ICMP (1), length 84)
+    10.0.0.1 > 10.0.0.2: ICMP echo reply, id 23484, seq 2, length 64
+10:53:38.057664 92:b9:4c:87:c8:6b > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 52752, offset 0, flags [DF], proto ICMP (1), length 84)
+    10.0.0.2 > 192.168.84.4: ICMP echo request, id 23485, seq 1, length 64
+10:53:38.057779 3a:20:e9:c5:3b:75 > 92:b9:4c:87:c8:6b, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 12802, offset 0, flags [none], proto ICMP (1), length 84)
+    192.168.84.4 > 10.0.0.2: ICMP echo reply, id 23485, seq 1, length 64
+10:53:39.073256 92:b9:4c:87:c8:6b > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 52868, offset 0, flags [DF], proto ICMP (1), length 84)
+    10.0.0.2 > 192.168.84.4: ICMP echo request, id 23485, seq 2, length 64
+10:53:39.073349 3a:20:e9:c5:3b:75 > 92:b9:4c:87:c8:6b, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 12869, offset 0, flags [none], proto ICMP (1), length 84)
+    192.168.84.4 > 10.0.0.2: ICMP echo reply, id 23485, seq 2, length 64
+10:53:39.083702 3a:20:e9:c5:3b:75 > 92:b9:4c:87:c8:6b, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 12870, offset 0, flags [DF], proto ICMP (1), length 84)
+    192.168.84.4 > 10.0.0.2: ICMP echo request, id 39, seq 1, length 64
+10:53:39.083856 92:b9:4c:87:c8:6b > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 52869, offset 0, flags [none], proto ICMP (1), length 84)
+    10.0.0.2 > 192.168.84.4: ICMP echo reply, id 39, seq 1, length 64
+10:53:40.000819 92:b9:4c:87:c8:6b > 3a:20:e9:c5:3b:75, ethertype ARP (0x0806), length 42: Ethernet (len 6), IPv4 (len 4), Request who-has 10.0.0.1 tell 10.0.0.2, length 28
+10:53:40.000888 3a:20:e9:c5:3b:75 > 92:b9:4c:87:c8:6b, ethertype ARP (0x0806), length 42: Ethernet (len 6), IPv4 (len 4), Reply 10.0.0.1 is-at 3a:20:e9:c5:3b:75, length 28
+10:53:40.096322 3a:20:e9:c5:3b:75 > 92:b9:4c:87:c8:6b, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 12876, offset 0, flags [DF], proto ICMP (1), length 84)
+    192.168.84.4 > 10.0.0.2: ICMP echo request, id 39, seq 2, length 64
+10:53:40.096464 92:b9:4c:87:c8:6b > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 52924, offset 0, flags [none], proto ICMP (1), length 84)
+    10.0.0.2 > 192.168.84.4: ICMP echo reply, id 39, seq 2, length 64
+10:53:45.812702 b4:9c:df:f3:3a:d9 > 01:00:5e:7f:ff:fa, ethertype IPv4 (0x0800), length 213: (tos 0x0, ttl 1, id 54215, offset 0, flags [DF], proto UDP (17), length 199)
+    192.168.1.10.36826 > 239.255.255.250.1900: UDP, length 171
+10:53:46.815332 b4:9c:df:f3:3a:d9 > 01:00:5e:7f:ff:fa, ethertype IPv4 (0x0800), length 213: (tos 0x0, ttl 1, id 54235, offset 0, flags [DF], proto UDP (17), length 199)
+    192.168.1.10.36826 > 239.255.255.250.1900: UDP, length 171
+10:53:47.815890 b4:9c:df:f3:3a:d9 > 01:00:5e:7f:ff:fa, ethertype IPv4 (0x0800), length 213: (tos 0x0, ttl 1, id 54466, offset 0, flags [DF], proto UDP (17), length 199)
+    192.168.1.10.36826 > 239.255.255.250.1900: UDP, length 171
+10:53:48.816281 b4:9c:df:f3:3a:d9 > 01:00:5e:7f:ff:fa, ethertype IPv4 (0x0800), length 213: (tos 0x0, ttl 1, id 54648, offset 0, flags [DF], proto UDP (17), length 199)
+    192.168.1.10.36826 > 239.255.255.250.1900: UDP, length 171
+10:53:48.820705 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 26212, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:53:48.822618 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 26213, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:53:49.820921 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 26233, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:53:49.824009 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 26234, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:53:50.752942 92:b9:4c:87:c8:6b > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::90b9:4cff:fe87:c86b > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 92:b9:4c:87:c8:6b
+10:53:51.822541 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 26289, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:53:51.825722 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 26290, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:53:52.544262 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::78ec:9fff:feab:38f7 > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 7a:ec:9f:ab:38:f7
+10:53:56.896818 2a:8c:3e:f1:ae:a8 > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::288c:3eff:fef1:aea8 > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 2a:8c:3e:f1:ae:a8
+10:54:05.089329 b4:9c:df:f3:3a:d9 > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::b69c:dfff:fef3:3ad9 > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): b4:9c:df:f3:3a:d9
+10:54:21.472738 92:b9:4c:87:c8:6b > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::90b9:4cff:fe87:c86b > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 92:b9:4c:87:c8:6b
+10:54:25.568261 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::78ec:9fff:feab:38f7 > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 7a:ec:9f:ab:38:f7
+10:54:26.123915 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 342: (tos 0x0, ttl 64, id 5620, offset 0, flags [none], proto UDP (17), length 328)
+    0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 40:bd:32:eb:d5:7c, length 300, xid 0x344d5bc7, secs 265, Flags [none]
+	  Client-Ethernet-Address 40:bd:32:eb:d5:7c
+	  Vendor-rfc1048 Extensions
+	    Magic Cookie 0x63825363
+	    DHCP-Message Option 53, length 1: Discover
+	    MSZ Option 57, length 2: 1500
+	    Vendor-Class Option 60, length 12: "dhcpcd-5.5.6"
+	    Hostname Option 12, length 14: "ECLYPSE-EBD57C"
+	    Parameter-Request Option 55, length 9: 
+	      Subnet-Mask, Static-Route, Default-Gateway, Domain-Name-Server
+	      Domain-Name, BR, Lease-Time, RN
+	      RB
+10:54:26.124832 3a:20:e9:c5:3b:75 > ff:ff:ff:ff:ff:ff, ethertype ARP (0x0806), length 42: Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 10.0.0.1, length 28
+10:54:26.125450 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype 802.1Q (0x8100), length 346: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 5620, offset 0, flags [none], proto UDP (17), length 328)
+    0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 40:bd:32:eb:d5:7c, length 300, xid 0x344d5bc7, secs 265, Flags [none]
+	  Client-Ethernet-Address 40:bd:32:eb:d5:7c
+	  Vendor-rfc1048 Extensions
+	    Magic Cookie 0x63825363
+	    DHCP-Message Option 53, length 1: Discover
+	    MSZ Option 57, length 2: 1500
+	    Vendor-Class Option 60, length 12: "dhcpcd-5.5.6"
+	    Hostname Option 12, length 14: "ECLYPSE-EBD57C"
+	    Parameter-Request Option 55, length 9: 
+	      Subnet-Mask, Static-Route, Default-Gateway, Domain-Name-Server
+	      Domain-Name, BR, Lease-Time, RN
+	      RB
+10:54:27.136183 3a:20:e9:c5:3b:75 > ff:ff:ff:ff:ff:ff, ethertype ARP (0x0806), length 42: Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 10.0.0.1, length 28
+10:54:28.160163 3a:20:e9:c5:3b:75 > ff:ff:ff:ff:ff:ff, ethertype ARP (0x0806), length 42: Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 10.0.0.1, length 28
+10:54:29.131772 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 62: (tos 0x0, ttl 64, id 36811, offset 0, flags [DF], proto ICMP (1), length 48)
+    10.0.0.1 > 10.20.37.66: ICMP echo request, id 30209, seq 0, length 28
+10:54:29.132125 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 342: (tos 0xc0, ttl 64, id 45411, offset 0, flags [none], proto UDP (17), length 328)
+    10.0.0.1.67 > 10.20.37.66.68: BOOTP/DHCP, Reply, length 300, xid 0x344d5bc7, secs 265, Flags [none]
+	  Your-IP 10.20.37.66
+	  Server-IP 10.0.0.1
+	  Client-Ethernet-Address 40:bd:32:eb:d5:7c
+	  Vendor-rfc1048 Extensions
+	    Magic Cookie 0x63825363
+	    DHCP-Message Option 53, length 1: Offer
+	    Server-ID Option 54, length 4: 10.0.0.1
+	    Lease-Time Option 51, length 4: 120
+	    RN Option 58, length 4: 60
+	    RB Option 59, length 4: 105
+	    Subnet-Mask Option 1, length 4: 255.0.0.0
+	    BR Option 28, length 4: 10.255.255.255
+	    Default-Gateway Option 3, length 4: 10.0.0.1
+	    Domain-Name-Server Option 6, length 4: 10.0.0.1
+10:54:29.139822 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 343: (tos 0x0, ttl 64, id 22347, offset 0, flags [none], proto UDP (17), length 329)
+    0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 40:bd:32:eb:d5:7c, length 301, xid 0x344d5bc7, secs 268, Flags [none]
+	  Client-Ethernet-Address 40:bd:32:eb:d5:7c
+	  Vendor-rfc1048 Extensions
+	    Magic Cookie 0x63825363
+	    DHCP-Message Option 53, length 1: Request
+	    Requested-IP Option 50, length 4: 10.20.37.66
+	    Server-ID Option 54, length 4: 10.0.0.1
+	    MSZ Option 57, length 2: 1500
+	    Vendor-Class Option 60, length 12: "dhcpcd-5.5.6"
+	    Hostname Option 12, length 14: "ECLYPSE-EBD57C"
+	    Parameter-Request Option 55, length 9: 
+	      Subnet-Mask, Static-Route, Default-Gateway, Domain-Name-Server
+	      Domain-Name, BR, Lease-Time, RN
+	      RB
+10:54:29.139862 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype 802.1Q (0x8100), length 347: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 22347, offset 0, flags [none], proto UDP (17), length 329)
+    0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 40:bd:32:eb:d5:7c, length 301, xid 0x344d5bc7, secs 268, Flags [none]
+	  Client-Ethernet-Address 40:bd:32:eb:d5:7c
+	  Vendor-rfc1048 Extensions
+	    Magic Cookie 0x63825363
+	    DHCP-Message Option 53, length 1: Request
+	    Requested-IP Option 50, length 4: 10.20.37.66
+	    Server-ID Option 54, length 4: 10.0.0.1
+	    MSZ Option 57, length 2: 1500
+	    Vendor-Class Option 60, length 12: "dhcpcd-5.5.6"
+	    Hostname Option 12, length 14: "ECLYPSE-EBD57C"
+	    Parameter-Request Option 55, length 9: 
+	      Subnet-Mask, Static-Route, Default-Gateway, Domain-Name-Server
+	      Domain-Name, BR, Lease-Time, RN
+	      RB
+10:54:29.147924 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 342: (tos 0xc0, ttl 64, id 45412, offset 0, flags [none], proto UDP (17), length 328)
+    10.0.0.1.67 > 10.20.37.66.68: BOOTP/DHCP, Reply, length 300, xid 0x344d5bc7, secs 268, Flags [none]
+	  Your-IP 10.20.37.66
+	  Server-IP 10.0.0.1
+	  Client-Ethernet-Address 40:bd:32:eb:d5:7c
+	  Vendor-rfc1048 Extensions
+	    Magic Cookie 0x63825363
+	    DHCP-Message Option 53, length 1: ACK
+	    Server-ID Option 54, length 4: 10.0.0.1
+	    Lease-Time Option 51, length 4: 120
+	    RN Option 58, length 4: 60
+	    RB Option 59, length 4: 105
+	    Subnet-Mask Option 1, length 4: 255.0.0.0
+	    BR Option 28, length 4: 10.255.255.255
+	    Default-Gateway Option 3, length 4: 10.0.0.1
+	    Domain-Name-Server Option 6, length 4: 10.0.0.1
+10:54:29.155659 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype ARP (0x0806), length 60: Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 0.0.0.0, length 46
+10:54:29.155670 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype 802.1Q (0x8100), length 64: vlan 10, p 0, ethertype ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 0.0.0.0, length 46
+10:54:29.790631 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 37222, offset 0, flags [DF], proto ICMP (1), length 84)
+    10.0.0.1 > 10.20.37.66: ICMP echo request, id 46, seq 1, length 64
+10:54:30.616365 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype ARP (0x0806), length 60: Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 0.0.0.0, length 46
+10:54:30.616398 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype 802.1Q (0x8100), length 64: vlan 10, p 0, ethertype ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 0.0.0.0, length 46
+10:54:30.816321 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 37314, offset 0, flags [DF], proto ICMP (1), length 84)
+    10.0.0.1 > 10.20.37.66: ICMP echo request, id 46, seq 2, length 64
+10:54:31.707653 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype ARP (0x0806), length 60: Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 0.0.0.0, length 46
+10:54:31.707686 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype 802.1Q (0x8100), length 64: vlan 10, p 0, ethertype ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 0.0.0.0, length 46
+10:54:33.745804 40:bd:32:eb:d5:7c > 33:33:00:00:00:16, ethertype IPv6 (0x86dd), length 90: (hlim 1, next-header Options (0) payload length: 36) fe80::42bd:32ff:feeb:d57c > ff02::16: HBH (rtalert: 0x0000) (padn) [icmp6 sum ok] ICMP6, multicast listener report v2, 1 group record(s) [gaddr ff02::fb to_in, 0 source(s)]
+10:54:33.747887 40:bd:32:eb:d5:7c > 33:33:00:00:00:16, ethertype 802.1Q (0x8100), length 94: vlan 10, p 0, ethertype IPv6, (hlim 1, next-header Options (0) payload length: 36) fe80::42bd:32ff:feeb:d57c > ff02::16: HBH (rtalert: 0x0000) (padn) [icmp6 sum ok] ICMP6, multicast listener report v2, 1 group record(s) [gaddr ff02::fb to_in, 0 source(s)]
+10:54:33.775094 40:bd:32:eb:d5:7c > 33:33:00:00:00:16, ethertype IPv6 (0x86dd), length 90: (hlim 1, next-header Options (0) payload length: 36) fe80::42bd:32ff:feeb:d57c > ff02::16: HBH (rtalert: 0x0000) (padn) [icmp6 sum ok] ICMP6, multicast listener report v2, 1 group record(s) [gaddr ff02::fb to_ex, 0 source(s)]
+10:54:33.775625 40:bd:32:eb:d5:7c > 33:33:00:00:00:16, ethertype 802.1Q (0x8100), length 94: vlan 10, p 0, ethertype IPv6, (hlim 1, next-header Options (0) payload length: 36) fe80::42bd:32ff:feeb:d57c > ff02::16: HBH (rtalert: 0x0000) (padn) [icmp6 sum ok] ICMP6, multicast listener report v2, 1 group record(s) [gaddr ff02::fb to_ex, 0 source(s)]
+10:54:34.272135 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype ARP (0x0806), length 42: Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 10.0.0.1, length 28
+10:54:34.275623 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype ARP (0x0806), length 60: Ethernet (len 6), IPv4 (len 4), Reply 10.20.37.66 is-at 40:bd:32:eb:d5:7c, length 46
+10:54:34.275646 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 64: vlan 10, p 0, ethertype ARP, Ethernet (len 6), IPv4 (len 4), Reply 10.20.37.66 is-at 40:bd:32:eb:d5:7c, length 46
+10:54:34.347888 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 89: (tos 0x0, ttl 64, id 48271, offset 0, flags [DF], proto UDP (17), length 75)
+    10.20.37.66.37590 > 10.0.0.1.53: 30189+ A? dclicensing.azurewebsites.net. (47)
+10:54:34.351579 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 93: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 48271, offset 0, flags [DF], proto UDP (17), length 75)
+    10.20.37.66.37590 > 10.0.0.1.53: 30189+ A? dclicensing.azurewebsites.net. (47)
+10:54:34.355538 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype ARP (0x0806), length 60: Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 10.20.37.66, length 46
+10:54:34.355555 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype 802.1Q (0x8100), length 64: vlan 10, p 0, ethertype ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 10.20.37.66, length 46
+10:54:34.361186 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 184: (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 170)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0 [3q] [3n] ANY (QU)? ECLYPSE-EBD57C._dcconf._udp.local. ANY (QU)? ECLYPSE-EBD57C.local. ANY (QU)? ECLYPSE-EBD57C.local. (142)
+10:54:34.363627 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype 802.1Q (0x8100), length 188: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 170)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0 [3q] [3n] ANY (QU)? ECLYPSE-EBD57C._dcconf._udp.local. ANY (QU)? ECLYPSE-EBD57C.local. ANY (QU)? ECLYPSE-EBD57C.local. (142)
+10:54:34.363648 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 204: (hlim 255, next-header UDP (17) payload length: 150) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0 [3q] [3n] ANY (QU)? ECLYPSE-EBD57C._dcconf._udp.local. ANY (QU)? ECLYPSE-EBD57C.local. ANY (QU)? ECLYPSE-EBD57C.local. (142)
+10:54:34.363663 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype 802.1Q (0x8100), length 208: vlan 10, p 0, ethertype IPv6, (hlim 255, next-header UDP (17) payload length: 150) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0 [3q] [3n] ANY (QU)? ECLYPSE-EBD57C._dcconf._udp.local. ANY (QU)? ECLYPSE-EBD57C.local. ANY (QU)? ECLYPSE-EBD57C.local. (142)
+10:54:34.380812 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 204: (tos 0x0, ttl 64, id 45702, offset 0, flags [DF], proto UDP (17), length 190)
+    10.0.0.1.53 > 10.20.37.66.37590: 30189 3/0/0 dclicensing.azurewebsites.net. CNAME waws-prod-blu-029.vip.azurewebsites.windows.net., waws-prod-blu-029.vip.azurewebsites.windows.net. CNAME waws-prod-blu-029.cloudapp.net., waws-prod-blu-029.cloudapp.net. A 168.62.180.173 (162)
+10:54:34.384077 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 74: (tos 0x0, ttl 64, id 23678, offset 0, flags [DF], proto TCP (6), length 60)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [S], cksum 0x8cff (correct), seq 1848762604, win 14600, options [mss 1460,sackOK,TS val 9223314 ecr 0,nop,wscale 3], length 0
+10:54:34.387549 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 78: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 23678, offset 0, flags [DF], proto TCP (6), length 60)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [S], cksum 0x8cff (correct), seq 1848762604, win 14600, options [mss 1460,sackOK,TS val 9223314 ecr 0,nop,wscale 3], length 0
+10:54:34.471244 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 74: (tos 0x0, ttl 114, id 8353, offset 0, flags [DF], proto TCP (6), length 60)
+    168.62.180.173.443 > 10.20.37.66.59330: Flags [S.], cksum 0xe8ed (correct), seq 4106753498, ack 1848762605, win 8192, options [mss 1380,nop,wscale 8,sackOK,TS val 2872248189 ecr 9223314], length 0
+10:54:34.472397 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 23679, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [.], cksum 0x3041 (correct), ack 1, win 1825, options [nop,nop,TS val 9223323 ecr 2872248189], length 0
+10:54:34.475560 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 23679, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [.], cksum 0x3041 (correct), ack 1, win 1825, options [nop,nop,TS val 9223323 ecr 2872248189], length 0
+10:54:34.479566 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 268: (tos 0x0, ttl 64, id 23680, offset 0, flags [DF], proto TCP (6), length 254)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [P.], cksum 0xfc2b (correct), seq 1:203, ack 1, win 1825, options [nop,nop,TS val 9223324 ecr 2872248189], length 202
+10:54:34.479586 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 272: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 23680, offset 0, flags [DF], proto TCP (6), length 254)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [P.], cksum 0xfc2b (correct), seq 1:203, ack 1, win 1825, options [nop,nop,TS val 9223324 ecr 2872248189], length 202
+10:54:34.506006 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 128: (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 114)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0 [1n] ANY (QU)? ECLYPSE-EBD57C._dcconf._udp.local. (86)
+10:54:34.507643 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype 802.1Q (0x8100), length 132: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 114)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0 [1n] ANY (QU)? ECLYPSE-EBD57C._dcconf._udp.local. (86)
+10:54:34.507669 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 148: (hlim 255, next-header UDP (17) payload length: 94) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0 [1n] ANY (QU)? ECLYPSE-EBD57C._dcconf._udp.local. (86)
+10:54:34.507684 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype 802.1Q (0x8100), length 152: vlan 10, p 0, ethertype IPv6, (hlim 255, next-header UDP (17) payload length: 94) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0 [1n] ANY (QU)? ECLYPSE-EBD57C._dcconf._udp.local. (86)
+10:54:34.571004 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 3784: (tos 0x0, ttl 114, id 8354, offset 0, flags [DF], proto TCP (6), length 3770)
+    168.62.180.173.443 > 10.20.37.66.59330: Flags [P.], cksum 0x9aee (incorrect -> 0x62f1), seq 1:3719, ack 203, win 1026, options [nop,nop,TS val 2872248284 ecr 9223324], length 3718
+10:54:34.572566 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 23681, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [.], cksum 0x2860 (correct), ack 1369, win 2167, options [nop,nop,TS val 9223333 ecr 2872248284], length 0
+10:54:34.572601 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 23681, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [.], cksum 0x2860 (correct), ack 1369, win 2167, options [nop,nop,TS val 9223333 ecr 2872248284], length 0
+10:54:34.575556 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 23682, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [.], cksum 0x21b2 (correct), ack 2737, win 2509, options [nop,nop,TS val 9223333 ecr 2872248284], length 0
+10:54:34.575579 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 23682, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [.], cksum 0x21b2 (correct), ack 2737, win 2509, options [nop,nop,TS val 9223333 ecr 2872248284], length 0
+10:54:34.575593 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 23683, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [.], cksum 0x1c86 (correct), ack 3719, win 2851, options [nop,nop,TS val 9223333 ecr 2872248284], length 0
+10:54:34.575606 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 23683, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [.], cksum 0x1c86 (correct), ack 3719, win 2851, options [nop,nop,TS val 9223333 ecr 2872248284], length 0
+10:54:34.610990 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 130: (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 116)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0 [2q] [2n] ANY (QM)? ECLYPSE-EBD57C.local. ANY (QM)? ECLYPSE-EBD57C.local. (88)
+10:54:34.611020 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype 802.1Q (0x8100), length 134: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 116)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0 [2q] [2n] ANY (QM)? ECLYPSE-EBD57C.local. ANY (QM)? ECLYPSE-EBD57C.local. (88)
+10:54:34.611920 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 150: (hlim 255, next-header UDP (17) payload length: 96) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0 [2q] [2n] ANY (QM)? ECLYPSE-EBD57C.local. ANY (QM)? ECLYPSE-EBD57C.local. (88)
+10:54:34.611982 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype 802.1Q (0x8100), length 154: vlan 10, p 0, ethertype IPv6, (hlim 255, next-header UDP (17) payload length: 96) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0 [2q] [2n] ANY (QM)? ECLYPSE-EBD57C.local. ANY (QM)? ECLYPSE-EBD57C.local. (88)
+10:54:34.756808 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 128: (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 114)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0 [1n] ANY (QM)? ECLYPSE-EBD57C._dcconf._udp.local. (86)
+10:54:34.756844 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype 802.1Q (0x8100), length 132: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 114)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0 [1n] ANY (QM)? ECLYPSE-EBD57C._dcconf._udp.local. (86)
+10:54:34.759661 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 148: (hlim 255, next-header UDP (17) payload length: 94) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0 [1n] ANY (QM)? ECLYPSE-EBD57C._dcconf._udp.local. (86)
+10:54:34.759692 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype 802.1Q (0x8100), length 152: vlan 10, p 0, ethertype IPv6, (hlim 255, next-header UDP (17) payload length: 94) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0 [1n] ANY (QM)? ECLYPSE-EBD57C._dcconf._udp.local. (86)
+10:54:34.856698 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 216: (tos 0x0, ttl 64, id 23684, offset 0, flags [DF], proto TCP (6), length 202)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [P.], cksum 0x4dfb (correct), seq 203:353, ack 3719, win 2851, options [nop,nop,TS val 9223362 ecr 2872248284], length 150
+10:54:34.856722 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 220: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 23684, offset 0, flags [DF], proto TCP (6), length 202)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [P.], cksum 0x4dfb (correct), seq 203:353, ack 3719, win 2851, options [nop,nop,TS val 9223362 ecr 2872248284], length 150
+10:54:34.860559 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 130: (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 116)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0 [2q] [2n] ANY (QM)? ECLYPSE-EBD57C.local. ANY (QM)? ECLYPSE-EBD57C.local. (88)
+10:54:34.860580 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype 802.1Q (0x8100), length 134: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 116)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0 [2q] [2n] ANY (QM)? ECLYPSE-EBD57C.local. ANY (QM)? ECLYPSE-EBD57C.local. (88)
+10:54:34.863537 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 150: (hlim 255, next-header UDP (17) payload length: 96) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0 [2q] [2n] ANY (QM)? ECLYPSE-EBD57C.local. ANY (QM)? ECLYPSE-EBD57C.local. (88)
+10:54:34.863559 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype 802.1Q (0x8100), length 154: vlan 10, p 0, ethertype IPv6, (hlim 255, next-header UDP (17) payload length: 96) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0 [2q] [2n] ANY (QM)? ECLYPSE-EBD57C.local. ANY (QM)? ECLYPSE-EBD57C.local. (88)
+10:54:34.948472 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 141: (tos 0x0, ttl 114, id 8357, offset 0, flags [DF], proto TCP (6), length 127)
+    168.62.180.173.443 > 10.20.37.66.59330: Flags [P.], cksum 0x7d8f (correct), seq 3719:3794, ack 353, win 1025, options [nop,nop,TS val 2872248658 ecr 9223362], length 75
+10:54:34.949792 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 23685, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [.], cksum 0x1a09 (correct), ack 3794, win 2851, options [nop,nop,TS val 9223371 ecr 2872248658], length 0
+10:54:34.949814 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 23685, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [.], cksum 0x1a09 (correct), ack 3794, win 2851, options [nop,nop,TS val 9223371 ecr 2872248658], length 0
+10:54:34.995094 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 391: (tos 0x0, ttl 64, id 23686, offset 0, flags [DF], proto TCP (6), length 377)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [P.], cksum 0xbafc (correct), seq 353:678, ack 3794, win 2851, options [nop,nop,TS val 9223376 ecr 2872248658], length 325
+10:54:34.995115 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 395: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 23686, offset 0, flags [DF], proto TCP (6), length 377)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [P.], cksum 0xbafc (correct), seq 353:678, ack 3794, win 2851, options [nop,nop,TS val 9223376 ecr 2872248658], length 325
+10:54:35.006855 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 128: (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 114)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0 [1n] ANY (QM)? ECLYPSE-EBD57C._dcconf._udp.local. (86)
+10:54:35.006884 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype 802.1Q (0x8100), length 132: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 114)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0 [1n] ANY (QM)? ECLYPSE-EBD57C._dcconf._udp.local. (86)
+10:54:35.007769 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 148: (hlim 255, next-header UDP (17) payload length: 94) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0 [1n] ANY (QM)? ECLYPSE-EBD57C._dcconf._udp.local. (86)
+10:54:35.011546 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype 802.1Q (0x8100), length 152: vlan 10, p 0, ethertype IPv6, (hlim 255, next-header UDP (17) payload length: 94) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0 [1n] ANY (QM)? ECLYPSE-EBD57C._dcconf._udp.local. (86)
+10:54:35.111276 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 294: (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 280)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0*- [0q] 4/0/3 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c (252)
+10:54:35.111311 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype 802.1Q (0x8100), length 298: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 280)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0*- [0q] 4/0/3 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c (252)
+10:54:35.112182 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 314: (hlim 255, next-header UDP (17) payload length: 260) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0*- [0q] 4/0/3 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c (252)
+10:54:35.115599 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype 802.1Q (0x8100), length 318: vlan 10, p 0, ethertype IPv6, (hlim 255, next-header UDP (17) payload length: 260) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0*- [0q] 4/0/3 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c (252)
+10:54:35.257218 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 296: (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 282)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0*- [0q] 4/0/1 ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (254)
+10:54:35.257254 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype 802.1Q (0x8100), length 300: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 282)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0*- [0q] 4/0/1 ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (254)
+10:54:35.259553 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 316: (hlim 255, next-header UDP (17) payload length: 262) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0*- [0q] 4/0/1 ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (254)
+10:54:35.259607 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype 802.1Q (0x8100), length 320: vlan 10, p 0, ethertype IPv6, (hlim 255, next-header UDP (17) payload length: 262) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0*- [0q] 4/0/1 ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (254)
+10:54:35.260811 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 1031: (tos 0x0, ttl 114, id 8358, offset 0, flags [DF], proto TCP (6), length 1017)
+    168.62.180.173.443 > 10.20.37.66.59330: Flags [P.], cksum 0x3a0d (correct), seq 3794:4759, ack 678, win 1024, options [nop,nop,TS val 2872248827 ecr 9223376], length 965
+10:54:35.263518 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 23687, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [.], cksum 0x12e1 (correct), ack 4759, win 3193, options [nop,nop,TS val 9223402 ecr 2872248827], length 0
+10:54:35.263527 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 23687, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.59330 > 168.62.180.173.443: Flags [.], cksum 0x12e1 (correct), ack 4759, win 3193, options [nop,nop,TS val 9223402 ecr 2872248827], length 0
+10:54:35.349446 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 92: (tos 0x0, ttl 64, id 48371, offset 0, flags [DF], proto UDP (17), length 78)
+    10.20.37.66.24879 > 10.0.0.1.53: 24774+ A? dclicenses.blob.core.windows.net. (50)
+10:54:35.349476 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 96: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 48371, offset 0, flags [DF], proto UDP (17), length 78)
+    10.20.37.66.24879 > 10.0.0.1.53: 24774+ A? dclicenses.blob.core.windows.net. (50)
+10:54:35.403204 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 146: (tos 0x0, ttl 64, id 45924, offset 0, flags [DF], proto UDP (17), length 132)
+    10.0.0.1.53 > 10.20.37.66.24879: 24774 2/0/0 dclicenses.blob.core.windows.net. CNAME blob.blaprdstr02a.store.core.windows.net., blob.blaprdstr02a.store.core.windows.net. A 52.239.153.36 (104)
+10:54:35.406547 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 74: (tos 0x0, ttl 64, id 16677, offset 0, flags [DF], proto TCP (6), length 60)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [S], cksum 0xb993 (correct), seq 390331868, win 14600, options [mss 1460,sackOK,TS val 9223417 ecr 0,nop,wscale 3], length 0
+10:54:35.406582 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 78: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 16677, offset 0, flags [DF], proto TCP (6), length 60)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [S], cksum 0xb993 (correct), seq 390331868, win 14600, options [mss 1460,sackOK,TS val 9223417 ecr 0,nop,wscale 3], length 0
+10:54:35.493194 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 74: (tos 0x0, ttl 114, id 2181, offset 0, flags [DF], proto TCP (6), length 60)
+    52.239.153.36.443 > 10.20.37.66.33694: Flags [S.], cksum 0x0eaa (correct), seq 2565234586, ack 390331869, win 8192, options [mss 1380,nop,wscale 8,sackOK,TS val 433828303 ecr 9223417], length 0
+10:54:35.494427 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 16678, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x55fe (correct), ack 1, win 1825, options [nop,nop,TS val 9223425 ecr 433828303], length 0
+10:54:35.494462 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 16678, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x55fe (correct), ack 1, win 1825, options [nop,nop,TS val 9223425 ecr 433828303], length 0
+10:54:35.758506 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 271: (tos 0x0, ttl 64, id 16679, offset 0, flags [DF], proto TCP (6), length 257)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [P.], cksum 0xa3ba (correct), seq 1:206, ack 1, win 1825, options [nop,nop,TS val 9223452 ecr 433828303], length 205
+10:54:35.758542 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 275: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 16679, offset 0, flags [DF], proto TCP (6), length 257)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [P.], cksum 0xa3ba (correct), seq 1:206, ack 1, win 1825, options [nop,nop,TS val 9223452 ecr 433828303], length 205
+10:54:35.851089 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 5727: (tos 0x0, ttl 114, id 2182, offset 0, flags [DF], proto TCP (6), length 5713)
+    52.239.153.36.443 > 10.20.37.66.33694: Flags [P.], cksum 0x13ad (incorrect -> 0x2944), seq 1:5662, ack 206, win 1026, options [nop,nop,TS val 433828658 ecr 9223452], length 5661
+10:54:35.852702 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 16680, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x4cfc (correct), ack 1369, win 2167, options [nop,nop,TS val 9223461 ecr 433828658], length 0
+10:54:35.852736 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 16680, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x4cfc (correct), ack 1369, win 2167, options [nop,nop,TS val 9223461 ecr 433828658], length 0
+10:54:35.855555 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 16681, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x464e (correct), ack 2737, win 2509, options [nop,nop,TS val 9223461 ecr 433828658], length 0
+10:54:35.855580 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 16681, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x464e (correct), ack 2737, win 2509, options [nop,nop,TS val 9223461 ecr 433828658], length 0
+10:54:35.855597 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 16682, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x3fa0 (correct), ack 4105, win 2851, options [nop,nop,TS val 9223461 ecr 433828658], length 0
+10:54:35.855613 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 16682, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x3fa0 (correct), ack 4105, win 2851, options [nop,nop,TS val 9223461 ecr 433828658], length 0
+10:54:35.855629 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 16683, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x38f2 (correct), ack 5473, win 3193, options [nop,nop,TS val 9223461 ecr 433828658], length 0
+10:54:35.855644 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 16683, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x38f2 (correct), ack 5473, win 3193, options [nop,nop,TS val 9223461 ecr 433828658], length 0
+10:54:35.859526 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 16684, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x3835 (correct), ack 5662, win 3193, options [nop,nop,TS val 9223461 ecr 433828658], length 0
+10:54:35.859545 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 16684, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x3835 (correct), ack 5662, win 3193, options [nop,nop,TS val 9223461 ecr 433828658], length 0
+10:54:36.008953 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 516: (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 502)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:36.008987 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype 802.1Q (0x8100), length 520: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 502)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:36.011626 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 536: (hlim 255, next-header UDP (17) payload length: 482) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:36.011659 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype 802.1Q (0x8100), length 540: vlan 10, p 0, ethertype IPv6, (hlim 255, next-header UDP (17) payload length: 482) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:36.133768 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 216: (tos 0x0, ttl 64, id 16685, offset 0, flags [DF], proto TCP (6), length 202)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [P.], cksum 0x7b9c (correct), seq 206:356, ack 5662, win 3193, options [nop,nop,TS val 9223489 ecr 433828658], length 150
+10:54:36.133798 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 220: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 16685, offset 0, flags [DF], proto TCP (6), length 202)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [P.], cksum 0x7b9c (correct), seq 206:356, ack 5662, win 3193, options [nop,nop,TS val 9223489 ecr 433828658], length 150
+10:54:36.221940 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 141: (tos 0x0, ttl 114, id 2187, offset 0, flags [DF], proto TCP (6), length 127)
+    52.239.153.36.443 > 10.20.37.66.33694: Flags [P.], cksum 0xbcaf (correct), seq 5662:5737, ack 356, win 1025, options [nop,nop,TS val 433829032 ecr 9223489], length 75
+10:54:36.223126 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 16686, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x35b9 (correct), ack 5737, win 3193, options [nop,nop,TS val 9223498 ecr 433829032], length 0
+10:54:36.223161 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 16686, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x35b9 (correct), ack 5737, win 3193, options [nop,nop,TS val 9223498 ecr 433829032], length 0
+10:54:36.270292 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 503: (tos 0x0, ttl 64, id 16687, offset 0, flags [DF], proto TCP (6), length 489)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [P.], cksum 0x660a (correct), seq 356:793, ack 5737, win 3193, options [nop,nop,TS val 9223503 ecr 433829032], length 437
+10:54:36.270301 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 507: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 16687, offset 0, flags [DF], proto TCP (6), length 489)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [P.], cksum 0x660a (correct), seq 356:793, ack 5737, win 3193, options [nop,nop,TS val 9223503 ecr 433829032], length 437
+10:54:36.356673 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype ARP (0x0806), length 60: Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 10.20.37.66, length 46
+10:54:36.356706 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype 802.1Q (0x8100), length 64: vlan 10, p 0, ethertype ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 10.20.37.66, length 46
+10:54:36.401980 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 114, id 2188, offset 0, flags [DF], proto TCP (6), length 52)
+    52.239.153.36.443 > 10.20.37.66.33694: Flags [.], cksum 0x3bc5 (correct), ack 793, win 1023, options [nop,nop,TS val 433829212 ecr 9223503], length 0
+10:54:36.431271 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 2151: (tos 0x0, ttl 114, id 2189, offset 0, flags [DF], proto TCP (6), length 2137)
+    52.239.153.36.443 > 10.20.37.66.33694: Flags [P.], cksum 0x05b5 (incorrect -> 0xad13), seq 5737:7822, ack 793, win 1023, options [nop,nop,TS val 433829241 ecr 9223503], length 2085
+10:54:36.432736 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 16688, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x2c70 (correct), ack 7105, win 3535, options [nop,nop,TS val 9223519 ecr 433829241], length 0
+10:54:36.435556 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 16688, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x2c70 (correct), ack 7105, win 3535, options [nop,nop,TS val 9223519 ecr 433829241], length 0
+10:54:36.435578 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 66: (tos 0x0, ttl 64, id 16689, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x284d (correct), ack 7822, win 3877, options [nop,nop,TS val 9223519 ecr 433829241], length 0
+10:54:36.435593 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 70: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 16689, offset 0, flags [DF], proto TCP (6), length 52)
+    10.20.37.66.33694 > 52.239.153.36.443: Flags [.], cksum 0x284d (correct), ack 7822, win 3877, options [nop,nop,TS val 9223519 ecr 433829241], length 0
+10:54:38.010679 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 516: (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 502)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:38.010714 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype 802.1Q (0x8100), length 520: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 502)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:38.011600 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 536: (hlim 255, next-header UDP (17) payload length: 482) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:38.011644 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype 802.1Q (0x8100), length 540: vlan 10, p 0, ethertype IPv6, (hlim 255, next-header UDP (17) payload length: 482) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:40.827189 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 39116, offset 0, flags [DF], proto ICMP (1), length 84)
+    10.0.0.1 > 10.20.37.66: ICMP echo request, id 47, seq 1, length 64
+10:54:40.828473 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 26418, offset 0, flags [none], proto ICMP (1), length 84)
+    10.20.37.66 > 10.0.0.1: ICMP echo reply, id 47, seq 1, length 64
+10:54:40.828483 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 102: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 26418, offset 0, flags [none], proto ICMP (1), length 84)
+    10.20.37.66 > 10.0.0.1: ICMP echo reply, id 47, seq 1, length 64
+10:54:41.828671 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 39134, offset 0, flags [DF], proto ICMP (1), length 84)
+    10.0.0.1 > 10.20.37.66: ICMP echo request, id 47, seq 2, length 64
+10:54:41.829975 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 26419, offset 0, flags [none], proto ICMP (1), length 84)
+    10.20.37.66 > 10.0.0.1: ICMP echo reply, id 47, seq 2, length 64
+10:54:41.830005 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 102: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 26419, offset 0, flags [none], proto ICMP (1), length 84)
+    10.20.37.66 > 10.0.0.1: ICMP echo reply, id 47, seq 2, length 64
+10:54:41.837051 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 12547, offset 0, flags [DF], proto ICMP (1), length 84)
+    192.168.84.4 > 10.20.37.66: ICMP echo request, id 48, seq 1, length 64
+10:54:41.838100 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 32525, offset 0, flags [none], proto ICMP (1), length 84)
+    10.20.37.66 > 192.168.84.4: ICMP echo reply, id 48, seq 1, length 64
+10:54:41.838111 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 102: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 32525, offset 0, flags [none], proto ICMP (1), length 84)
+    10.20.37.66 > 192.168.84.4: ICMP echo reply, id 48, seq 1, length 64
+10:54:42.013122 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 516: (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 502)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:42.013158 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype 802.1Q (0x8100), length 520: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 502)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:42.015647 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 536: (hlim 255, next-header UDP (17) payload length: 482) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:42.015679 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype 802.1Q (0x8100), length 540: vlan 10, p 0, ethertype IPv6, (hlim 255, next-header UDP (17) payload length: 482) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:42.838494 3a:20:e9:c5:3b:75 > 40:bd:32:eb:d5:7c, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 12696, offset 0, flags [DF], proto ICMP (1), length 84)
+    192.168.84.4 > 10.20.37.66: ICMP echo request, id 48, seq 2, length 64
+10:54:42.839786 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 32526, offset 0, flags [none], proto ICMP (1), length 84)
+    10.20.37.66 > 192.168.84.4: ICMP echo reply, id 48, seq 2, length 64
+10:54:42.839830 40:bd:32:eb:d5:7c > 3a:20:e9:c5:3b:75, ethertype 802.1Q (0x8100), length 102: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 64, id 32526, offset 0, flags [none], proto ICMP (1), length 84)
+    10.20.37.66 > 192.168.84.4: ICMP echo reply, id 48, seq 2, length 64
+10:54:43.795280 40:bd:32:eb:d5:7c > 33:33:00:00:00:16, ethertype IPv6 (0x86dd), length 90: (hlim 1, next-header Options (0) payload length: 36) fe80::42bd:32ff:feeb:d57c > ff02::16: HBH (rtalert: 0x0000) (padn) [icmp6 sum ok] ICMP6, multicast listener report v2, 1 group record(s) [gaddr ff02::fb to_ex, 0 source(s)]
+10:54:43.795371 40:bd:32:eb:d5:7c > 33:33:00:00:00:16, ethertype 802.1Q (0x8100), length 94: vlan 10, p 0, ethertype IPv6, (hlim 1, next-header Options (0) payload length: 36) fe80::42bd:32ff:feeb:d57c > ff02::16: HBH (rtalert: 0x0000) (padn) [icmp6 sum ok] ICMP6, multicast listener report v2, 1 group record(s) [gaddr ff02::fb to_ex, 0 source(s)]
+10:54:50.019117 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 516: (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 502)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:50.019221 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype 802.1Q (0x8100), length 520: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 502)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:50.020808 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 536: (hlim 255, next-header UDP (17) payload length: 482) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:50.023541 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype 802.1Q (0x8100), length 540: vlan 10, p 0, ethertype IPv6, (hlim 255, next-header UDP (17) payload length: 482) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:54:58.336868 2a:8c:3e:f1:ae:a8 > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::288c:3eff:fef1:aea8 > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 2a:8c:3e:f1:ae:a8
+10:55:06.035200 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 516: (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 502)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:55:06.035221 40:bd:32:eb:d5:7c > 01:00:5e:00:00:fb, ethertype 802.1Q (0x8100), length 520: vlan 10, p 0, ethertype IPv4, (tos 0x0, ttl 255, id 0, offset 0, flags [DF], proto UDP (17), length 502)
+    10.20.37.66.5353 > 224.0.0.251.5353: 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:55:06.036328 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype IPv6 (0x86dd), length 536: (hlim 255, next-header UDP (17) payload length: 482) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:55:06.039706 40:bd:32:eb:d5:7c > 33:33:00:00:00:fb, ethertype 802.1Q (0x8100), length 540: vlan 10, p 0, ethertype IPv6, (hlim 255, next-header UDP (17) payload length: 482) fe80::42bd:32ff:feeb:d57c.5353 > ff02::fb.5353: [udp sum ok] 0*- [0q] 8/0/4 66.37.20.10.in-addr.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., C.7.5.D.B.E.E.F.F.F.2.3.D.B.2.4.0.0.0.0.0.0.0.0.0.0.0.0.0.8.E.F.ip6.arpa. (Cache flush) PTR ECLYPSE-EBD57C.local., ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) TXT "mac=40:bd:32:eb:d5:7c" "restUrl=/api/rest/v1/" "type=Eclypse" "access=-1;443" "vendor=Distech Controls", _services._dns-sd._udp.local. PTR _dcconf._udp.local., _dcconf._udp.local. PTR ECLYPSE-EBD57C._dcconf._udp.local., ECLYPSE-EBD57C.local. (Cache flush) A 10.20.37.66, ECLYPSE-EBD57C.local. (Cache flush) AAAA fe80::42bd:32ff:feeb:d57c, ECLYPSE-EBD57C._dcconf._udp.local. (Cache flush) SRV ECLYPSE-EBD57C.local.:80 0 0 (474)
+10:55:14.720206 b4:9c:df:f3:3a:d9 > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::b69c:dfff:fef3:3ad9 > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): b4:9c:df:f3:3a:d9
+10:55:14.819731 22:5b:ef:00:8c:fc > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 63: (tos 0x0, ttl 64, id 1802, offset 0, flags [DF], proto UDP (17), length 49)
+    10.0.0.3.47808 > 10.255.255.255.47808: UDP, length 21
+10:55:14.821430 22:5b:ef:00:8c:fc > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 75: (tos 0x0, ttl 64, id 1803, offset 0, flags [DF], proto UDP (17), length 61)
+    10.0.0.3.47808 > 10.255.255.255.47808: UDP, length 33
+10:55:14.828728 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 67: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 53)
+    10.20.37.66.47808 > 10.255.255.255.47808: UDP, length 25
+10:55:14.831122 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype 802.1Q (0x8100), length 71: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 53)
+    10.20.37.66.47808 > 10.255.255.255.47808: UDP, length 25
+10:55:18.076981 b4:9c:df:f3:3a:d9 > 01:00:5e:7f:ff:fa, ethertype IPv4 (0x0800), length 213: (tos 0x0, ttl 1, id 6586, offset 0, flags [DF], proto UDP (17), length 199)
+    192.168.1.10.52300 > 239.255.255.250.1900: UDP, length 171
+10:55:19.080292 b4:9c:df:f3:3a:d9 > 01:00:5e:7f:ff:fa, ethertype IPv4 (0x0800), length 213: (tos 0x0, ttl 1, id 6810, offset 0, flags [DF], proto UDP (17), length 199)
+    192.168.1.10.52300 > 239.255.255.250.1900: UDP, length 171
+10:55:19.868606 22:5b:ef:00:8c:fc > ff:ff:ff:ff:ff:ff, ethertype ARP (0x0806), length 42: Ethernet (len 6), IPv4 (len 4), Request who-has 10.20.37.66 tell 10.0.0.3, length 28
+10:55:19.871170 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype ARP (0x0806), length 60: Ethernet (len 6), IPv4 (len 4), Reply 10.20.37.66 is-at 40:bd:32:eb:d5:7c, length 46
+10:55:19.883270 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 79: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 65)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 37
+10:55:19.883294 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 83: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 65)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 37
+10:55:19.900883 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 98: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 84)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 56
+10:55:19.900909 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 102: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 84)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 56
+10:55:19.912619 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 160: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 146)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 118
+10:55:19.912638 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 164: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 146)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 118
+10:55:20.080888 b4:9c:df:f3:3a:d9 > 01:00:5e:7f:ff:fa, ethertype IPv4 (0x0800), length 213: (tos 0x0, ttl 1, id 6878, offset 0, flags [DF], proto UDP (17), length 199)
+    192.168.1.10.52300 > 239.255.255.250.1900: UDP, length 171
+10:55:20.523256 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 1500: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 1486)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 1458
+10:55:20.523349 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 1504: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 1486)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 1458
+10:55:20.533493 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 1500: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 1486)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 1458
+10:55:20.535323 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 1504: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 1486)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 1458
+10:55:20.540547 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 1500: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 1486)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 1458
+10:55:20.543298 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 1504: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 1486)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 1458
+10:55:20.547381 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 1500: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 1486)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 1458
+10:55:20.547493 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 1504: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 1486)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 1458
+10:55:20.552352 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 1500: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 1486)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 1458
+10:55:20.555293 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 1504: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 1486)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 1458
+10:55:20.559294 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 1500: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 1486)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 1458
+10:55:20.559396 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 1504: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 1486)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 1458
+10:55:20.564604 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 503: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 489)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 461
+10:55:20.567171 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 507: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 489)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 461
+10:55:21.077607 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 39594, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:55:21.077607 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 39595, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:55:21.080889 b4:9c:df:f3:3a:d9 > 01:00:5e:7f:ff:fa, ethertype IPv4 (0x0800), length 213: (tos 0x0, ttl 1, id 6970, offset 0, flags [DF], proto UDP (17), length 199)
+    192.168.1.10.52300 > 239.255.255.250.1900: UDP, length 171
+10:55:21.110394 22:5b:ef:00:8c:fc > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 63: (tos 0x0, ttl 64, id 2687, offset 0, flags [DF], proto UDP (17), length 49)
+    10.0.0.3.47808 > 10.255.255.255.47808: UDP, length 21
+10:55:21.112013 22:5b:ef:00:8c:fc > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 75: (tos 0x0, ttl 64, id 2688, offset 0, flags [DF], proto UDP (17), length 61)
+    10.0.0.3.47808 > 10.255.255.255.47808: UDP, length 33
+10:55:21.117323 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 67: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 53)
+    10.20.37.66.47808 > 10.255.255.255.47808: UDP, length 25
+10:55:21.117361 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype 802.1Q (0x8100), length 71: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 53)
+    10.20.37.66.47808 > 10.255.255.255.47808: UDP, length 25
+10:55:22.083785 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 39786, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:55:22.084106 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 39787, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:55:22.912826 92:b9:4c:87:c8:6b > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::90b9:4cff:fe87:c86b > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 92:b9:4c:87:c8:6b
+10:55:24.085351 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 39903, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:55:24.086072 b4:9c:df:f3:3a:d9 > 01:00:5e:00:00:fb, ethertype IPv4 (0x0800), length 82: (tos 0x0, ttl 1, id 39904, offset 0, flags [DF], proto UDP (17), length 68)
+    192.168.1.10.5353 > 224.0.0.251.5353: 0 PTR (QM)? _googlecast._tcp.local. (40)
+10:55:24.885130 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype ARP (0x0806), length 60: Ethernet (len 6), IPv4 (len 4), Request who-has 10.0.0.3 tell 10.20.37.66, length 46
+10:55:24.885536 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 64: vlan 10, p 0, ethertype ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 10.0.0.3 tell 10.20.37.66, length 46
+10:55:26.311060 22:5b:ef:00:8c:fc > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 63: (tos 0x0, ttl 64, id 3036, offset 0, flags [DF], proto UDP (17), length 49)
+    10.0.0.3.47808 > 10.255.255.255.47808: UDP, length 21
+10:55:26.312735 22:5b:ef:00:8c:fc > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 75: (tos 0x0, ttl 64, id 3037, offset 0, flags [DF], proto UDP (17), length 61)
+    10.0.0.3.47808 > 10.255.255.255.47808: UDP, length 33
+10:55:26.318079 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 67: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 53)
+    10.20.37.66.47808 > 10.255.255.255.47808: UDP, length 25
+10:55:26.319027 40:bd:32:eb:d5:7c > ff:ff:ff:ff:ff:ff, ethertype 802.1Q (0x8100), length 71: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 53)
+    10.20.37.66.47808 > 10.255.255.255.47808: UDP, length 25
+10:55:29.056281 7a:ec:9f:ab:38:f7 > 33:33:00:00:00:02, ethertype IPv6 (0x86dd), length 70: (hlim 255, next-header ICMPv6 (58) payload length: 16) fe80::78ec:9fff:feab:38f7 > ff02::2: [icmp6 sum ok] ICMP6, router solicitation, length 16
+	  source link-address option (1), length 8 (1): 7a:ec:9f:ab:38:f7
+10:55:31.366097 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 73: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 59)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 31
+10:55:31.366997 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 77: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 59)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 31
+10:55:31.380018 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 95: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 81)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 53
+10:55:31.383049 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 99: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 81)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 53
+10:55:31.391700 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 85: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 71)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 43
+10:55:31.395020 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 89: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 71)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 43
+10:55:31.401364 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 87: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 73)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 45
+10:55:31.403016 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 91: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 73)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 45
+10:55:31.415254 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 90: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 76)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 48
+10:55:31.419082 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 94: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 76)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 48
+10:55:31.424713 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 89: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 75)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 47
+10:55:31.427104 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 93: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 75)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 47
+10:55:31.434748 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 72: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 58)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 30
+10:55:31.435386 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 76: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 58)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 30
+10:55:31.445801 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 72: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 58)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 30
+10:55:31.445840 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 76: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 58)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 30
+10:55:31.455218 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 160: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 146)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 118
+10:55:31.459103 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype 802.1Q (0x8100), length 164: vlan 10, p 0, ethertype IPv4, (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 146)
+    10.20.37.66.47808 > 10.0.0.3.47808: UDP, length 118
+10:55:31.475731 40:bd:32:eb:d5:7c > 22:5b:ef:00:8c:fc, ethertype IPv4 (0x0800), length 72: (tos 0x4, ttl 64, id 0, offset 0, flags [DF], proto UDP (17), length 58)

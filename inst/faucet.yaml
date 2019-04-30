@@ -1,0 +1,95 @@
+acls:
+  dp_sec_port_1_acl:
+  - rule:
+      actions:
+        allow: 1
+        output:
+          ports: [6]
+  dp_sec_port_2_acl:
+  - rule:
+      actions:
+        allow: 1
+        output:
+          ports: [6]
+  dp_sec_port_3_acl:
+  - rule:
+      actions:
+        allow: 1
+        output:
+          ports: [6]
+  dp_sec_port_4_acl:
+  - rule:
+      actions:
+        allow: 1
+        output:
+          ports: [6]
+  dp_sec_port_5_acl:
+  - rule:
+      actions:
+        allow: 1
+        output:
+          ports: [6]
+dps:
+  pri:
+    dp_id: 1
+    interfaces:
+      1:
+        acl_in: dp_pri_incoming_acl
+        name: stack_pri
+        stack: {dp: sec, port: 6}
+      10: {acl_in: dp_pri_portset_1_acl, native_vlan: 10}
+      11: {acl_in: dp_pri_portset_1_acl, native_vlan: 10}
+      12: {acl_in: dp_pri_portset_1_acl, native_vlan: 10}
+      13: {acl_in: dp_pri_portset_1_acl, native_vlan: 10}
+      14: {acl_in: dp_pri_portset_1_acl, native_vlan: 10}
+      15: {acl_in: dp_pri_portset_1_acl, native_vlan: 10}
+      20: {acl_in: dp_pri_portset_2_acl, native_vlan: 10}
+      21: {acl_in: dp_pri_portset_2_acl, native_vlan: 10}
+      22: {acl_in: dp_pri_portset_2_acl, native_vlan: 10}
+      23: {acl_in: dp_pri_portset_2_acl, native_vlan: 10}
+      24: {acl_in: dp_pri_portset_2_acl, native_vlan: 10}
+      25: {acl_in: dp_pri_portset_2_acl, native_vlan: 10}
+      30: {acl_in: dp_pri_portset_3_acl, native_vlan: 10}
+      31: {acl_in: dp_pri_portset_3_acl, native_vlan: 10}
+      32: {acl_in: dp_pri_portset_3_acl, native_vlan: 10}
+      33: {acl_in: dp_pri_portset_3_acl, native_vlan: 10}
+      34: {acl_in: dp_pri_portset_3_acl, native_vlan: 10}
+      35: {acl_in: dp_pri_portset_3_acl, native_vlan: 10}
+      40: {acl_in: dp_pri_portset_4_acl, native_vlan: 10}
+      41: {acl_in: dp_pri_portset_4_acl, native_vlan: 10}
+      42: {acl_in: dp_pri_portset_4_acl, native_vlan: 10}
+      43: {acl_in: dp_pri_portset_4_acl, native_vlan: 10}
+      44: {acl_in: dp_pri_portset_4_acl, native_vlan: 10}
+      45: {acl_in: dp_pri_portset_4_acl, native_vlan: 10}
+      50: {acl_in: dp_pri_portset_5_acl, native_vlan: 10}
+      51: {acl_in: dp_pri_portset_5_acl, native_vlan: 10}
+      52: {acl_in: dp_pri_portset_5_acl, native_vlan: 10}
+      53: {acl_in: dp_pri_portset_5_acl, native_vlan: 10}
+      54: {acl_in: dp_pri_portset_5_acl, native_vlan: 10}
+      55: {acl_in: dp_pri_portset_5_acl, native_vlan: 10}
+      1000: {name: local_switch, native_vlan: 10}
+      1001: {name: mirror-1, output_only: true}
+      1002: {name: mirror-2, output_only: true}
+      1003: {name: mirror-3, output_only: true}
+      1004: {name: mirror-4, output_only: true}
+      1005: {name: mirror-5, output_only: true}
+    name: pri
+    stack: {priority: 1}
+  sec:
+    dp_id: 4660
+    interfaces:
+      1: {acl_in: dp_sec_port_1_acl, native_vlan: 10}
+      2: {acl_in: dp_sec_port_2_acl, native_vlan: 10}
+      3: {acl_in: dp_sec_port_3_acl, native_vlan: 10}
+      4: {acl_in: dp_sec_port_4_acl, native_vlan: 10}
+      5: {acl_in: dp_sec_port_5_acl, native_vlan: 10}
+      6:
+        acl_in: dp_sec_incoming_acl
+        name: enx645aedf345fa
+        stack: {dp: pri, port: 1}
+    name: sec
+include: [dp_port_acls.yaml]
+include-optional: [port_acls/dp_sec_port_1_acl.yaml, port_acls/dp_sec_port_2_acl.yaml,
+  port_acls/dp_sec_port_3_acl.yaml, port_acls/dp_sec_port_4_acl.yaml, port_acls/dp_sec_port_5_acl.yaml]
+vlans:
+  10: {unicast_flood: false}

@@ -10,7 +10,7 @@
 .pdbrcX
 
 # Runtime or sub-module files
-inst/
+#inst/
 faucet/
 mininet/
 local/

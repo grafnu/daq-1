@@ -1,0 +1,104 @@
+d385e578-221c-4ec0-9582-dff10ccb0780
+    Bridge pri
+        Controller "tcp:127.0.0.1:6653"
+            is_connected: true
+        fail_mode: secure
+        Port ctrl-pri
+            Interface ctrl-pri
+        Port "enx645aedf345fa"
+            Interface "enx645aedf345fa"
+        Port "pri-eth30"
+            Interface "pri-eth30"
+        Port "pri-eth31"
+            Interface "pri-eth31"
+        Port pri
+            Interface pri
+                type: internal
+        Port "mirror-3"
+            Interface "mirror-3"
+        Port "mirror-4"
+            Interface "mirror-4"
+                error: "could not open network device mirror-4 (No such device)"
+    Bridge ctrl-br
+        Port ctrl-br
+            Interface ctrl-br
+                type: internal
+        Port "enxb49cdff33ad9"
+            Interface "enxb49cdff33ad9"
+        Port ctrl-swx
+            Interface ctrl-swx
+        Port ctrl-alt
+            Interface ctrl-alt
+    Bridge sec
+        Controller "tcp:127.0.0.1:6653"
+        fail_mode: secure
+        Port faux
+            Interface faux
+                error: "could not open network device faux (No such device)"
+        Port "sec-6"
+            Interface "sec-6"
+                error: "could not open network device sec-6 (No such device)"
+        Port "sec-2"
+            Interface "sec-2"
+                error: "could not open network device sec-2 (No such device)"
+        Port "sec-5"
+            Interface "sec-5"
+                error: "could not open network device sec-5 (No such device)"
+        Port "sec-eth7"
+            Interface "sec-eth7"
+                error: "could not open network device sec-eth7 (No such device)"
+        Port "sec-3"
+            Interface "sec-3"
+                error: "could not open network device sec-3 (No such device)"
+        Port sec
+            Interface sec
+                type: internal
+        Port "sec-4"
+            Interface "sec-4"
+                error: "could not open network device sec-4 (No such device)"
+    ovs_version: "2.10.1"
+
+3585: pri-eth30@if3584: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master ovs-system state UP mode DEFAULT group default qlen 1000
+    link/ether aa:3a:0a:5f:0a:d1 brd ff:ff:ff:ff:ff:ff link-netnsid 4
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: enp0s31f6: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast state DOWN mode DEFAULT group default qlen 1000
+    link/ether f8:ca:b8:3f:d1:70 brd ff:ff:ff:ff:ff:ff
+3587: pri-eth31@if3586: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master ovs-system state UP mode DEFAULT group default qlen 1000
+    link/ether a2:fc:0b:c5:60:93 brd ff:ff:ff:ff:ff:ff link-netnsid 5
+3: enxb49cdff33ad9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast master ovs-system state UP mode DEFAULT group default qlen 1000
+    link/ether b4:9c:df:f3:3a:d9 brd ff:ff:ff:ff:ff:ff
+3588: mirror-3-ext@mirror-3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether 8e:7a:f5:93:45:e7 brd ff:ff:ff:ff:ff:ff
+4: enx645aedf345fa: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast master ovs-system state UP mode DEFAULT group default qlen 1000
+    link/ether 64:5a:ed:f3:45:fa brd ff:ff:ff:ff:ff:ff
+3589: mirror-3@mirror-3-ext: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master ovs-system state UP mode DEFAULT group default qlen 1000
+    link/ether 82:e4:2f:72:6d:cb brd ff:ff:ff:ff:ff:ff
+5: ovs-system: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether fa:0a:29:ee:a6:af brd ff:ff:ff:ff:ff:ff
+8: sec: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 3a:03:83:e8:e8:4b brd ff:ff:ff:ff:ff:ff
+9: wlp1s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DORMANT group default qlen 1000
+    link/ether d8:0f:99:3a:1d:63 brd ff:ff:ff:ff:ff:ff
+10: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default 
+    link/ether 02:42:36:cf:51:a4 brd ff:ff:ff:ff:ff:ff
+3031: mirror-5-ext@mirror-5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether d2:8a:3b:d7:04:ab brd ff:ff:ff:ff:ff:ff
+3032: mirror-5@mirror-5-ext: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether b2:cd:8c:18:03:21 brd ff:ff:ff:ff:ff:ff
+3548: pri: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 64:5a:ed:f3:45:fa brd ff:ff:ff:ff:ff:ff
+3567: ctrl-alt@ctrl-pri: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master ovs-system state UP mode DEFAULT group default qlen 1000
+    link/ether 4e:17:0d:97:d7:d4 brd ff:ff:ff:ff:ff:ff
+3568: ctrl-pri@ctrl-alt: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master ovs-system state UP mode DEFAULT group default qlen 1000
+    link/ether 62:c1:6b:d3:65:f7 brd ff:ff:ff:ff:ff:ff
+3569: ctrl-swy@ctrl-swx: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether b4:9c:df:f3:3a:d9 brd ff:ff:ff:ff:ff:ff
+3570: ctrl-swx@ctrl-swy: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master ovs-system state UP mode DEFAULT group default qlen 1000
+    link/ether 4e:a2:4d:34:88:c1 brd ff:ff:ff:ff:ff:ff
+3571: ctrl-br: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether b4:9c:df:f3:3a:d9 brd ff:ff:ff:ff:ff:ff
+3573: veth18f9c88@if3572: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP mode DEFAULT group default 
+    link/ether d6:a6:87:95:aa:e2 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+3583: vethfa7130f@if3582: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP mode DEFAULT group default 
+    link/ether 52:ca:b4:14:34:af brd ff:ff:ff:ff:ff:ff link-netnsid 4
