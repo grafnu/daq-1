@@ -11,7 +11,8 @@ import pytz
 
 LOGGER = logging.getLogger('report')
 
-class ReportGenerator():
+
+class ReportGenerator:
     """Generate a report for device qualification"""
 
     _NAME_FORMAT = "report_%s_%s.md"
@@ -29,6 +30,7 @@ class ReportGenerator():
     _SUMMARY_HEADERS = ["Result", "Test", "Notes"]
 
     def __init__(self, config, tmp_base, target_mac, module_config):
+        self._config = config
         self._reports = []
         self._clean_mac = target_mac.replace(':', '')
         report_when = datetime.datetime.now(pytz.utc).replace(microsecond=0)
@@ -45,7 +47,7 @@ class ReportGenerator():
         self._writeln(self._REPORT_HEADER % self._clean_mac)
         self._writeln('Started %%%% %s' % report_when)
 
-        self._append_report_header(tmp_base, module_config)
+        self._append_report_header(module_config)
 
         out_base = config.get('site_reports', config.get('site_path', tmp_base))
         out_path = os.path.join(out_base, 'mac_addrs', self._clean_mac)
@@ -68,15 +70,14 @@ class ReportGenerator():
         if add_pre:
             self._writeln(self._PRE_END_MARKER)
 
-    def _append_report_header(self, tmp_dir, module_config):
-        site_file = os.path.join(self.config.get('site_path'), self._REPORT_TEMPLATE)
-        misc_file = os.path.join(tmp_dir, self._REPORT_TEMPLATE)
-        LOGGER.info('site_file %s', site_file)
-        LOGGER.info('misc_file %s', misc_file)
-        template = site_file if os.path.exists(site_file) else misc_file
-        LOGGER.info('Templating report header from %s', template)
-        self._writeln('')
-        # self._append_file(dev_path, add_pre=False)
+    def _append_report_header(self, module_config):
+        template_file = os.path.join(self._config.get('site_path'), self._REPORT_TEMPLATE)
+        if not os.path.exists(template_file):
+            LOGGER.info('Skipping missed report header template %s', template_file)
+            return
+        LOGGER.info('Adding templated report header from %s', template_file)
+        environment = jinja2.Environment(loader=jinja2.FileSystemLoader('.'))
+        self._writeln(environment.get_template(template_file).render(module_config))
 
     def finalize(self):
         """Finalize this report"""
