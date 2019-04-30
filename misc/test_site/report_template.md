@@ -13,7 +13,7 @@
 |---------------|--------------------|
 | Name          | <device_name>      |
 | GUID          | <device_guid>      |
-| MAC addr      | <mac_address>      |
+| MAC addr      | {{ device_info.mac_addr }} |
 | Hostname      | <hostname>         |
 | Type          | <device_type>      |
 | Manufacturer  | <manufacturer>     |
