@@ -6,6 +6,7 @@ import os
 import re
 import shutil
 
+import jinja2
 import pytz
 
 LOGGER = logging.getLogger('report')
@@ -20,14 +21,14 @@ class ReportGenerator():
     _SUMMARY_LINE = "Report summary"
     _REPORT_COMPLETE = "Report complete"
     _REPORT_HEADER = "# DAQ scan report for device %s"
-    _REPORT_DESC = "report_description.md"
+    _REPORT_TEMPLATE = "report_template.md"
     _PRE_START_MARKER = "```"
     _PRE_END_MARKER = "```"
     _TABLE_DIV = "---"
     _TABLE_MARK = '|'
     _SUMMARY_HEADERS = ["Result", "Test", "Notes"]
 
-    def __init__(self, config, tmp_base, target_mac):
+    def __init__(self, config, tmp_base, target_mac, module_config):
         self._reports = []
         self._clean_mac = target_mac.replace(':', '')
         report_when = datetime.datetime.now(pytz.utc).replace(microsecond=0)
@@ -44,15 +45,9 @@ class ReportGenerator():
         self._writeln(self._REPORT_HEADER % self._clean_mac)
         self._writeln('Started %%%% %s' % report_when)
 
-        dev_base = config.get('site_path', tmp_base)
-        dev_path = os.path.join(dev_base, 'mac_addrs', self._clean_mac, self._REPORT_DESC)
-        if os.path.isfile(dev_path):
-            self._writeln('')
-            self._append_file(dev_path, add_pre=False)
-        else:
-            LOGGER.info('Device description %s not found', dev_path)
+        self._append_report_header(tmp_base, module_config)
 
-        out_base = config.get('site_reports', dev_base)
+        out_base = config.get('site_reports', config.get('site_path', tmp_base))
         out_path = os.path.join(out_base, 'mac_addrs', self._clean_mac)
         if os.path.isdir(out_path):
             self._alt_path = os.path.join(out_path, self._SIMPLE_FORMAT)
@@ -72,6 +67,16 @@ class ReportGenerator():
             shutil.copyfileobj(input_stream, self._file)
         if add_pre:
             self._writeln(self._PRE_END_MARKER)
+
+    def _append_report_header(self, tmp_dir, module_config):
+        site_file = os.path.join(self.config.get('site_path'), self._REPORT_TEMPLATE)
+        misc_file = os.path.join(tmp_dir, self._REPORT_TEMPLATE)
+        LOGGER.info('site_file %s', site_file)
+        LOGGER.info('misc_file %s', misc_file)
+        template = site_file if os.path.exists(site_file) else misc_file
+        LOGGER.info('Templating report header from %s', template)
+        self._writeln('')
+        # self._append_file(dev_path, add_pre=False)
 
     def finalize(self):
         """Finalize this report"""
