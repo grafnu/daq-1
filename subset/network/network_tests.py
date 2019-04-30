@@ -43,7 +43,7 @@ def shell_command_with_result(command, wait_time, terminate_flag):
     if len(text) > 0:
         return text
 
-def validate_test():
+def add_packet_info_to_report():
     max = 0
     if packets_received > packets_in_report :
         max = packets_in_report
@@ -51,8 +51,7 @@ def validate_test():
         max = packets_received
     for i in range(0, max):
         write_report(packet_request_list[i] + '\n')
-    write_report('packets_sent=' + str(packets_received)  + '\n')
-    write_report("RESULT pass %s\n" % test_request)
+    write_report("packets_sent=%s\n") % str(packets_received)
 
 shell_result = shell_command_with_result(tests[test_request], 0, False)
 
@@ -60,6 +59,7 @@ if not shell_result is None:
     if len(shell_result) > min_packet_length:
         packet_request_list = shell_result.split("\n")
         packets_received = len(packet_request_list)
-        validate_test()
+        add_packet_info_to_report()
+        write_report("RESULT pass %s\n" % test_request)
 else:
     write_report("RESULT fail %s\n" % test_request)
