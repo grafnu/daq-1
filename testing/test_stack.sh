@@ -16,14 +16,13 @@ cap_length=$((ping_count + 20))
 
 echo Generator tests | tee -a $TEST_RESULTS
 rm -rf out/topology
-normalize_base=topology/zz-bond/nz-kiwi-ctr1/
-bin/generate_topology raw_topo=$normalize_base topo_dir=out/topology/normalized
-diff -r out/topology/normalized $normalize_base | tee -a $TEST_RESULTS
+bin/generate_topology raw_topo=topology/not-normal/nz-kiwi-ctr1 topo_dir=out/topology/normalized
+diff -r out/topology/normalized topology/nz-kiwi-ctr1/ | tee -a $TEST_RESULTS
 
 sites=$(cd topology; ls -d *)
 mkdir -p out/topology/generated
 for site in $sites; do
-    if [ ! -d topology/$site ]; then
+    if [ ! -f topology/$site/site_config.json ]; then
         continue;
     fi
     bin/generate_topology site_config=topology/$site/site_config.json topo_dir=out/topology/generated/$site
@@ -83,9 +82,9 @@ function test_stack {
 
     bcount6=$(tcpdump -en -r $t2sw1p6_pcap | wc -l) 2>/dev/null
     bcount7=$(tcpdump -en -r $t2sw1p7_pcap | wc -l) 2>/dev/null
-    echo pcap $mode count is $bcount6 $bcount7
-    echo pcap sane $((bcount6 > 2)) $((bcount6 < 120)) $((bcount7 > 2)) $((bcount7 < 120)) \
-        | tee -a $TEST_RESULTS
+    bcount_total=$((bcount6 + bcount7))
+    echo pcap $mode count is $bcount6 $bcount7 $bcount_total
+    echo pcap sane $((bcount_total > 100)) $((bcount_total < 130)) | tee -a $TEST_RESULTS
     echo pcap t2sw1p6
     tcpdump -en -c 20 -r $t2sw1p6_pcap
     echo pcap t2sw1p7

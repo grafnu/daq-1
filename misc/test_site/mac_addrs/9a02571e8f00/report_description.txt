@@ -1,8 +1,0 @@
-Sample device description.
-By default would be in local/devices/ rather than misc/.
-
-\|/          (__)
-     `\------(oo)
-       ||    (__)
-       ||w--||     \|/
-   \|/
