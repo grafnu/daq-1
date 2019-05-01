@@ -41,12 +41,15 @@ public class Certs {
         if (certificate instanceof X509Certificate) {
           try {
             ((X509Certificate) certificate).checkValidity();
-            certificateReport += "Certificate is active for current date.";
+            certificateReport += "Certificate is active for current date.\n";
+            certificateReport += "RESULT pass security.tls.v3\n";
           } catch (CertificateExpiredException cee) {
-            certificateReport += "Certificate is expired.";
+            certificateReport += "Certificate is expired.\n";
+            certificateReport += "RESULT fail security.tls.v3\n";
             return false;
           } catch (CertificateNotYetValidException e) {
-            certificateReport += "Certificate not yet valid.";
+            certificateReport += "RESULT fail security.tls.v3\n";
+            certificateReport += "Certificate not yet valid.\n";
             return false;
           }
 
@@ -55,6 +58,7 @@ public class Certs {
           certificateReport += "Certificate:\n" + certificate + "\n";
 
         } else {
+          certificateReport += "RESULT fail security.tls.v3\n";
           System.err.println("Unknown certificate type: " + certificate);
           return false;
         }
