@@ -7,7 +7,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.daq.mqtt.validator.ExceptionMap.ErrorTree;
+import com.google.daq.mqtt.util.ExceptionMap;
+import com.google.daq.mqtt.util.ExceptionMap.ErrorTree;
+import com.google.daq.mqtt.util.FirestoreDataSink;
+import com.google.daq.mqtt.util.PubSubClient;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -44,7 +47,7 @@ public class Validator {
   private static final Pattern DEVICE_ID_PATTERN =
       Pattern.compile("^([a-z][_a-z0-9-]*[a-z0-9]|[A-Z][_A-Z0-9-]*[A-Z0-9])$");
   private static final String DEVICE_MATCH_FORMAT = "DeviceId %s must match pattern %s";
-  private static final String SCHEMA_SKIP_FORMAT = "Skipping schema definition '%s' for %s";
+  private static final String SCHEMA_SKIP_FORMAT = "Unknown schema subFolder '%s' for %s";
   private static final String ENVELOPE_SCHEMA_ID = "envelope";
   private FirestoreDataSink dataSink;
   private String schemaSpec;
@@ -82,7 +85,7 @@ public class Validator {
     Map<String, Schema> schemaMap = new HashMap<>();
     for (File schemaFile : makeFileList(schemaSpec)) {
       Schema schema = getSchema(schemaFile);
-       String fullName = schemaFile.getName();
+      String fullName = schemaFile.getName();
       String schemaName = schemaFile.getName()
           .substring(0, fullName.length() - JSON_SUFFIX.length());
       schemaMap.put(schemaName, schema);
