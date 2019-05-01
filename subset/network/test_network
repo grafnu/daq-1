@@ -2,7 +2,6 @@
 
 REPORT=/tmp/report.txt
 
-#cp /scans/monitor.pcap monitor.pcap
 MONITOR=/scans/monitor.pcap
 
 python network_tests.py connection.dhcp_long $MONITOR $TARGET_IP

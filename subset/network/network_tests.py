@@ -11,7 +11,7 @@ device_address = str(arguments[3])
 report_filename = 'report.txt'
 
 min_packet_length = 40
-packets_in_report = 10
+max_packets_in_report = 10
 
 tcpdump_display_all_packets = 'tcpdump -n src host ' + device_address + ' -r ' + cap_pcap_file
 tcpdump_display_udp_bacnet_packets = 'tcpdump -n udp dst portrange 47808-47809 ' + cap_pcap_file
@@ -35,7 +35,7 @@ def write_report(string_to_append):
 
 def shell_command_with_result(command, wait_time, terminate_flag):
     process = subprocess.Popen(command, universal_newlines=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    text = process.stdout.read()
+    text = process.stdout.communicate()
     retcode = process.wait()
     time.sleep(wait_time)
     if terminate_flag:
@@ -45,13 +45,13 @@ def shell_command_with_result(command, wait_time, terminate_flag):
 
 def add_packet_info_to_report():
     max = 0
-    if packets_received > packets_in_report :
-        max = packets_in_report
+    if packets_received > max_packets_in_report:
+        max = max_packets_in_report
     else:
         max = packets_received
     for i in range(0, max):
         write_report(packet_request_list[i] + '\n')
-    write_report("packets_sent=%s\n") % str(packets_received)
+    write_report("packets_count=%s\n") % packets_received
 
 shell_result = shell_command_with_result(tests[test_request], 0, False)
 
