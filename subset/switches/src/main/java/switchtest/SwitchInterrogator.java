@@ -590,41 +590,41 @@ public class SwitchInterrogator implements Runnable {
       String current_PoE_admin = show_power_data[1];
 
       if (link_status.equals("UP") && Integer.parseInt(dropped_packets) == 0) {
-        login_report += "RESULT connection.port_link=true\n";
+        login_report += "RESULT pass connection.port_link\n";
       } else {
-        login_report += "RESULT connection.port_link=false\n";
+        login_report += "RESULT fail connection.port_link\n";
       }
 
       if (current_speed != null) {
         if (configured_speed.equals("auto") && Integer.parseInt(current_speed) >= 10) {
-          login_report += "RESULT connection.port_speed=true\n";
+          login_report += "RESULT pass connection.port_speed\n";
         } else {
-          login_report += "RESULT connection.port_speed=false\n";
+          login_report += "RESULT fail connection.port_speed\n";
         }
       } else {
-        login_report += "RESULT connection.port_speed=false\n";
+        login_report += "RESULT fail connection.port_speed\n";
       }
 
       if (current_duplex != null) {
         if (configured_duplex.equals("auto") && current_duplex.equals("full")) {
-          login_report += "RESULT connection.port_duplex=true\n";
+          login_report += "RESULT pass connection.port_duplex\n";
         } else {
-          login_report += "RESULT connection.port_duplex=false\n";
+          login_report += "RESULT fail connection.port_duplex\n";
         }
       } else {
-        login_report += "RESULT connection.port_duplex=false\n";
+        login_report += "RESULT fail connection.port_duplex\n";
       }
 
       if (switchSupportsPoe) {
         if (Integer.parseInt(current_max_power) > Integer.parseInt(current_power)
             && current_PoE_admin.equals("Enabled")) {
-          login_report += "RESULT poe.power=true\n";
-          login_report += "RESULT poe.negotiation=true\n";
-          login_report += "RESULT poe.support=true\n";
+          login_report += "RESULT pass poe.power\n";
+          login_report += "RESULT pass poe.negotiation\n";
+          login_report += "RESULT pass poe.support\n";
         } else {
-          login_report += "RESULT poe.power=false\n";
-          login_report += "RESULT poe.negotiation=false\n";
-          login_report += "RESULT poe.support=false\n";
+          login_report += "RESULT fail poe.power\n";
+          login_report += "RESULT fail poe.negotiation\n";
+          login_report += "RESULT fail poe.support\n";
         }
       }
 
