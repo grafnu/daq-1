@@ -312,7 +312,6 @@ class DAQRunner:
             return True
         except Exception as e:
             self.target_set_error(target_port, e)
-            gateway.detach_target(target_port)
 
     def _get_test_list(self, test_file, test_list):
         LOGGER.info('Reading test definition file %s', test_file)
@@ -487,9 +486,9 @@ class DAQRunner:
     def target_set_error(self, target_port, e):
         """Handle an error in the target port set"""
         active = target_port in self.port_targets
-        LOGGER.warning('Target port %d (%s) exception: %s', target_port, active, e)
         message = ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
-        LOGGER.error('Exception: %s', message)
+        LOGGER.error('Target port %d (%s) exception: %s', target_port, active, message)
+        self._detach_gateway(target_port)
         err_str = str(e)
         if active:
             target_set = self.port_targets[target_port]
@@ -524,7 +523,6 @@ class DAQRunner:
             target_host = self.port_targets[target_port]
             del self.port_targets[target_port]
             target_gateway = self.port_gateways[target_port]
-            del self.port_gateways[target_port]
             target_mac = self._active_ports[target_port]
             del self.mac_targets[target_mac]
             LOGGER.info('Target port %d cancel %s (#%d/%s).',
@@ -538,7 +536,7 @@ class DAQRunner:
             else:
                 self._direct_port_traffic(target_mac, target_port, None)
                 target_host.terminate(trigger=False)
-                self._detach_gateway(target_port, target_mac, target_gateway)
+                self._detach_gateway(target_port)
             if self.run_limit and self.run_count >= self.run_limit and self.run_tests:
                 LOGGER.warning('Suppressing future tests because run limit reached.')
                 self.run_tests = False
@@ -547,7 +545,10 @@ class DAQRunner:
                 self.run_tests = False
         LOGGER.info('Remaining target sets: %s', list(self.port_targets.keys()))
 
-    def _detach_gateway(self, target_port, target_mac, target_gateway):
+    def _detach_gateway(self, target_port):
+        target_gateway = self.port_gateways[target_port]
+        del self.port_gateways[target_port]
+        target_mac = self._active_ports[target_port]
         if not target_gateway.detach_target(target_port):
             LOGGER.info('Retiring target gateway %s, %s, %s, %s',
                         target_port, target_mac, target_gateway.name, target_gateway.port_set)
@@ -567,7 +568,7 @@ class DAQRunner:
     @staticmethod
     def _extract_exception(result):
         key = 'exception'
-        return key if key in result and result[key] is not None else None
+        return key if key in result and result[key] is not 'None' else None
 
     def _combine_results(self):
         results = []

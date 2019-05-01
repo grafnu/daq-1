@@ -70,7 +70,7 @@ class ConnectedHost:
         self.target_ip = None
         self._loaded_config = self._load_module_config()
         self.record_result('startup', state='run')
-        self._push_record('info', state=self.target_mac, config=self._make_config_bundle())
+        self._record_result('info', state=self.target_mac, config=self._make_config_bundle())
         self._report = report.ReportGenerator(config, self._INST_DIR, self.target_mac,
                                               self._loaded_config)
         self._startup_time = None
@@ -152,7 +152,7 @@ class ConnectedHost:
         LOGGER.info('Target port %d waiting for dhcp as %s', self.target_port, self.target_mac)
         self._state_transition(_STATE.WAITING, _STATE.INIT)
         self.record_result('sanity')
-        self._push_record('info', state=self.target_mac)
+        self._record_result('info', state=self.target_mac)
         self.record_result('dhcp', state='run')
 
     def terminate(self, trigger=True):
@@ -203,7 +203,7 @@ class ConnectedHost:
             LOGGER.warning('Target port %d ignoring premature trigger', self.target_port)
             return False
         self.target_ip = target_ip
-        self._push_record('info', state='%s/%s' % (self.target_mac, target_ip))
+        self._record_result('info', state='%s/%s' % (self.target_mac, target_ip))
         self.record_result('dhcp', ip=target_ip, state=state, exception=str(exception))
         if exception:
             self._state_transition(_STATE.ERROR, _STATE.WAITING)
@@ -372,8 +372,8 @@ class ConnectedHost:
 
     def _docker_callback(self, return_code=None, exception=None):
         host_name = self._host_name()
-        LOGGER.debug('test_host callback %s/%s was %s with %s',
-                     self.test_name, host_name, return_code, exception)
+        LOGGER.info('test_host callback %s/%s was %s with %s',
+                    self.test_name, host_name, return_code, exception)
         if (return_code or exception) and self._fail_hook:
             fail_file = self._FAIL_BASE_FORMAT % host_name
             LOGGER.warning('Executing fail_hook: %s %s', self._fail_hook, fail_file)
@@ -400,7 +400,7 @@ class ConnectedHost:
     def _set_module_config(self, name, loaded_config):
         tmp_dir = self._host_tmp_path()
         configurator.write_config(tmp_dir, self._MODULE_CONFIG, loaded_config)
-        self._push_record(name, config=self._loaded_config)
+        self._record_result(name, config=self._loaded_config)
 
     def _load_module_config(self):
         config = self.runner.get_base_config()
@@ -417,9 +417,9 @@ class ConnectedHost:
             self.test_name = name
             self.test_start = current
         if name:
-            self._push_record(name, current, **kwargs)
+            self._record_result(name, current, **kwargs)
 
-    def _push_record(self, name, run_info=True, current=None, **kwargs):
+    def _record_result(self, name, run_info=True, current=None, **kwargs):
         result = {
             'name': name,
             'runid': (self.run_id if run_info else None),
@@ -438,14 +438,14 @@ class ConnectedHost:
         LOGGER.info('Device config update: %s %s', device_id, dev_config)
         configurator.write_config(self._device_base, self._MODULE_CONFIG, dev_config)
         config_bundle = self._make_config_bundle(self._load_module_config())
-        self._push_record(None, run_info=False, config=config_bundle)
+        self._record_result(None, run_info=False, config=config_bundle)
 
     def _initialize_device_config(self):
         dev_config = configurator.load_config(self._device_base, self._MODULE_CONFIG)
         self._gcp.register_config(self._DEVICE_PATH % self.target_mac, dev_config,
                                   lambda new_config:
                                   self._dev_config_updated(self.target_mac, new_config))
-        self._push_record(None, config=self._make_config_bundle())
+        self._record_result(None, config=self._make_config_bundle())
 
     def _release_device_config(self):
         self._gcp.release_config(self._DEVICE_PATH % self.target_mac)
