@@ -35,7 +35,7 @@ def write_report(string_to_append):
 
 def shell_command_with_result(command, wait_time, terminate_flag):
     process = subprocess.Popen(command, universal_newlines=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    text = process.stdout.communicate()
+    text = process.stdout.read()
     retcode = process.wait()
     time.sleep(wait_time)
     if terminate_flag:
@@ -51,7 +51,7 @@ def add_packet_info_to_report():
         max = packets_received
     for i in range(0, max):
         write_report(packet_request_list[i] + '\n')
-    write_report("packets_count=%s\n") % packets_received
+    write_report("packets_count=%d\n") % packets_received
 
 shell_result = shell_command_with_result(tests[test_request], 0, False)
 
