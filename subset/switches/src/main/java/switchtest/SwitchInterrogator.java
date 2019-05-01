@@ -19,6 +19,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class SwitchInterrogator implements Runnable {
   SwitchTelnetClientSocket telnetClientSocket;
@@ -31,11 +32,10 @@ public class SwitchInterrogator implements Runnable {
   int remotePort = 23;
   int interfacePort = 12;
 
-  boolean switchSupportsPoe = true;
-
   String reportFilename = "tmp/report.txt";
 
   int data_length = 32768;
+  int shortPacketLength = 20;
 
   String[] expected = {
     "login:",
@@ -61,19 +61,69 @@ public class SwitchInterrogator implements Runnable {
   int platformPos = 2;
   int powerinlinePos = 3;
 
+  HashMap<stack_expected, String> stack_map = new HashMap<stack_expected, String>();
+
+  enum stack_expected {
+    id,
+    pending_id,
+    mac_address,
+    priority,
+    status,
+    role
+  }
+
   String[] show_stack_expected = {
     "ID", "Pending ID", "MAC address", "Priority", "Status", "Role", "\n"
   };
 
-  int[] show_stack_pointers = new int[7];
-  String[] show_stack_data = new String[6];
+  int[] show_stack_pointers = new int[show_stack_expected.length];
+  String[] show_stack_data = new String[show_stack_expected.length - 1];
+
+  HashMap<power_expected, String> power_map = new HashMap<power_expected, String>();
+
+  enum power_expected {
+    dev_interface,
+    admin,
+    pri,
+    oper,
+    power,
+    device,
+    dev_class,
+    max
+  }
 
   String[] show_power_expected = {
     "Interface", "Admin", "Pri", "Oper", "Power", "Device", "Class", "Max", "\n"
   };
 
-  int[] show_power_pointers = new int[9];
-  String[] show_power_data = new String[8];
+  int[] show_power_pointers = new int[show_power_expected.length];
+  String[] show_power_data = new String[show_power_expected.length - 1];
+
+  HashMap<interface_expected, String> interface_map = new HashMap<interface_expected, String>();
+
+  enum interface_expected {
+    port_number,
+    link_status,
+    administrative_state,
+    current_duplex,
+    current_speed,
+    current_polarity,
+    configured_duplex,
+    configured_speed,
+    cofigured_polarity,
+    left_chevron,
+    input_packets,
+    bytes,
+    dropped,
+    multicast_packets,
+    output_packets,
+    multicast_packets2,
+    broadcast_packets,
+    input_average_rate,
+    output_average_rate,
+    input_peak_rate,
+    time_since_last_state_change
+  };
 
   String[] show_interface_expected = {
     "port1",
@@ -119,11 +169,40 @@ public class SwitchInterrogator implements Runnable {
     "Time since last state change: ",
     "\n"
   };
-  int[] show_interface_pointers = new int[42];
-  String[] show_interface_data = new String[21];
+  int[] show_interface_pointers = new int[show_interface_expected.length];
+  String[] show_interface_data = new String[show_interface_expected.length / 2];
 
   String[] show_interface_port_expected = {"port1", "\n", "Time since last state change: ", "\n"};
-  int[] show_interface_port_pointers = new int[4];
+  int[] show_interface_port_pointers = new int[show_interface_port_expected.length];
+
+  HashMap<platform_expected, String> platform_map = new HashMap<platform_expected, String>();
+
+  enum platform_expected {
+    port_number,
+    enabled,
+    loopback,
+    link,
+    speed,
+    max_speed,
+    duplex,
+    linkscan,
+    autonegotiate,
+    master,
+    tx_pause,
+    rx_pause,
+    untagged_vlan,
+    vlan_filter,
+    stp_state,
+    learn,
+    discard,
+    jam,
+    max_frame_size,
+    mc_disable_sa,
+    mc_disable_ttl,
+    mc_egress_untag,
+    mc_egress_vid,
+    mc_ttl_threshold
+  }
 
   String[] show_platform_expected = {
     "port1",
@@ -175,11 +254,11 @@ public class SwitchInterrogator implements Runnable {
     "MC TTL threshold:",
     "\n"
   };
-  int[] show_platform_pointers = new int[48];
-  String[] show_platform_data = new String[24];
+  int[] show_platform_pointers = new int[show_platform_expected.length];
+  String[] show_platform_data = new String[show_platform_expected.length / 2];
 
   String[] show_platform_port_expected = {"port1", "\n", "MC TTL threshold:", "\n"};
-  int[] show_platform_port_pointers = new int[4];
+  int[] show_platform_port_pointers = new int[show_platform_port_expected.length];
 
   int number_switch_ports = 1; // 48
 
@@ -198,12 +277,13 @@ public class SwitchInterrogator implements Runnable {
   int continue_flag = 1;
 
   boolean debug = true;
-
+  boolean switchSupportsPoe = false;
   boolean extendedTests = false;
 
-  public SwitchInterrogator(String remoteIpAddress, int interfacePort) {
+  public SwitchInterrogator(String remoteIpAddress, int interfacePort, boolean switchSupportsPoe) {
     this.remoteIpAddress = remoteIpAddress;
     this.interfacePort = interfacePort;
+    this.switchSupportsPoe = switchSupportsPoe;
     command[interfacePos] = command[interfacePos] + interfacePort;
     command[platformPos] = command[platformPos] + interfacePort;
     command[powerinlinePos] = command[powerinlinePos] + interfacePort;
@@ -396,23 +476,24 @@ public class SwitchInterrogator implements Runnable {
             }
           } else {
             // running configuration requests
-            if (data.indexOf(device_hostname) >= 0 && data.length() < 20) {
-              int finish = 0;
+            if (data.indexOf(device_hostname) >= 0 && data.length() < shortPacketLength) {
+              int requestFinish = 0;
               if (switchSupportsPoe) {
-                finish = 4;
+                requestFinish = 4;
               } else {
-                finish = 3;
+                requestFinish = 3;
               }
               if (extendedTests) {
-                finish = command.length;
+                requestFinish = command.length;
               }
-              if (requestFlag < finish) {
+              if (requestFlag < requestFinish) {
                 telnetClientSocket.writeData(command[requestFlag] + "\n");
                 System.out.println(
                     "command:" + command[requestFlag] + " request_flag:" + requestFlag);
                 requestFlag += 1;
               } else {
                 System.out.println("finished running configuration requests");
+                // addDataToMaps(requestFinish);
                 validateTests();
                 telnetClientSocket.disposeConnection();
               }
@@ -469,7 +550,7 @@ public class SwitchInterrogator implements Runnable {
       }
     } catch (Exception e) {
       System.err.println("Exception parseRequestFlag:" + e.getMessage());
-      System.exit(0);
+      System.exit(1);
     }
   }
 
@@ -477,9 +558,7 @@ public class SwitchInterrogator implements Runnable {
     String[] lineArray = data.split("\n");
     String tempData = "";
     for (int i = 0; i < lineArray.length; i++) {
-      if (i == trash_line) {
-
-      } else {
+      if (i != trash_line) {
         tempData += lineArray[i] + "\n";
       }
     }
@@ -496,6 +575,7 @@ public class SwitchInterrogator implements Runnable {
 
   private void validateTests() {
     try {
+      login_report += "\n";
       String link_status = show_interface_data[1];
       String dropped_packets = show_interface_data[12];
 
@@ -510,37 +590,41 @@ public class SwitchInterrogator implements Runnable {
       String current_PoE_admin = show_power_data[1];
 
       if (link_status.equals("UP") && Integer.parseInt(dropped_packets) == 0) {
-        login_report += "\nswitch.port.link=true";
+        login_report += "RESULT connection.port_link=true\n";
       } else {
-        login_report += "\nswitch.port.link=false";
+        login_report += "RESULT connection.port_link=false\n";
       }
 
       if (current_speed != null) {
         if (configured_speed.equals("auto") && Integer.parseInt(current_speed) >= 10) {
-          login_report += "\nswitch.port.speed=true";
+          login_report += "RESULT connection.port_speed=true\n";
         } else {
-          login_report += "\nswitch.port.speed=false";
+          login_report += "RESULT connection.port_speed=false\n";
         }
       } else {
-        login_report += "\nswitch.port.speed=false";
+        login_report += "RESULT connection.port_speed=false\n";
       }
 
       if (current_duplex != null) {
         if (configured_duplex.equals("auto") && current_duplex.equals("full")) {
-          login_report += "\nswitch.port.duplex=true";
+          login_report += "RESULT connection.port_duplex=true\n";
         } else {
-          login_report += "\nswitch.port.duplex=false";
+          login_report += "RESULT connection.port_duplex=false\n";
         }
       } else {
-        login_report += "\nswitch.port.duplex=false";
+        login_report += "RESULT connection.port_duplex=false\n";
       }
 
       if (switchSupportsPoe) {
         if (Integer.parseInt(current_max_power) > Integer.parseInt(current_power)
             && current_PoE_admin.equals("Enabled")) {
-          login_report += "\nswitch.port.poe=true";
+          login_report += "RESULT poe.power=true\n";
+          login_report += "RESULT poe.negotiation=true\n";
+          login_report += "RESULT poe.support=true\n";
         } else {
-          login_report += "\nswitch.port.poe=false";
+          login_report += "RESULT poe.power=false\n";
+          login_report += "RESULT poe.negotiation=false\n";
+          login_report += "RESULT poe.support=false\n";
         }
       }
 
