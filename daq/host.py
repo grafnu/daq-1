@@ -122,7 +122,7 @@ class ConnectedHost:
         network = self.runner.network
         self._mirror_intf_name = network.create_mirror_interface(self.target_port)
         if self.no_test:
-            self.record_result('ready')
+            self.record_result('startup', state='hold')
         else:
             self.record_result('startup')
             self.record_result('sanity', state='run')

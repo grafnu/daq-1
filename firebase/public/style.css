@@ -43,6 +43,10 @@ div {
     background: #EE6;
 }
 
+#testgrid table tr ~ tr td[status=hold] {
+    background: #AAF;
+}
+
 #testgrid table tr ~ tr td[label=info] {
     background: #FFF;
 }

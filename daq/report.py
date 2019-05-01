@@ -76,8 +76,15 @@ class ReportGenerator:
             LOGGER.info('Skipping missed report header template %s', template_file)
             return
         LOGGER.info('Adding templated report header from %s', template_file)
-        environment = jinja2.Environment(loader=jinja2.FileSystemLoader('.'))
-        self._writeln(environment.get_template(template_file).render(module_config))
+        self._writeln('')
+        try:
+            undefined_logger = jinja2.make_logging_undefined(logger=LOGGER, base=jinja2.Undefined)
+            environment = jinja2.Environment(loader=jinja2.FileSystemLoader('.'), undefined=undefined_logger)
+            self._writeln(environment.get_template(template_file).render(module_config))
+        except Exception as e:
+            self._writeln('Report generation error: %s' % e)
+            self._writeln('Failing data model:\n%s' % str(module_config))
+            LOGGER.error('Report generation failed: %s', e)
 
     def finalize(self):
         """Finalize this report"""
