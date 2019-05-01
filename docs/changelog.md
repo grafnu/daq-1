@@ -1,5 +1,25 @@
 # Changelog
 
+* Next Release:
+        * Device-level test configuration (e.g. allowed open ports)
+	* Use table for test report output
+* 0.9.6:
+	* UDMI Tech Stack definition (MQTT + JSON + UDMI).
+	* Updating BacNET tests to have more predictable/regular identifiers.
+	* Generate markdown-based reports in site device folder.
+	* Registrar tool for cloud-based device registration.
+	* Debian Stretch setup/install fixes.
+	* Update to Faucet 1.9.1.
+* 0.9.5
+	* DAQ_TARGETS env variable for incremental builds.
+	* Report file cleanup, with embedded test results.
+	* DHCP long switchover and dhcp request logs.
+	* Updating python package versions.
+	* Forced workaround delay for faucet config change race-condition.
+	* Faucet performance fix for large port counts.
+	* Fix internal lint checks.
+	* Faux command uses explicit interface designation.
+	* Faux command does not rename explicit interface.
 * 0.9.4
 	* Faucet update to 1.8.35
 	* Move device configuration data under `site_path` parameter.

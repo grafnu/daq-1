@@ -14,6 +14,9 @@ By deisgn, this schema is intended to be:
 * <b>I</b>nterface: Define an interface specification, rather than a client-library or
 RPC mechanism.
 
+See the associated [UDMI Tech Stack](TECH_STACK.md) for details about transport mechanism
+outside of the core schema definition.
+
 ## Use Cases
 
 The essence behind UDMI is an automated mechanism for IoT system management. Many current
@@ -76,6 +79,9 @@ defined by [<em>logentry.json</em>](logentry.json).
 attributes, defined by [<em>envelope.json</em>](envelope.json).
 * Device _metadata_ ([example](metadata.tests/example.json)) stored _about_ a device,
 but not directly available to the device, defined by [<em>metadata.json</em>](metadata.json).
+* Device _properties_ ([example](properties.tests/example.json)) which is used for
+configuring a system (e.g., when registering a device with the cloud),
+defined by [<em>properties.json</em>](properties.json).
 
 A device client implementation will typically only be aware of the _state_, _config_,
 _points_, _logentry_ messages, while all others are server-side only.

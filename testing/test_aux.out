@@ -6,10 +6,11 @@ Validator exit code 0
 Lint checks
 cmd/inbuild exit code 0
 Extended tests
-Login success!
-Failed after retries.
-Target port 10000 not open.
-01: ['01:brute:1', '01:nmap:1']
+RESULT fail network.brute
+RESULT pass network.brute
+RESULT skip network.brute
+dhcp requests 2 1
+01: ['01:brute:1']
 02: ['02:nmap:1']
 03: []
 ctrl-br.flows
@@ -20,4 +21,5 @@ pri.flows
 pri.ofctl
 sec.flows
 sec.ofctl
+No report diff
 Done with tests

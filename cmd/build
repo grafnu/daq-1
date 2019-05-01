@@ -16,13 +16,8 @@ copydirs="bin cmd misc faucet mininet docker daq subset"
 load_mark=/root/load_complete
 
 cd $ROOT
-if [ -f $LOCAL_SYSTEM ]; then
-    # Don't use setup script to avoid creating local directory.
-    echo Loading config from $LOCAL_SYSTEM...
-    source $LOCAL_SYSTEM
-else
-    echo No $LOCAL_SYSTEM found.
-fi
+DONT_MAKE_LOCAL=y
+source misc/config_base.sh
 
 if [ "$1" == skip ]; then
     do_images=skip
@@ -43,6 +38,14 @@ fi
 if [ "$1" == inline ]; then
     inline=y
     shift
+fi
+
+if [ -n "$DAQ_TARGETS" ]; then
+    declare -A test_set
+    for target in $(echo $DAQ_TARGETS | sed 's/,/ /'); do
+        echo Enabling target $target
+        test_set[$target]=y
+    done
 fi
 
 target_version=$(cat misc/FAUCET_VERSION)
@@ -127,17 +130,19 @@ for file in $docker_files; do
     logfile=$build_root/docker_build.$module
     failed=
     tag=daq/$module
-    if [ "$do_images" == skip ]; then
-        echo Skipping in-container build of daq/$module.
+    if [ -n "$DAQ_TARGETS" -a -z "${test_set[$module]}" ]; then
+        echo Skipping non-enabled $tag
+    elif [ "$do_images" == skip ]; then
+        echo Skipping in-container build of $tag
     elif [ "$do_images" == load ]; then
         docker load -i /daq/$build_root/docker_image.$module
     else
-        echo Build$ext_msg $file into daq/$module, log to $logfile...
+        echo Build$ext_msg $file into $tag, log to $logfile...
         echo docker build -t $tag $build_args -f $file . > $logfile
         if [ -n "$inline" ]; then
-            docker build -t $tag $build_args -f $file . 2>&1 | tee -a $logfile || failed=y
+            bin/retry_cmd docker build -t $tag $build_args -f $file . 2>&1 | tee -a $logfile || failed=y
         else
-            docker build -t $tag $build_args -f $file . >> $logfile 2>&1 || failed=y
+            bin/retry_cmd docker build -t $tag $build_args -f $file . >> $logfile 2>&1 || failed=y
         fi
         if [ -n "$failed" ]; then
             tail $logfile
