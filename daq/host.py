@@ -39,6 +39,7 @@ class ConnectedHost:
     _DEVICE_PATH = "device/%s"
     _FAIL_BASE_FORMAT = "inst/fail_%s"
     _MODULE_CONFIG = "module_config.json"
+    _CONTROL_PATH = "control/port-%s"
 
     def __init__(self, runner, gateway, target, config):
         self.runner = runner
@@ -99,6 +100,11 @@ class ConnectedHost:
             'timestamp': gcp.get_timestamp()
         }
 
+    def _make_control_bundle(self):
+        return {
+            'paused': self.state == _STATE.READY
+        }
+
     @staticmethod
     def _get_device_base(config, target_mac):
         """Get the base config path for a host device"""
@@ -157,7 +163,7 @@ class ConnectedHost:
     def terminate(self, trigger=True):
         """Terminate this host"""
         LOGGER.info('Target port %d terminate, trigger %s', self.target_port, trigger)
-        self._release_device_config()
+        self._release_configs()
         self._state_transition(_STATE.TERM)
         self.record_result(self.test_name, state='disconnect')
         self._monitor_cleanup()
@@ -443,18 +449,23 @@ class ConnectedHost:
         self._gcp.publish_message('daq_runner', 'test_result', result)
         return result
 
-    def _dev_config_updated(self, device_id, dev_config):
-        LOGGER.info('Device config update: %s %s', device_id, dev_config)
+    def _control_updated(self, control_config):
+        LOGGER.info('Updated control config: %s %s', self.target_mac, control_config)
+
+    def _dev_config_updated(self, dev_config):
+        LOGGER.info('Device config update: %s %s', self.target_mac, dev_config)
         configurator.write_config(self._device_base, self._MODULE_CONFIG, dev_config)
         config_bundle = self._make_config_bundle(self._load_module_config())
         self._record_result(None, run_info=False, config=config_bundle)
 
     def _initialize_device_config(self):
         dev_config = configurator.load_config(self._device_base, self._MODULE_CONFIG)
-        self._gcp.register_config(self._DEVICE_PATH % self.target_mac, dev_config,
-                                  lambda new_config:
-                                  self._dev_config_updated(self.target_mac, new_config))
+        self._gcp.register_config(self._DEVICE_PATH % self.target_mac,
+                                  dev_config, self._dev_config_updated)
+        self._gcp.register_config(self._CONTROL_PATH % self.target_port,
+                                  self._make_control_bundle(), self._control_updated, immediate=True)
         self._record_result(None, config=self._make_config_bundle())
 
     def _release_device_config(self):
         self._gcp.release_config(self._DEVICE_PATH % self.target_mac)
+        self._gcp.release_config(self._CONTROL_PATH % self.target_port)

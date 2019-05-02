@@ -9,9 +9,6 @@
     "type": "*** Type ***",
     "version": "*** Version ***"
   },
-  "device_description": {
-    "N/A"
-  },
   "ports": {
     "tcp": {
       "443": {

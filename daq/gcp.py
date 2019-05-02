@@ -56,17 +56,17 @@ class GcpManager:
         return firestore.client()
 
     @staticmethod
-    def _on_snapshot(callback, doc_snapshot):
+    def _on_snapshot(callback, doc_snapshot, immediate):
         for doc in doc_snapshot:
             doc_data = doc.to_dict()
             timestamp = doc_data['timestamp']
-            if doc_data['saved'] != timestamp:
+            if immediate or doc_data['saved'] != timestamp:
                 callback(doc_data['config'])
                 doc.reference.update({
                     'saved': timestamp
                 })
 
-    def register_config(self, path, config, callback=None):
+    def register_config(self, path, config, callback=None, immediate=False):
         """Register a config blob with callback"""
         if not self._firestore:
             return
@@ -94,8 +94,9 @@ class GcpManager:
 
         if callback:
             assert config is not None, 'callback defined when deleting config??!?!'
-            snapshot_future = config_doc.on_snapshot(
-                lambda doc_snapshot, changed, read_time: self._on_snapshot(callback, doc_snapshot))
+            on_snapshot = lambda doc_snapshot, changed, read_time:\
+                self._on_snapshot(callback, doc_snapshot, immediate)
+            snapshot_future = config_doc.on_snapshot(on_snapshot)
             self._config_callbacks[full_path] = snapshot_future
 
     def release_config(self, path):

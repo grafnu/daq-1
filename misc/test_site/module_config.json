@@ -10,6 +10,7 @@
       "enabled": true
     }
   },
+  "device_description": "N/A",
   "process": {
     "approver": "*** Approver Name ***",
     "operator": "*** Operator Name ***",
