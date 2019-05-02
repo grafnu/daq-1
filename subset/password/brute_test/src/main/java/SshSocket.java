@@ -56,7 +56,7 @@ public class SshSocket implements Runnable{
 			macAddress = macAddress.replace(":","");
 			System.out.println("MAC ADDRESS : " + macAddress + "  " +  macDevices.get(macAddress.substring(0, 6)));
 			getJsonFile((macAddress.substring(0, 6)));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
 		}

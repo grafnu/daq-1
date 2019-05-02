@@ -70,7 +70,7 @@ public class TelnetSocket implements Runnable{
 			System.out.println(macDevices.get(macAddress.substring(0,6)));
 			getJsonFile(macAddress.substring(0,6).toString());
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
 			Report reportHandler = new Report();
@@ -285,8 +285,14 @@ public class TelnetSocket implements Runnable{
 	public void run() {
 		connectTelnetClient();
 		getMACAddress();
+                try{
 		interrogator = new Interrogator(this, jsonUsernames, jsonPasswords, macAddress, macDevices.get(macAddress.substring(0, 6)).toString());
-		Runnable readDataRunnable = 
+                }
+                catch(NullPointerException e){
+                   System.out.println("Unfound manufacturer of device");
+                  
+                }		
+                Runnable readDataRunnable = 
 				() ->{
 			readData();
 		};
