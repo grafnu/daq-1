@@ -21,7 +21,7 @@ public class PackageManager {
 	Map<String,String> macDevices = new HashMap<String,String>();
 	boolean debug = false;
 	
-	public void readFile() throws IOException{
+	public void readFile(){
 	
 		
 		try {
@@ -50,7 +50,7 @@ public class PackageManager {
 		        	//macDevices.forEach((k, v) -> System.out.println((k + ":" + v)));
 		      //  }
 		    }
-		  } catch (FileNotFoundException e1) {
+		  } catch (IOException e1) {
 			System.out.println("Package Manager Error :" + e1);
 			System.out.println("Attempting to read local file...");
 			
@@ -89,12 +89,9 @@ public class PackageManager {
 			System.out.println("Package manager started...");
 			this.host = host; 
 			this.connectionPort = connectionPort;
-			try {
-				readFile();
-			} catch (IOException e) {
-				System.out.println("MAC file read error " + e);
-			}
-		
+			
+			readFile();
+			
 			switch(protocol) {
 			case "ssh":
 				setUpSshConnection();
