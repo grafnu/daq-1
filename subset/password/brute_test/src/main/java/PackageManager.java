@@ -53,10 +53,10 @@ public class PackageManager {
 		  } catch (IOException e1) {
 			System.out.println("Package Manager Error :" + e1);
 			System.out.println("Attempting to read local file...");
-			
+			  try{
 			InputStream url = this.getClass().getResourceAsStream("/macList.txt");
 			StringBuilder resultStringBuilder = new StringBuilder();
-		    try (BufferedReader br= new BufferedReader(new InputStreamReader(url))){
+			BufferedReader br= new BufferedReader(new InputStreamReader(url));
 		        String line;
 		        while ((line = br.readLine()) != null) {
 		            resultStringBuilder.append(line).append("\n");
