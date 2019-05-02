@@ -23,9 +23,10 @@ class DAQRunner:
     class owns the main event loop and shards out work to subclasses."""
 
     MAX_GATEWAYS = 10
-    _MODULE_CONFIG = "module_config.json"
+    _MODULE_CONFIG = 'module_config.json'
     _RUNNER_CONFIG_PATH = 'runner/setup'
-    _DEFAULT_TESTS_FILE = "misc/host_tests.conf"
+    _DEFAULT_TESTS_FILE = 'misc/host_tests.conf'
+    _VERSION_FILE = 'misc/RELEASE_VERSION'
     _RESULT_LOG_FILE = 'inst/result.log'
 
     def __init__(self, config):
@@ -312,6 +313,10 @@ class DAQRunner:
             return True
         except Exception as e:
             self.target_set_error(target_port, e)
+
+    def daq_version(self):
+        with open(self._VERSION_FILE) as file:
+            return file.readlines()[0].strip()
 
     def _get_test_list(self, test_file, test_list):
         LOGGER.info('Reading test definition file %s', test_file)

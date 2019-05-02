@@ -2,13 +2,15 @@
   "device_info": {
     "guid": "*** GUID ***",
     "hostname": "*** Network Hostname ***",
-    "mac_addr": "*** MAC Address ***",
     "make": "*** Make ***",
     "model": "*** Model ***",
     "name": "*** Name ***",
     "serial": "*** Serial ***",
     "type": "*** Type ***",
     "version": "*** Version ***"
+  },
+  "device_description": {
+    "N/A"
   },
   "ports": {
     "tcp": {

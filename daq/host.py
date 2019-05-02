@@ -152,7 +152,6 @@ class ConnectedHost:
         LOGGER.info('Target port %d waiting for dhcp as %s', self.target_port, self.target_mac)
         self._state_transition(_STATE.WAITING, _STATE.INIT)
         self.record_result('sanity')
-        self._record_result('info', state=self.target_mac)
         self.record_result('dhcp', state='run')
 
     def terminate(self, trigger=True):
@@ -402,8 +401,17 @@ class ConnectedHost:
         configurator.write_config(tmp_dir, self._MODULE_CONFIG, loaded_config)
         self._record_result(name, config=self._loaded_config)
 
+    def _merge_run_info(self, config):
+        config['run_info'] = {
+            'run_id': self.run_id,
+            'mac_addr': self.target_mac,
+            'daq_version': self.runner.daq_version(),
+            'started': gcp.get_timestamp()
+        }
+
     def _load_module_config(self):
         config = self.runner.get_base_config()
+        self._merge_run_info(config)
         configurator.load_and_merge(config, self._device_base, self._MODULE_CONFIG)
         configurator.load_and_merge(config, self._port_base, self._MODULE_CONFIG)
         return config
@@ -433,6 +441,7 @@ class ConnectedHost:
         if name:
             self.results[name] = result
         self._gcp.publish_message('daq_runner', 'test_result', result)
+        return result
 
     def _dev_config_updated(self, device_id, dev_config):
         LOGGER.info('Device config update: %s %s', device_id, dev_config)

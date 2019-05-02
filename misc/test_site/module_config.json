@@ -10,7 +10,7 @@
       "enabled": true
     }
   },
-  "report_info": {
+  "process": {
     "approver": "*** Approver Name ***",
     "operator": "*** Operator Name ***",
     "reviewer": "*** Reviewer Name ***"

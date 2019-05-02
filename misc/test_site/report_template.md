@@ -1,35 +1,26 @@
-|  Role  |      Name       |
-|--------|-----------------|
-|Operator| <operator_name> |
-|Reviewer| <reviewer_name> |
-|Approver| <approver_name> |
-|--------|-----------------|
-|Test report date    | <test_timestamp>  |
-|Test report revision| <revision_number> |
+|  Role  |      Name              |
+|--------|------------------------|
+|Operator| {{ process.operator }} |
+|Reviewer| {{ process.reviewer }} |
+|Approver| {{ process.approver }} |
+|--------|------------------------|
+| Test report date | {{ run_info.started }} |
+| DAQ version      | {{ run_info.daq_version }} |
 
-## Device identification
+## Device Identification
 
 | Device        | Entry              |
 |---------------|--------------------|
-| Name          | <device_name>      |
-| GUID          | <device_guid>      |
-| MAC addr      | {{ device_info.mac_addr }} |
-| Hostname      | <hostname>         |
-| Type          | <device_type>      |
-| Manufacturer  | <manufacturer>     |
-| Model         | <model>            |
-| Serial Number | <serial_number>    |
-| Version       | <firmware_version> |
+| Name          | {{ device_info.name }} |
+| GUID          | {{ device_info.guid }} |
+| MAC addr      | {{ run_info.mac_addr }} |
+| Hostname      | {{ device_info.hostname }} |
+| Type          | {{ device_info.type }} |
+| Make          | {{ device_info.make }} |
+| Model         | {{ device_info.model }} |
+| Serial Number | {{ device_info.serial }} |
+| Version       | {{ device_info.version }} |
 
-## Device description
+## Device Description
 
-Free text including description of device and links to more information
-(datasheets, manuals, installation notes, etc.)
-
-## Test priorities
-
-| Test Name       | Priority    |
-|-----------------|-------------|
-| category1.test1 | REQUIRED    |
-| category1.test2 | RECOMMENDED |
-| category2.test1 | REQUIRED    |
+{{ device_description }}
