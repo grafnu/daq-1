@@ -79,7 +79,8 @@ class ReportGenerator:
         self._writeln('')
         try:
             undefined_logger = jinja2.make_logging_undefined(logger=LOGGER, base=jinja2.Undefined)
-            environment = jinja2.Environment(loader=jinja2.FileSystemLoader('.'), undefined=undefined_logger)
+            environment = jinja2.Environment(loader=jinja2.FileSystemLoader('.'),
+                                             undefined=undefined_logger)
             self._writeln(environment.get_template(template_file).render(module_config))
         except Exception as e:
             self._writeln('Report generation error: %s' % e)

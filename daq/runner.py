@@ -567,8 +567,8 @@ class DAQRunner:
 
     @staticmethod
     def _extract_exception(result):
-        key = 'exception'
-        return key if key in result and result[key] is not 'None' else None
+        value = result.get('exception', None)
+        return None if value == 'None' else value
 
     def _combine_results(self):
         results = []
