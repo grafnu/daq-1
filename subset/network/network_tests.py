@@ -51,7 +51,7 @@ def add_packet_info_to_report():
         max = packets_received
     for i in range(0, max):
         write_report(packet_request_list[i] + '\n')
-    write_report("packets_count=%d\n") % packets_received
+    write_report('packets_count=%d\n' % packets_received)
 
 shell_result = shell_command_with_result(tests[test_request], 0, False)
 
