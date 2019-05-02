@@ -615,12 +615,32 @@ public class SwitchInterrogator implements Runnable {
         login_report += "RESULT fail connection.port_duplex\n";
       }
 
+      current_max_power = current_max_power.replaceAll("\\D+", "");
+
+      current_power = current_power.replaceAll("\\D+", "");
+
+      System.out.println(
+          "current_max_power:"
+              + current_max_power
+              + "current_power:"
+              + current_power
+              + "current_PoE_admin:"
+              + current_PoE_admin);
+
       if (switchSupportsPoe) {
-        if (Integer.parseInt(current_max_power) > Integer.parseInt(current_power)
-            && current_PoE_admin.equals("Enabled")) {
-          login_report += "RESULT pass poe.power\n";
-          login_report += "RESULT pass poe.negotiation\n";
-          login_report += "RESULT pass poe.support\n";
+        if (current_max_power.length() > 0
+            && current_power.length() > 0
+            && current_PoE_admin.length() > 0) {
+          if (Integer.parseInt(current_max_power) > Integer.parseInt(current_power)
+              && current_PoE_admin.equals("Enabled")) {
+            login_report += "RESULT pass poe.power\n";
+            login_report += "RESULT pass poe.negotiation\n";
+            login_report += "RESULT pass poe.support\n";
+          } else {
+            login_report += "RESULT fail poe.power\n";
+            login_report += "RESULT fail poe.negotiation\n";
+            login_report += "RESULT fail poe.support\n";
+          }
         } else {
           login_report += "RESULT fail poe.power\n";
           login_report += "RESULT fail poe.negotiation\n";
