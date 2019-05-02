@@ -312,6 +312,11 @@ public class TelnetSocket implements Runnable{
                 }
                 catch(NullPointerException e){
                 	System.out.println("Unfound manufacturer of device");
+			Report reportHandler = new Report();
+			reportHandler.addText(macAddress);
+			reportHandler.addText("manufacturer not found to run telnet tests");
+			reportHandler.addText("RESULT fail security.passwords");
+			reportHandler.writeReport("telnet");
                   }		
                 
 		}
