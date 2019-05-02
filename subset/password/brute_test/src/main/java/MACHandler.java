@@ -10,7 +10,7 @@ public class MACHandler {
         String line;
         while ((line = input.readLine()) != null) {
             if (!line.trim().equals("")) {
-                line = line.substring(1);
+                line = line.substring(0);
                 String macAddress = getMACAddressFromCommand(line);
                 if (macAddress.isEmpty() == false) {
                     return macAddress;

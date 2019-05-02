@@ -61,8 +61,9 @@ public class TelnetSocket implements Runnable{
 		
 		try {
 		
-			macAddress = macHandler.runShellCommand("arp -a " + host);
-			macAddress = macAddress.replace("-","");
+			//macAddress = macHandler.runShellCommand("arp " + host);
+                        macAddress = "0F:0F:0F";
+			macAddress = macAddress.replace(":","");
 			System.out.println("MAC ADDRESS : " + macAddress + "  "+  macDevices.get(macAddress.substring(0,6)));
 			//001AEB96DDE0 AlliedTelesis R&D Center
 		

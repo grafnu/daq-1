@@ -50,8 +50,10 @@ public class SshSocket implements Runnable{
 	
 	public void getMACAddress(){
 		try {
-			macAddress = macHandler.runShellCommand("arp -a " + host);
-			macAddress = macAddress.replace("-","");
+
+			//macAddress = macHandler.runShellCommand("arp " + host);
+                        macAddress = "0F:0F:0F";
+			macAddress = macAddress.replace(":","");
 			System.out.println("MAC ADDRESS : " + macAddress + "  " +  macDevices.get(macAddress.substring(0, 6)));
 			getJsonFile((macAddress.substring(0, 6)));
 		} catch (IOException e) {
