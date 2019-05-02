@@ -286,33 +286,33 @@ public class TelnetSocket implements Runnable{
 		connectTelnetClient();
 		getMACAddress();
                 try{
-		interrogator = new Interrogator(this, jsonUsernames, jsonPasswords, macAddress, macDevices.get(macAddress.substring(0, 6)).toString());
+                	interrogator = new Interrogator(this, jsonUsernames, jsonPasswords, macAddress, macDevices.get(macAddress.substring(0, 6)).toString());
+                	Runnable readDataRunnable = 
+            				() ->{
+            					readData();
+            				};
+            				readThread = new Thread(readDataRunnable);
+            		
+            				readThread.start();
+            		
+            				Runnable gatherDataRunnable = 
+            				() ->{
+            							gatherData();
+            				};
+            				gatherThread = new Thread(gatherDataRunnable);
+            				
+            				gatherThread.start();
+            				
+            				Runnable checkConnectionRunnable = 
+            				() ->{
+            					checkConnection();
+            				};
+            				checkThread = new Thread(checkConnectionRunnable);
+            				checkThread.start();
                 }
                 catch(NullPointerException e){
-                   System.out.println("Unfound manufacturer of device");
-                  
-                }		
-                Runnable readDataRunnable = 
-				() ->{
-			readData();
-		};
-		readThread = new Thread(readDataRunnable);
-		
-		readThread.start();
-		
-		Runnable gatherDataRunnable = 
-				() ->{
-					gatherData();
-				};
-				gatherThread = new Thread(gatherDataRunnable);
-				
-				gatherThread.start();
-				
-		Runnable checkConnectionRunnable = 
-				() ->{
-					checkConnection();
-				};
-				checkThread = new Thread(checkConnectionRunnable);
-				checkThread.start();
+                	System.out.println("Unfound manufacturer of device");
+                  }		
+                
 		}
 	}
