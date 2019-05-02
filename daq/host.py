@@ -129,7 +129,7 @@ class ConnectedHost:
             self._startup_scan()
 
     def get_tests(self):
-        """Return a list of all expected tests for this host"""
+        """Return a list of all expected results for this host"""
         return ['startup', 'sanity', 'dhcp', 'base',
                 'monitor'] + self.all_tests + ['finish', 'info', 'timer']
 

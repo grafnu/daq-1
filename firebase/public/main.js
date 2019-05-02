@@ -189,10 +189,10 @@ function handleOriginResult(origin, port, runid, test, result) {
   if (result.timestamp > last_result_time_sec) {
     last_result_time_sec = result.timestamp;
   }
-  if (result.timestamp > (row_timestamps[port] || 0)) {
+  if (!row_timestamps[port] || row_timestamps[port] < result.timestamp) {
     row_timestamps[port] = result.timestamp;
   }
-  const href =`?origin=${origin}&port=${port}`
+  const href =`?origin=${origin}&port=${port}`;
   ensureGridRow(port, `<a href="${href}">${port}</a>`);
   ensureGridColumn(test);
   const status = getResultStatus(result);
@@ -341,7 +341,7 @@ function triggerOrigin(db, origin_id) {
   let ref = db.collection('origin').doc(origin_id);
   ref.collection('runner').doc('heartbeat').onSnapshot((result) => {
     const message = result.data().message;
-    ensureColumns(message.tests);
+    message.tests && ensureColumns(message.tests);
     const description = document.querySelector('#description .description');
     description.innerHTML = message.description;
     description.href = `config.html?origin=${origin_id}`
@@ -365,13 +365,14 @@ function triggerPort(db, origin_id, port_id) {
     return ref.orderBy('timestamp', 'desc').limit(PORT_ROW_COUNT);
   };
 
-  ref = db.collection('origin').doc(origin_id).collection('port');
+  const origin_doc = db.collection('origin').doc(origin_id);
+  const heartbeat_doc = origin_doc.collection('runner').doc('heartbeat');
 
-  ref.doc('port-undefined').onSnapshot((result) => {
+  heartbeat_doc.onSnapshot((result) => {
     ensureColumns(result.data().message.tests)
   });
 
-  watcherAdd(ref.doc(port_id), "runid", latest, (ref, runid_id) => {
+  watcherAdd(origin_doc.collection('port').doc(port_id), "runid", latest, (ref, runid_id) => {
     watcherAdd(ref, "test", undefined, (ref, test_id) => {
       ref.onSnapshot((result) => {
         // TODO: Handle results going away.
@@ -402,8 +403,8 @@ function interval_updater() {
     document.getElementById('update').innerHTML = `Last update ${time_delta_sec} sec ago.`
   }
   for (const row in row_timestamps) {
-    const timestamp = row_timestamps[row];
-    const time_delta_sec = Math.floor(Date.now()/1000.0 - timestamp);
+    const last_update = new Date(row_timestamps[row]);
+    const time_delta_sec = Math.floor((Date.now() - last_update)/1000.0);
     const selector=`#testgrid table tr[label="${row}"`;
     const runid = document.querySelector(selector).getAttribute('runid');
     setGridValue(row, 'timer', runid, `${time_delta_sec} sec`);
