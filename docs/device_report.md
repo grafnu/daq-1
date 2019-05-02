@@ -16,7 +16,7 @@ Started %% 2019-04-11 18:38:30+00:00
 |---------------|--------------------|
 | Name          | <device_name>      |
 | GUID          | <device_guid>      |
-| MAC addr      | <mac_address>      |
+| MAC addr      | *** MAC Address *** |
 | Hostname      | <hostname>         |
 | Type          | <device_type>      |
 | Manufacturer  | <manufacturer>     |
