@@ -2,12 +2,11 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
 
-    // if (args.length != 1) {
-    //    throw new IllegalArgumentException("Expected target ipAddress/hostname as argument");
-    // }
+    if (args.length != 1) {
+        throw new IllegalArgumentException("Expected target ipAddress/hostname as argument");
+    }
 
-    // String ipAddress = args[0];
-    String ipAddress = "google.com";
+    String ipAddress = args[0];
 
     Certs certificate = new Certs("https://" + ipAddress);
 
