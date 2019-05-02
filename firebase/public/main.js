@@ -20,6 +20,16 @@ const registry_id = getQueryParam('registry');
 const device_id = getQueryParam('device');
 const run_id = getQueryParam('runid');
 
+var db;
+
+document.addEventListener('DOMContentLoaded', () => {
+  db = firebase.firestore();
+  const settings = {
+    timestampsInSnapshots: true
+  };
+  db.settings(settings);
+});
+
 function appendTestCell(row, column) {
   const columnElement = document.createElement('td');
   columnElement.setAttribute('label', column);
@@ -205,6 +215,9 @@ function handleOriginResult(origin, port, runid, test, result) {
   if (test === 'info') {
     makeConfigLink(gridElement, status, port, runid);
   }
+  if (test == 'startup') {
+    makeActivateLink(gridElement, port);
+  }
 }
 
 function makeConfigLink(element, info, port, runid) {
@@ -215,6 +228,19 @@ function makeConfigLink(element, info, port, runid) {
   device_link.innerHTML = element.innerHTML;
   element.innerHTML = '';
   element.appendChild(device_link);
+}
+
+function activateRun(port) {
+  console.log('Activate run port', port);
+  const origin_doc = db.collection('origin').doc(origin_id);
+  const control_doc = origin_doc.collection('control').doc(port).collection('config').doc('definition');
+  control_doc.update({
+    'config.paused': false
+  });
+}
+
+function makeActivateLink(element, port) {
+  element.onclick = () => activateRun(port)
 }
 
 function addReportBucket(origin, row, runid, reportName) {
@@ -304,17 +330,7 @@ function listDevices(db, registryId) {
     }).catch((e) => statusUpdate('registry list error', e));
 }
 
-function getFirestoreDb() {
-  var db = firebase.firestore();
-  const settings = {
-    timestampsInSnapshots: true
-  };
-  db.settings(settings);
-  return db;
-}
-
 function dashboardSetup() {
-  const db = getFirestoreDb();
   if (port_id) {
     ensureGridRow('header');
     ensureGridColumn('row', port_id);
@@ -472,7 +488,6 @@ function loadJsonEditors() {
         : `${origin_id} system`;
   document.getElementById('title_origin').innerHTML = subtitle;
 
-  const db = getFirestoreDb();
   const origin_doc = db.collection('origin').doc(origin_id);
   if (device_id) {
     config_doc = origin_doc.collection('device').doc(device_id).collection('config').doc('definition');

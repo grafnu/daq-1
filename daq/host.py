@@ -19,8 +19,8 @@ LOGGER = logging.getLogger('host')
 class _STATE:
     """Host state enum for testing cycle"""
     ERROR = 'Error condition'
+    READY = 'Ready but not initialized'
     INIT = 'Initialization'
-    READY = 'Ready but not active'
     WAITING = 'Waiting for activation'
     BASE = 'Baseline tests'
     MONITOR = 'Network monitor'
@@ -56,7 +56,7 @@ class ConnectedHost:
         self._device_base = self._get_device_base(config, self.target_mac)
         self.state = None
         self.no_test = config.get('no_test', False)
-        self._state_transition(_STATE.READY if self.no_test else _STATE.INIT)
+        self._state_transition(_STATE.READY)
         self.results = {}
         self.dummy = None
         self.running_test = None
@@ -124,15 +124,19 @@ class ConnectedHost:
         time.sleep(2)
         shutil.rmtree(self.devdir, ignore_errors=True)
         os.makedirs(self.scan_base)
-        self._initialize_device_config()
+        self._initialize_config()
         network = self.runner.network
         self._mirror_intf_name = network.create_mirror_interface(self.target_port)
         if self.no_test:
             self.record_result('startup', state='hold')
         else:
-            self.record_result('startup')
-            self.record_result('sanity', state='run')
-            self._startup_scan()
+            self._start_run()
+
+    def _start_run(self):
+        self._state_transition(_STATE.INIT, _STATE.READY)
+        self.record_result('startup')
+        self.record_result('sanity', state='run')
+        self._startup_scan()
 
     def get_tests(self):
         """Return a list of all expected results for this host"""
@@ -163,7 +167,7 @@ class ConnectedHost:
     def terminate(self, trigger=True):
         """Terminate this host"""
         LOGGER.info('Target port %d terminate, trigger %s', self.target_port, trigger)
-        self._release_configs()
+        self._release_config()
         self._state_transition(_STATE.TERM)
         self.record_result(self.test_name, state='disconnect')
         self._monitor_cleanup()
@@ -211,7 +215,7 @@ class ConnectedHost:
         self._record_result('info', state='%s/%s' % (self.target_mac, target_ip))
         self.record_result('dhcp', ip=target_ip, state=state, exception=str(exception))
         if exception:
-            self._state_transition(_STATE.ERROR, _STATE.WAITING)
+            self._state_transition(_STATE.ERROR)
             self.runner.target_set_error(self.target_port, exception)
         else:
             LOGGER.info('Target port %d triggered as %s', self.target_port, target_ip)
@@ -451,6 +455,10 @@ class ConnectedHost:
 
     def _control_updated(self, control_config):
         LOGGER.info('Updated control config: %s %s', self.target_mac, control_config)
+        if not control_config.get('paused') and self.state == _STATE.READY:
+            self._start_run()
+        else:
+            LOGGER.warning('Inconsistent control state for update of %s', self.target_mac)
 
     def _dev_config_updated(self, dev_config):
         LOGGER.info('Device config update: %s %s', self.target_mac, dev_config)
@@ -458,7 +466,7 @@ class ConnectedHost:
         config_bundle = self._make_config_bundle(self._load_module_config())
         self._record_result(None, run_info=False, config=config_bundle)
 
-    def _initialize_device_config(self):
+    def _initialize_config(self):
         dev_config = configurator.load_config(self._device_base, self._MODULE_CONFIG)
         self._gcp.register_config(self._DEVICE_PATH % self.target_mac,
                                   dev_config, self._dev_config_updated)
@@ -466,6 +474,6 @@ class ConnectedHost:
                                   self._make_control_bundle(), self._control_updated, immediate=True)
         self._record_result(None, config=self._make_config_bundle())
 
-    def _release_device_config(self):
+    def _release_config(self):
         self._gcp.release_config(self._DEVICE_PATH % self.target_mac)
         self._gcp.release_config(self._CONTROL_PATH % self.target_port)
