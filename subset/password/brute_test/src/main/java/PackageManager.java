@@ -21,37 +21,38 @@ public class PackageManager {
 	Map<String,String> macDevices = new HashMap<String,String>();
 	boolean debug = false;
 	
+	
 	public void readFile(){
 	
 		
-		// try {
-		// 	System.out.println("Attempting to read web file...");
-			
-		// 	InputStream url = new URL("https://svn.nmap.org/nmap/nmap-mac-prefixes").openStream();
-		// //	InputStream url = this.getClass().getResourceAsStream("resources/macList.txt");
-		// 	StringBuilder resultStringBuilder = new StringBuilder();
-		//     try (BufferedReader br= new BufferedReader(new InputStreamReader(url))){
-		//         String line;
-		//         while ((line = br.readLine()) != null) {
-		//             resultStringBuilder.append(line).append("\n");
-		//            // System.out.println(line);
-		//             String[] words = new String[2];
-		//             String macAddress;
-		//             String manufacturer;
-		//             if(line.length() > 5) {
-		//             	macAddress = line.substring(0, 6);
-		//             	manufacturer = line.substring(7, line.length());
-		// 	            if(manufacturer.length() > 0) {
-		// 	            	macDevices.put(macAddress, manufacturer);
-		// 	            }
-		//             }
-		//          }
-		//       //  if(debug) {
-		//         	//macDevices.forEach((k, v) -> System.out.println((k + ":" + v)));
-		//       //  }
-		//     }
-		//   } catch (IOException e1) {
-		// 	System.out.println("Package Manager Error :" + e1);
+//		try {
+//			System.out.println("Attempting to read web file...");
+//			
+//			InputStream url = new URL("https://svn.nmap.org/nmap/nmap-mac-prefixes").openStream();
+//		//	InputStream url = this.getClass().getResourceAsStream("resources/macList.txt");
+//			StringBuilder resultStringBuilder = new StringBuilder();
+//		    try (BufferedReader br= new BufferedReader(new InputStreamReader(url))){
+//		        String line;
+//		        while ((line = br.readLine()) != null) {
+//		            resultStringBuilder.append(line).append("\n");
+//		           // System.out.println(line);
+//		            String[] words = new String[2];
+//		            String macAddress;
+//		            String manufacturer;
+//		            if(line.length() > 5) {
+//		            	macAddress = line.substring(0, 6);
+//		            	manufacturer = line.substring(7, line.length());
+//			            if(manufacturer.length() > 0) {
+//			            	macDevices.put(macAddress, manufacturer);
+//			            }
+//		            }
+//		         }
+//		      //  if(debug) {
+//		        	//macDevices.forEach((k, v) -> System.out.println((k + ":" + v)));
+//		      //  }
+//		    }
+//		  } catch (IOException e1) {
+		//	System.out.println("Package Manager Error :" + e1);
 			System.out.println("Attempting to read local file...");
 			  try{
 			InputStream url = this.getClass().getResourceAsStream("/macList.txt");
@@ -81,7 +82,7 @@ public class PackageManager {
 		    	
 		    }
 			
-//		}
+	//	}
 	}	
 	
 	public PackageManager(String protocol, String host, int connectionPort) {
