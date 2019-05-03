@@ -415,7 +415,7 @@ class ConnectedHost:
         config['run_info'] = {
             'run_id': self.run_id,
             'mac_addr': self.target_mac,
-            'daq_version': self.runner.daq_version(),
+            'daq_version': self.runner.version,
             'started': gcp.get_timestamp()
         }
 
@@ -471,7 +471,8 @@ class ConnectedHost:
         self._gcp.register_config(self._DEVICE_PATH % self.target_mac,
                                   dev_config, self._dev_config_updated)
         self._gcp.register_config(self._CONTROL_PATH % self.target_port,
-                                  self._make_control_bundle(), self._control_updated, immediate=True)
+                                  self._make_control_bundle(),
+                                  self._control_updated, immediate=True)
         self._record_result(None, config=self._make_config_bundle())
 
     def _release_config(self):
