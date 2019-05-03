@@ -33,8 +33,6 @@ dependencies {
 	compile group: 'commons-net', name: 'commons-net', version: '3.6'
     
     compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
-	
-	//implementation 'com.google.firebase:firebase-admin:6.5.0'
 }
 
 jar {
