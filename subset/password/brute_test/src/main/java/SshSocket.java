@@ -32,6 +32,7 @@ public class SshSocket implements Runnable {
   String[] jsonUsernames;
   String[] jsonPasswords;
   Gson gson = new Gson();
+  boolean macRetrieved = false;
   //    MACHandler macHandler;
   String macAddress;
 
@@ -69,6 +70,7 @@ public class SshSocket implements Runnable {
       String passwords = parent.get("Passwords").getAsString();
       jsonUsernames = usernames.split(",");
       jsonPasswords = passwords.split(",");
+      macRetrieved = true;
 
     } catch (JsonSyntaxException e) {
       // TODO Auto-generated catch block
@@ -163,6 +165,9 @@ public class SshSocket implements Runnable {
   @Override
   public void run() {
     getMACAddress();
-    connectSshSocket();
+    if(macRetrieved) {
+    	 connectSshSocket();
+    }
+   
   }
 }
