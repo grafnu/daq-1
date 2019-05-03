@@ -56,7 +56,7 @@ public class SshSocket implements Runnable {
     	System.out.println(e);
         e.printStackTrace();
         Report reportHandler = new Report();
-        reportHandler.addText("RESULT security.passwords FAILED : manufacturer not found");
+        reportHandler.addText("RESULT security.passwords FAILED : manufacturer not found *");
         reportHandler.writeReport("ssh");
     }
   }
@@ -78,7 +78,11 @@ public class SshSocket implements Runnable {
       e.printStackTrace();
     }
     catch(NullPointerException e) {
-    	System.out.println("can not find manufacturer in password list. Not yet implmeneted");
+    	System.out.println("can not find manufacturer in password list. Not yet implemented");
+    	reportHandler = new Report();
+    	reportHandler.addText("RESULT security.passwords FAILED");
+    	reportHandler.writeReport("ssh");
+    	
     }
     //                  catch (FileNotFoundException e) {
     //                  // TODO Auto-generated catch block
