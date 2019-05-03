@@ -77,6 +77,9 @@ public class SshSocket implements Runnable {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+    catch(NullPointerException e) {
+    	System.out.println("can not find manufacturer in password list. Not yet implmeneted");
+    }
     //                  catch (FileNotFoundException e) {
     //                  // TODO Auto-generated catch block
     //                  e.printStackTrace();

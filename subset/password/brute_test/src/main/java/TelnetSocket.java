@@ -64,8 +64,6 @@ public class TelnetSocket implements Runnable {
       getJsonFile(macAddress.substring(0, 6).toString());
 
     } catch (Exception e) {
-      System.out.println(e);
-      e.printStackTrace();
       Report reportHandler = new Report();
       reportHandler.addText("RESULT security.passwords FAILED : manufacturer not found");
       reportHandler.writeReport("telnet");
@@ -86,6 +84,9 @@ public class TelnetSocket implements Runnable {
     } catch (JsonIOException e) {
       System.err.println("Json File Read Error");
       System.err.println(e);
+    }
+    catch(NullPointerException e) {
+    	System.out.println("can not find manufacturer in password list. Not yet implmeneted");
     }
   }
 
