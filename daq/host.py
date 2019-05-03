@@ -213,7 +213,7 @@ class ConnectedHost:
             return False
         self.target_ip = target_ip
         self._record_result('info', state='%s/%s' % (self.target_mac, target_ip))
-        self.record_result('dhcp', ip=target_ip, state=state, exception=str(exception))
+        self.record_result('dhcp', ip=target_ip, state=state, exception=exception)
         if exception:
             self._state_transition(_STATE.ERROR)
             self.runner.target_set_error(self.target_port, exception)
@@ -271,7 +271,7 @@ class ConnectedHost:
     def _monitor_error(self, e):
         LOGGER.error('Target port %d monitor error: %s', self.target_port, e)
         self._monitor_cleanup(forget=False)
-        self.record_result(self.test_name, exception=str(e))
+        self.record_result(self.test_name, exception=e)
         self._state_transition(_STATE.ERROR)
         self.runner.target_set_error(self.target_port, e)
 
@@ -321,7 +321,7 @@ class ConnectedHost:
             if not success1 or not success2:
                 return False
         except Exception as e:
-            self.record_result('base', exception=str(e))
+            self.record_result('base', exception=e)
             self._monitor_cleanup()
             raise
         self.record_result('base')
@@ -387,7 +387,7 @@ class ConnectedHost:
             fail_file = self._FAIL_BASE_FORMAT % host_name
             LOGGER.warning('Executing fail_hook: %s %s', self._fail_hook, fail_file)
             os.system('%s %s 2>&1 > %s.out' % (self._fail_hook, fail_file, fail_file))
-        self.record_result(self.test_name, code=return_code, exception=str(exception))
+        self.record_result(self.test_name, code=return_code, exception=exception)
         result_path = os.path.join(self._host_dir_path(), 'return_code.txt')
         try:
             with open(result_path, 'a') as output_stream:
@@ -448,6 +448,8 @@ class ConnectedHost:
         }
         for arg in kwargs:
             result[arg] = None if kwargs[arg] is None else kwargs[arg]
+        if result.get('exception'):
+            result['exception'] = str(result['exception'])
         if name:
             self.results[name] = result
         self._gcp.publish_message('daq_runner', 'test_result', result)

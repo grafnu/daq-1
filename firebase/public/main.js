@@ -190,7 +190,7 @@ function getResultStatus(result) {
     return result.state;
   }
   if (result.exception) {
-    return 'fail';
+    return 'err';
   }
   return Number(result.code) ? 'fail' : 'pass';
 }

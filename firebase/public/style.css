@@ -39,6 +39,10 @@ div {
     background: #FAA;
 }
 
+#testgrid table tr ~ tr td[status=err] {
+    background: #E66;
+}
+
 #testgrid table tr ~ tr td[status=run] {
     background: #EE6;
 }
