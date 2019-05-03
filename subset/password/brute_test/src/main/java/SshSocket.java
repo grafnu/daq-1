@@ -53,8 +53,11 @@ public class SshSocket implements Runnable {
           "MAC ADDRESS : " + macAddress + "  " + macDevices.get(macAddress.substring(0, 6)));
       getJsonFile((macAddress.substring(0, 6)));
     } catch (Exception e) {
-      System.out.println(e);
-      e.printStackTrace();
+    	System.out.println(e);
+        e.printStackTrace();
+        Report reportHandler = new Report();
+        reportHandler.addText("RESULT security.passwords FAILED : manufacturer not found");
+        reportHandler.writeReport("ssh");
     }
   }
 

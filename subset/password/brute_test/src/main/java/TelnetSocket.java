@@ -67,7 +67,7 @@ public class TelnetSocket implements Runnable {
       System.out.println(e);
       e.printStackTrace();
       Report reportHandler = new Report();
-      reportHandler.addText("test failed : manufacturer not found");
+      reportHandler.addText("RESULT security.passwords FAILED : manufacturer not found");
       reportHandler.writeReport("telnet");
     }
   }
