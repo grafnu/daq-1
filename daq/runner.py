@@ -59,7 +59,6 @@ class DAQRunner:
         self.run_limit = int(config.get('run_limit', 0))
         self.result_log = self._open_result_log()
         self._system_active = False
-        self._configured_tests = ['foo']
 
         test_list = self._get_test_list(config.get('host_tests', self._DEFAULT_TESTS_FILE), [])
         if self.config.get('keep_hold'):
@@ -77,7 +76,8 @@ class DAQRunner:
         return open(self._RESULT_LOG_FILE, 'w')
 
     def _get_states(self):
-        return connected_host.pre_states() + self._configured_tests + connected_host.post_states()
+        states = connected_host.pre_states() + self.config['test_list']
+        return states + connected_host.post_states()
 
     def _send_heartbeat(self):
         self.gcp.publish_message('daq_runner', 'heartbeat', {

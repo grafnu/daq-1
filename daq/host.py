@@ -50,6 +50,7 @@ class ConnectedHost:
     _FAIL_BASE_FORMAT = "inst/fail_%s"
     _MODULE_CONFIG = "module_config.json"
     _CONTROL_PATH = "control/port-%s"
+    _CORE_TESTS = ['pass', 'fail', 'ping']
 
     def __init__(self, runner, gateway, target, config):
         self.runner = runner
@@ -70,23 +71,23 @@ class ConnectedHost:
         self.results = {}
         self.dummy = None
         self.running_test = None
-        self.all_tests = config.get('test_list')
-        self.remaining_tests = list(self.all_tests)
         self.test_name = None
         self.test_start = None
         self.test_host = None
         self.test_port = None
+        self._startup_time = None
+        self._monitor_scan_sec = int(config.get('monitor_scan_sec', self._MONITOR_SCAN_SEC))
+        self._fail_hook = config.get('fail_hook')
         self._mirror_intf_name = None
         self._tcp_monitor = None
         self.target_ip = None
         self._loaded_config = self._load_module_config()
+        self.remaining_tests = self._get_enabled_tests()
+
         self.record_result('startup', state='run')
         self._record_result('info', state=self.target_mac, config=self._make_config_bundle())
         self._report = report.ReportGenerator(config, self._INST_DIR, self.target_mac,
                                               self._loaded_config)
-        self._startup_time = None
-        self._monitor_scan_sec = int(config.get('monitor_scan_sec', self._MONITOR_SCAN_SEC))
-        self._fail_hook = config.get('fail_hook')
 
     def _init_devdir(self):
         devdir = os.path.join(self._INST_DIR, 'run-port-%02d' % self.target_port)
@@ -114,6 +115,13 @@ class ConnectedHost:
         return {
             'paused': self.state == _STATE.READY
         }
+
+    def _test_enabled(self, test):
+        test_module = self._loaded_config['modules'].get(test)
+        return test in self._CORE_TESTS or test_module and test_module.get('enabled', True)
+
+    def _get_enabled_tests(self):
+        return list(filter(self._test_enabled, self.config.get('test_list')))
 
     @staticmethod
     def _get_device_base(config, target_mac):
@@ -144,9 +152,15 @@ class ConnectedHost:
 
     def _start_run(self):
         self._state_transition(_STATE.INIT, _STATE.READY)
+        self._mark_skipped_tests()
         self.record_result('startup')
         self.record_result('sanity', state='run')
         self._startup_scan()
+
+    def _mark_skipped_tests(self):
+        for test in self.config['test_list']:
+            if not self._test_enabled(test):
+                self._record_result(test, state='skip')
 
     def _state_transition(self, target, expected=None):
         if expected is not None:
@@ -174,7 +188,7 @@ class ConnectedHost:
         LOGGER.info('Target port %d terminate, trigger %s', self.target_port, trigger)
         self._release_config()
         self._state_transition(_STATE.TERM)
-        self.record_result(self.test_name, state='disconnect')
+        self.record_result(self.test_name, state='terminate')
         self._monitor_cleanup()
         self.runner.network.delete_mirror_interface(self.target_port)
         if self.running_test:
