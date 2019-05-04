@@ -25,8 +25,9 @@ class GcpManager:
 
     REPORT_BUCKET_FORMAT = '%s.appspot.com'
 
-    def __init__(self, config):
+    def __init__(self, config, callback_handler):
         self.config = config
+        self._callback_handler = callback_handler
         if 'gcp_cred' not in config:
             LOGGER.info('No gcp_cred credential specified in config')
             self._pubber = None
@@ -55,16 +56,17 @@ class GcpManager:
         LOGGER.info('Dashboard at %s', dashboard_url)
         return firestore.client()
 
-    @staticmethod
-    def _on_snapshot(callback, doc_snapshot, immediate):
-        for doc in doc_snapshot:
-            doc_data = doc.to_dict()
-            timestamp = doc_data['timestamp']
-            if immediate or doc_data['saved'] != timestamp:
-                callback(doc_data['config'])
-                doc.reference.update({
-                    'saved': timestamp
-                })
+    def _on_snapshot(self, callback, doc_snapshot, immediate):
+        def handler():
+            for doc in doc_snapshot:
+                doc_data = doc.to_dict()
+                timestamp = doc_data['timestamp']
+                if immediate or doc_data['saved'] != timestamp:
+                    callback(doc_data['config'])
+                    doc.reference.update({
+                        'saved': timestamp
+                    })
+        self._callback_handler(handler)
 
     def register_config(self, path, config, callback=None, immediate=False):
         """Register a config blob with callback"""

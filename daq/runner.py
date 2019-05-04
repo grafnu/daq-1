@@ -3,6 +3,7 @@
 import logging
 import os
 import re
+import threading
 import time
 import traceback
 
@@ -38,7 +39,9 @@ class DAQRunner:
         self._device_groups = {}
         self._gateway_sets = {}
         self._target_mac_ip = {}
-        self.gcp = gcp.GcpManager(self.config)
+        self._callback_queue = []
+        self._callback_lock = threading.Lock()
+        self.gcp = gcp.GcpManager(self.config, lambda callback: self._queue_callback(callback))
         self._base_config = self._load_base_config()
         self.description = config.get('site_description', '').strip('\"')
         self.version = os.environ['DAQ_VERSION']
@@ -177,6 +180,20 @@ class DAQRunner:
         else:
             LOGGER.debug('Port %s dpid %s learned %s', port, dpid, target_mac)
 
+    def _queue_callback(self, callback):
+        with self._callback_lock:
+            LOGGER.debug('Register callback')
+            self._callback_queue.append(callback)
+
+    def _handle_queued_events(self):
+        with self._callback_lock:
+            callbacks = self._callback_queue
+            self._callback_queue = []
+            if callbacks:
+                LOGGER.debug('Processing %d callbacks', len(callbacks))
+            for callback in callbacks:
+                callback()
+
     def _handle_system_idle(self):
         # Some synthetic faucet events don't come in on the socket, so process them here.
         self._handle_faucet_events()
@@ -218,6 +235,7 @@ class DAQRunner:
         LOGGER.warning('No active ports remaining (%d monitors), ending test run.', count)
 
     def _loop_hook(self):
+        self._handle_queued_events()
         states = {}
         for key in self.port_targets:
             states[key] = self.port_targets[key].state
