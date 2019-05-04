@@ -1,6 +1,10 @@
 #!/bin/bash -e
 
-echo Reading info from $HOME/.travis.env
+OUTFILE=$HOME/.travis.out
+
+echo Trigger build at `date` > $OUTFILE
+
+echo Reading info from $HOME/.travis.env >> $OUTFILE
 source $HOME/.travis.env
 
 if [ -z "$TRAVIS_API_TOKEN" ]; then
@@ -19,4 +23,6 @@ curl -s -X POST \
    -H "Travis-API-Version: 3" \
    -H "Authorization: token $TRAVIS_API_TOKEN" \
    -d "$body" \
-   https://api.travis-ci.org/repo/grafnu%2Fdaq/requests
+   https://api.travis-ci.org/repo/grafnu%2Fdaq/requests >> $OUTFILE 2>&1
+
+echo Trigger complete. >> $OUTFILE
