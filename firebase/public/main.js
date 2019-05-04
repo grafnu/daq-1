@@ -357,7 +357,7 @@ function triggerOrigin(db, origin_id) {
   let ref = db.collection('origin').doc(origin_id);
   ref.collection('runner').doc('heartbeat').onSnapshot((result) => {
     const message = result.data().message;
-    message.tests && ensureColumns(message.tests);
+    message.states && ensureColumns(message.states);
     const description = document.querySelector('#description .description');
     description.innerHTML = message.description;
     description.href = `config.html?origin=${origin_id}`
@@ -385,7 +385,7 @@ function triggerPort(db, origin_id, port_id) {
   const heartbeat_doc = origin_doc.collection('runner').doc('heartbeat');
 
   heartbeat_doc.onSnapshot((result) => {
-    ensureColumns(result.data().message.tests)
+    ensureColumns(result.data().message.states)
   });
 
   watcherAdd(origin_doc.collection('port').doc(port_id), "runid", latest, (ref, runid_id) => {

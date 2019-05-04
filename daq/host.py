@@ -30,6 +30,16 @@ class _STATE:
     TERM = 'Host terminated'
 
 
+def pre_states():
+    """Return pre-test states for basic operation"""
+    return ['startup', 'sanity', 'dhcp', 'base', 'monitor']
+
+
+def post_states():
+    """Return post-test states for recording finalization"""
+    return ['finish', 'info', 'timer']
+
+
 class ConnectedHost:
     """Class managing a device-under-test"""
 
@@ -137,11 +147,6 @@ class ConnectedHost:
         self.record_result('startup')
         self.record_result('sanity', state='run')
         self._startup_scan()
-
-    def get_tests(self):
-        """Return a list of all expected results for this host"""
-        return ['startup', 'sanity', 'dhcp', 'base',
-                'monitor'] + self.all_tests + ['finish', 'info', 'timer']
 
     def _state_transition(self, target, expected=None):
         if expected is not None:

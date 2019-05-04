@@ -59,6 +59,7 @@ class DAQRunner:
         self.run_limit = int(config.get('run_limit', 0))
         self.result_log = self._open_result_log()
         self._system_active = False
+        self._configured_tests = ['foo']
 
         test_list = self._get_test_list(config.get('host_tests', self._DEFAULT_TESTS_FILE), [])
         if self.config.get('keep_hold'):
@@ -75,10 +76,13 @@ class DAQRunner:
     def _open_result_log(self):
         return open(self._RESULT_LOG_FILE, 'w')
 
-    def _send_heartbeat(self, test_list=None):
+    def _get_states(self):
+        return connected_host.pre_states() + self._configured_tests + connected_host.post_states()
+
+    def _send_heartbeat(self):
         self.gcp.publish_message('daq_runner', 'heartbeat', {
             'name': 'status',
-            'tests': test_list,
+            'states': self._get_states(),
             'ports': list(self._active_ports.keys()),
             'description': self.description,
             'version': self.version,
@@ -326,7 +330,7 @@ class DAQRunner:
 
             self._direct_port_traffic(target_mac, target_port, target)
 
-            self._send_heartbeat(new_host.get_tests())
+            self._send_heartbeat()
             return True
         except Exception as e:
             self.target_set_error(target_port, e)
