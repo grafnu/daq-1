@@ -11,7 +11,7 @@ addons:
       - openvswitch-switch
 install:
   - set -e
-  - bin/setup_daq
+  - travis_wait bin/setup_daq
 script:
   - set -e
   - bin/test_daq
