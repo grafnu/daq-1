@@ -1,4 +1,14 @@
-#!/bin/bash -e
+#!/bin/bash -ex
+
+# Just sanity checks to make sure it's a proper directory structure.
+test -d bin
+test -d misc
+test -d cmd
+
+# Pre-cleanup
+sudo rm -rf inst/ local/
+
+bin/setup_daq
 
 for set in base many aux topo; do
     DAQ_TEST=$set bin/test_daq

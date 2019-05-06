@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 ROOT=$(dirname $0)/..
 cd $ROOT
@@ -8,4 +8,6 @@ bin/setup_base
 bin/setup_dev
 
 bin/build_daq
+
+echo Done with setup_daq.
 
