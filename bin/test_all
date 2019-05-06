@@ -5,11 +5,12 @@ test -d bin
 test -d misc
 test -d cmd
 
-# Pre-cleanup
-sudo rm -rf inst/ local/
+sudo rm -rf inst/ local/ out/
 
+# Pre-cleanup
 bin/setup_daq
 
 for set in base many aux topo; do
+    sudo rm -rf inst/ local/
     DAQ_TEST=$set bin/test_daq
 done
