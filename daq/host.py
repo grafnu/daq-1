@@ -173,8 +173,10 @@ class ConnectedHost:
         """Return True if this host is running active test."""
         return self.state != _STATE.ERROR and self.state != _STATE.DONE
 
-    def is_waiting(self):
-        """Return True if this host is ready to be activated."""
+    def notify_activate(self):
+        """Return True if ready to be activated in response to a DHCP notification."""
+        if self.state == _STATE.READY:
+            self._record_result('startup', state='hold')
         return self.state == _STATE.WAITING
 
     def _prepare(self):
@@ -476,9 +478,11 @@ class ConnectedHost:
 
     def _control_updated(self, control_config):
         LOGGER.info('Updated control config: %s %s', self.target_mac, control_config)
-        if not control_config.get('paused') and self.state == _STATE.READY:
+        paused = control_config.get('paused')
+        state_ready = self.state == _STATE.READY
+        if not paused and state_ready:
             self._start_run()
-        else:
+        elif paused and not state_ready:
             LOGGER.warning('Inconsistent control state for update of %s', self.target_mac)
 
     def _dev_config_updated(self, dev_config):

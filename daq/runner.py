@@ -447,7 +447,7 @@ class DAQRunner:
             return gateway, True
 
         target_host = self.mac_targets[target_mac]
-        if not target_host.is_waiting():
+        if not target_host.notify_activate():
             LOGGER.info('DHCP device %s ignoring spurious notify', target_mac)
             return gateway, False
 
