@@ -5,7 +5,7 @@ DEFAULT_CONF=${DAQ_CONF:-misc/system_base.conf}
 
 if [ -d venv ]; then
     echo Activating venv
-    source vent/bin/activate
+    source venv/bin/activate
 fi
 
 run_mode=$(cat misc/RELEASE_VERSION)
