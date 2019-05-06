@@ -1,0 +1,5 @@
+#!/bin/bash -e
+
+for set in base many aux topo; do
+    DAQ_TEST=$set bin/test_daq
+done
