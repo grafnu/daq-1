@@ -3,6 +3,11 @@
 LOCAL_SYSTEM=local/system.conf
 DEFAULT_CONF=${DAQ_CONF:-misc/system_base.conf}
 
+if [ -d venv ]; then
+    echo Activating venv
+    source vent/bin/activate
+fi
+
 run_mode=$(cat misc/RELEASE_VERSION)
 
 if [ ! -f "$LOCAL_SYSTEM" -a "$DONT_MAKE_LOCAL" ]; then
