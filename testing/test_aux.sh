@@ -41,7 +41,9 @@ echo Test runtime config | tee -a $TEST_RESULTS
 cat inst/run-port-02/nodes/ping02/tmp/module_config.json | tee -a $TEST_RESULTS
 
 function redact {
-    sed -e 's/\s*%%.*//' -e 's/2019-.*T.*Z/XXX/'
+    sed -e 's/\s*%%.*//' \
+        -e 's/2019-.*T.*Z/XXX/' \
+        -e 's/DAQ version.*//'
 }
 
 cat docs/device_report.md | redact > out/redacted_docs.md
