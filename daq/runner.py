@@ -42,7 +42,7 @@ class DAQRunner:
         self._target_mac_ip = {}
         self._callback_queue = []
         self._callback_lock = threading.Lock()
-        self.gcp = gcp.GcpManager(self.config, lambda callback: self._queue_callback(callback))
+        self.gcp = gcp.GcpManager(self.config, self._queue_callback)
         self._base_config = self._load_base_config()
         self.description = config.get('site_description', '').strip('\"')
         self.version = os.environ['DAQ_VERSION']

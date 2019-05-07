@@ -1,4 +1,6 @@
 {
+  "device_info": {
+  },
   "modules": {
     "brute": {
       "enabled": true
