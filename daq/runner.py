@@ -1,5 +1,6 @@
 """Main test runner for DAQ"""
 
+import copy
 import logging
 import os
 import re
@@ -632,6 +633,8 @@ class DAQRunner:
         configurator.write_config(self.config.get('site_path'), self._MODULE_CONFIG, new_config)
         self._base_config = self._load_base_config(register=False)
         self._publish_runner_config(self._base_config)
+        for target_port in self.port_targets:
+            self.port_targets[target_port].reload_config()
 
     def _load_base_config(self, register=True):
         base = {}
@@ -645,7 +648,7 @@ class DAQRunner:
 
     def get_base_config(self):
         """Get the base configuration for this install"""
-        return self._base_config
+        return copy.deepcopy(self._base_config)
 
     def _publish_runner_config(self, loaded_config):
         result = {

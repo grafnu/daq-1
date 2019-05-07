@@ -70,11 +70,20 @@ div {
 
 #config_body .dated_indicator {
     color: #f00;
-    opacity: 0;
+    display: none;
 }
 
 #config_body.dated .dated_indicator {
-    opacity: 1;
+    display: inline;
+}
+
+#config_body .provisional_indicator {
+    color: #f00;
+    display: none;
+}
+
+#config_body.provisional .provisional_indicator {
+    display: inline;
 }
 
 #config_body .save_button {

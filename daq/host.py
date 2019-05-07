@@ -81,10 +81,12 @@ class ConnectedHost:
         self._mirror_intf_name = None
         self._tcp_monitor = None
         self.target_ip = None
-        self._loaded_config = self._load_module_config()
+        self._loaded_config = None
+        self.reload_config()
+        assert self._loaded_config, 'config was not loaded'
         self.remaining_tests = self._get_enabled_tests()
 
-        self.record_result('startup', state='run')
+        self.record_result('startup', state='prep')
         self._record_result('info', state=self.target_mac, config=self._make_config_bundle())
         self._report = report.ReportGenerator(config, self._INST_DIR, self.target_mac,
                                               self._loaded_config)
@@ -146,6 +148,7 @@ class ConnectedHost:
         network = self.runner.network
         self._mirror_intf_name = network.create_mirror_interface(self.target_port)
         if self.no_test:
+            assert self.is_holding(), 'state is not holding'
             self.record_result('startup', state='hold')
         else:
             self._start_run()
@@ -153,7 +156,7 @@ class ConnectedHost:
     def _start_run(self):
         self._state_transition(_STATE.INIT, _STATE.READY)
         self._mark_skipped_tests()
-        self.record_result('startup')
+        self.record_result('startup', state='go', config=self._make_config_bundle())
         self.record_result('sanity', state='run')
         self._startup_scan()
 
@@ -172,6 +175,10 @@ class ConnectedHost:
     def is_running(self):
         """Return True if this host is running active test."""
         return self.state != _STATE.ERROR and self.state != _STATE.DONE
+
+    def is_holding(self):
+        """Return True if this host paused and waiting to run."""
+        return self.state == _STATE.READY
 
     def notify_activate(self):
         """Return True if ready to be activated in response to a DHCP notification."""
@@ -440,9 +447,10 @@ class ConnectedHost:
             'started': gcp.get_timestamp()
         }
 
-    def _load_module_config(self):
+    def _load_module_config(self, run_info=True):
         config = self.runner.get_base_config()
-        self._merge_run_info(config)
+        if run_info:
+            self._merge_run_info(config)
         configurator.load_and_merge(config, self._device_base, self._MODULE_CONFIG)
         configurator.load_and_merge(config, self._port_base, self._MODULE_CONFIG)
         return config
@@ -479,17 +487,26 @@ class ConnectedHost:
     def _control_updated(self, control_config):
         LOGGER.info('Updated control config: %s %s', self.target_mac, control_config)
         paused = control_config.get('paused')
-        state_ready = self.state == _STATE.READY
-        if not paused and state_ready:
+        if not paused and self.is_holding():
             self._start_run()
-        elif paused and not state_ready:
+        elif paused and not self.is_holding():
             LOGGER.warning('Inconsistent control state for update of %s', self.target_mac)
+
+    def reload_config(self):
+        """Trigger a config reload due to an eternal config change."""
+        holding = self.is_holding()
+        new_config = self._load_module_config(run_info=holding)
+        if holding:
+            self._loaded_config = new_config
+        config_bundle = self._make_config_bundle(new_config)
+        LOGGER.info('Device config reloaded: %s %s', holding, self.target_mac)
+        self._record_result(None, run_info=holding, config=config_bundle)
+        return new_config
 
     def _dev_config_updated(self, dev_config):
         LOGGER.info('Device config update: %s %s', self.target_mac, dev_config)
         configurator.write_config(self._device_base, self._MODULE_CONFIG, dev_config)
-        config_bundle = self._make_config_bundle(self._load_module_config())
-        self._record_result(None, run_info=False, config=config_bundle)
+        self.reload_config()
 
     def _initialize_config(self):
         dev_config = configurator.load_config(self._device_base, self._MODULE_CONFIG)

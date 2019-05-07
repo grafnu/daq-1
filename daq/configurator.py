@@ -2,6 +2,7 @@
 
 """Configuration manager class for daqy-things."""
 
+import copy
 import json
 import logging
 import os
@@ -52,7 +53,7 @@ def merge_config(base, adding):
         if isinstance(value, dict) and key in base:
             merge_config(base[key], value)
         else:
-            base[key] = value
+            base[key] = copy.deepcopy(value)
 
 
 def load_config(path, filename=None):

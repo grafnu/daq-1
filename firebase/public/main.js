@@ -444,6 +444,7 @@ function setDatedStatus(attribute, value) {
   element.classList.toggle('dirty', data_state.dirty > data_state.saved);
   element.classList.toggle('saving', data_state.pushed > data_state.saved);
   element.classList.toggle('dated', data_state.saved > data_state.updated);
+  element.classList.toggle('provisional', data_state.provisional);
 }
 
 function pushConfigChange(config_editor, config_doc) {
@@ -475,6 +476,8 @@ function loadEditor(config_doc, element_id, label, onConfigEdit) {
       setDatedStatus('saved', snapshot_data.saved);
     } else {
       setDatedStatus('updated', snapshot_data.updated);
+      const snapshot_config = (snapshot_data && snapshot_data.config && snapshot_data.config.config) || {};
+      setDatedStatus('provisional', !snapshot_config.run_info);
     }
   });
   return editor;
