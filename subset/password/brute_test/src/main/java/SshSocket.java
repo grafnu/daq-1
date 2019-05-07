@@ -82,7 +82,9 @@ public class SshSocket implements Runnable {
     catch(NullPointerException e) {
     	System.out.println("can not find manufacturer in password list. Not yet implemented");
     	reportHandler = new Report();
-    	reportHandler.addText("RESULT security.passwords FAILED");
+	reportHandler.addTest(macAddress);
+	reprotHandler.addTest("Manufacturer not found to run ssh tests *");
+  	reportHandler.addText("RESULT security.passwords FAILED");
     	reportHandler.writeReport("ssh");
     	
     }
