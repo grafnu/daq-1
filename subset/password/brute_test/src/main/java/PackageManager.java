@@ -47,7 +47,7 @@ public class PackageManager {
 	          }
         } catch (IOException e1) {
         		System.out.println("Package Manager Error :" + e1);
-			    System.out.println("Attempting to read slocal file...");
+			    System.out.println("Attempting to read local file...");
 			    try {
 			      InputStream url = this.getClass().getResourceAsStream("/macList.txt");
 			      StringBuilder resultStringBuilder = new StringBuilder();
