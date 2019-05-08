@@ -1,5 +1,6 @@
 """Class for working with GCP connections (e.g. Pub/Sub messages)"""
 
+import datetime
 import json
 import logging
 
@@ -14,17 +15,24 @@ from google.auth import _default as google_auth
 LOGGER = logging.getLogger('gcp')
 
 
+def get_timestamp():
+    """"Get a JSON-compatible formatted timestamp"""
+    return datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+
+
 class GcpManager:
     """Manager class for working with GCP"""
 
     REPORT_BUCKET_FORMAT = '%s.appspot.com'
 
-    def __init__(self, config):
+    def __init__(self, config, callback_handler):
         self.config = config
+        self._callback_handler = callback_handler
         if 'gcp_cred' not in config:
             LOGGER.info('No gcp_cred credential specified in config')
             self._pubber = None
             self._storage = None
+            self._firestore = None
             return
         cred_file = self.config['gcp_cred']
         LOGGER.info('Loading gcp credentials from %s', cred_file)
@@ -34,10 +42,11 @@ class GcpManager:
         self._client_name = self._parse_creds(cred_file)
         self._pubber = pubsub_v1.PublisherClient(credentials=self._credentials)
         LOGGER.info('Initialized gcp pub/sub %s:%s', self._project, self._client_name)
-        self.firestore = self._initialize_firestore(cred_file)
+        self._firestore = self._initialize_firestore(cred_file)
         self._storage = storage.Client(project=self._project, credentials=self._credentials)
         self._report_bucket_name = self.REPORT_BUCKET_FORMAT % self._project
         self._ensure_report_bucket()
+        self._config_callbacks = {}
 
     def _initialize_firestore(self, cred_file):
         cred = credentials.Certificate(cred_file)
@@ -47,11 +56,54 @@ class GcpManager:
         LOGGER.info('Dashboard at %s', dashboard_url)
         return firestore.client()
 
-    @staticmethod
-    def _message_callback(topic, message, callback):
-        LOGGER.info('Received topic %s message: %s', topic, message)
-        callback(message)
-        message.ack()
+    def _on_snapshot(self, callback, doc_snapshot, immediate):
+        def handler():
+            for doc in doc_snapshot:
+                doc_data = doc.to_dict()
+                timestamp = doc_data['timestamp']
+                if immediate or doc_data['saved'] != timestamp:
+                    callback(doc_data['config'])
+                    doc.reference.update({
+                        'saved': timestamp
+                    })
+        self._callback_handler(handler)
+
+    def register_config(self, path, config, callback=None, immediate=False):
+        """Register a config blob with callback"""
+        if not self._firestore:
+            return
+
+        assert path, 'empty config path'
+        full_path = 'origin/%s/%s/config/definition' % (self._client_name, path)
+
+        if full_path in self._config_callbacks:
+            LOGGER.info('Unsubscribe callback %s', path)
+            self._config_callbacks[full_path].unsubscribe()
+            del self._config_callbacks[full_path]
+
+        config_doc = self._firestore.document(full_path)
+        if config is not None:
+            timestamp = get_timestamp()
+            LOGGER.info('Registering %s', full_path)
+            config_doc.set({
+                'config': config,
+                'saved': timestamp,
+                'timestamp': timestamp
+            })
+        else:
+            LOGGER.info('Releasing %s', full_path)
+            config_doc.delete()
+
+        if callback:
+            assert config is not None, 'callback defined when deleting config??!?!'
+            on_snapshot = lambda doc_snapshot, changed, read_time:\
+                self._on_snapshot(callback, doc_snapshot, immediate)
+            snapshot_future = config_doc.on_snapshot(on_snapshot)
+            self._config_callbacks[full_path] = snapshot_future
+
+    def release_config(self, path):
+        """Release a config blob and remove it from the live data system"""
+        self.register_config(path, None)
 
     def _parse_creds(self, cred_file):
         """Parse JSON credential file"""
@@ -63,17 +115,21 @@ class GcpManager:
         (client, dummy_other) = client_email.split('@', 2)
         return client
 
-    def publish_message(self, topic, message):
+    def publish_message(self, topic, message_type, message):
         """Publish a message to pub/sub topic"""
         if not self._pubber:
             LOGGER.debug('Ignoring message publish: not configured')
             return
-        if 'encode' not in message:
-            message = json.dumps(message)
-        LOGGER.debug('Sending to topic_path %s/%s: %s', self._project, topic, message)
+        envelope = {
+            'type': message_type,
+            'timestamp': get_timestamp(),
+            'payload': message
+        }
+        message_str = json.dumps(envelope)
+        LOGGER.debug('Sending to topic_path %s/%s: %s', self._project, topic, message_str)
         # pylint: disable=no-member
         topic_path = self._pubber.topic_path(self._project, topic)
-        future = self._pubber.publish(topic_path, message.encode('utf-8'),
+        future = self._pubber.publish(topic_path, message_str.encode('utf-8'),
                                       projectId=self._project, origin=self._client_name)
         LOGGER.debug('Publish future result %s', future.result())
 

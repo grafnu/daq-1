@@ -37,10 +37,18 @@ more inst/run-port-*/nodes/ping*/activate.log | cat
 more inst/run-port-*/nodes/nmap*/activate.log | cat
 more inst/run-port-*/nodes/brute*/activate.log | cat
 ls inst/fail_fail01/ | tee -a $TEST_RESULTS
+jq .modules inst/run-port-02/nodes/ping02/tmp/module_config.json | tee -a $TEST_RESULTS
 
-sed docs/device_report.md -e 's/\s*%%.*//' > out/redacted_docs.md
-sed inst/reports/report_9a02571e8f01_*.md -e 's/\s*%%.*//' > out/redacted_file.md
+function redact {
+    sed -e 's/\s*%%.*//' \
+        -e 's/2019-.*T.*Z/XXX/' \
+        -e 's/DAQ version.*//'
+}
 
+cat docs/device_report.md | redact > out/redacted_docs.md
+cat inst/reports/report_9a02571e8f01_*.md | redact > out/redacted_file.md
+
+echo Redacted docs diff | tee -a $TEST_RESULTS
 (diff out/redacted_docs.md out/redacted_file.md && echo No report diff) | tee -a $TEST_RESULTS
 
 echo Done with tests | tee -a $TEST_RESULTS
