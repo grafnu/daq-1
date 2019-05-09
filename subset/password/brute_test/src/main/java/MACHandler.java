@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class MACHandler {
+	
+	static final int expectedMACAddressLength = 17; 
 
   public static String runShellCommand(String command) throws IOException {
     Process p = Runtime.getRuntime().exec(command);
@@ -22,9 +24,9 @@ public class MACHandler {
 
   public static String getMACAddressFromCommand(String macLine) {
     String lineContents[] = macLine.split("   ");
-    for (String string : lineContents) {
-      if (string.trim().length() == 17) {
-        return string.trim().toUpperCase();
+    for (String foundAddress : lineContents) {
+      if (foundAddress.trim().length() == expectedMACAddressLength) {
+        return foundAddress.trim().toUpperCase();
       }
     }
     return "";

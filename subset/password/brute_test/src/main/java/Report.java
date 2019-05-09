@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class Report {
   String report = "Brute Test *";
-  String reportFilename = "tmp/report.txt";
+  String reportFilename = "reports/report.txt";
 
   public void addText(String text) {
     report += text;
@@ -18,11 +18,11 @@ public class Report {
   public void writeReport(String protocol) {
     switch (protocol) {
       case "telnet":
-        reportFilename = "tmp/telnetReport.txt";
+        reportFilename = "reports/telnetReport.txt";
         break;
 
       case "ssh":
-        reportFilename = "tmp/sshReport.txt";
+        reportFilename = "reports/sshReport.txt";
         break;
     }
     try {

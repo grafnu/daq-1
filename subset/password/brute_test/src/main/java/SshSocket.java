@@ -33,7 +33,6 @@ public class SshSocket implements Runnable {
   String[] jsonPasswords;
   Gson gson = new Gson();
   boolean macRetrieved = false;
-  //    MACHandler macHandler;
   String macAddress;
 
   public SshSocket(String host, Map macDevices, int connectionPort, String macAddress) {
@@ -41,26 +40,23 @@ public class SshSocket implements Runnable {
     this.connectionPort = connectionPort;
     this.host = host;
     this.macAddress = macAddress;
-    //          this.macHandler = new MACHandler();
     reportHandler = new Report();
   }
 
   private void getMACAddress() {
     try {
-
       // macAddress = macHandler.runShellCommand("arp " + host);
       macAddress = macAddress.replace(":", "");
-      System.out.println(
-          "MAC ADDRESS : " + macAddress + "  " + macDevices.get(macAddress.substring(0, 6)));
-      getJsonFile((macAddress.substring(0, 6)));
+      System.out.println("MAC ADDRESS : " + macAddress + "  " + macDevices.get(macAddress.substring(0, 6)));
+      getJsonFile((macAddress.substring(0, 6).toUpperCase()));
     } catch (Exception e) {
     	System.out.println(e);
         e.printStackTrace();
         Report reportHandler = new Report();
         reportHandler.addText("RESULT security.passwords FAILED : manufacturer not found *");
         reportHandler.writeReport("ssh");
+      }
     }
-  }
 
   public void getJsonFile(String model) {
     try {
@@ -71,45 +67,34 @@ public class SshSocket implements Runnable {
       jsonUsernames = usernames.split(",");
       jsonPasswords = passwords.split(",");
       macRetrieved = true;
-
-    } catch (JsonSyntaxException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (JsonIOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    catch(NullPointerException e) {
-    	System.out.println("can not find manufacturer in password list. Not yet implemented");
-    	reportHandler = new Report();
-	reportHandler.addText(macAddress);
-	reportHandler.addText("Manufacturer not found to run ssh tests *");
-  	reportHandler.addText("RESULT security.passwords FAILED");
-    	reportHandler.writeReport("ssh");
-    	
-    }
-    //                  catch (FileNotFoundException e) {
-    //                  // TODO Auto-generated catch block
-    //                  e.printStackTrace();
-    //          }
+      } catch (JsonSyntaxException e) {
+    	  e.printStackTrace();
+      } catch (JsonIOException e) {
+    	  e.printStackTrace();
+      }
+    	catch(NullPointerException e) {
+    		System.out.println("can not find manufacturer in password list. Not yet implemented");
+    		reportHandler = new Report();
+			reportHandler.addText(macAddress);
+			reportHandler.addText("Manufacturer not found to run ssh tests *");
+		  	reportHandler.addText("RESULT security.passwords FAILED");
+		    reportHandler.writeReport("ssh");
+    	}
   }
 
   public void connectSshSocket() {
 
     reportHandler.addText("MAC Address : " + macAddress + "*");
     reportHandler.addText("Manufacturer : " + macDevices.get(macAddress.substring(0, 6)) + "*");
-
     while (!testFinished) {
       if (passwordIndex == jsonPasswords.length) {
         usernameIndex++;
         passwordIndex = 0;
       }
-
       if (usernameIndex > jsonUsernames.length - 1) {
         testFinished = true;
         System.err.println("ran out of sign in options");
         reportHandler.addText("RESULT pass " + testName + " *");
-
       } else {
         attempts++;
         System.out.println(
@@ -170,6 +155,5 @@ public class SshSocket implements Runnable {
     if(macRetrieved) {
     	 connectSshSocket();
     }
-   
-  }
+   }
 }

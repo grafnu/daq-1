@@ -39,12 +39,11 @@ public class Interrogator {
           java.time.LocalTime.now() + "receiveDataLen:" + data.length() + "receiveData:" + data);
     }
     if (data != null) {
-      Thread parseDataThread = new Thread(() -> parseData(data));
-      parseDataThread.start();
+    	parseData(data);
     }
   }
 
-  public void parseData(String data) {
+  private void parseData(String data) {
     data = data.trim();
     if (data.contains(expected[3])) {
       reportHandler.addText("Failed Login" + ":-" + usedUsername + " : " + usedPassword + "*");

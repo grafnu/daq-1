@@ -2,6 +2,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,10 +33,11 @@ public class TelnetSocket implements Runnable {
   byte[] messageByte = new byte[1024];
   Charset chars = Charset.forName("UTF-8");
   Map macDevices;
-  Queue<String> rxQueue = new LinkedList();
+  Queue<String> readData = new LinkedList();
   boolean debug = false;
   Thread gatherThread;
   Thread readThread;
+  Thread consoleThread;
   Thread checkThread;
   Gson gson = new Gson();
   File jsonFile = new File("resources/defaultPasswords.json");
@@ -51,8 +54,7 @@ public class TelnetSocket implements Runnable {
   }
 
   private void getMACAddress() {
-
-    try {
+	  try {
 
       // macAddress = macHandler.runShellCommand("arp " + host);
       macAddress = macAddress.replace(":", "");
@@ -106,12 +108,9 @@ public class TelnetSocket implements Runnable {
   }
 
   private String normalizeLineEnding(byte[] bytes, char endChar) {
-
-    List<Byte> bytesBuffer = new ArrayList<Byte>();
-
-    int countBreak = 0;
+	List<Byte> bytesBuffer = new ArrayList<Byte>();
+	int countBreak = 0;
     int countESC = 0;
-
     for (int i = 0; i < bytes.length; i++) {
       if (bytes[i] != 0) {
         switch (bytes[i]) {
@@ -164,19 +163,15 @@ public class TelnetSocket implements Runnable {
 
   public void readData() {
     int bytesRead = 0;
-
     inputStream = telnetClient.getInputStream();
-
     while (telnetClient.isConnected()) {
-      inputStream = telnetClient.getInputStream();
-
+    inputStream = telnetClient.getInputStream();
       try {
         byte[] buffer = new byte[1024];
-
         bytesRead = inputStream.read(buffer);
         if (bytesRead > 0) {
           String rawData = normalizeLineEnding(buffer, '\n');
-          rxQueue.add(rawData);
+          readData.add(rawData);
         } else {
           try {
             Thread.sleep(100);
@@ -189,48 +184,40 @@ public class TelnetSocket implements Runnable {
       }
     }
   }
-
+  
   public void gatherData() {
-    StringBuilder rxData = new StringBuilder();
-    String rxGathered = "";
-    int rxQueueCount = 0;
-    int rxTempCount = 0;
-
+    StringBuilder receivedData = new StringBuilder();
+    String gatheredString = "";
+    int receiveWaitCounter = 0;
+    int tempWaitCounter = 0;
     while (telnetClient.isConnected()) {
       try {
-        if (rxQueue.isEmpty()) {
-          Thread.sleep(100);
-          rxQueueCount++;
-          if (debug) {
-            System.out.println("rxQueue.isEmpty:" + rxQueueCount);
-          }
-          if (rxQueueCount > 70) {
-            rxQueueCount = 0;
-            writeData("\n");
-          }
-        } else {
-          rxQueueCount = 0;
-          String rxTemp = rxQueue.poll();
-          if (rxTemp.equals("")) {
-            Thread.sleep(100);
-            rxTempCount++;
-            if (debug) {
-              System.out.println("rxTemp.equals:" + rxTempCount);
-            }
+        if (readData.isEmpty()) {
+          Thread.sleep(20);
+          receiveWaitCounter++;
+          if(receiveWaitCounter > 70) {
+        	  receiveWaitCounter = 0;
+        	}
+         } else {
+          receiveWaitCounter = 0;
+          String tempString = readData.poll();
+          if (tempString.equals("")) {
+            Thread.sleep(20);
+            tempWaitCounter++;
           } else {
-            rxQueueCount = 0;
-            rxTempCount = 0;
-            rxData.append(rxTemp);
-            rxGathered = rxData.toString();
+            receiveWaitCounter = 0;
+            tempWaitCounter = 0;
+            receivedData.append(tempString);
+            gatheredString = receivedData.toString();
             System.out.println(
                 java.time.LocalTime.now()
-                    + "rxDataLen:"
-                    + rxGathered.length()
-                    + "rxData:"
-                    + rxGathered);
+                    + "dataLength:"
+                    + gatheredString.length()
+                    + "receivedData:"
+                    + gatheredString);
 
-            interrogator.receiveData(rxGathered);
-            rxData.delete(0, rxGathered.length());
+            interrogator.receiveData(gatheredString);
+            receivedData.delete(0, gatheredString.length());
           }
         }
       } catch (InterruptedException e) {
@@ -239,7 +226,7 @@ public class TelnetSocket implements Runnable {
     }
   }
 
-  public void writeData(String data) {
+ public void writeData(String data) {
     System.out.println(data);
     try {
       outputStream = telnetClient.getOutputStream();
@@ -252,9 +239,9 @@ public class TelnetSocket implements Runnable {
   }
 
   public void resetConnection() {
-    connectTelnetClient();
     disconnect();
     connectTelnetClient();
+   
   }
 
   public void checkConnection() {
@@ -290,6 +277,13 @@ public class TelnetSocket implements Runnable {
       readThread = new Thread(readDataRunnable);
 
       readThread.start();
+      
+//      Runnable readConsoleRunnable = 
+//    		  ()->{
+//    			  readConsole();
+//    		  };
+//    consoleThread = new Thread(readConsoleRunnable);
+//    consoleThread.start();
 
       Runnable gatherDataRunnable =
           () -> {
@@ -303,6 +297,7 @@ public class TelnetSocket implements Runnable {
           () -> {
             checkConnection();
           };
+          
       checkThread = new Thread(checkConnectionRunnable);
       checkThread.start();
     } catch (NullPointerException e) {
