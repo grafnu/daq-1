@@ -27,7 +27,7 @@ public class TelnetSocket implements Runnable {
   InetAddress ip;
   int connectionPort;
   Interrogator interrogator;
-  //    MACHandler macHandler;
+  //MACHandler macHandler;
   String macAddress;
   int bytesRead = 0;
   byte[] messageByte = new byte[1024];
@@ -50,18 +50,16 @@ public class TelnetSocket implements Runnable {
     this.macDevices = macDevices;
     this.host = host;
     this.macAddress = macAddress;
-    //          macHandler = new MACHandler();
+    //macHandler = new MACHandler();
   }
 
   private void getMACAddress() {
 	  try {
 
-      // macAddress = macHandler.runShellCommand("arp " + host);
+      //macAddress = macHandler.runShellCommand("arp " + host);
       macAddress = macAddress.replace(":", "");
       System.out.println(
           "MAC ADDRESS : " + macAddress + "  " + macDevices.get(macAddress.substring(0, 6)));
-      // 001AEB96DDE0 AlliedTelesis R&D Center
-
       System.out.println(macDevices.get(macAddress.substring(0, 6)));
       getJsonFile(macAddress.substring(0, 6).toString());
 
@@ -153,11 +151,9 @@ public class TelnetSocket implements Runnable {
     }
 
     String bytesString = "";
-
     for (Byte byteBuffer : bytesBuffer) {
       bytesString = bytesString + (char) (byte) byteBuffer;
     }
-
     return bytesString;
   }
 

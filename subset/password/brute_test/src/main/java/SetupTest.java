@@ -18,34 +18,6 @@ public class SetupTest {
   boolean debug = false;
   static final int minimumMACAddressLength = 5;
   
-  public void readFile() {
-	  try {
-		  System.out.println("Attempting to read web file...");
-		  InputStream url = new URL("https://svn.nmap.org/nmap/nmap-mac-prefixes").openStream();
-		  StringBuilder resultStringBuilder = new StringBuilder();
-		  try (BufferedReader br= new BufferedReader(new InputStreamReader(url))){
-			  String line;
-			  while ((line = br.readLine()) != null) {
-				  resultStringBuilder.append(line).append("\n");
-				  String[] words = new String[2];
-			      String macAddress;
-			      String manufacturer;
-			      if(line.length() > minimumMACAddressLength) {
-			    	  macAddress = line.substring(0, 6);
-			    	  manufacturer = line.substring(7, line.length());
-			    	  if(manufacturer.length() > 0) {
-			    		  macDevices.put(macAddress, manufacturer);
-			    	  }
-			      }
-			  	}
-		  }
-		} catch (IOException e1) {
-			System.out.println("Package Manager Error :" + e1);
-			System.out.println("Attempting to read local file...");
-			readLocalFile();
-		}
-  }
-  
   public void readLocalFile() {
 	try {
 	  InputStream url = this.getClass().getResourceAsStream("/macList.txt");
@@ -78,7 +50,7 @@ public class SetupTest {
       this.connectionPort = connectionPort;
       this.macAddress = macAddress;
 
-      readFile();
+      readLocalFile();
 
       switch (protocol) {
         case "ssh":
