@@ -33,6 +33,7 @@ COPY misc/bacnet_discover bin/
 COPY subset/password/ssh_faux bin/
 # Weird workaround for problem running tcdump in a privlidged container.
 RUN mv /usr/sbin/tcpdump /usr/bin/tcpdump
+####sshfaux
 
 ENTRYPOINT ["bin/start_faux"]
 
