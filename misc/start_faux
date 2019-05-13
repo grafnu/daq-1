@@ -70,6 +70,11 @@ if [ -n "${options[https]}" ]; then
     (while true; do echo https`hostname`; nc -nvlt -p 443 -e `which hostname`; done) &
 fi
 
+if [-n "${options[ssh]}" ]; then 
+	echo Enabling mock ssh server...
+	/usr/sbin/sshd -D
+fi
+
 if [ -n "${options[bacnet]}" ]; then
     echo Starting bacnet loop device.
     java -cp bacnet4j/bacnet4j-1.0-SNAPSHOT-all.jar \
