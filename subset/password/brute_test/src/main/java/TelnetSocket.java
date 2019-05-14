@@ -60,8 +60,8 @@ public class TelnetSocket implements Runnable {
       macAddress = macAddress.replace(":", "");
       System.out.println(
           "MAC ADDRESS : " + macAddress + "  " + macDevices.get(macAddress.substring(0, 6)));
-      System.out.println(macDevices.get(macAddress.substring(0, 6)));
-      getJsonFile(macAddress.substring(0, 6).toString());
+      System.out.println(macDevices.get(macAddress.substring(0, 6).toUpperCase()));
+      getJsonFile(macAddress.substring(0, 6).toString().toUpperCase());
 
     } catch (Exception e) {
       Report reportHandler = new Report();
