@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 JAR=bacnet4j/bacnet4j.jar
-CLASS=com.serotonin.bacnet4j.test.RedstoneTest.Test5
+CLASS=com.serotonin.bacnet4j.test.DaqTest.Main
 TARGET="Object name = BACnet device"
 TMPOUT=`tempfile`
 REPORT=/tmp/report.txt
@@ -28,8 +28,8 @@ version_test_id="bacnet_VERSION"
 echo Scanning bacnet $broadcast_ip from $local_ip
 
 java -cp $JAR $CLASS $pics_test_id $broadcast_ip $local_ip $subcmd | tee $TMPOUT
-#java -cp $JAR $CLASS $addr_test_id $broadcast_ip $local_ip $subcmd | tee $TMPOUT
-#java -cp $JAR $CLASS $version_test_id $broadcast_ip $local_ip | tee $TMPOUT
+java -cp $JAR $CLASS $addr_test_id $broadcast_ip $local_ip $subcmd | tee $TMPOUT
+java -cp $JAR $CLASS $version_test_id $broadcast_ip $local_ip | tee $TMPOUT
 
 
 bacnet_runtime=/config/bacnet_runtime.sh
@@ -49,8 +49,8 @@ fi
 cat tmp/PICS.txt >> $REPORT
 cat tmp/PICS_APPENDIX.txt >> $REPORT
 
-#cat tmp/DuplicatesTestReport.txt >> $REPORT
-#cat tmp/DuplicatesTestReport_APPENDIX.txt >> $REPORT
+cat tmp/DuplicatesTestReport.txt >> $REPORT
+cat tmp/DuplicatesTestReport_APPENDIX.txt >> $REPORT
 
-#cat tmp/BacnetVersionTest.txt >> $REPORT
-#cat tmp/BacnetVersionTest_APPENDIX.txt >> $REPORT
+cat tmp/BacnetVersionTest.txt >> $REPORT
+cat tmp/BacnetVersionTest_APPENDIX.txt >> $REPORT
