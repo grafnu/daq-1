@@ -11,9 +11,13 @@ RUN $AG update && $AG install openjdk-8-jre
 RUN $AG update && $AG install openjdk-8-jdk git
 
 ENV BACHASH=d97c917a5ad24e6c9b45f49a5b01efffda9e820e
+ENV BACHASH1=7e99e349943dc08f22e9bd0451f26b506353b381
 
-RUN bin/retry_cmd git clone https://github.com/grafnu/bacnet4j.git --single-branch \
-  && cd bacnet4j && git reset --hard $BACHASH && ../bin/retry_cmd ./gradlew shadow
+#RUN bin/retry_cmd git clone https://github.com/grafnu/bacnet4j.git --single-branch \
+ # && cd bacnet4j && git reset --hard $BACHASH && ../bin/retry_cmd ./gradlew shadow
+
+RUN bin/retry_cmd git clone https://github.com/JoelRedstone/bacnet4j.git --single-branch \
+  && cd bacnet4j && git reset --hard $BACHASH1 && ../bin/retry_cmd ./gradlew shadow
 
 FROM daq/aardvark:latest
 
@@ -30,6 +34,7 @@ COPY --from=bacnet_build /root/bacnet4j/*.jar bacnet4j/
 COPY subset/pentests/brute_server.py pentests/
 COPY misc/start_faux bin/
 COPY misc/bacnet_discover bin/
+COPY subset/bacnet/test_bacext bin/
 
 # Weird workaround for problem running tcdump in a privlidged container.
 RUN mv /usr/sbin/tcpdump /usr/bin/tcpdump
