@@ -3,6 +3,9 @@
     "nmap": {
       "enabled": true
     },
+    "mac": {
+      "enabled": true
+    },
     "switch": {
       "enabled": true
     },
