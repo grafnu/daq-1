@@ -1,0 +1,3 @@
+Brute Test 
+connection.mac_oui FAILED 
+could not find device manufacturer 
