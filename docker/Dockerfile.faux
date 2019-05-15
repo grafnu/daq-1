@@ -30,8 +30,25 @@ COPY --from=bacnet_build /root/bacnet4j/*.jar bacnet4j/
 COPY subset/pentests/brute_server.py pentests/
 COPY misc/start_faux bin/
 COPY misc/bacnet_discover bin/
-
 # Weird workaround for problem running tcdump in a privlidged container.
 RUN mv /usr/sbin/tcpdump /usr/bin/tcpdump
 
+####sshfaux
+
+#FROM ubuntu:16.04
+
+RUN apt-get update && apt-get install -y openssh-server net-tools
+RUN mkdir /var/run/sshd
+RUN echo 'root:redstone' | chpasswd
+RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN echo "docker container has been made!"
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+
+ENV NOTVISIBLE "in users profile"
+RUN echo "export VISIBLE=now" >> /etc/profile
+
+EXPOSE 22
+
 ENTRYPOINT ["bin/start_faux"]
+
+CMD ["tail", "-f", "/dev/null"] 

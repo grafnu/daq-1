@@ -1,0 +1,13 @@
+Brute Test 
+MAC Address : 001AEB0d20a8
+Manufacturer : Allied Telesis R&D Center K.K.
+Failed Login:-admin : root
+Failed Login:-admin : fire
+Failed Login:-admin : friend
+Failed Login:-root : root
+Failed Login:-root : fire
+Failed Login:-root : friend
+Failed Login:-manager : root
+Failed Login:-manager : fire
+Login Success:-manager : friend
+RESULT fail security.passwords
