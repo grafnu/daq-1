@@ -77,4 +77,4 @@ echo "Waiting for system to settle"
 sleep 35
 docker exec daq-faux-1 ping -q -c 10 192.168.12.2
 wpa_pid=$(docker exec daq-faux-1 ps ax | grep wpa_supplicant | awk '{print $1}')
-docker exec daq-faux-1 kill -9 $wpa_pid
+docker exec daq-faux-1 kill $wpa_pid
