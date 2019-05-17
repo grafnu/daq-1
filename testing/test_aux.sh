@@ -15,6 +15,23 @@ echo Lint checks | tee -a $TEST_RESULTS
 cmd/inbuild skip
 echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
 
+tes# mac_oui testing 
+echo Running mac_oui tests  | tee -a $TEST_RESULTS
+cp misc/system_base.conf local/system.conf
+cat <<EOF > local/site/module_config.json
+{
+  "modules": {
+    "mac": {
+     "enabled": true
+    }
+  }
+}
+EOF
+cmd/run -s -b 
+cat inst/run-port-01/nodes/mac01/tmp/report.txt | tee -a $TEST_RESULTS 
+
+
+
 echo Extended tests | tee -a $TEST_RESULTS
 cp misc/system_multi.conf local/system.conf
 cat <<EOF >> local/system.conf
