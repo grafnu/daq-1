@@ -74,8 +74,8 @@ if [ -n "${options[bacnet]}" ]; then
     echo Starting bacnet loop device.
    # java -cp bacnet4j/bacnet4j-1.0-SNAPSHOT-all.jar \
         # com.serotonin.bacnet4j.test.LoopDevice $local_ip $broadcast_ip &
-    java -cp bacnet4j/bacnet4j.jar \
-	 com.serotonin.bacnet4j.test.RedstoneTest.Test5 &
+    java -cp bacnet4j/bacnetServerTest.jar \
+	 com.serotonin.bacnet4j.test.DaqTest.BacnetDevicesServer.DistechServer $local_ip $broadcast_ip &
 fi
 
 if [ -n "${options[discover]}" ]; then
