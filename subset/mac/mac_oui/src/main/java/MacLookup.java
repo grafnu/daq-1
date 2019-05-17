@@ -24,8 +24,8 @@ public class MacLookup implements Runnable{
 				reportHandler.writeReport();
 			}
 			else {
-				reportHandler.addText(formattedMac + " " + manufacturer + " *");
 				reportHandler.addText("connection.mac_oui PASSED *");
+				reportHandler.addText(formattedMac + " " + manufacturer + " *");
 				reportHandler.writeReport();
 				System.out.println(formattedMac + " " + manufacturer);
 			}
