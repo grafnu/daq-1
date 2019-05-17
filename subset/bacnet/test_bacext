@@ -21,14 +21,10 @@ read -r -a parts <<< "$line"
 local_ip=${parts[1]%/*}
 broadcast_ip=${parts[3]}
 
-pics_test_id="bacnet_PICS"
-addr_test_id="bacnet_ADDR_UNIQUE"
 version_test_id="bacnet_VERSION"
 
 echo Scanning bacnet $broadcast_ip from $local_ip
 
-java -cp $JAR $CLASS $pics_test_id $broadcast_ip $local_ip $subcmd | tee $TMPOUT
-java -cp $JAR $CLASS $addr_test_id $broadcast_ip $local_ip $subcmd | tee $TMPOUT
 java -cp $JAR $CLASS $version_test_id $broadcast_ip $local_ip | tee $TMPOUT
 
 
@@ -47,9 +43,3 @@ else
 fi
 
 cat tmp/*.txt >> $REPORT
-
-#cat tmp/AddrUniqueTestReport.txt >> $REPORT
-#cat tmp/AddrUniqueTestReport_APPENDIX.txt >> $REPORT
-
-#cat tmp/BacnetVersionTestReport.txt >> $REPORT
-#cat tmp/BacnetVersionTest_APPENDIX.txt >> $REPORT

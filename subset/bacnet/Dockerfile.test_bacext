@@ -19,5 +19,4 @@ COPY --from=bacnet_build /root/bacnet4j/*.jar bacnet4j/
 
 COPY subset/bacnet/test_bacext .
 
-#CMD ["./test_bacext"]
-CMD tail -f /dev/null
+CMD ["./test_bacext"]

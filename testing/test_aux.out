@@ -5,14 +5,33 @@ Mudacl exit code 0
 Validator exit code 0
 Lint checks
 cmd/inbuild exit code 0
+Running bacext test...
+RESULT pass protocol.bacnet.version
+****************************** START ******************************
+Protocol version : 1
+Model name : BACnet4J LoopDevice
+Vendor identifier : 236
+Vendor name : Serotonin Software Technologies, Inc.
+Location : London, United Kingdom
+Firmware revision : not set
+Application software version : 1.0.1
+Description : Distech device
+Object list : [Device 147
+               Analog Input 0                    Analog Output 0    
+               Analog Value 0                    Binary Input 0     
+               Binary Output 0                   Binary Value 0]    
+Object name : BACnet device
+
+****************************** END ******************************
+
 Extended tests
 RESULT fail network.brute
 RESULT pass network.brute
 RESULT skip network.brute
 dhcp requests 2 1
-01: ['01:brute:1']
-02: ['02:nmap:1']
-03: []
+01: ['01:bacext:1', '01:brute:1']
+02: ['02:bacext:1', '02:nmap:1']
+03: ['03:bacext:1']
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
@@ -21,20 +40,11 @@ pri.flows
 pri.ofctl
 sec.flows
 sec.ofctl
-{
-  "brute": {
-    "enabled": true
-  },
-  "foobar": {
-    "enabled": false
-  },
-  "nmap": {
-    "enabled": true
-  },
-  "switch": {
-    "enabled": true
-  }
-}
 Redacted docs diff
-No report diff
+65a66,70
+> ## Module bacext
+> 
+> ```
+> ```
+> 
 Done with tests
