@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "arup-bos",
+  "private_key_id": "f472d8d44380e3c26c9684ae30dd05a6cc1d5d8f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCe7BM0XZ20BfJt\nPYIjQrZDoGWqZXXPLESQOaSH65tIVovYMQ6TkzqHl7qQ9sggkxFruQqpBMShzsO8\n66SOZuXDly/tqlrOWak8Trn35pJHxTIeo0cMEqe1XjH9Nkj/YWS1pcWypmN9D6LG\nme+DCpCZ2gyTObuvlwYpKW4e62qb9lcYqgT6EExwrccpiRrW0tY0q7C+jZSAELUD\nksri+9vjOAUnoF/DL6nIQbcKADtyic8/AAgqLYqWEYRbt8sUDg5M65TPuaNiHqia\nF6QpLJg9YMVlLQ9JjipQwdlr0y1fJmvmWLKpXvD7+NuCLeqmVLjPIyxEpLkfHdrw\n8YPAf5llAgMBAAECggEAL6H8g5aHnRynM9zas6zcKlrZ/f+ZFvZiuoO8b8zLZxwh\noDPb9ZmMUnXEwoxlIXZTI2F783rtYL4zZt2OHexzc3NON0L3IqA3HE9QaCAgugg9\n5Hb15YV15OONwiJSMNFFOTitj8VVTnewRyx+YF17R9HWMQ591bxDaXT0f6n58zKi\nj4V6BUhtuEWIpq1cQi9dzQC1VDucEKhkArDmFms3ICi/AQZ59gqqDeUz3T0v52cm\ntd5gCxBqMkHM+oXHpWKbMZtA+9KFoOYhoBig+ODj74EE87Rn1ml7BIWyHa/zFQZQ\nTLW03rwob0kx9B/hglx1gRV5mtgeQQuX7SnidThABQKBgQDTRfzhgIntOLZuCEVZ\nezmeVkBbSj1B7Jka1evx02ZdRZANCBnjeIJ0NP/zDt8gMdjmv7rrqQ/UQ9pVIOfx\nlWMa+mse1pfVmqP9r+1NVaXws9ALn0WRJcWggyxapdg5wXuCJzkkTJKPx4GtWZk/\nyllthkZ+seRx8z2OgTdWbBlJ2wKBgQDAkOZvnU6AQp+judm/q2Og1C6Y8CaP53Th\n/LB4B16UvYkebdUIisn77LJOMwaOn3awoEEjNd9prjaESh2I8B0R14h33KYu9UQU\ng+HJHahLSYlejFj19tRkc5WXVbq3fycwIrFHiZP/kluCR63CkAB07gmyYMz1HaWC\nPQG31tItvwKBgFCmtQR4hy6RqcKTUbX4/mPdVTAERSI3abL+2tUz+C2+8mCnKQrW\n5CXsXZCxqqeln8Fmi7qOjUZgqKY6q5BjkLOpyN662LdoExYy5InTGkeqvM7S/EGO\ng8TkjjgEe2iA3d8vjfa3bHOKm4xLWd8qJb1TtvGCg0ykqGkQFsnc9kJlAoGBAJtR\nREwqWTLiidiJArSyDH2gJqV8rd3MFl5gbgWiDAt0hLBibj2hlCD6XSbtyRAoVpdH\n6sH3peebeKVjEkdtREUrzwq+kdu2P988MFUC8scm3QHBuc9J8y3CfJm/sAZpLLaK\nhOrqcNDmv6BpKCGR/IxTosaZhTb/XouZoVUilAwJAoGAdteFsp0O5C4yClUx2eQJ\nEnHhzKKMFt69F7MaUaJ07OrF5NtFfjwCslu2Li0DaChgBM5qb8npJ+TXKUGvMAX5\no2muuR4JbCd558gsN0YFtL6IMhe1j8VWPkrAmTxMoUfsiGg2rgdJVimqVHARdDAd\nh22P4xaZJkoTM8bhf6MYjck=\n-----END PRIVATE KEY-----\n",
+  "client_email": "arup-bos-ketan@arup-bos.iam.gserviceaccount.com",
+  "client_id": "117407475093644008265",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/arup-bos-ketan%40arup-bos.iam.gserviceaccount.com"
+}
