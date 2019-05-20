@@ -7,12 +7,6 @@ if [ -n "$TARGET_IP" ]; then
 	cat ./report/macReport.txt >> ./report/report.txt
 
 	cp -r ./report/report.txt /tmp/report.txt
-	#diff ./report/report.txt ./resources/result_compare.txt  | tee /tmp/int_test.txt
-#	line =$(head -n 1 /tmp/report.txt)
-#	if [$line == "Brute Test"]; then 
-#		echo Passed Int Test
-#	fi 
-#		echo Failed int test  
 else
 	echo Wrong parametres Mac test failed | tee /tmp/report.txt
 fi
