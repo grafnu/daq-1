@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-JAR=bacnet4j/bacnetServerTest.jar
+JAR=bacnet4j/bacnet4j.jar
 CLASS=com.serotonin.bacnet4j.test.DaqTest.Main
 TARGET="Object name = BACnet device"
 TMPOUT=`tempfile`
@@ -42,4 +42,4 @@ else
     fgrep "$TARGET" $TMPOUT
 fi
 
-cat tmp/*.txt >> $REPORT
+cat tmp/BacnetVersionTestReport.txt >> $REPORT
