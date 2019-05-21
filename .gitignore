@@ -20,7 +20,7 @@ firebase/.firebase
 firebase/functions/package-lock.json
 nohup.out
 **/node_modules/
-subset/connection/mac_oui/bin
+subset/connection/mac_oui/bin/
 .vscode/
 .project
 
