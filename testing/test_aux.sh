@@ -15,7 +15,7 @@ echo Lint checks | tee -a $TEST_RESULTS
 cmd/inbuild skip
 echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
 
-tes# mac_oui testing 
+# mac_oui testing 
 echo Running mac_oui tests  | tee -a $TEST_RESULTS
 cp misc/system_base.conf local/system.conf
 cat <<EOF > local/site/module_config.json
