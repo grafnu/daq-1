@@ -27,10 +27,13 @@ cat <<EOF > local/site/module_config.json
   }
 }
 EOF
-cmd/run -s -b 
+cp misc/system_base.conf local/system.conf
+
+rm -rf inst/tmp_site && mkdir -p inst/tmp_site
+cp misc/report_template.md inst/tmp_site/
+
+cmd/run -s -b site_path=inst/tmp_site
 cat inst/run-port-01/nodes/macoui01/tmp/report.txt | tee -a $TEST_RESULTS 
-
-
 
 echo Extended tests | tee -a $TEST_RESULTS
 cp misc/system_multi.conf local/system.conf
@@ -38,7 +41,7 @@ cat <<EOF >> local/system.conf
 fail_hook=misc/dump_network.sh
 test_config=misc/runtime_configs/long_wait
 host_tests=misc/all_tests.conf
-site_path=misc/test_site
+site_path=inst/tmp_site
 site_reports=local/tmp
 startup_faux_1_opts=brute
 startup_faux_2_opts=nobrute
