@@ -5,9 +5,6 @@ Mudacl exit code 0
 Validator exit code 0
 Lint checks
 cmd/inbuild exit code 0
-Running ./testing/test_bacext.sh
-Running bacext test...
-RESULT pass protocol.bacnet.version
 Extended tests
 RESULT fail network.brute
 RESULT pass network.brute
