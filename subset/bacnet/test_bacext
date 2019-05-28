@@ -35,4 +35,9 @@ else
     fgrep "$TARGET" $TMPOUT
 fi
 
+#Adding a new line at the end of report
+cat <<EOF >>tmp/*Report*.txt
+
+EOF
+
 cat tmp/*Report*.txt >> $REPORT

@@ -1,10 +1,12 @@
-Running testing/test_aux.sh
+Running ./testing/test_aux.sh
 Aux Tests
 mudacl tests
 Mudacl exit code 0
 Validator exit code 0
 Lint checks
 cmd/inbuild exit code 0
+Running bacext test...
+RESULT pass protocol.bacnet.version
 Extended tests
 RESULT fail network.brute
 RESULT pass network.brute
@@ -21,20 +23,6 @@ pri.flows
 pri.ofctl
 sec.flows
 sec.ofctl
-{
-  "brute": {
-    "enabled": true
-  },
-  "foobar": {
-    "enabled": false
-  },
-  "nmap": {
-    "enabled": true
-  },
-  "switch": {
-    "enabled": true
-  }
-}
 Redacted docs diff
 No report diff
 Done with tests
