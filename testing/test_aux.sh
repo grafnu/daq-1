@@ -15,25 +15,6 @@ echo Lint checks | tee -a $TEST_RESULTS
 cmd/inbuild skip
 echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
 
-
-# bacext testing
-echo Running bacext test... | tee -a $TEST_RESULTS
-cp misc/system_base.conf local/system.conf
-cat <<EOF >>local/system.conf
-startup_faux_opts=bacnet
-EOF
-cat <<EOF > local/site/module_config.json
-{
-  "modules": {
-    "bacext": {
-      "enabled": true
-    }
-  }
-}
-EOF
-cmd/run -s -b
-cat inst/run-port-01/nodes/bacext01/tmp/report.txt | tee -a $TEST_RESULTS
-
 echo Extended tests | tee -a $TEST_RESULTS
 cp misc/system_multi.conf local/system.conf
 cat <<EOF >> local/system.conf

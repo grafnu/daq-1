@@ -1,17 +1,10 @@
 #!/bin/bash -e
 
-JAR=bacnet4j/bacnet4j.jar
+JAR=bacnet4j/bacnet4j-1.0-SNAPSHOT-all.jar
 CLASS=com.serotonin.bacnet4j.test.DaqTest.Main
 TARGET="Object name = BACnet device"
 TMPOUT=`tempfile`
 REPORT=/tmp/report.txt
-
-if [ "$1" == "loop" ]; then
-    shift
-    subcmd=loop
-else
-    subcmd=noloop
-fi
 
 # Pick the one not-lo inet v4 address.
 line=$(ip addr show | fgrep "inet " | fgrep -v 127.0.0.1)
@@ -42,4 +35,4 @@ else
     fgrep "$TARGET" $TMPOUT
 fi
 
-cat tmp/BacnetVersionTestReport.txt >> $REPORT
+cat tmp/*Report*.txt >> $REPORT
