@@ -17,11 +17,7 @@ echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
 
 # bacext testing
 echo Running bacext test... | tee -a $TEST_RESULTS
-cp misc/host_tests.conf local/local_tests.conf
-cat <<EOF >>local/local_tests.conf
-include subset/bacnet/build.conf
-EOF
-
+cp misc/all_tests.conf local/local_tests.conf
 cp misc/system_base.conf local/system.conf
 cat <<EOF >>local/system.conf
 startup_faux_opts=bacnet
