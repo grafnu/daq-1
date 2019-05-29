@@ -1,10 +1,6 @@
-import subprocess
-import os
+import subprocess, absolute_filepath
 
-script_path = os.path.abspath(__file__) 
-path_list = script_path.split(os.sep)
-script_directory = path_list[0:len(path_list)-1]
-filepath = "/".join(script_directory) + "/certs/"
+filepath = "/".join(absolute_filepath.script_directory) + "/certs/"
 
 command_key = 'openssl req -nodes -newkey rsa:2048 -keyout ' + filepath + 'server.key -out ' + filepath + 'server.csr -subj "/C=GB/ST=London/L=KingsX/O=ExcelRedstone/OU=Software/CN=127.0.0.1"'
 command_cert ='openssl x509 -req -days 365 -in ' + filepath + 'server.csr -signkey ' + filepath + 'server.key -out ' + filepath + 'server.crt'

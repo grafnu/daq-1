@@ -25,9 +25,11 @@ site_path=misc/test_site
 site_reports=local/tmp
 startup_faux_1_opts=brute
 startup_faux_2_opts=nobrute
+startup_faux_3_opts=tls
 EOF
 cmd/run -b -s
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
+tail -qn 1 inst/run-port-*/nodes/tls*/tmp/report.txt | tee -a $TEST_RESULTS
 more inst/run-port-*/scans/dhcp_triggers.txt | cat
 dhcp_short=$(fgrep None inst/run-port-01/scans/dhcp_triggers.txt | wc -l)
 dhcp_long=$(fgrep long inst/run-port-01/scans/dhcp_triggers.txt | wc -l)

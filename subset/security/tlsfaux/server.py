@@ -1,10 +1,11 @@
-import socket, ssl, pprint
+import socket, ssl, pprint, absolute_filepath
 
+filepath = "/".join(absolute_filepath.script_directory) + "/certs/"
 hostname = '0.0.0.0'
 port = 443
 
-filename_cert = 'certs/server.crt'
-filename_key = 'certs/server.key'
+filename_cert = filepath + 'server.crt'
+filename_key = filepath + 'server.key'
 
 context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 context.load_cert_chain(certfile = filename_cert, keyfile = filename_key)

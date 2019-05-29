@@ -90,7 +90,6 @@ fi
 
 if [ -n "${options[tls]}" ]; then
     echo Generating tlscerts
-    mkdir gencertsssss &
     python tlsfaux/generate_certs.py &
     echo Starting tls server.
     python tlsfaux/server.py &
