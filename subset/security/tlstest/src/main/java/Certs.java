@@ -16,14 +16,14 @@ public class Certs {
   String ipAddress = "127.0.0.1";
   String certificateReport = "";
 
+  Report report = new Report();
+
   public Certs(String ipAddress) {
     this.ipAddress = ipAddress;
   }
 
   public boolean getCertificate() {
     try {
-      Report report = new Report();
-
       disableSslVerification();
 
       URL url;
