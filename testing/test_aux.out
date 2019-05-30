@@ -4,15 +4,17 @@ mudacl tests
 Mudacl exit code 0
 Validator exit code 0
 Lint checks
-cmd/inbuild exit code 0
+cmd/inbuild exit code 1
 Extended tests
 RESULT fail network.brute
 RESULT pass network.brute
 RESULT skip network.brute
+RESULT fail security.x509
+RESULT fail security.x509
 ]
 dhcp requests 2 1
-01: ['01:brute:1', '01:tls:1']
-02: ['02:nmap:1', '02:tls:1']
+01: ['01:brute:1']
+02: ['02:nmap:1']
 03: ['03:nmap:1']
 ctrl-br.flows
 ctrl-br.ofctl
@@ -58,7 +60,7 @@ Redacted docs diff
 > ## Device Description
 > 
 > N/A
-14,17c37,38
+14,17c37,40
 < |skip|network.brute||
 < |fail|security.ports.nmap||
 < |pass|security.tls.v3||
@@ -66,14 +68,16 @@ Redacted docs diff
 ---
 > |fail|network.brute||
 > |pass|security.ports.nmap||
-31,32c52,54
+> |fail|security.tls.v3||
+> |fail|security.x509||
+31,32c54,56
 < Open port 443 open tcp https
 < RESULT fail security.ports.nmap
 ---
 > Allowing 10000 open tcp snet-sensor-mgmt
 > No invalid ports found.
 > RESULT pass security.ports.nmap
-38,39c60,63
+38,39c62,65
 < Target port 10000 not open.
 < RESULT skip network.brute
 ---
@@ -81,11 +85,11 @@ Redacted docs diff
 > Password:friend
 > Login success!
 > RESULT fail network.brute
-42c66
+42c68
 < ## Module tls
 ---
 > ## Module switch
-45,86c69
+45,84c71,72
 < Cipher:
 < TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 < Certificate is active for current date.
@@ -126,8 +130,15 @@ Redacted docs diff
 < 00D0: E9 F1 35 E5 C7 4F BF 4C   C0 B2 02 0F 49 F0 F0 A0  ..5..O.L....I...
 < 00E0: 0C 7E 20 AC 75 FC 3D 80   3E D0 43 58 C1 44 FA 41  .. .u.=.>.CX.D.A
 < 00F0: AE 63 4C 53 1A D8 75 78   14 93 C3 BA 39 37 C2 2E  .cLS..ux....97..
-< 
-< ]
 ---
 > LOCAL_IP not configured, assuming no network switch.
+> ```
+86c74,78
+< ]
+---
+> ## Module tls
+> 
+> ```
+> RESULT fail security.tls.v3
+> RESULT fail security.x509
 Done with tests

@@ -1,5 +1,5 @@
 # DAQ scan report for device 9a02571e8f02
-Started %% 2019-05-29 16:45:13+00:00
+Started %% 2019-05-30 06:24:13+00:00
 
 |  Role  |      Name              |
 |--------|------------------------|
@@ -7,7 +7,7 @@ Started %% 2019-05-29 16:45:13+00:00
 |Reviewer| *** Reviewer Name *** |
 |Approver| *** Approver Name *** |
 |--------|------------------------|
-| Test report date | 2019-05-29T16:45:13.736Z |
+| Test report date | 2019-05-30T06:24:13.703Z |
 | DAQ version      | 0.9.7 |
 
 ## Device Identification
@@ -36,14 +36,16 @@ N/A
 |pass|base.target.ping|target |
 |pass|network.brute||
 |fail|security.ports.nmap||
+|fail|security.tls.v3||
+|fail|security.x509||
 
 ## Module ping
 
 ```
 Baseline ping test report
-%% 72 packets captured.
+%% 65 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.21.39
+RESULT pass base.target.ping target %% 10.20.73.39
 ```
 
 ## Module nmap
@@ -65,6 +67,13 @@ RESULT pass network.brute
 
 ```
 LOCAL_IP not configured, assuming no network switch.
+```
+
+## Module tls
+
+```
+RESULT fail security.tls.v3
+RESULT fail security.x509
 ```
 
 ## Report complete
