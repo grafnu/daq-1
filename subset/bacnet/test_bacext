@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-JAR=bacnetTests/build/libs/bacnet-1.0-SNAPSHOT.jar
+JAR=bacnetTests/build/libs/bacnet-1.0-SNAPSHOT-all.jar
 TARGET="Object name = BACnet device"
 TMPOUT=`tempfile`
 REPORT=/tmp/report.txt
