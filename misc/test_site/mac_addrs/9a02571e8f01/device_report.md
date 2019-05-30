@@ -1,5 +1,5 @@
 # DAQ scan report for device 9a02571e8f01
-Started %% 2019-05-29 16:22:10+00:00
+Started %% 2019-05-29 16:45:27+00:00
 
 |  Role  |      Name              |
 |--------|------------------------|
@@ -7,7 +7,7 @@ Started %% 2019-05-29 16:22:10+00:00
 |Reviewer| *** Reviewer Name *** |
 |Approver| *** Approver Name *** |
 |--------|------------------------|
-| Test report date | 2019-05-29T16:22:10.632Z |
+| Test report date | 2019-05-29T16:45:27.975Z |
 | DAQ version      | 0.9.7 |
 
 ## Device Identification
@@ -41,9 +41,9 @@ N/A
 
 ```
 Baseline ping test report
-%% 65 packets captured.
+%% 61 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.54.38
+RESULT pass base.target.ping target %% 10.20.85.38
 ```
 
 ## Module nmap

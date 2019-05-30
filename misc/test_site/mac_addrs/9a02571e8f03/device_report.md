@@ -1,9 +1,9 @@
 # DAQ scan report for device 9a02571e8f03
-Started %% 2019-05-29 16:21:46+00:00
+Started %% 2019-05-29 16:44:59+00:00
 
 Report generation error: 'device_info' is undefined
 Failing data model:
-{'process': {'approver': '*** Approver Name ***', 'operator': '*** Operator Name ***', 'reviewer': '*** Reviewer Name ***'}, 'run_info': {'started': '2019-05-29T16:21:46.186Z', 'run_id': '5ceeb19a', 'mac_addr': '9a:02:57:1e:8f:03', 'daq_version': '0.9.7'}, 'device_description': 'N/A', 'modules': {'nmap': {'enabled': True}, 'brute': {'enabled': True}, 'switch': {'enabled': False}, 'tls': {'enabled': True}}}
+{'modules': {'brute': {'enabled': True}, 'switch': {'enabled': False}, 'nmap': {'enabled': True}, 'tls': {'enabled': True}}, 'run_info': {'mac_addr': '9a:02:57:1e:8f:03', 'started': '2019-05-29T16:44:59.464Z', 'daq_version': '0.9.7', 'run_id': '5ceeb70b'}, 'device_description': 'N/A', 'process': {'approver': '*** Approver Name ***', 'reviewer': '*** Reviewer Name ***', 'operator': '*** Operator Name ***'}}
 
 ## Report summary
 
@@ -20,9 +20,9 @@ Failing data model:
 
 ```
 Baseline ping test report
-%% 81 packets captured.
+%% 82 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.95.40
+RESULT pass base.target.ping target %% 10.20.20.40
 ```
 
 ## Module nmap
