@@ -8,7 +8,7 @@ filename_cert = filepath + 'server.crt'
 filename_key = filepath + 'server.key'
 
 context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-context.load_cert_chain(certfile = filename_cert, keyfile = filename_key)
+context.load_cert_chain(certfile=filename_cert, keyfile=filename_key)
 
 bind_socket = socket.socket()
 bind_socket.bind((hostname,port))
@@ -30,7 +30,7 @@ bind_socket.listen(5)
 #OP_NO_TLSv1_3
 
 def parse_data(connstream,data):
-	print "parse_data:",data
+	print("parse_data:",data)
 	return false
 
 def read_client_data(connstream):
@@ -38,12 +38,12 @@ def read_client_data(connstream):
 	while data:
 		if not parse_data(connstream,data):
 			break
-		data=connstream.read()
+		data = connstream.read()
 
-print "SSL Server started..."
+print("SSL Server started...")
 while True:
 	newsocket, fromaddr = bind_socket.accept()
-	connstream = context.wrap_socket(newsocket,server_side=True)
+	connstream = context.wrap_socket(newsocket, server_side=True)
 	try:
 		read_client_data(connstream)
 	finally:
