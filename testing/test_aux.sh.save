@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source testing/#!/bin/bash
+
 source testing/test_preamble.sh
 
 echo Aux Tests >> $TEST_RESULTS
@@ -14,6 +16,39 @@ echo Validator exit code $? | tee -a $TEST_RESULTS
 echo Lint checks | tee -a $TEST_RESULTS
 cmd/inbuild skip
 echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
+test_preamble.sh
+
+echo Aux Tests >> $TEST_RESULTS
+
+echo mudacl tests | tee -a $TEST_RESULTS
+mudacl/bin/test.sh
+echo Mudacl exit code $? | tee -a $TEST_RESULTS
+validator/bin/test.sh
+echo Validator exit code $? | tee -a $TEST_RESULTS
+
+# Runs lint checks and some similar things
+echo Lint checks | tee -a $TEST_RESULTS
+cmd/inbuild skip
+echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
+
+
+# bacext testing
+echo Running bacext test... | tee -a $TEST_RESULTS
+cp misc/system_base.conf local/system.conf
+cat <<EOF >>local/system.conf
+startup_faux_opts=bacnet
+EOF
+cat <<EOF > local/site/module_config.json
+{
+  "modules": {
+    "bacext": {
+      "enabled": true
+    }
+  }
+}
+EOF
+cmd/run -s -b
+cat inst/run-port-01/nodes/bacext01/tmp/report.txt | tee -a $TEST_RESULTS
 
 echo Extended tests | tee -a $TEST_RESULTS
 cp misc/system_multi.conf local/system.conf
@@ -25,10 +60,8 @@ site_path=misc/test_site
 site_reports=local/tmp
 startup_faux_1_opts=brute
 startup_faux_2_opts=nobrute
-startup_faux_3_opts=bacnet
 EOF
 cmd/run -b -s
-tail -qn 1 inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
 more inst/run-port-*/scans/dhcp_triggers.txt | cat
 dhcp_short=$(fgrep pass inst/run-port-01/scans/dhcp_triggers.txt | wc -l)
