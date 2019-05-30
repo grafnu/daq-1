@@ -20,7 +20,7 @@ public class Certs {
     this.ipAddress = ipAddress;
   }
 
-  public boolean get_certificate() {
+  public boolean getCertificate() {
     try {
       Report report = new Report();
 
@@ -42,17 +42,17 @@ public class Certs {
           try {
             ((X509Certificate) certificate).checkValidity();
             certificateReport += "Certificate is active for current date.\n";
-            certificateReport += "RESULT pass security.tls.v3\n";
-            certificateReport += "RESULT pass security.x509\n";
+            passTlsV3(true);
+            passX509(true);
           } catch (CertificateExpiredException cee) {
             certificateReport += "Certificate is expired.\n";
-            certificateReport += "RESULT fail security.tls.v3\n";
-            certificateReport += "RESULT fail security.x509\n";
+            passTlsV3(false);
+            passX509(false);
             return false;
           } catch (CertificateNotYetValidException e) {
-            certificateReport += "RESULT fail security.tls.v3\n";
-            certificateReport += "RESULT fail security.x509\n";
             certificateReport += "Certificate not yet valid.\n";
+            passTlsV3(false);
+            passX509(false);
             return false;
           }
 
@@ -61,21 +61,40 @@ public class Certs {
           certificateReport += "Certificate:\n" + certificate + "\n";
 
         } else {
-          certificateReport += "RESULT fail security.tls.v3\n";
-          certificateReport += "RESULT fail security.x509\n";
+          passTlsV3(false);
+          passX509(false);
           System.err.println("Unknown certificate type: " + certificate);
           return false;
         }
       }
-
-      report.writeReport(certificateReport);
       return true;
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      System.err.println("getCertificate MalformedURLException:" + e.getMessage());
+      passTlsV3(false);
+      passX509(false);
       return false;
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println("getCertificate IOException:" + e.getMessage());
+      passTlsV3(false);
+      passX509(false);
       return false;
+    }
+    report.writeReport(certificateReport);
+  }
+
+  private void passTlsV3(boolean status){
+    if(status){
+      certificateReport += "RESULT pass security.tls.v3\n";
+    } else {
+      certificateReport += "RESULT fail security.tls.v3\n";
+    }
+  }
+
+  private void passX509(boolean status){
+    if(status){
+      certificateReport += "RESULT pass security.x509\n";
+    } else {
+      certificateReport += "RESULT fail security.x509\n";      
     }
   }
 

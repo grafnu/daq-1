@@ -11,7 +11,7 @@ public class Main {
     Certs certificate = new Certs("https://" + ipAddress);
 
     try {
-      if (certificate.get_certificate()) {
+      if (certificate.getCertificate()) {
         System.out.println("Certificate read successfully");
       } else {
         System.out.println("Certificate read failed");
