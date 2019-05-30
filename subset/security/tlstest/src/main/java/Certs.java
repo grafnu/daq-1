@@ -78,8 +78,9 @@ public class Certs {
       passTlsV3(false);
       passX509(false);
       return false;
+    } finally {
+      report.writeReport(certificateReport);
     }
-    report.writeReport(certificateReport);
   }
 
   private void passTlsV3(boolean status){
