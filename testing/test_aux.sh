@@ -38,6 +38,7 @@ sort inst/result.log | tee -a $TEST_RESULTS
 more inst/run-port-*/nodes/ping*/activate.log | cat
 more inst/run-port-*/nodes/nmap*/activate.log | cat
 more inst/run-port-*/nodes/brute*/activate.log | cat
+more inst/run-port-*/nodes/tls*/activate.log | cat
 ls inst/fail_fail01/ | tee -a $TEST_RESULTS
 jq .modules inst/run-port-02/nodes/ping02/tmp/module_config.json | tee -a $TEST_RESULTS
 
