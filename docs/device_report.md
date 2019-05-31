@@ -1,9 +1,5 @@
-# DAQ scan report for device 9a02571e8f03
-Started %% 2019-05-29 16:21:46+00:00
-
-Report generation error: 'device_info' is undefined
-Failing data model:
-{'process': {'approver': '*** Approver Name ***', 'operator': '*** Operator Name ***', 'reviewer': '*** Reviewer Name ***'}, 'run_info': {'started': '2019-05-29T16:21:46.186Z', 'run_id': '5ceeb19a', 'mac_addr': '9a:02:57:1e:8f:03', 'daq_version': '0.9.7'}, 'device_description': 'N/A', 'modules': {'nmap': {'enabled': True}, 'brute': {'enabled': True}, 'switch': {'enabled': False}, 'tls': {'enabled': True}}}
+# DAQ scan report for device 9a02571e8f00
+Started %% 2019-05-31 12:57:54+00:00
 
 ## Report summary
 
@@ -20,9 +16,9 @@ Failing data model:
 
 ```
 Baseline ping test report
-%% 81 packets captured.
+%% 65 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.95.40
+RESULT pass base.target.ping target %% 10.20.87.37
 ```
 
 ## Module nmap
@@ -37,6 +33,12 @@ RESULT fail security.ports.nmap
 ```
 Target port 10000 not open.
 RESULT skip network.brute
+```
+
+## Module switch
+
+```
+LOCAL_IP not configured, assuming no network switch.
 ```
 
 ## Module tls

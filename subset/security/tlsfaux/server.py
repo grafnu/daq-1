@@ -14,29 +14,14 @@ bind_socket = socket.socket()
 bind_socket.bind((hostname,port))
 bind_socket.listen(5)
 
-#PROTOCOL_TLSv1
-#PROTOCOL_TLSv1_1
-#PROTOCOL_TLSv1_2
-#PROTOCOL_TLS
-#PROTOCOL_SSLv2
-#PROTOCOL_SSLv3
-
-#OP_ALL
-#OP_NO_SSLv2
-#OP_NO_SSLv3
-#OP_NO_TLSv1
-#OP_NO_TLSv1_1
-#OP_NO_TLSv1_2
-#OP_NO_TLSv1_3
-
-def parse_data(connstream,data):
-	print("parse_data:",data)
+def test_data(connstream,data):
+	print("test_data:",data)
 	return false
 
 def read_client_data(connstream):
 	data = connstream.read()
 	while data:
-		if not parse_data(connstream,data):
+		if not test_data(connstream,data):
 			break
 		data = connstream.read()
 
