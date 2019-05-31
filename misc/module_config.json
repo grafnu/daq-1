@@ -8,6 +8,9 @@
     },
     "brute": {
       "enabled": true
+    },
+    "network":{
+      "enabled": true
     }
   }
 }
