@@ -4,13 +4,31 @@
  */
 
 const PORT_ROW_COUNT = 25;
-const ROW_TIMEOUT_SEC = 500
+const ROW_TIMEOUT_SEC = 500;
 
 const display_columns = [ ];
 const display_rows = [ ];
 const row_timestamps = {};
 
+const data_state = {};
+
 let last_result_time_sec = 0;
+
+const origin_id = getQueryParam('origin');
+const port_id = getQueryParam('port');
+const registry_id = getQueryParam('registry');
+const device_id = getQueryParam('device');
+const run_id = getQueryParam('runid');
+
+var db;
+
+document.addEventListener('DOMContentLoaded', () => {
+  db = firebase.firestore();
+  const settings = {
+    timestampsInSnapshots: true
+  };
+  db.settings(settings);
+});
 
 function appendTestCell(row, column) {
   const columnElement = document.createElement('td');
@@ -83,7 +101,7 @@ function ensureGridRow(label, content, max_rows) {
 
 function setGridValue(row, column, runid, value) {
   const selector = `#testgrid table tr[label="${row}"] td[label="${column}"]`;
-  const targetElement = document.querySelector(selector)
+  const targetElement = document.querySelector(selector);
 
   if (targetElement) {
     const previous = targetElement.getAttribute('runid');
@@ -96,7 +114,7 @@ function setGridValue(row, column, runid, value) {
         targetElement.setAttribute('status', value);
       }
     }
-    const rowElement = document.querySelector(`#testgrid table tr[label="${row}"]`)
+    const rowElement = document.querySelector(`#testgrid table tr[label="${row}"]`);
     const rowTime = rowElement.getAttribute('runid');
     const rowPrev = rowElement.getAttribute('prev');
     updateTimeClass(targetElement, rowTime, rowPrev);
@@ -116,7 +134,7 @@ function setRowState(row, new_runid) {
   let runid = rowElement.getAttribute('runid') || 0;
   let prev = rowElement.getAttribute('prev') || 0;
   console.log('rowstate', row, 'mudgee', new_runid, runid, prev);
-  if (runid == new_runid) {
+  if (runid === new_runid) {
     return;
   } else if (!runid || new_runid > runid) {
     rowElement.setAttribute('prev', runid);
@@ -140,10 +158,10 @@ function updateTimeClass(entry, target, prev) {
   const row = entry.getAttribute('row');
   const column = entry.getAttribute('label');
   console.log('update', row, column, value, target, prev);
-  if (value == target) {
+  if (value === target) {
     entry.classList.add('current');
     entry.classList.remove('old', 'gone');
-  } else if (value == prev) {
+  } else if (value === prev) {
     entry.classList.add('old');
     entry.classList.remove('current', 'gone');
   } else {
@@ -168,35 +186,64 @@ function statusUpdate(message, e) {
 }
 
 function getResultStatus(result) {
+  if (result.exception) {
+    return 'err';
+  }
   if (result.state) {
     return result.state;
   }
-  if (result.exception) {
+  if (Number(result.code)) {
     return 'fail';
   }
-  return Number(result.code) ? 'fail' : 'pass';
+  return 'unknown';
 }
 
 function handleOriginResult(origin, port, runid, test, result) {
   if (result.timestamp > last_result_time_sec) {
     last_result_time_sec = result.timestamp;
   }
-  if (result.timestamp > (row_timestamps[port] || 0)) {
+  if (!row_timestamps[port] || row_timestamps[port] < result.timestamp) {
     row_timestamps[port] = result.timestamp;
   }
-  const href =`?origin=${origin}&port=${port}`
+  const href =`?origin=${origin}&port=${port}`;
   ensureGridRow(port, `<a href="${href}">${port}</a>`);
   ensureGridColumn(test);
   const status = getResultStatus(result);
   statusUpdate(`Updating ${port} ${test} run ${runid} with '${status}'.`)
   setRowState(port, runid);
-  setGridValue(port, test, runid, status);
-  if (result.info) {
-    setGridValue(port, 'info', runid, result.info);
-  }
+  const gridElement = setGridValue(port, test, runid, status);
   if (result.report) {
     addReportBucket(origin, port, runid, result.report);
   }
+  if (test === 'info') {
+    makeConfigLink(gridElement, status, port, runid);
+  }
+  if (test == 'startup') {
+    makeActivateLink(gridElement, port);
+  }
+}
+
+function makeConfigLink(element, info, port, runid) {
+  const parts = info.split('/');
+  const device_id = parts[0];
+  const device_link = document.createElement('a');
+  device_link.href = `config.html?origin=${origin_id}&device=${device_id}&port=${port}&runid=${runid}`;
+  device_link.innerHTML = element.innerHTML;
+  element.innerHTML = '';
+  element.appendChild(device_link);
+}
+
+function activateRun(port) {
+  console.log('Activate run port', port);
+  const origin_doc = db.collection('origin').doc(origin_id);
+  const control_doc = origin_doc.collection('control').doc(port).collection('config').doc('definition');
+  control_doc.update({
+    'config.paused': false
+  });
+}
+
+function makeActivateLink(element, port) {
+  element.onclick = () => activateRun(port)
 }
 
 function addReportBucket(origin, row, runid, reportName) {
@@ -235,12 +282,12 @@ function handlePortResult(origin, port, runid, test, result) {
 }
 
 function watcherAdd(ref, collection, limit, handler) {
-  const base = ref.collection(collection)
+  const base = ref.collection(collection);
   const target = limit ? limit(base) : base;
   target.onSnapshot((snapshot) => {
-    delay = 100;
+    let delay = 100;
     snapshot.docChanges.forEach((change) => {
-      if (change.type == 'added') {
+      if (change.type === 'added') {
         setTimeout(() => handler(ref.collection(collection).doc(change.doc.id), change.doc.id), delay);
         delay = delay + 100;
       }
@@ -252,10 +299,10 @@ function listOrigins(db) {
   const link_group = document.getElementById('origins');
   db.collection('origin').get().then((snapshot) => {
     snapshot.forEach((origin) => {
-      origin_id = origin.id;
+      origin = origin.id;
       const origin_link = document.createElement('a');
-      origin_link.setAttribute('href', '/?origin=' + origin_id);
-      origin_link.innerHTML = origin_id;
+      origin_link.setAttribute('href', '/?origin=' + origin);
+      origin_link.innerHTML = origin;
       link_group.appendChild(origin_link);
       link_group.appendChild(document.createElement('p'));
     });
@@ -286,18 +333,7 @@ function listDevices(db, registryId) {
     }).catch((e) => statusUpdate('registry list error', e));
 }
 
-function setupTriggers() {
-  var db = firebase.firestore();
-  const settings = {
-    timestampsInSnapshots: true
-  };
-  db.settings(settings);
-
-  const origin_id = getQueryParam('origin');
-  const port_id = getQueryParam('port');
-  const registry_id = getQueryParam('registry');
-  const device_id = getQueryParam('device');
-
+function dashboardSetup() {
   if (port_id) {
     ensureGridRow('header');
     ensureGridColumn('row', port_id);
@@ -312,19 +348,23 @@ function setupTriggers() {
     listOrigins(db);
     listRegistries(db);
   }
+
+  return origin_id;
 }
 
 function triggerOrigin(db, origin_id) {
   const latest = (ref) => {
-    return ref.orderBy('timestamp', 'desc').limit(3);
-  }
+    return ref.orderBy('updated', 'desc').limit(3);
+  };
 
-  ref = db.collection('origin').doc(origin_id);
-  ref.collection('port').doc('port-undefined').onSnapshot((result) => {
+  let ref = db.collection('origin').doc(origin_id);
+  ref.collection('runner').doc('heartbeat').onSnapshot((result) => {
     const message = result.data().message;
-    ensureColumns(message.tests);
-    document.querySelector('#description').innerHTML = message.description;
-    const version = `DAQ v${message.version}`
+    message.states && ensureColumns(message.states);
+    const description = document.querySelector('#description .description');
+    description.innerHTML = message.description;
+    description.href = `config.html?origin=${origin_id}`;
+    const version = `DAQ v${message.version}`;
     document.querySelector('#version').innerHTML = version
   });
   watcherAdd(ref, "port", undefined, (ref, port_id) => {
@@ -342,15 +382,16 @@ function triggerOrigin(db, origin_id) {
 function triggerPort(db, origin_id, port_id) {
   const latest = (ref) => {
     return ref.orderBy('timestamp', 'desc').limit(PORT_ROW_COUNT);
-  }
+  };
 
-  ref = db.collection('origin').doc(origin_id).collection('port');
+  const origin_doc = db.collection('origin').doc(origin_id);
+  const heartbeat_doc = origin_doc.collection('runner').doc('heartbeat');
 
-  ref.doc('port-undefined').onSnapshot((result) => {
-    ensureColumns(result.data().message.tests)
+  heartbeat_doc.onSnapshot((result) => {
+    ensureColumns(result.data().message.states)
   });
 
-  watcherAdd(ref.doc(port_id), "runid", latest, (ref, runid_id) => {
+  watcherAdd(origin_doc.collection('port').doc(port_id), "runid", latest, (ref, runid_id) => {
     watcherAdd(ref, "test", undefined, (ref, test_id) => {
       ref.onSnapshot((result) => {
         // TODO: Handle results going away.
@@ -377,23 +418,126 @@ function triggerDevice(db, registry_id, device_id) {
 
 function interval_updater() {
   if (last_result_time_sec) {
-    const time_delta_sec = Math.floor(Date.now()/1000.0 - last_result_time_sec)
+    const time_delta_sec = Math.floor(Date.now()/1000.0 - last_result_time_sec);
     document.getElementById('update').innerHTML = `Last update ${time_delta_sec} sec ago.`
   }
-  for (row in row_timestamps) {
-    timestamp = row_timestamps[row]
-    const time_delta_sec = Math.floor(Date.now()/1000.0 - timestamp)
-    const selector=`#testgrid table tr[label="${row}"`
+  for (const row in row_timestamps) {
+    const last_update = new Date(row_timestamps[row]);
+    const time_delta_sec = Math.floor((Date.now() - last_update)/1000.0);
+    const selector=`#testgrid table tr[label="${row}"`;
     const runid = document.querySelector(selector).getAttribute('runid');
     setGridValue(row, 'timer', runid, `${time_delta_sec} sec`);
     setRowClass(row, time_delta_sec > ROW_TIMEOUT_SEC);
   }
 }
 
+function applySchema(editor, schema_url) {
+  if (!schema_url) {
+    return;
+  }
+
+  // Not sure why this is required, but without it the system complains it's not defined??!?!
+  const refs = {
+    'http://json-schema.org/draft-07/schema#': true
+  };
+
+  console.log(`Loading editor schema ${schema_url}`);
+  fetch(schema_url)
+      .then(response => response.json())
+      .then(json => editor.setSchema(json, refs))
+      .catch(rejection => console.log(rejection));
+}
+
+function getJsonEditor(container_id, onChange, schema_url) {
+  const container = document.getElementById(container_id);
+  const options = {
+    mode: onChange ? undefined : 'view',
+    onChangeJSON: onChange
+  };
+  const editor = new JSONEditor(container, options);
+  applySchema(editor, schema_url);
+  return editor;
+}
+
+function setDatedStatus(attribute, value) {
+  data_state[attribute] = value;
+
+  const element = document.getElementById('config_body');
+  element.classList.toggle('dirty', data_state.dirty > data_state.saved);
+  element.classList.toggle('saving', data_state.pushed > data_state.saved);
+  element.classList.toggle('dated', data_state.saved > data_state.updated);
+  element.classList.toggle('provisional', data_state.provisional);
+}
+
+function pushConfigChange(config_editor, config_doc) {
+  const json = config_editor.get();
+  const timestamp = new Date().toJSON();
+  config_doc.update({
+    'config': json,
+    'timestamp': timestamp
+  });
+  setDatedStatus('pushed', timestamp);
+}
+
+function setDirtyState() {
+  setDatedStatus('dirty', new Date().toJSON());
+}
+
+function loadEditor(config_doc, element_id, label, onConfigEdit, schema) {
+  const editor = getJsonEditor(element_id, onConfigEdit, schema);
+  editor.setName(label);
+  editor.set(null);
+  config_doc.onSnapshot((snapshot) => {
+    const firstUpdate = editor.get() == null;
+    let snapshot_data = snapshot.data();
+    editor.update(snapshot_data.config);
+    if (firstUpdate) {
+      editor.expandAll();
+    }
+    if (onConfigEdit) {
+      setDatedStatus('saved', snapshot_data.saved);
+    } else {
+      setDatedStatus('updated', snapshot_data.updated);
+      const snapshot_config = (snapshot_data && snapshot_data.config && snapshot_data.config.config) || {};
+      setDatedStatus('provisional', !snapshot_config.run_info);
+    }
+  });
+  return editor;
+}
+
+function loadJsonEditors() {
+  let latest_doc;
+  let config_doc;
+  let schema_url;
+  const subtitle = device_id
+        ? `${origin_id} device ${device_id}`
+        : `${origin_id} system`;
+  document.getElementById('title_origin').innerHTML = subtitle;
+
+  const origin_doc = db.collection('origin').doc(origin_id);
+  if (device_id) {
+    config_doc = origin_doc.collection('device').doc(device_id).collection('config').doc('definition');
+    latest_doc = origin_doc.collection('device').doc(device_id).collection('config').doc('latest');
+    schema_url = 'schema_device.json';
+  } else {
+    config_doc = origin_doc.collection('runner').doc('setup').collection('config').doc('definition');
+    latest_doc = origin_doc.collection('runner').doc('setup').collection('config').doc('latest');
+    schema_url = 'schema_system.json';
+  }
+  loadEditor(latest_doc, 'latest_editor', 'latest', null);
+  const config_editor = loadEditor(config_doc, 'config_editor', 'config', setDirtyState, schema_url);
+
+  document.querySelector('#config_body .save_button').onclick = () => pushConfigChange(config_editor, config_doc)
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   try {
+    if (document.getElementById('config_editor')) {
+      loadJsonEditors();
+    } else {
+      dashboardSetup();
+    }
     statusUpdate('System initialized.');
-    setupTriggers();
     setInterval(interval_updater, 1000);
   } catch (e) {
     statusUpdate('Loading error', e)
