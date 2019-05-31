@@ -55,11 +55,12 @@ def add_packet_info_to_report():
 
 shell_result = shell_command_with_result(tests[test_request], 0, False)
 
-if not shell_result is None:
+if shell_result is None:
+    write_report("RESULT fail %s\n" % test_request)
+
+else:
     if len(shell_result) > min_packet_length:
         packet_request_list = shell_result.split("\n")
         packets_received = len(packet_request_list)
         add_packet_info_to_report()
         write_report("RESULT pass %s\n" % test_request)
-else:
-    write_report("RESULT fail %s\n" % test_request)
