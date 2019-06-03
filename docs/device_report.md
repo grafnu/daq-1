@@ -1,5 +1,5 @@
 # DAQ scan report for device 9a02571e8f01
-Started %% 2019-05-07 04:06:49+00:00
+Started %% 2019-06-03 15:18:37+00:00
 
 |  Role  |      Name              |
 |--------|------------------------|
@@ -7,8 +7,8 @@ Started %% 2019-05-07 04:06:49+00:00
 |Reviewer| *** Reviewer Name *** |
 |Approver| *** Approver Name *** |
 |--------|------------------------|
-| Test report date | 2019-05-07T04:06:49.499Z |
-| DAQ version      | 0.9.6 |
+| Test report date | 2019-06-03T15:18:37.004Z |
+| DAQ version      | 0.9.7 |
 
 ## Device Identification
 
@@ -35,15 +35,16 @@ N/A
 |skip|base.switch.ping||
 |pass|base.target.ping|target |
 |fail|network.brute||
+|fail|protocol.bacnet.version||
 |pass|security.ports.nmap||
 
 ## Module ping
 
 ```
 Baseline ping test report
-%% 37 packets captured.
+%% 64 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.90.38
+RESULT pass base.target.ping target %% 10.20.79.38
 ```
 
 ## Module nmap
@@ -67,6 +68,12 @@ RESULT fail network.brute
 
 ```
 LOCAL_IP not configured, assuming no network switch.
+```
+
+## Module bacext
+
+```
+RESULT fail protocol.bacnet.version
 ```
 
 ## Report complete
