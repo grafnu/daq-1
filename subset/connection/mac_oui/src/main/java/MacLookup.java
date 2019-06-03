@@ -19,12 +19,12 @@
   	  String manufacturer = macDevices.get(formattedMac).toString();
   	  if(manufacturer.equals(null)) {
   	    System.out.println("Could not find manufacturer");
-  	    reportHandler.addText("connection.mac_oui FAILED *");
+  	    reportHandler.addText("RESULT connection.mac_oui FAILED *");
   	    reportHandler.addText("could not find device manufacturer *");
   	    reportHandler.writeReport();
   	   }
   	  else {
-  	    reportHandler.addText("connection.mac_oui PASSED *");
+  	    reportHandler.addText("RESULT connection.mac_oui PASSED *");
   	    reportHandler.addText(formattedMac + " " + manufacturer + " *");
   	    reportHandler.writeReport();
   	    System.out.println(formattedMac + " " + manufacturer);
@@ -32,7 +32,7 @@
   	}
   	catch(NullPointerException e) {
   	  System.out.println(e + " could not find the manufacturer");
-  	  reportHandler.addText("connection.mac_oui FAILED *");
+  	  reportHandler.addText("RESULT connection.mac_oui FAILED *");
   	  reportHandler.addText("could not find device manufacturer *");
   	  reportHandler.writeReport();
   	 }

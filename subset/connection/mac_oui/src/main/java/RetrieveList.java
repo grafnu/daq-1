@@ -18,11 +18,11 @@
   	public void readLocalFile(){
   		try {
   			  System.out.println("Reading local file...");
-  			  InputStream url = this.getClass().getResourceAsStream("/macList.txt");
+  			  InputStream inputStream = this.getClass().getResourceAsStream("/macList.txt");
   			  StringBuilder resultStringBuilder = new StringBuilder();
-  			  BufferedReader br = new BufferedReader(new InputStreamReader(url));
+  			  BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
   			  String line;
-  			  while ((line = br.readLine()) != null) {
+  			  while ((line = bufferedReader.readLine()) != null) {
   				resultStringBuilder.append(line).append("\n");
   		        String[] words = new String[2];
   		        String macAddress;
