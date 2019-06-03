@@ -84,11 +84,11 @@ function test_stack {
     bcount7=$(tcpdump -en -r $t2sw1p7_pcap | wc -l) 2>/dev/null
     bcount_total=$((bcount6 + bcount7))
     echo pcap $mode count is $bcount6 $bcount7 $bcount_total
-    echo pcap sane $((bcount_total > 100)) $((bcount_total < 130)) | tee -a $TEST_RESULTS
+    echo pcap sane $((bcount_total > 100)) $((bcount_total < 220)) | tee -a $TEST_RESULTS
     echo pcap t2sw1p6
     tcpdump -en -c 20 -r $t2sw1p6_pcap
     echo pcap t2sw1p7
-    tcpdump -en -c 200 -r $t2sw1p7_pcap
+    tcpdump -en -c 20 -r $t2sw1p7_pcap
     echo pcap end
 
     telnet6=$(tcpdump -en -r $t2sw1p6_pcap vlan and port 23 | wc -l) 2>/dev/null
@@ -102,6 +102,19 @@ function test_stack {
     echo Done with stack test $mode. | tee -a $TEST_RESULTS
 }
 
+function test_dot1x {
+    bin/setup_dot1x
+    echo Checking positive auth
+    docker exec daq-faux-1 wpa_supplicant -B -t -c wpasupplicant.conf -i faux-eth0 -D wired      
+    sleep 15
+    docker exec daq-faux-1 ping -q -c 10 192.168.12.2 2>&1 | awk -F, '/packet loss/{print $1,$2;}' | tee -a $TEST_RESULTS 
+    docker exec daq-faux-1 kill -9 $(docker exec daq-faux-1 ps ax | grep wpa_supplicant | awk '{print $1}')
+    echo Checking failed auth
+    docker exec daq-faux-1 wpa_supplicant -B -t -c wpasupplicant.conf.wng -i faux-eth0 -D wired      
+    sleep 15
+    docker exec daq-faux-1 ping -q -c 10 192.168.12.2 2>&1 | awk -F, '/packet loss/{print $1,$2;}' | tee -a $TEST_RESULTS 
+}
+
 echo Stacking Tests >> $TEST_RESULTS
 test_stack nobond
 # https://github.com/faucetsdn/faucet/issues/2864
@@ -112,5 +125,11 @@ for bridge in corp t1sw1 t1sw2 t2sw1 t2sw2; do
     echo Cleaning $bridge...
     sudo timeout 1m ovs-vsctl del-br $bridge
 done
+
+bin/net_clean
+echo Dot1x setup >> $TEST_RESULTS
+test_dot1x
+echo Cleaning up
+bin/net_clean
 
 echo Done with cleanup. Goodby.
