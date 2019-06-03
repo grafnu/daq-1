@@ -85,6 +85,7 @@ class ConnectedHost:
         self.reload_config()
         assert self._loaded_config, 'config was not loaded'
         self.remaining_tests = self._get_enabled_tests()
+        LOGGER.info('Host %s running with enabled tests %s', self.target_port, self.remaining_tests)
 
         self.record_result('startup', state='prep')
         self._record_result('info', state=self.target_mac, config=self._make_config_bundle())
@@ -130,8 +131,7 @@ class ConnectedHost:
     def _get_enabled_tests(self):
         return list(filter(self._test_enabled, self.config.get('test_list')))
 
-    @staticmethod
-    def _get_device_base(config, target_mac):
+    def _get_device_base(self, config, target_mac):
         """Get the base config path for a host device"""
         dev_base = config.get('site_path')
         if not dev_base:
@@ -139,8 +139,20 @@ class ConnectedHost:
         clean_mac = target_mac.replace(':', '')
         dev_path = os.path.abspath(os.path.join(dev_base, 'mac_addrs', clean_mac))
         if not os.path.isdir(dev_path):
-            LOGGER.warning('Device config dir not found: %s', dev_path)
+            self._create_device_dir(dev_path)
         return dev_path
+
+    def _create_device_dir(self, path):
+        LOGGER.warning('Creating new device dir: %s', path)
+        os.makedirs(path)
+        template_dir = self.config.get('device_template')
+        if not template_dir:
+            LOGGER.warning('Skipping defaults since no device_template found')
+            return
+        LOGGER.info('Copying template files from %s to %s', template_dir, path)
+        for file in os.listdir(template_dir):
+            LOGGER.info('Copying %s...', file)
+            shutil.copy(os.path.join(template_dir, file), path)
 
     def initialize(self):
         """Fully initialize a new host set"""
