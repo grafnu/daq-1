@@ -3,7 +3,7 @@
 if [ -n "$TARGET_IP" ]; then
     echo Collecting TLS cert from target address $TARGET_IP.
     java -jar tlstest/build/libs/tlstest.jar $TARGET_IP
-    cp -r tmp/report.txt /tmp/report.txt
+    cp tmp/report.txt /tmp/report.txt
 else
     echo TARGET_IP not configured TLS test failed | tee /tmp/report.txt
 fi
