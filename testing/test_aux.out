@@ -15,7 +15,7 @@ RESULT fail security.tls.v3
 RESULT fail security.x509
 RESULT pass security.tls.v3
 RESULT pass security.x509
-dhcp requests 2 2
+dhcp requests 2 1
 01: ['01:brute:1']
 02: ['02:nmap:1']
 03: ['03:nmap:1']
