@@ -20,9 +20,7 @@ firebase/.firebase
 firebase/functions/package-lock.json
 nohup.out
 **/node_modules/
-subset/connection/mac_oui/bin/
 .vscode/
-.project
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -126,4 +124,3 @@ ENV/
 
 # mypy
 .mypy_cache/
-
