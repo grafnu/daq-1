@@ -1,5 +1,5 @@
 # DAQ scan report for device 9a02571e8f01
-Started %% 2019-06-04 05:49:36+00:00
+Started %% 2019-06-04 08:09:22+00:00
 
 |  Role  |      Name              |
 |--------|------------------------|
@@ -7,9 +7,7 @@ Started %% 2019-06-04 05:49:36+00:00
 |Reviewer| *** Reviewer Name *** |
 |Approver| *** Approver Name *** |
 |--------|------------------------|
-
-| Test report date | 2019-06-04T05:49:36.901Z |
-
+| Test report date | 2019-06-04T08:09:22.300Z |
 | DAQ version      | 0.9.7 |
 
 ## Device Identification
@@ -34,6 +32,7 @@ N/A
 
 |Result|Test|Notes|
 |---|---|---|
+|connection.mac_oui|PASSED||
 |skip|base.switch.ping||
 |pass|base.target.ping|target |
 |fail|network.brute||
@@ -43,6 +42,9 @@ N/A
 
 ```
 Baseline ping test report
+%% 76 packets captured.
+RESULT skip base.switch.ping
+RESULT pass base.target.ping target %% 10.20.89.38
 ```
 
 ## Module nmap
@@ -71,6 +73,9 @@ LOCAL_IP not configured, assuming no network switch.
 ## Module macoui
 
 ```
+Brute Test 
+RESULT connection.mac_oui PASSED 
+9A0257 Daq Faux Containainer 
 ```
 
 ## Report complete

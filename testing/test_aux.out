@@ -24,33 +24,17 @@ pri.flows
 pri.ofctl
 sec.flows
 sec.ofctl
-{
-  "brute": {
-    "enabled": true
-  },
-  "foobar": {
-    "enabled": false
-  },
-  "macoui": {
-    "enabled": true
-  },
-  "nmap": {
-    "enabled": true
-  },
-  "switch": {
-    "enabled": true
-  }
-}
 Redacted docs diff
-34a35
-> |connection.mac_oui|FAILED||
-69a71,78
-> ```
-> 
-> ## Module macoui
-> 
-> ```
+35d34
+< |connection.mac_oui|PASSED||
+37a37
+> |connection.mac_oui|fail||
+76,78c76,78
+< Brute Test 
+< RESULT connection.mac_oui PASSED 
+< 9A0257 Daq Faux Containainer 
+---
 > Mac OUI Test
-> RESULT connection.mac_oui FAILED
+> RESULT connection.mac_oui fail
 > could not find device manufacturer
 Done with tests

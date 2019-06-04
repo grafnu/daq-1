@@ -17,13 +17,13 @@ public class MacLookup {
     System.out.println(formattedMac);
     try {
       String manufacturer = macDevices.get(formattedMac).toString();
-      reportHandler.addText("RESULT connection.mac_oui PASSED");
+      reportHandler.addText("RESULT pass connection.mac_oui");
       reportHandler.addText(formattedMac + " " + manufacturer);
       reportHandler.writeReport();
       System.out.println(formattedMac + " " + manufacturer);
     } catch (NullPointerException e) {
       System.out.println(e + " could not find the manufacturer");
-      reportHandler.addText("RESULT connection.mac_oui FAILED");
+      reportHandler.addText("RESULT fail connection.mac_oui");
       reportHandler.addText("could not find device manufacturer");
       reportHandler.writeReport();
     }
