@@ -5,45 +5,43 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RetrieveList {
-	String macAddress;
-	Map<String, String> macDevices = new HashMap<String, String>();
-	static final int minimumMACAddressLength = 5;
+  String macAddress;
+  Map<String, String> macDevices = new HashMap<String, String>();
+  static final int minimumMACAddressLength = 5;
 
-	RetrieveList(String macAddress){
-		this.macAddress = macAddress;
-		readLocalFile();
-		startMacOuiTest();
-	}
+  RetrieveList(String macAddress) {
+    this.macAddress = macAddress;
+  }
 
-	public void readLocalFile(){
-		try {
-			System.out.println("Reading local file...");
-			InputStream inputStream = this.getClass().getResourceAsStream("/macList.txt");
-			StringBuilder resultStringBuilder = new StringBuilder();
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-			String line;
-			while ((line = bufferedReader.readLine()) != null) {
-				resultStringBuilder.append(line).append("\n");
-				String[] words = new String[2];
-				String macAddress;
-				String manufacturer;
-				if (line.length() > minimumMACAddressLength) {
-					macAddress = line.substring(0, 6);
-					manufacturer = line.substring(7, line.length());
-					if (manufacturer.length() > 0) {
-						macDevices.put(macAddress, manufacturer);
-					}
-				}
-			}
-		} catch (Exception e) {
-			System.out.println(e);
-			System.err.println("Can not read local file");
-		}
-	}
+  public void startTest() {
+    readLocalFile();
+    MacLookup macLookup = new MacLookup(macDevices, macAddress);
+    macLookup.startTest();
+  }
 
-	public void startMacOuiTest() {
-		MacLookup macLookup = new MacLookup(macDevices, macAddress);
-		Thread macThread = new Thread(macLookup);
-		macThread.start();
-	}
+  public void readLocalFile(){
+    try {
+      System.out.println("Reading local file...");
+      InputStream inputStream = this.getClass().getResourceAsStream("/macList.txt");
+      StringBuilder resultStringBuilder = new StringBuilder();
+      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+      String line;
+      while ((line = bufferedReader.readLine()) != null) {
+        resultStringBuilder.append(line).append("\n");
+        String[] words = new String[2];
+        String macAddress;
+        String manufacturer;
+        if (line.length() > minimumMACAddressLength) {
+          macAddress = line.substring(0, 6);
+          manufacturer = line.substring(7, line.length());
+          if (manufacturer.length() > 0) {
+            macDevices.put(macAddress, manufacturer);
+          }
+        }
+      }
+    } catch (Exception e) {
+      System.out.println(e);
+      System.err.println("Can not read local file");
+    }
+  }
 }
