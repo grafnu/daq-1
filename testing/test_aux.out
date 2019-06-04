@@ -24,6 +24,23 @@ pri.flows
 pri.ofctl
 sec.flows
 sec.ofctl
+{
+  "bacext": {
+    "enabled": true
+  },
+  "brute": {
+    "enabled": true
+  },
+  "foobar": {
+    "enabled": false
+  },
+  "nmap": {
+    "enabled": true
+  },
+  "switch": {
+    "enabled": true
+  }
+}
 Redacted docs diff
 No report diff
 Done with tests
