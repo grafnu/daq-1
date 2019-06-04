@@ -31,6 +31,9 @@ sec.ofctl
   "foobar": {
     "enabled": false
   },
+  "macoui": {
+    "enabled": true
+  },
   "nmap": {
     "enabled": true
   },
