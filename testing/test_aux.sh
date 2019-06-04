@@ -15,7 +15,7 @@ echo Lint checks | tee -a $TEST_RESULTS
 cmd/inbuild skip
 echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
 
-# Creating working test-site copy
+
 rm -rf inst/test_site && mkdir -p inst/test_site
 cp -a misc/test_site inst/
 
@@ -41,6 +41,7 @@ sort inst/result.log | tee -a $TEST_RESULTS
 more inst/run-port-*/nodes/ping*/activate.log | cat
 more inst/run-port-*/nodes/nmap*/activate.log | cat
 more inst/run-port-*/nodes/brute*/activate.log | cat
+more inst/run-port-*/nodes/macoui*/activate.log | cat
 ls inst/fail_fail01/ | tee -a $TEST_RESULTS
 jq .modules inst/run-port-02/nodes/ping02/tmp/module_config.json | tee -a $TEST_RESULTS
 
