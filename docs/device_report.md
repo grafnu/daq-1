@@ -1,5 +1,10 @@
 # DAQ scan report for device 9a02571e8f01
+<<<<<<< HEAD
 Started %% 2019-06-04 14:44:32+00:00
+=======
+
+Started %% 2019-06-04 13:54:14+00:00
+>>>>>>> 5e51cd517d7dc011b2bf2f41c44813465d18916d
 
 |  Role  |      Name              |
 |--------|------------------------|
@@ -10,23 +15,32 @@ Started %% 2019-06-04 14:44:32+00:00
 | Test report date | 2019-06-04T14:44:32.506Z |
 | DAQ version      | 0.9.7 |
 
+
 ## Device Identification
 
-| Device        | Entry              |
-|---------------|--------------------|
-| Name          |  |
-| GUID          |  |
-| MAC addr      | 9a:02:57:1e:8f:01 |
-| Hostname      |  |
-| Type          |  |
-| Make          |  |
-| Model         |  |
-| Serial Number |  |
-| Version       |  |
+| Device            | Entry              |
+|-------------------|--------------------|
+| Name              | *** Name *** |
+| GUID              | *** GUID *** |
+| MAC addr          | 9a:02:57:1e:8f:01 |
+| Hostname          | *** Network Hostname *** |
+| Type              | *** Type *** |
+| Make              | *** Make *** |
+| Model             | *** Model *** |
+| Serial Number     | *** Serial *** |
+| Firmware Version  | *** Firmware Version *** |
 
 ## Device Description
 
-N/A
+![Image of device](*** Device Image URL ***)
+
+*** Device Description ***
+
+
+### Device documentation
+
+[Device datasheets](*** Device Datasheets URL ***)
+[Device manuals](*** Device Manuals URL ***)
 
 ## Report summary
 
@@ -42,9 +56,17 @@ N/A
 
 ```
 Baseline ping test report
+<<<<<<< HEAD
 %% 81 packets captured.
 RESULT skip base.switch.ping
 RESULT pass base.target.ping target %% 10.20.88.38
+=======
+
+%% 74 packets captured.
+RESULT skip base.switch.ping
+RESULT pass base.target.ping target %% 10.20.24.38
+
+>>>>>>> 5e51cd517d7dc011b2bf2f41c44813465d18916d
 ```
 
 ## Module nmap
