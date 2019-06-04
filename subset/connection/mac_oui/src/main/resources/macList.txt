@@ -207,7 +207,6 @@ D848EE Hangzhou Xueji Technology
 E8343E Beijing Infosec Technologies
 C4ADF1 Gopeace
 58F496 Source Chain
-9A0257 Daq Faux Containainer
 80B709 Viptela
 741865 Shanghai DareGlobal Technologies
 DCDC07 TRP Systems BV
