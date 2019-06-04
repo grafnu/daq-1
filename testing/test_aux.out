@@ -9,6 +9,9 @@ Extended tests
 RESULT fail network.brute
 RESULT pass network.brute
 RESULT skip network.brute
+could not find device manufacturer
+could not find device manufacturer
+3C5AB4 Google
 dhcp requests 2 1
 01: ['01:brute:1']
 02: ['02:nmap:1']
