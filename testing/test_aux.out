@@ -25,16 +25,5 @@ pri.ofctl
 sec.flows
 sec.ofctl
 Redacted docs diff
-35d34
-< |connection.mac_oui|PASSED||
-37a37
-> |connection.mac_oui|fail||
-76,78c76,78
-< Brute Test 
-< RESULT connection.mac_oui PASSED 
-< 9A0257 Daq Faux Containainer 
----
-> Mac OUI Test
-> RESULT connection.mac_oui fail
-> could not find device manufacturer
+No report diff
 Done with tests
