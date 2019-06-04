@@ -1,16 +1,5 @@
 # DAQ scan report for device 9a02571e8f01
-<<<<<<< HEAD
-Started %% 2019-06-04 14:45:21+00:00
-
-|  Role  |      Name              |
-|--------|------------------------|
-|Operator| *** Operator Name *** |
-|Reviewer| *** Reviewer Name *** |
-|Approver| *** Approver Name *** |
-|--------|------------------------|
-| Test report date | 2019-06-04T14:45:21.262Z |
-=======
-Started %% 2019-06-04 00:01:37+00:00
+Started %% 2019-06-04 15:35:26+00:00
 
 |  Role  |      Name              | Status |
 |--------|------------------------|--------|
@@ -19,8 +8,7 @@ Started %% 2019-06-04 00:01:37+00:00
 
 | Test iteration   |                        |
 |------------------|------------------------|
-| Test report date | 2019-06-04T00:01:37.804Z |
->>>>>>> ba1ebbd742ec177fca826716559bdcc4089c8b2c
+| Test report date | 2019-06-04T15:35:26.211Z |
 | DAQ version      | 0.9.7 |
 | Attempt number   | 1 |
 
@@ -64,16 +52,9 @@ Started %% 2019-06-04 00:01:37+00:00
 
 ```
 Baseline ping test report
-<<<<<<< HEAD
-%% 76 packets captured.
+%% 61 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.34.38
-=======
-
-%% 74 packets captured.
-RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.24.38
->>>>>>> ba1ebbd742ec177fca826716559bdcc4089c8b2c
+RESULT pass base.target.ping target %% 10.20.2.38
 ```
 
 ## Module nmap
