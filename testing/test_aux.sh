@@ -15,17 +15,20 @@ echo Lint checks | tee -a $TEST_RESULTS
 cmd/inbuild skip
 echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
 
+
+rm -rf inst/test_site && mkdir -p inst/test_site
+cp -a misc/test_site inst/
+
 echo Extended tests | tee -a $TEST_RESULTS
 cp misc/system_multi.conf local/system.conf
 cat <<EOF >> local/system.conf
 fail_hook=misc/dump_network.sh
 test_config=misc/runtime_configs/long_wait
 host_tests=misc/all_tests.conf
-site_path=misc/test_site
-site_reports=local/tmp
+site_path=inst/test_site
 startup_faux_1_opts=brute
 startup_faux_2_opts=nobrute
-startup_faux_3_opts=
+startup_faux_3_opts=macoui
 EOF
 cmd/run -b -s
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS

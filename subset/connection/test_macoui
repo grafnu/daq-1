@@ -1,12 +1,6 @@
 #!/bin/bash -e 
 
-if [ -n "$TARGET_IP" ]; then 
-	echo Using the host hardware address $TARGET_MAC
+echo Using the host hardware address $TARGET_MAC
 
-	java -jar mac_oui/build/libs/mac_oui-all.jar $TARGET_MAC
-	cat ./report/macReport.txt >> ./report/report.txt
-
-	cp -r ./report/report.txt /tmp/report.txt
-else
-	echo Wrong parametres Mac test failed | tee /tmp/report.txt
-fi
+java -jar mac_oui/build/libs/mac_oui-all.jar $TARGET_MAC
+cp report/report.txt /tmp/report.txt
