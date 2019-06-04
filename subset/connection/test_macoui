@@ -3,4 +3,4 @@
 echo Using the host hardware address $TARGET_MAC
 
 java -jar mac_oui/build/libs/mac_oui-all.jar $TARGET_MAC
-cat ./report/macReport.txt > /tmp/report.txt
+cp report/report.txt /tmp/report.txt
