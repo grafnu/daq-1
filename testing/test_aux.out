@@ -9,13 +9,13 @@ Extended tests
 RESULT fail network.brute
 RESULT pass network.brute
 RESULT skip network.brute
-inst/run-port-01/nodes/tls01/tmp/report.txt:RESULT fail security.tls.v3
-inst/run-port-01/nodes/tls01/tmp/report.txt:RESULT fail security.x509
-inst/run-port-02/nodes/tls02/tmp/report.txt:RESULT fail security.tls.v3
-inst/run-port-02/nodes/tls02/tmp/report.txt:RESULT fail security.x509
-inst/run-port-03/nodes/tls03/tmp/report.txt:RESULT pass security.tls.v3
-inst/run-port-03/nodes/tls03/tmp/report.txt:RESULT pass security.x509
-dhcp requests 2 1
+RESULT fail security.tls.v3
+RESULT fail security.x509
+RESULT fail security.tls.v3
+RESULT fail security.x509
+RESULT pass security.tls.v3
+RESULT pass security.x509
+dhcp requests 2 2
 01: ['01:brute:1']
 02: ['02:nmap:1']
 03: ['03:nmap:1']
