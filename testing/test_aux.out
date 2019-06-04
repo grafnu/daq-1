@@ -42,5 +42,15 @@ sec.ofctl
   }
 }
 Redacted docs diff
-No report diff
+34a35
+> |connection.mac_oui|FAILED||
+69a71,78
+> ```
+> 
+> ## Module macoui
+> 
+> ```
+> Mac OUI Test
+> RESULT connection.mac_oui FAILED
+> could not find device manufacturer
 Done with tests

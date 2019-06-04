@@ -1,5 +1,5 @@
 # DAQ scan report for device 9a02571e8f01
-Started %% 2019-05-07 04:06:49+00:00
+Started %% 2019-06-04 05:49:36+00:00
 
 |  Role  |      Name              |
 |--------|------------------------|
@@ -7,8 +7,8 @@ Started %% 2019-05-07 04:06:49+00:00
 |Reviewer| *** Reviewer Name *** |
 |Approver| *** Approver Name *** |
 |--------|------------------------|
-| Test report date | 2019-05-07T04:06:49.499Z |
-| DAQ version      | 0.9.6 |
+| Test report date | 2019-06-04T05:49:36.901Z |
+| DAQ version      | 0.9.7 |
 
 ## Device Identification
 
@@ -32,6 +32,7 @@ N/A
 
 |Result|Test|Notes|
 |---|---|---|
+|connection.mac_oui|FAILED||
 |skip|base.switch.ping||
 |pass|base.target.ping|target |
 |fail|network.brute||
@@ -41,9 +42,9 @@ N/A
 
 ```
 Baseline ping test report
-%% 37 packets captured.
+%% 45 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.90.38
+RESULT pass base.target.ping target %% 10.20.88.38
 ```
 
 ## Module nmap
@@ -67,6 +68,14 @@ RESULT fail network.brute
 
 ```
 LOCAL_IP not configured, assuming no network switch.
+```
+
+## Module macoui
+
+```
+Mac OUI Test
+RESULT connection.mac_oui FAILED
+could not find device manufacturer
 ```
 
 ## Report complete
