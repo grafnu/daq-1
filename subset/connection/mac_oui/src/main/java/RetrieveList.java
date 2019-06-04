@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class RetrieveList {
   String macAddress;
-  Map<String, String> macDevices = new HashMap<String, String>();
+  Map<String, String> macDevices = new HashMap<>();
   static final int minimumMACAddressLength = 5;
 
   RetrieveList(String macAddress) {
@@ -28,12 +28,11 @@ public class RetrieveList {
       String line;
       while ((line = bufferedReader.readLine()) != null) {
         resultStringBuilder.append(line).append("\n");
-        String[] words = new String[2];
         String macAddress;
         String manufacturer;
         if (line.length() > minimumMACAddressLength) {
           macAddress = line.substring(0, 6);
-          manufacturer = line.substring(7, line.length());
+          manufacturer = line.substring(7);
           if (manufacturer.length() > 0) {
             macDevices.put(macAddress, manufacturer);
           }
