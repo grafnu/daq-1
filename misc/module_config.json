@@ -9,6 +9,9 @@
     "brute": {
       "enabled": true
     },
+    "bacext": {
+      "enabled": true
+    },
     "tls": {
       "enabled": true
     }
