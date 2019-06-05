@@ -1,6 +1,11 @@
-import socket, ssl, pprint, absolute_filepath
+import socket, ssl, pprint, absolute_filepath, sys
 
-filepath = "/".join(absolute_filepath.script_directory) + "/certs/"
+arguments = sys.argv
+
+directory_name = arguments[1]
+
+filepath = "/".join(absolute_filepath.script_directory) + "/" + directory_name + "/"
+
 hostname = '0.0.0.0'
 port = 443
 
