@@ -8,7 +8,7 @@ cmd/inbuild exit code 0
 Extended tests
 RESULT fail protocol.bacnet.version
 RESULT fail protocol.bacnet.version
-RESULT fail protocol.bacnet.version
+RESULT pass protocol.bacnet.version
 RESULT fail network.brute
 RESULT pass network.brute
 RESULT skip network.brute
