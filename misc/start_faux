@@ -89,6 +89,8 @@ elif [ -n "${options[nobrute]}" ]; then
 fi
 
 if [ -n "${options[tls]}" ]; then
+    echo Generating tls certs.
+    python tlsfaux/generate_certs.py
     echo Starting tls server on port 443 https.
     python tlsfaux/server.py certs &
 elif [ -n "${options[expiredtls]}" ]; then
