@@ -1,5 +1,5 @@
 # DAQ scan report for device 9a02571e8f01
-Started %% 2019-06-06 10:54:28+00:00
+Started %% 2019-06-06 14:00:35+00:00
 
 |  Role  |      Name              | Status |
 |--------|------------------------|--------|
@@ -8,7 +8,7 @@ Started %% 2019-06-06 10:54:28+00:00
 
 | Test iteration   |                        |
 |------------------|------------------------|
-| Test report date | 2019-06-06T10:54:28.860Z |
+| Test report date | 2019-06-06T14:00:34.975Z |
 | DAQ version      | 0.9.7 |
 | Attempt number   | 1 |
 
@@ -53,9 +53,9 @@ Started %% 2019-06-06 10:54:28+00:00
 
 ```
 Baseline ping test report
-%% 67 packets captured.
+%% 82 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.67.38
+RESULT pass base.target.ping target %% 10.20.6.38
 ```
 
 ## Module nmap
@@ -86,7 +86,6 @@ LOCAL_IP not configured, assuming no network switch.
 ```
 Mac OUI Test
 RESULT fail connection.mac_oui
-could not find device manufacturer
 ```
 
 ## Module bacext

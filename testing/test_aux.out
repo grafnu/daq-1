@@ -8,13 +8,13 @@ cmd/inbuild exit code 0
 Extended tests
 RESULT fail protocol.bacnet.version
 RESULT fail protocol.bacnet.version
-RESULT pass protocol.bacnet.version
+RESULT fail protocol.bacnet.version
 RESULT fail network.brute
 RESULT pass network.brute
 RESULT skip network.brute
-could not find device manufacturer
-could not find device manufacturer
-3C5AB4 Google
+RESULT fail connection.mac_oui
+RESULT fail connection.mac_oui
+RESULT pass connection.mac_oui
 dhcp requests 2 1
 01: ['01:brute:1']
 02: ['02:nmap:1']
