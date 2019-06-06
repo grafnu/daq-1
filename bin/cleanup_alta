@@ -1,4 +1,0 @@
-docker kill daq-faux-satlej
-docker kill daq-networking-yamuna
-docker kill faucet1
-docker kill faucet2

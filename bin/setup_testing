@@ -6,8 +6,8 @@ mkdir -p inst/faucet/faucet1
 sudo rm -rf inst/faucet/faucet2
 mkdir -p inst/faucet/faucet2
 
-cp misc/faucet_alta.yaml inst/faucet/faucet1/faucet.yaml 
-cp misc/faucet_alta.yaml inst/faucet/faucet2/faucet.yaml 
+cp topology/alta-dev/faucet_alta.yaml inst/faucet/faucet1/faucet.yaml 
+cp topology/alta-dev/faucet_alta.yaml inst/faucet/faucet2/faucet.yaml 
 
 cmd/faucet faucet1 6655
 cmd/faucet faucet2 6657
