@@ -61,6 +61,7 @@ public class Certs {
           certificateReport += "Certificate:\n" + certificate + "\n";
 
         } else {
+          certificateReport += "Unknown certificate type.\n";
           passTlsV3(false);
           passX509(false);
           System.err.println("Unknown certificate type: " + certificate);
@@ -69,14 +70,13 @@ public class Certs {
       }
       return true;
     } catch (MalformedURLException e) {
+      certificateReport += "MalformedURLException unable to connect to server.\n";
       System.err.println("getCertificate MalformedURLException:" + e.getMessage());
-      passTlsV3(false);
-      passX509(false);
+      skipTlsX509();
       return false;
     } catch (IOException e) {
       System.err.println("getCertificate IOException:" + e.getMessage());
-      passTlsV3(false);
-      passX509(false);
+      skipTlsX509();
       return false;
     } finally {
       report.writeReport(certificateReport);
@@ -97,6 +97,11 @@ public class Certs {
     } else {
       certificateReport += "RESULT fail security.x509\n";      
     }
+  }
+
+  private void skipTlsX509(){
+    certificateReport += "RESULT skip security.tls.v3\n";
+    certificateReport += "RESULT skip security.x509\n";
   }
 
   private static void disableSslVerification() {
