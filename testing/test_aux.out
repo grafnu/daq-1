@@ -15,10 +15,16 @@ RESULT skip network.brute
 RESULT fail connection.mac_oui
 RESULT fail connection.mac_oui
 RESULT pass connection.mac_oui
+RESULT skip security.tls.v3
+RESULT skip security.x509
+RESULT fail security.tls.v3
+RESULT fail security.x509
+RESULT pass security.tls.v3
+RESULT pass security.x509
 dhcp requests 2 1
 01: ['01:brute:1']
 02: ['02:nmap:1']
-03: []
+03: ['03:nmap:1']
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
@@ -44,6 +50,9 @@ sec.ofctl
     "enabled": true
   },
   "switch": {
+    "enabled": true
+  },
+  "tls": {
     "enabled": true
   }
 }

@@ -48,6 +48,8 @@ Started %% 2019-06-06 14:00:35+00:00
 |fail|network.brute||
 |fail|protocol.bacnet.version||
 |pass|security.ports.nmap||
+|skip|security.tls.v3||
+|skip|security.x509||
 
 ## Module ping
 
@@ -92,6 +94,14 @@ RESULT fail connection.mac_oui
 
 ```
 RESULT fail protocol.bacnet.version
+```
+
+## Module tls
+
+```
+IOException unable to connect to server.
+RESULT skip security.tls.v3
+RESULT skip security.x509
 ```
 
 ## Report complete
