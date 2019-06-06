@@ -1,16 +1,16 @@
 # DAQ scan report for device 9a02571e8f01
+Started %% 2019-06-06 08:54:10+00:00
 
-Started %% 2019-06-04 15:35:26+00:00
+|  Role  |      Name              | Status |
+|--------|------------------------|--------|
+|Operator| *** Operator Name *** |        |
+|Approver| *** Approver Name *** |        |
 
-|  Role  |      Name              |
-|--------|------------------------|
-|Operator| *** Operator Name *** |
-|Reviewer| *** Reviewer Name *** |
-|Approver| *** Approver Name *** |
-|--------|------------------------|
-| Test report date | 2019-06-04T15:35:26.211Z |
+| Test iteration   |                        |
+|------------------|------------------------|
+| Test report date | 2019-06-06T08:54:10.971Z |
 | DAQ version      | 0.9.7 |
-
+| Attempt number   | 1 |
 
 ## Device Identification
 
@@ -46,18 +46,15 @@ Started %% 2019-06-04 15:35:26+00:00
 |pass|base.target.ping|target |
 |fail|connection.mac_oui||
 |fail|network.brute||
-|fail|protocol.bacnet.version||
 |pass|security.ports.nmap||
 
 ## Module ping
 
 ```
 Baseline ping test report
-
-%% 81 packets captured.
+%% 64 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.88.38
-
+RESULT pass base.target.ping target %% 10.20.14.38
 ```
 
 ## Module nmap
@@ -92,3 +89,4 @@ could not find device manufacturer
 ```
 
 ## Report complete
+
