@@ -75,6 +75,7 @@ public class Certs {
       skipTlsX509();
       return false;
     } catch (IOException e) {
+      certificateReport += "IOException unable to connect to server.\n";
       System.err.println("getCertificate IOException:" + e.getMessage());
       skipTlsX509();
       return false;
