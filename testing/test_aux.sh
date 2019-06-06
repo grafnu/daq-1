@@ -28,7 +28,7 @@ host_tests=misc/all_tests.conf
 site_path=misc/test_site
 startup_faux_1_opts=brute
 startup_faux_2_opts=nobrute
-startup_faux_3_opts=macoui
+startup_faux_3_opts="macoui bacnet"
 EOF
 cmd/run -b -s
 tail -qn 1 inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS

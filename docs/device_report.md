@@ -46,6 +46,7 @@ Started %% 2019-06-06 08:54:10+00:00
 |pass|base.target.ping|target |
 |fail|connection.mac_oui||
 |fail|network.brute||
+|fail|protocol.bacnet.version||
 |pass|security.ports.nmap||
 
 ## Module ping
@@ -86,6 +87,12 @@ LOCAL_IP not configured, assuming no network switch.
 Mac OUI Test
 RESULT fail connection.mac_oui
 could not find device manufacturer
+```
+
+## Module bacext
+
+```
+RESULT fail protocol.bacnet.version
 ```
 
 ## Report complete
