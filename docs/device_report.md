@@ -47,8 +47,8 @@ Started %% 2019-06-04 15:35:26+00:00
 |fail|network.brute||
 |fail|protocol.bacnet.version||
 |pass|security.ports.nmap||
-|fail|security.tls.v3||
-|fail|security.x509||
+|skip|security.tls.v3||
+|skip|security.x509||
 
 ## Module ping
 
@@ -91,8 +91,8 @@ RESULT fail protocol.bacnet.version
 ## Module tls
 
 ```
-RESULT fail security.tls.v3
-RESULT fail security.x509
+RESULT skip security.tls.v3
+RESULT skip security.x509
 ```
 
 ## Report complete
