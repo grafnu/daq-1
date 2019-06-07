@@ -1,5 +1,4 @@
 {
-  "device_description": "N/A",
   "modules": {
     "brute": {
       "enabled": true
@@ -13,7 +12,6 @@
   },
   "process": {
     "approver": "*** Approver Name ***",
-    "operator": "*** Operator Name ***",
-    "reviewer": "*** Reviewer Name ***"
+    "operator": "*** Operator Name ***"
   }
 }

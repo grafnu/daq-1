@@ -3,10 +3,19 @@
     "nmap": {
       "enabled": true
     },
+    "macoui": {
+     "enabled": true 
+    },
     "switch": {
       "enabled": true
     },
     "brute": {
+      "enabled": true
+    },
+    "bacext": {
+      "enabled": true
+    },
+    "tls": {
       "enabled": true
     },
     "network":{
