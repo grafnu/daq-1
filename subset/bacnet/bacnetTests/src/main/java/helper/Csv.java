@@ -141,24 +141,4 @@ public class Csv {
     }
     return value;
   }
-
-  // for debugging
-  public Multimap getMap() {
-    return picsMap;
-  }
-
-  // for debugging
-  public void printCsvMap() {
-    for (Map.Entry<String, Object> map : picsMap.entries()) {
-      String bacnetObjectType = map.getKey();
-      Map<String, String[]> bacnetObjectProperties = (Map<String, String[]>) map.getValue();
-      System.out.println("\n" + bacnetObjectType.toUpperCase());
-      for (Map.Entry<String, String[]> mapValue : bacnetObjectProperties.entrySet()) {
-        String propertyName = mapValue.getKey();
-        String[] propertyValue = mapValue.getValue();
-        System.out.println(
-            propertyName + " : [" + propertyValue[0] + ", " + propertyValue[1] + "]");
-      }
-    }
-  }
 }

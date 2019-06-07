@@ -22,7 +22,7 @@ public class BacnetPoints {
   private Multimap<String, Map<String, String>> bacnetPointsMap = ArrayListMultimap.create();
   String propertyErrorMessage = "errorClass=Property, errorCode=Unknown property";
 
-  public void get(LocalDevice localDevice) throws Exception {
+  public Multimap<String, Map<String, String>> get(LocalDevice localDevice) throws Exception {
     for (RemoteDevice remoteDevice : localDevice.getRemoteDevices()) {
       RequestUtils.getExtendedDeviceInformation(localDevice, remoteDevice);
       @SuppressWarnings("unchecked")
@@ -54,20 +54,16 @@ public class BacnetPoints {
                     objectPropertyReference.getPropertyIdentifier().toString();
                 String bacnetPropertyValue =
                     propertyValues.getNoErrorCheck(objectPropertyReference).toString();
-                //                                System.out.println(bacnetObjectType + " / " +
-                // bacnetObjectProperty + " : " +  bacnetPropertyValue);
-                // Pic Validation here ...
                 Map<String, String> properties = new HashMap<>();
                 properties.put(bacnetObjectProperty, bacnetPropertyValue);
                 bacnetPointsMap.put(bacnetObjectType, properties);
-                //
-                // System.out.println(bacnetPointsMap.get(bacnetObjectType));
               }
             }
           }
         }
       }
     }
+    return bacnetPointsMap;
   }
 
   public Multimap<String, Map<String, String>> getBacnetPointsMap() {
@@ -106,12 +102,12 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Accumulator
@@ -144,12 +140,12 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Analog Input
@@ -178,18 +174,18 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.passbackMode,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef,
+      PropertyIdentifier.passbackMode,
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef,
       PropertyIdentifier.activeVtSessions,
-      //                PropertyIdentifier.reliabilityEvaluationInhibit,
-      //                PropertyIdentifier.faultHighLimit,
-      //                PropertyIdentifier.faultLowLimit,
-      //                PropertyIdentifier.profileLocation
+      PropertyIdentifier.reliabilityEvaluationInhibit,
+      PropertyIdentifier.faultHighLimit,
+      PropertyIdentifier.faultLowLimit,
+      PropertyIdentifier.profileLocation
     };
 
     // Analog Output
@@ -219,12 +215,12 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Analog Value
@@ -251,12 +247,12 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Averaging
@@ -302,13 +298,13 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
       PropertyIdentifier.timeDelay,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Binary Output
@@ -341,12 +337,12 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Binary Value
@@ -377,12 +373,12 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Calendar
@@ -402,9 +398,9 @@ public class BacnetPoints {
       PropertyIdentifier.action,
       PropertyIdentifier.actionText,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.eventDetectionEnable
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.eventDetectionEnable
     };
 
     // Device
@@ -462,9 +458,9 @@ public class BacnetPoints {
       PropertyIdentifier.restartNotificationRecipients,
       PropertyIdentifier.timeOfDeviceRestart,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.eventDetectionEnable,
     };
 
     // Event enrollment
@@ -481,11 +477,11 @@ public class BacnetPoints {
       PropertyIdentifier.notificationClass,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Event log
@@ -512,11 +508,11 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // File
@@ -569,12 +565,12 @@ public class BacnetPoints {
       PropertyIdentifier.units,
       PropertyIdentifier.memberOf,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Life safety zone
@@ -604,12 +600,12 @@ public class BacnetPoints {
       PropertyIdentifier.zoneMembers,
       PropertyIdentifier.memberOf,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Load control
@@ -637,12 +633,12 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Loop
@@ -682,12 +678,12 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Multi state input
@@ -710,12 +706,12 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Multi state output
@@ -739,12 +735,12 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Multi state value
@@ -768,12 +764,12 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Notification class
@@ -785,9 +781,9 @@ public class BacnetPoints {
       PropertyIdentifier.ackRequired,
       PropertyIdentifier.recipientList,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.eventDetectionEnable,
     };
 
     // Program
@@ -804,9 +800,9 @@ public class BacnetPoints {
       PropertyIdentifier.reliability,
       PropertyIdentifier.outOfService,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.eventDetectionEnable,
     };
 
     // Pulse converter
@@ -839,12 +835,12 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.timeDelayNormal,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.timeDelayNormal,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Schedule
@@ -862,9 +858,9 @@ public class BacnetPoints {
       PropertyIdentifier.reliability,
       PropertyIdentifier.outOfService,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.eventDetectionEnable
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.eventDetectionEnable
     };
 
     // Structured View
@@ -910,11 +906,11 @@ public class BacnetPoints {
       PropertyIdentifier.trigger,
       PropertyIdentifier.statusFlags,
       PropertyIdentifier.reliability,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     // Trend log multiple
@@ -947,11 +943,11 @@ public class BacnetPoints {
       PropertyIdentifier.notifyType,
       PropertyIdentifier.eventTimeStamps,
       PropertyIdentifier.profileName,
-      //                PropertyIdentifier.eventMessageTexts,
-      //                PropertyIdentifier.eventMessageTextsConfig,
-      //                PropertyIdentifier.eventDetectionEnable,
-      //                PropertyIdentifier.eventAlgorithmInhibit,
-      //                PropertyIdentifier.eventAlgorithmInhibitRef
+      PropertyIdentifier.eventMessageTexts,
+      PropertyIdentifier.eventMessageTextsConfig,
+      PropertyIdentifier.eventDetectionEnable,
+      PropertyIdentifier.eventAlgorithmInhibit,
+      PropertyIdentifier.eventAlgorithmInhibitRef
     };
 
     Map<String, PropertyIdentifier[]> properties = new HashMap<String, PropertyIdentifier[]>();
@@ -997,8 +993,6 @@ public class BacnetPoints {
         refs.add(oid, PropertyIdentifier.presentValue);
         for (int i = 0; i < propertyIdentifierArray.length; i++) {
           refs.add(oid, propertyIdentifierArray[i]);
-          //                    System.out.println("OID: " + oid + " property: " +
-          // propertyIdentifierArray[i]);
         }
       }
     }
