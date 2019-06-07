@@ -13,7 +13,8 @@ a report is generated and optionally uploaded to a web dashboard.
 
 Running `bin/setup_daq` will setup all key components and the basic prerequisites.
 For the system overall, this installs a minimum set of basic packages, docker, and openvswitch.
-Additionally, it sets up a local install of required packages and components.
+Additionally, it sets up a local install of required packages and components. After setup,
+also run `cmd/build` to build the necessary Docker images.
 
 To configure the system to run the comprehensive suite of tests, copy `misc/system_all.conf` to
 `local/system.conf` (creating `local` if necessary). The basic qualification suite can be run with
