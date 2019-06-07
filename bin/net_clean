@@ -1,12 +1,31 @@
-#clean setup_dot1x
-sudo ovs-vsctl del-br br-dot1x
-docker rm -f daq-faux-1 || true
-docker rm -f daq-faux-2 || true
-docker rm -f daq-ntwk || true
-docker rm -f faucet_dot1x || true
+#!/bin/bash
 
-#clean setup_testing
-docker kill daq-faux-satlej
-docker kill daq-networking-yamuna
-docker kill faucet1
-docker kill faucet2
+if [ -n "$(which ovs-vsctl)" ]; then
+    bridges=`sudo ovs-vsctl list-br`
+    for bridge in $bridges; do
+        echo Cleaning bridge $bridge...
+        sudo timeout 10 ovs-vsctl --if-exists del-br $bridge || true
+        sudo ovs-vsctl --if-exists del-br $bridge
+    done
+fi
+
+# Kill running containers that are based on known images.
+for image in daq/faucet daq/faux daqf/networking daqf/faux; do
+    echo Cleaning docker $image...
+    images=$(docker ps --filter ancestor=$image -q)
+    if [ -n "$images" ]; then
+        docker kill $images > /dev/null
+    fi
+done
+
+netnses=$(ip netns)
+if [ -n "$netnses" ]; then
+    for netns in $netnses; do
+        echo Cleaning netns $netns...
+        sudo ip netns del $netnses
+    done
+else
+    echo No netnses to clean!
+fi
+
+echo Done with network cleanup.
