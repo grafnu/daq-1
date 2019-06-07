@@ -1,0 +1,44 @@
+{
+  "title": "DAQ System Properties",
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "required": [
+    "modules",
+    "process"
+  ],
+  "properties": {
+    "modules": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[a-z]{3,8}$": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "process": {
+      "additionalProperties": false,
+      "required": [
+        "approver",
+        "operator"
+      ],
+      "properties": {
+        "approver": {
+          "type": "string",
+          "pattern": "^[^*]"
+        },
+        "operator": {
+          "type": "string",
+          "pattern": "^[^*]"
+        }
+      }
+    }
+  }
+}

@@ -1,8 +1,14 @@
 # Changelog
 
-* Next Release:
+* Next Version
+	* Device and system schema validation in web-ui.
+	* Automatic population of new device directory from template.
+	* Faucet version 1.9.4 update.
+* 0.9.7:
         * Device-level test configuration (e.g. allowed open ports)
 	* Use table for test report output
+	* Dynaimic runtime config capability
+	* Ability to select runtime test module execution
 * 0.9.6:
 	* UDMI Tech Stack definition (MQTT + JSON + UDMI).
 	* Updating BacNET tests to have more predictable/regular identifiers.

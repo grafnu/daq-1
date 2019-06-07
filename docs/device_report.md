@@ -1,41 +1,42 @@
 # DAQ scan report for device 9a02571e8f01
-Started %% 2019-04-11 18:38:30+00:00
+Started %% 2019-06-06 14:00:35+00:00
 
-|  Role  |      Name       |
-|--------|-----------------|
-|Operator| <operator_name> |
-|Reviewer| <reviewer_name> |
-|Approver| <approver_name> |
-|--------|-----------------|
-|Test report date    | <test_timestamp>  |
-|Test report revision| <revision_number> |
+|  Role  |      Name              | Status |
+|--------|------------------------|--------|
+|Operator| *** Operator Name *** |        |
+|Approver| *** Approver Name *** |        |
 
-## Device identification
+| Test iteration   |                        |
+|------------------|------------------------|
+| Test report date | 2019-06-06T14:00:34.975Z |
+| DAQ version      | 0.9.7 |
+| Attempt number   | 1 |
 
-| Device        | Entry              |
-|---------------|--------------------|
-| Name          | <device_name>      |
-| GUID          | <device_guid>      |
-| MAC addr      | <mac_address>      |
-| Hostname      | <hostname>         |
-| Type          | <device_type>      |
-| Manufacturer  | <manufacturer>     |
-| Model         | <model>            |
-| Serial Number | <serial_number>    |
-| Version       | <firmware_version> |
+## Device Identification
 
-## Device description
+| Device            | Entry              |
+|-------------------|--------------------|
+| Name              | *** Name *** |
+| GUID              | *** GUID *** |
+| MAC addr          | 9a:02:57:1e:8f:01 |
+| Hostname          | *** Network Hostname *** |
+| Type              | *** Type *** |
+| Make              | *** Make *** |
+| Model             | *** Model *** |
+| Serial Number     | *** Serial *** |
+| Firmware Version  | *** Firmware Version *** |
 
-Free text including description of device and links to more information
-(datasheets, manuals, installation notes, etc.)
+## Device Description
 
-## Test priorities
+![Image of device](*** Device Image URL ***)
 
-| Test Name       | Priority    |
-|-----------------|-------------|
-| category1.test1 | REQUIRED    |
-| category1.test2 | RECOMMENDED |
-| category2.test1 | REQUIRED    |
+*** Device Description ***
+
+
+### Device documentation
+
+[Device datasheets](*** Device Datasheets URL ***)
+[Device manuals](*** Device Manuals URL ***)
 
 ## Report summary
 
@@ -43,16 +44,20 @@ Free text including description of device and links to more information
 |---|---|---|
 |skip|base.switch.ping||
 |pass|base.target.ping|target |
+|fail|connection.mac_oui||
 |fail|network.brute||
+|fail|protocol.bacnet.version||
 |pass|security.ports.nmap||
+|skip|security.tls.v3||
+|skip|security.x509||
 
 ## Module ping
 
 ```
 Baseline ping test report
-%% 52 packets captured.
+%% 82 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.58.38
+RESULT pass base.target.ping target %% 10.20.6.38
 ```
 
 ## Module nmap
@@ -76,6 +81,27 @@ RESULT fail network.brute
 
 ```
 LOCAL_IP not configured, assuming no network switch.
+```
+
+## Module macoui
+
+```
+Mac OUI Test
+RESULT fail connection.mac_oui
+```
+
+## Module bacext
+
+```
+RESULT fail protocol.bacnet.version
+```
+
+## Module tls
+
+```
+IOException unable to connect to server.
+RESULT skip security.tls.v3
+RESULT skip security.x509
 ```
 
 ## Report complete
