@@ -10,7 +10,7 @@ if [ -n "$(which ovs-vsctl)" ]; then
 fi
 
 # Kill running containers that are based on known images.
-for image in daq/faucet daq/faux daqf/networking daqf/faux; do
+for image in daq/faucet daq/faux daqf/networking daqf/faux faucet/gauge; do
     echo Cleaning docker $image...
     images=$(docker ps --filter ancestor=$image -q)
     if [ -n "$images" ]; then
