@@ -1,5 +1,6 @@
 Running testing/test_stack.sh
 Generator tests
+Only in topology/: alta-dev
 Only in topology/: not-normal
 Only in topology/: setup.json
 Only in topology/zz-bond: site_config.json
@@ -17,3 +18,6 @@ daq-faux-2: ping -c 10 192.168.0.3 10
 daq-faux-3: ping -c 10 192.168.0.1 10
 daq-faux-3: ping -c 10 192.168.0.2 10
 Done with stack test nobond.
+Dot1x setup
+10 packets transmitted  10 received
+10 packets transmitted  0 received
