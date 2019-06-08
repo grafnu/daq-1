@@ -18,6 +18,7 @@ script:
 env:
   global:
     - DOCKER_STARTUP_TIMEOUT_MS=60000
+    - DAQ_FAUCET_REPO=grafnu
   matrix:
     - DAQ_TEST=base
     - DAQ_TEST=many
