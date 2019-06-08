@@ -25,14 +25,13 @@ fi
 if [ "$1" == "gauge" ]; then
     CONTAINER=daq-gauge
     IMAGE=faucet/gauge
-    docker pull $IMAGE
+    docker pull $IMAGE || true
     shift
 fi
 
 if [ -n "$1" ]; then
-    CROOT=$1
-    INSTDIR=$INSTDIR/faucet/$CROOT
-    CONTAINER=$CONTAINER-$CROOT
+    CONTAINER=$CONTAINER-$1
+    INSTDIR=$INSTDIR/faucet/daq-faucet-$1
     shift
 fi
 
