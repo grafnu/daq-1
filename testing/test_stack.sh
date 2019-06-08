@@ -114,18 +114,12 @@ function test_dot1x {
 
 echo Stacking Tests >> $TEST_RESULTS
 test_stack nobond
-test_stack bond
-
-echo Cleanup bridges...
-for bridge in corp t1sw1 t1sw2 t2sw1 t2sw2; do
-    echo Cleaning $bridge...
-    sudo timeout 1m ovs-vsctl del-br $bridge
-done
-
 bin/net_clean
+test_stack bond
+bin/net_clean
+
 echo Dot1x setup >> $TEST_RESULTS
 test_dot1x
-echo Cleaning up
 bin/net_clean
 
 echo Done with cleanup. Goodby.
