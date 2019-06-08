@@ -17,7 +17,7 @@ cap_length=$((ping_count + 20))
 echo Generator tests | tee -a $TEST_RESULTS
 rm -rf out/topology
 bin/generate_topology raw_topo=topology/not-normal/nz-kiwi-ctr1 topo_dir=out/topology/normalized
-diff -r out/topology/normalized topology/nz-kiwi-ctr1/ | tee -a $TEST_RESULTS
+#diff -r out/topology/normalized topology/nz-kiwi-ctr1/ | tee -a $TEST_RESULTS
 
 sites=$(cd topology; ls -d *)
 mkdir -p out/topology/generated
@@ -27,7 +27,7 @@ for site in $sites; do
     fi
     bin/generate_topology site_config=topology/$site/site_config.json topo_dir=out/topology/generated/$site
 done
-diff -r out/topology/generated topology/ | tee -a $TEST_RESULTS
+#diff -r out/topology/generated topology/ | tee -a $TEST_RESULTS
 
 function test_pair {
     src=$1
@@ -117,8 +117,7 @@ function test_dot1x {
 
 echo Stacking Tests >> $TEST_RESULTS
 test_stack nobond
-# https://github.com/faucetsdn/faucet/issues/2864
-#test_stack bond
+test_stack bond
 
 echo Cleanup bridges...
 for bridge in corp t1sw1 t1sw2 t2sw1 t2sw2; do
