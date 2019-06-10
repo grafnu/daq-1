@@ -1,7 +1,7 @@
 Running testing/test_base.sh
 Base Tests
 01: []
-# DAQ scan report for device 9a02571e8f00
+# Device 9a02571e8f00, XXX to XXX
 Started
 
 Sample device description.
@@ -51,7 +51,11 @@ RESULT skip network.brute
 
 Open port tests
 01: ['01:nmap:1']
+RESULT fail security.ports.nmap
+|fail|security.ports.nmap||
 01: []
+RESULT pass security.ports.nmap
+|pass|security.ports.nmap||
 External switch tests
 02: []
     dp_id: 1
