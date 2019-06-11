@@ -148,6 +148,8 @@ check_bacnet 02 03 1 1 1 1
 check_bacnet 03 01 1 1 1 1
 run_test 3
 
+exit
+
 generate minimal 3
 check_bacnet 01 02 1 1 1 1
 check_bacnet 02 03 0 1 1 1
