@@ -29,6 +29,8 @@ startup_faux_1_opts=brute
 startup_faux_2_opts="nobrute expiredtls"
 startup_faux_3_opts="tls macoui bacnet"
 EOF
+run_conf_dir=inst/runtime_conf/port-01
+mkdir -p $run_conf_dir && echo cat /config/device/snake.txt > $conf_dir/ping_runtime.sh
 cmd/run -b -s
 tail -qn 1 inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
