@@ -16,6 +16,7 @@ public class PicsTest {
   private String failedTestReport = "RESULT fail protocol.bacnet.pic\n";
   private String skippedTestReport = "RESULT skip protocol.bacnet.pic\n";
   private String reportAppendix = "";
+  private String additionalReportAppendix = "";
   private Csv csv;
   private static LocalDevice localDevice;
   private String localIp = "";
@@ -58,8 +59,8 @@ public class PicsTest {
         bacnetPoints.get(localDevice);
         Multimap<String, Map<String, String>> bacnetPointsMap = bacnetPoints.getBacnetPointsMap();
         boolean csvExists = fileManager.checkCsvForMacAddress(deviceMacAddress);
-        if(csvExists) { reportAppendix = fileManager.getFileName(deviceMacAddress) +
-                " file not found. Reverting to faux device pics";}
+        if(!csvExists) { additionalReportAppendix = fileManager.getFileName(deviceMacAddress) +
+                " file not found. Reverting to faux device pics \n\n";}
         validatePics(bacnetPointsMap, fileManager);
         generateReport(deviceMacAddress);
       }
@@ -83,14 +84,14 @@ public class PicsTest {
     Report report = new Report("tmp/" + deviceMacAddress + "_BacnetPICSTestReport.txt");
     Report appendix = new Report("tmp/" + deviceMacAddress + "_BacnetPICSTest_APPENDIX.txt");
     if (bacnetSupported) {
-      boolean reportText = csv.getTestResult();
+      boolean testPassed = csv.getTestResult();
       String reportAppendix = csv.getTestAppendices();
-      if (reportText) {
+      if (testPassed) {
         report.writeReport(passedTestReport);
       } else {
         report.writeReport(failedTestReport);
       }
-      appendix.writeReport(reportAppendix);
+      appendix.writeReport(additionalReportAppendix+reportAppendix);
     } else {
       report.writeReport(skippedTestReport);
       appendix.writeReport(reportAppendix);

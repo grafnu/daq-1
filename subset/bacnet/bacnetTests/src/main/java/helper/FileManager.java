@@ -8,19 +8,18 @@ public class FileManager {
     private String csvExtension = ".csv";
 
     // temp code.. waiting on daq capability to access auxiliary device conf from Docker container
-    private String csvFileFail = "faux_device_fail";
-    private String csvFilePass = "faux_device_pass";
+    private String fauxDevicePicsCsv = "faux_device";
 
     public boolean checkCsvForMacAddress(String deviceMacAddress) {
         String csvFolder = getAbsolutePath();
-        File[] listFiles = new File(csvFolder + "tmp").listFiles();
+        File[] listFiles = new File(csvFolder + "tmp").listFiles(); // this tmp folder is refering to the docker container directory
         String threeDigitMacAddress = getFirstThreeDigitOfMacAddress(deviceMacAddress);
         for (int i = 0; i < listFiles.length; i++) {
             if (listFiles[i].isFile()) {
                 String fileName = listFiles[i].getName();
                 if (fileName.startsWith(threeDigitMacAddress)
                         && fileName.endsWith(csvExtension)) {
-                    System.out.println("file found: " + fileName + "\n");
+                    System.out.println("file found: " + fileName + "\n" + csvFolder+"/tmp");
                     setFilePath(fileName);
                     return true;
                 }
@@ -28,7 +27,7 @@ public class FileManager {
         }
         String errorMessage = getFileName(deviceMacAddress) + " file not found. Reverting to faux device pics.\n";
         System.err.println(errorMessage);
-        setFilePath(getFileName(csvFileFail));
+        setFilePath(getFileName(fauxDevicePicsCsv));
         return false;
     }
 
@@ -55,7 +54,7 @@ public class FileManager {
         return this.filePath;
     }
 
-    private String getAbsolutePath() {
+    public String getAbsolutePath() {
         String absolute_path = "";
         String system_path = System.getProperty("user.dir");
         String[] path_arr = system_path.split("/");

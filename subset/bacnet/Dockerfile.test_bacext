@@ -27,3 +27,5 @@ COPY --from=bacnet_build /root/bacnet4j/bacnet4j-1.0-SNAPSHOT-all.jar bacnetTest
 RUN cd bacnetTests && ./gradlew build
 
 CMD ["./test_bacext"]
+
+CMD tail -f /dev/null

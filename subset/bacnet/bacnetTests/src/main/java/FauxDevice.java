@@ -79,7 +79,6 @@ public class FauxDevice implements Runnable{
             analogInput1.setProperty(PropertyIdentifier.maxPresValue, new Real(150.96f));
             analogInput1.setProperty(PropertyIdentifier.reliability, new Reliability(4));
             analogInput1.setProperty(PropertyIdentifier.eventMessageTexts, eventTransitionBits);
-            analogInput1.setProperty(PropertyIdentifier.timeDelayNormal, new UnsignedInteger(0));
             analogInput1.setProperty(PropertyIdentifier.notificationClass, new UnsignedInteger(0));
             analogInput1.setProperty(PropertyIdentifier.description, new CharacterString("Distech device"));
             analogInput1.setProperty(PropertyIdentifier.eventAlgorithmInhibit, new com.serotonin.bacnet4j.type.primitive.Boolean(false));
@@ -110,7 +109,6 @@ public class FauxDevice implements Runnable{
             analogOutput1.setProperty(PropertyIdentifier.eventEnable, new EventTransitionBits(true, true, true));
             analogOutput1.setProperty(PropertyIdentifier.eventDetectionEnable, new com.serotonin.bacnet4j.type.primitive.Boolean(false));
             analogOutput1.setProperty(PropertyIdentifier.eventMessageTexts, eventTransitionBits);
-            analogOutput1.setProperty(PropertyIdentifier.timeDelayNormal, new UnsignedInteger(0));
             analogOutput1.setProperty(PropertyIdentifier.highLimit, new Real(0));
             analogOutput1.setProperty(PropertyIdentifier.ackedTransitions, new EventTransitionBits(true, true, true));
             localDevice.addObject(analogOutput1);
