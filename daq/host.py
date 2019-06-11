@@ -397,7 +397,7 @@ class ConnectedHost:
             'target_mac': self.target_mac,
             'gateway_ip': self.gateway.IP(),
             'gateway_mac': self.gateway.MAC(),
-            'conf_base': self._port_base,
+            'port_base': self._port_base,
             'dev_base': self._device_base,
             'scan_base': self.scan_base
         }
