@@ -51,6 +51,7 @@ class ConnectedHost:
     _MODULE_CONFIG = "module_config.json"
     _CONTROL_PATH = "control/port-%s"
     _CORE_TESTS = ['pass', 'fail', 'ping']
+    _AUX_DIR = "aux/"
 
     def __init__(self, runner, gateway, target, config):
         self.runner = runner
@@ -83,6 +84,7 @@ class ConnectedHost:
         self.target_ip = None
         self._loaded_config = None
         self.reload_config()
+        configurator.write_config(self._aux_path(), self._MODULE_CONFIG, self._loaded_config)
         assert self._loaded_config, 'config was not loaded'
         self.remaining_tests = self._get_enabled_tests()
         LOGGER.info('Host %s running with enabled tests %s', self.target_port, self.remaining_tests)
@@ -389,6 +391,12 @@ class ConnectedHost:
             self._state_transition(_STATE.ERROR)
             self.runner.target_set_error(self.target_port, e)
 
+    def _aux_path(self):
+        path = os.path.join(self._device_base, self._AUX_DIR)
+        if not os.path.exists(path):
+            os.makedirs(path)
+        return path
+
     def _docker_test(self, test_name):
         self._state_transition(_STATE.TESTING, _STATE.NEXT)
         self.record_result(test_name, state='run')
@@ -398,7 +406,7 @@ class ConnectedHost:
             'gateway_ip': self.gateway.IP(),
             'gateway_mac': self.gateway.MAC(),
             'port_base': self._port_base,
-            'dev_base': self._device_base,
+            'dev_base': self._aux_path(),
             'scan_base': self.scan_base
         }
 
