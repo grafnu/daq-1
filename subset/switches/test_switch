@@ -12,4 +12,10 @@ if [ -n "$LOCAL_IP" ]; then
     cp -r tmp/report.txt /tmp/report.txt
 else
     echo LOCAL_IP not configured, assuming no network switch. | tee /tmp/report.txt
+    echo RESULT skip connection.port_link | tee /tmp/report.txt
+    echo RESULT skip connection.port_speed | tee /tmp/report.txt
+    echo RESULT skip connection.port_duplex | tee /tmp/report.txt
+    echo RESULT skip poe.power | tee /tmp/report.txt
+    echo RESULT skip poe.negotiation | tee /tmp/report.txt
+    echo RESULT skip poe.support | tee /tmp/report.txt
 fi
