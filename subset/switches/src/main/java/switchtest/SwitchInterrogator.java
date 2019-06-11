@@ -61,16 +61,16 @@ public class SwitchInterrogator implements Runnable {
   int platformPos = 2;
   int powerinlinePos = 3;
 
-  HashMap<stack_expected, String> stack_map = new HashMap<stack_expected, String>();
+  HashMap<String, String> stack_map = new HashMap<String, String>();
 
-  enum stack_expected {
-    id,
-    pending_id,
-    mac_address,
-    priority,
-    status,
-    role
-  }
+  String[] stack_expected = {
+    "id",
+    "pending_id",
+    "mac_address",
+    "priority",
+    "status",
+    "role"
+  };
 
   String[] show_stack_expected = {
     "ID", "Pending ID", "MAC address", "Priority", "Status", "Role", "\n"
@@ -79,18 +79,18 @@ public class SwitchInterrogator implements Runnable {
   int[] show_stack_pointers = new int[show_stack_expected.length];
   String[] show_stack_data = new String[show_stack_expected.length - 1];
 
-  HashMap<power_expected, String> power_map = new HashMap<power_expected, String>();
+  HashMap<String, String> power_map = new HashMap<String, String>();
 
-  enum power_expected {
-    dev_interface,
-    admin,
-    pri,
-    oper,
-    power,
-    device,
-    dev_class,
-    max
-  }
+  String[] power_expected = {
+    "dev_interface",
+    "admin",
+    "pri",
+    "oper",
+    "power",
+    "device",
+    "dev_class",
+    "max"
+  };
 
   String[] show_power_expected = {
     "Interface", "Admin", "Pri", "Oper", "Power", "Device", "Class", "Max", "\n"
@@ -99,30 +99,30 @@ public class SwitchInterrogator implements Runnable {
   int[] show_power_pointers = new int[show_power_expected.length];
   String[] show_power_data = new String[show_power_expected.length - 1];
 
-  HashMap<interface_expected, String> interface_map = new HashMap<interface_expected, String>();
+  HashMap<String, String> interface_map = new HashMap<String, String>();
 
-  enum interface_expected {
-    port_number,
-    link_status,
-    administrative_state,
-    current_duplex,
-    current_speed,
-    current_polarity,
-    configured_duplex,
-    configured_speed,
-    cofigured_polarity,
-    left_chevron,
-    input_packets,
-    bytes,
-    dropped,
-    multicast_packets,
-    output_packets,
-    multicast_packets2,
-    broadcast_packets,
-    input_average_rate,
-    output_average_rate,
-    input_peak_rate,
-    time_since_last_state_change
+  String[] interface_expected = {
+    "port_number",
+    "link_status",
+    "administrative_state",
+    "current_duplex",
+    "current_speed",
+    "current_polarity",
+    "configured_duplex",
+    "configured_speed",
+    "cofigured_polarity",
+    "left_chevron",
+    "input_packets",
+    "bytes",
+    "dropped",
+    "multicast_packets",
+    "output_packets",
+    "multicast_packets2",
+    "broadcast_packets",
+    "input_average_rate",
+    "output_average_rate",
+    "input_peak_rate",
+    "time_since_last_state_change"
   };
 
   String[] show_interface_expected = {
@@ -175,34 +175,34 @@ public class SwitchInterrogator implements Runnable {
   String[] show_interface_port_expected = {"port1", "\n", "Time since last state change: ", "\n"};
   int[] show_interface_port_pointers = new int[show_interface_port_expected.length];
 
-  HashMap<platform_expected, String> platform_map = new HashMap<platform_expected, String>();
+  HashMap<String, String> platform_map = new HashMap<String, String>();
 
-  enum platform_expected {
-    port_number,
-    enabled,
-    loopback,
-    link,
-    speed,
-    max_speed,
-    duplex,
-    linkscan,
-    autonegotiate,
-    master,
-    tx_pause,
-    rx_pause,
-    untagged_vlan,
-    vlan_filter,
-    stp_state,
-    learn,
-    discard,
-    jam,
-    max_frame_size,
-    mc_disable_sa,
-    mc_disable_ttl,
-    mc_egress_untag,
-    mc_egress_vid,
-    mc_ttl_threshold
-  }
+  String[] platform_expected = {
+    "port_number",
+    "enabled",
+    "loopback",
+    "link",
+    "speed",
+    "max_speed",
+    "duplex",
+    "linkscan",
+    "autonegotiate",
+    "master",
+    "tx_pause",
+    "rx_pause",
+    "untagged_vlan",
+    "vlan_filter",
+    "stp_state",
+    "learn",
+    "discard",
+    "jam",
+    "max_frame_size",
+    "mc_disable_sa",
+    "mc_disable_ttl",
+    "mc_egress_untag",
+    "mc_egress_vid",
+    "mc_ttl_threshold"
+  };
 
   String[] show_platform_expected = {
     "port1",
@@ -507,6 +507,14 @@ public class SwitchInterrogator implements Runnable {
       System.err.println("Exception parseData:" + e.getMessage());
     }
   }
+  
+  private HashMap dataToMap(String[] expected_key, String[] data_array) {
+	  HashMap<String, String> hashMap = new HashMap<String, String>();
+	  for(int i = 0; i < expected_key.length; i++) {
+		  hashMap.put(expected_key[i], data_array[i]);
+	  }
+	  return hashMap;
+  }
 
   private void parseRequestFlag(String data, int requestFlag) {
     try {
@@ -515,6 +523,7 @@ public class SwitchInterrogator implements Runnable {
           // parse show interface
           login_report += "show interface:\n";
           parse_packet(data, show_interface_port_expected, show_interface_port_pointers);
+          interface_map = dataToMap(interface_expected, show_interface_data);
           writeReport();
           telnetClientSocket.writeData("\n");
           break;
@@ -522,6 +531,7 @@ public class SwitchInterrogator implements Runnable {
           // parse show platform
           login_report += "\nshow platform:\n";
           parse_packet(data, show_platform_port_expected, show_platform_port_pointers);
+          platform_map = dataToMap(platform_expected, show_platform_data); 
           writeReport();
           telnetClientSocket.writeData("\n");
           break;
@@ -530,6 +540,7 @@ public class SwitchInterrogator implements Runnable {
           login_report += "\nshow power-inline:\n";
           data = trash_line(trash_line(data, 0), 1);
           parse_inline(data, show_power_expected, show_power_pointers, show_power_data);
+          power_map = dataToMap(power_expected, show_power_data);
           writeReport();
           telnetClientSocket.writeData("\n");
           break;
@@ -544,6 +555,7 @@ public class SwitchInterrogator implements Runnable {
           // parse show stack
           login_report += "\nshow stack:\n";
           parse_inline(data, show_stack_expected, show_stack_pointers, show_stack_data);
+          stack_map = dataToMap(stack_expected, show_stack_data); 
           writeReport();
           telnetClientSocket.writeData("\n");
           break;
@@ -576,27 +588,15 @@ public class SwitchInterrogator implements Runnable {
   private void validateTests() {
     try {
       login_report += "\n";
-      String link_status = show_interface_data[1];
-      String dropped_packets = show_interface_data[12];
-
-      String current_speed = show_interface_data[4];
-      String configured_speed = show_interface_data[7];
-
-      String current_duplex = show_interface_data[3];
-      String configured_duplex = show_interface_data[6];
-
-      String current_max_power = show_power_data[7];
-      String current_power = show_power_data[4];
-      String current_PoE_admin = show_power_data[1];
-
-      if (link_status.equals("UP") && Integer.parseInt(dropped_packets) == 0) {
+      
+      if (interface_map.get("link_status").equals("UP") && Integer.parseInt(interface_map.get("dropped")) == 0) {
         login_report += "RESULT pass connection.port_link\n";
       } else {
         login_report += "RESULT fail connection.port_link\n";
       }
 
-      if (current_speed != null) {
-        if (configured_speed.equals("auto") && Integer.parseInt(current_speed) >= 10) {
+      if (interface_map.get("current_speed") != null) {
+        if (interface_map.get("configured_speed").equals("auto") && Integer.parseInt(interface_map.get("current_speed")) >= 10) {
           login_report += "RESULT pass connection.port_speed\n";
         } else {
           login_report += "RESULT fail connection.port_speed\n";
@@ -605,8 +605,8 @@ public class SwitchInterrogator implements Runnable {
         login_report += "RESULT fail connection.port_speed\n";
       }
 
-      if (current_duplex != null) {
-        if (configured_duplex.equals("auto") && current_duplex.equals("full")) {
+      if (interface_map.get("current_duplex") != null) {
+        if (interface_map.get("configured_duplex").equals("auto") && interface_map.get("current_duplex").equals("full")) {
           login_report += "RESULT pass connection.port_duplex\n";
         } else {
           login_report += "RESULT fail connection.port_duplex\n";
@@ -615,9 +615,9 @@ public class SwitchInterrogator implements Runnable {
         login_report += "RESULT fail connection.port_duplex\n";
       }
 
-      current_max_power = current_max_power.replaceAll("\\D+", "");
-
-      current_power = current_power.replaceAll("\\D+", "");
+      String current_max_power = power_map.get("max").replaceAll("\\D+", "");
+      String current_power = power_map.get("power").replaceAll("\\D+", "");
+      String current_PoE_admin = power_map.get("admin");
 
       System.out.println(
           "current_max_power:"
