@@ -144,15 +144,16 @@ class ConnectedHost:
             self._create_device_dir(dev_path)
         return dev_path
 
-    def _get_type_base(self):
+    def _type_aux_path(self):
         dev_config = configurator.load_config(self._device_base, self._MODULE_CONFIG)
         device_type = dev_config.get('device_type')
         if not device_type:
             return None
         LOGGER.info('Configuring device %s as type %s', self.target_mac, device_type)
         site_path = self.config.get('site_path')
-        type_path = os.path.abspath(os.path.join(site_path, 'device_types', device_type))
+        type_path = os.path.abspath(os.path.join(site_path, 'device_types', device_type, self._AUX_DIR))
         if not os.path.exists(type_path):
+            LOGGER.info('Ignoring missing %s', type_path)
             return None
         return type_path
 
@@ -419,7 +420,7 @@ class ConnectedHost:
             'gateway_mac': self.gateway.MAC(),
             'port_base': self._port_base,
             'dev_base': self._device_aux_path(),
-            'type_base': os.path.join(self._get_type_base(), self._AUX_DIR)
+            'type_base': self._type_aux_path(),
             'scan_base': self.scan_base
         }
 
