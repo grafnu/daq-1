@@ -33,6 +33,28 @@ pri.flows
 pri.ofctl
 sec.flows
 sec.ofctl
+port-01 module_config modules
+{
+  "bacext": {
+    "enabled": true
+  },
+  "brute": {
+    "enabled": true
+  },
+  "macoui": {
+    "enabled": true
+  },
+  "nmap": {
+    "enabled": true
+  },
+  "switch": {
+    "enabled": true
+  },
+  "tls": {
+    "enabled": true
+  }
+}
+port-02 module_config modules
 {
   "bacext": {
     "enabled": true
