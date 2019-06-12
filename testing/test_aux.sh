@@ -30,7 +30,7 @@ startup_faux_2_opts="nobrute expiredtls"
 startup_faux_3_opts="tls macoui bacnet"
 EOF
 run_conf_dir=inst/runtime_conf/port-01
-mkdir -p $run_conf_dir && echo cat /config/device/snake.txt > $conf_dir/ping_runtime.sh
+mkdir -p $run_conf_dir && echo cp /config/device/snake.txt /tmp/ > $conf_dir/ping_runtime.sh
 cmd/run -b -s
 tail -qn 1 inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
@@ -48,6 +48,7 @@ more inst/run-port-*/nodes/macoui*/activate.log | cat
 more inst/run-port-*/nodes/tls*/activate.log | cat
 ls inst/fail_fail01/ | tee -a $TEST_RESULTS
 jq .modules inst/run-port-02/nodes/ping02/tmp/module_config.json | tee -a $TEST_RESULTS
+cat inst/run-port-01/nodes/ping01/tmp/snake.txt | tee -a $TEST_RESULTS
 
 function redact {
     sed -e 's/\s*%%.*//' \
