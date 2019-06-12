@@ -63,14 +63,7 @@ public class SwitchInterrogator implements Runnable {
 
   HashMap<String, String> stack_map = new HashMap<String, String>();
 
-  String[] stack_expected = {
-    "id",
-    "pending_id",
-    "mac_address",
-    "priority",
-    "status",
-    "role"
-  };
+  String[] stack_expected = {"id", "pending_id", "mac_address", "priority", "status", "role"};
 
   String[] show_stack_expected = {
     "ID", "Pending ID", "MAC address", "Priority", "Status", "Role", "\n"
@@ -82,14 +75,7 @@ public class SwitchInterrogator implements Runnable {
   HashMap<String, String> power_map = new HashMap<String, String>();
 
   String[] power_expected = {
-    "dev_interface",
-    "admin",
-    "pri",
-    "oper",
-    "power",
-    "device",
-    "dev_class",
-    "max"
+    "dev_interface", "admin", "pri", "oper", "power", "device", "dev_class", "max"
   };
 
   String[] show_power_expected = {
@@ -507,13 +493,13 @@ public class SwitchInterrogator implements Runnable {
       System.err.println("Exception parseData:" + e.getMessage());
     }
   }
-  
+
   private HashMap dataToMap(String[] expected_key, String[] data_array) {
-	  HashMap<String, String> hashMap = new HashMap<String, String>();
-	  for(int i = 0; i < expected_key.length; i++) {
-		  hashMap.put(expected_key[i], data_array[i]);
-	  }
-	  return hashMap;
+    HashMap<String, String> hashMap = new HashMap<String, String>();
+    for (int i = 0; i < expected_key.length; i++) {
+      hashMap.put(expected_key[i], data_array[i]);
+    }
+    return hashMap;
   }
 
   private void parseRequestFlag(String data, int requestFlag) {
@@ -531,7 +517,7 @@ public class SwitchInterrogator implements Runnable {
           // parse show platform
           login_report += "\nshow platform:\n";
           parse_packet(data, show_platform_port_expected, show_platform_port_pointers);
-          platform_map = dataToMap(platform_expected, show_platform_data); 
+          platform_map = dataToMap(platform_expected, show_platform_data);
           writeReport();
           telnetClientSocket.writeData("\n");
           break;
@@ -555,7 +541,7 @@ public class SwitchInterrogator implements Runnable {
           // parse show stack
           login_report += "\nshow stack:\n";
           parse_inline(data, show_stack_expected, show_stack_pointers, show_stack_data);
-          stack_map = dataToMap(stack_expected, show_stack_data); 
+          stack_map = dataToMap(stack_expected, show_stack_data);
           writeReport();
           telnetClientSocket.writeData("\n");
           break;
@@ -588,15 +574,17 @@ public class SwitchInterrogator implements Runnable {
   private void validateTests() {
     try {
       login_report += "\n";
-      
-      if (interface_map.get("link_status").equals("UP") && Integer.parseInt(interface_map.get("dropped")) == 0) {
+
+      if (interface_map.get("link_status").equals("UP")
+          && Integer.parseInt(interface_map.get("dropped")) == 0) {
         login_report += "RESULT pass connection.port_link\n";
       } else {
         login_report += "RESULT fail connection.port_link\n";
       }
 
       if (interface_map.get("current_speed") != null) {
-        if (interface_map.get("configured_speed").equals("auto") && Integer.parseInt(interface_map.get("current_speed")) >= 10) {
+        if (interface_map.get("configured_speed").equals("auto")
+            && Integer.parseInt(interface_map.get("current_speed")) >= 10) {
           login_report += "RESULT pass connection.port_speed\n";
         } else {
           login_report += "RESULT fail connection.port_speed\n";
@@ -606,7 +594,8 @@ public class SwitchInterrogator implements Runnable {
       }
 
       if (interface_map.get("current_duplex") != null) {
-        if (interface_map.get("configured_duplex").equals("auto") && interface_map.get("current_duplex").equals("full")) {
+        if (interface_map.get("configured_duplex").equals("auto")
+            && interface_map.get("current_duplex").equals("full")) {
           login_report += "RESULT pass connection.port_duplex\n";
         } else {
           login_report += "RESULT fail connection.port_duplex\n";
