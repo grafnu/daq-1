@@ -2,6 +2,9 @@
   "modules": {
     "brute": {
       "enabled": false
+    },
+    "nmap": {
+      "enabled": false
     }
   }
 }

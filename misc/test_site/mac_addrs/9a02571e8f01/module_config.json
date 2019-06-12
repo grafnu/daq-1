@@ -15,9 +15,6 @@
   "device_manuals_url": "*** Device Manuals URL ***",
   "device_type": "rocket",
   "modules": {
-    "brute": {
-      "enabled": true
-    },
     "nmap": {
       "enabled": true
     },
