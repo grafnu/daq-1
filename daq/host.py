@@ -65,7 +65,7 @@ class ConnectedHost:
         self.run_id = self.make_runid()
         self.scan_base = os.path.abspath(os.path.join(self.devdir, 'scans'))
         self._port_base = self._get_port_base()
-        self._device_base = self._get_device_base(config, self.target_mac)
+        self._device_base = self._get_device_base(self.target_mac)
         self.state = None
         self.no_test = config.get('no_test', False)
         self._state_transition(_STATE.READY)
@@ -84,7 +84,7 @@ class ConnectedHost:
         self.target_ip = None
         self._loaded_config = None
         self.reload_config()
-        configurator.write_config(self._aux_path(), self._MODULE_CONFIG, self._loaded_config)
+        configurator.write_config(self._device_aux_path(), self._MODULE_CONFIG, self._loaded_config)
         assert self._loaded_config, 'config was not loaded'
         self.remaining_tests = self._get_enabled_tests()
         LOGGER.info('Host %s running with enabled tests %s', self.target_port, self.remaining_tests)
@@ -133,16 +133,28 @@ class ConnectedHost:
     def _get_enabled_tests(self):
         return list(filter(self._test_enabled, self.config.get('test_list')))
 
-    def _get_device_base(self, config, target_mac):
+    def _get_device_base(self, target_mac):
         """Get the base config path for a host device"""
-        dev_base = config.get('site_path')
-        if not dev_base:
+        site_path = self.config.get('site_path')
+        if not site_path:
             return None
         clean_mac = target_mac.replace(':', '')
-        dev_path = os.path.abspath(os.path.join(dev_base, 'mac_addrs', clean_mac))
+        dev_path = os.path.abspath(os.path.join(site_path, 'mac_addrs', clean_mac))
         if not os.path.isdir(dev_path):
             self._create_device_dir(dev_path)
         return dev_path
+
+    def _get_type_base(self):
+        dev_config = configurator.load_config(self._device_base, self._MODULE_CONFIG)
+        device_type = dev_config.get('device_type')
+        if not device_type:
+            return None
+        LOGGER.info('Configuring device %s as type %s', self.target_mac, device_type)
+        site_path = self.config.get('site_path')
+        type_path = os.path.abspath(os.path.join(site_path, 'device_types', device_type))
+        if not os.path.exists(type_path):
+            return None
+        return type_path
 
     def _create_device_dir(self, path):
         LOGGER.warning('Creating new device dir: %s', path)
@@ -391,7 +403,7 @@ class ConnectedHost:
             self._state_transition(_STATE.ERROR)
             self.runner.target_set_error(self.target_port, e)
 
-    def _aux_path(self):
+    def _device_aux_path(self):
         path = os.path.join(self._device_base, self._AUX_DIR)
         if not os.path.exists(path):
             os.makedirs(path)
@@ -406,7 +418,8 @@ class ConnectedHost:
             'gateway_ip': self.gateway.IP(),
             'gateway_mac': self.gateway.MAC(),
             'port_base': self._port_base,
-            'dev_base': self._aux_path(),
+            'dev_base': self._device_aux_path(),
+            'type_base': os.path.join(self._get_type_base(), self._AUX_DIR)
             'scan_base': self.scan_base
         }
 

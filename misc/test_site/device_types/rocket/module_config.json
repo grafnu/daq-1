@@ -1,0 +1,7 @@
+{
+  "modules": {
+    "brute": {
+      "enabled": false
+    }
+  }
+}

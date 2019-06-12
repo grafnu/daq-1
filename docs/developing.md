@@ -76,3 +76,13 @@ installed, so they're somewhat unreliable except when run through a pristine env
 on Travis. An error output of `cmd/inbuild exit code 1` in the logs indicates that
 something went wrong with the lint checks, but it can sometimes happen locally when
 there is no problem on Travis (and Travis wins).
+
+## Test Runtime Data
+
+Runtime information is available to a test module (Docker container) in several
+different places that are dynamically mapped in to the system at runtime:
+* `/tmp`: General information about a specific test run. (Not really `tmp` at all.)
+* `/scans`: Network scan of device traffic when the system is first starting up.
+* `/config/device`: Device-specific info from `{site_path}/mac_addrs/{device_mac}/aux/`.
+* `/config/type`: Device-type info from `{site_path}/device_types/{device_type}/aux/`.
+* `/config/port`: Switch-port info from `inst/runtime_conf/port-##/`.

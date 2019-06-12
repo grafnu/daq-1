@@ -53,6 +53,10 @@ class DockerTest():
         if dev_base and os.path.exists(dev_base):
             vol_maps += [dev_base + ":/config/device"]
 
+        type_base = params.get('type_base')
+        if type_base and os.path.exists(type_base):
+            vol_maps += [type_base + ":/config/type"]
+
         image = self.IMAGE_NAME_FORMAT % self.test_name
         LOGGER.debug("Target port %d running docker test %s", self.target_port, image)
         cls = docker_host.make_docker_host(image, prefix=self.CONTAINER_PREFIX)

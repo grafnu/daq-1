@@ -13,6 +13,7 @@
     "firmware_version": "*** Firmware Version ***"
   },
   "device_manuals_url": "*** Device Manuals URL ***",
+  "device_type": "rocket",
   "modules": {
     "brute": {
       "enabled": true
