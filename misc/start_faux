@@ -73,7 +73,7 @@ fi
 if [ -n "${options[bacnet]}" ]; then
     echo Starting bacnet loop device.
     java -cp bacnetTests/build/libs/bacnet-1.0-SNAPSHOT-all.jar \
-         FauxDeviceEngine.EntryPoint fail $local_ip $broadcast_ip &
+         FauxDeviceEngine.EntryPoint pass $local_ip $broadcast_ip &
 elif [ -n "${options[bacnetfail]}" ]; then
     echo Starting bacnet loop device.
     java -cp bacnetTests/build/libs/bacnet-1.0-SNAPSHOT-all.jar \

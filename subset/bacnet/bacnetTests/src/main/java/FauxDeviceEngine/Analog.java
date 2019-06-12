@@ -203,7 +203,7 @@ public class Analog {
 
                 default:
                 System.out.println(objectProperty + " not found.");
-    }
+        }
     }
 
     private void add(BACnetObject bacnetObjectType, PropertyIdentifier propertyIdentifier, Encodable encodable) {

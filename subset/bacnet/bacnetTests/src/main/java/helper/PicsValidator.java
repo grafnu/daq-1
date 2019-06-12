@@ -34,11 +34,17 @@ public class PicsValidator {
       String appendix = String.format(formatProperty, bacnetObjectType, bacnetObjectProperty,
               conformanceCode, "PASSED/WARNING");
       result.put(bacnetObjectType, appendix);
-    } else if (keys.size() == 0 && bacnetObjectProperty.equals("Property List")) {
+    } else if (keys.size() == 0 && bacnetObjectProperty.equals("Property List") && (conformanceCode.contains(read) || conformanceCode.equals(write))) {
       String appendix = String.format(formatProperty, bacnetObjectType, bacnetObjectProperty,
-              conformanceCode, "PASSED");
+              conformanceCode, "FAILED");
+      testPassed = false;
       result.put(bacnetObjectType, appendix);
-    }
+    } else if (keys.size() == 0 && bacnetObjectProperty.equals("Property List")
+        && conformanceCode.contains(optional)) {
+      String appendix = String.format(formatProperty, bacnetObjectType, bacnetObjectProperty,
+              conformanceCode, "PASSED/WARNING");
+      result.put(bacnetObjectType, appendix);
+      }
 
     for (String key : keys) {
       String properties = bacnetPointsMap.get(key).toString();
