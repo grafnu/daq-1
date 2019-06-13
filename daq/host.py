@@ -151,8 +151,7 @@ class ConnectedHost:
             return None
         LOGGER.info('Configuring device %s as type %s', self.target_mac, device_type)
         site_path = self.config.get('site_path')
-        type_path = os.path.abspath(os.path.join(site_path, 'device_types',
-                                                 device_type))
+        type_path = os.path.abspath(os.path.join(site_path, 'device_types', device_type))
         return type_path
 
     def _type_aux_path(self):
@@ -161,7 +160,7 @@ class ConnectedHost:
             return None
         aux_path = os.path.join(type_path, self._AUX_DIR)
         if not os.path.exists(aux_path):
-            LOGGER.info('Ignoring missing %s', aux_path)
+            LOGGER.info('Skipping missing type dir %s', aux_path)
             return None
         return aux_path
 

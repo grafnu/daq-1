@@ -1,10 +1,10 @@
 {
   "modules": {
-    "brute": {
+    "typeconf": {
       "enabled": false
     },
-    "nmap": {
-      "enabled": false
+    "switch": {
+      "enabled": true
     }
   }
 }

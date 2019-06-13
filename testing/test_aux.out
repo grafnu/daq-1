@@ -36,10 +36,10 @@ sec.ofctl
 port-01 module_config modules
 {
   "bacext": {
-    "enabled": false
+    "enabled": true
   },
   "brute": {
-    "enabled": false
+    "enabled": true
   },
   "macoui": {
     "enabled": true
@@ -57,7 +57,7 @@ port-01 module_config modules
 port-02 module_config modules
 {
   "bacext": {
-    "enabled": true
+    "enabled": false
   },
   "brute": {
     "enabled": true
@@ -72,10 +72,13 @@ port-02 module_config modules
     "enabled": true
   },
   "switch": {
-    "enabled": true
+    "enabled": false
   },
   "tls": {
     "enabled": true
+  },
+  "typeconf": {
+    "enabled": false
   }
 }
     SNAKE!         ____
