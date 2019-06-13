@@ -1,4 +1,4 @@
-# Device 9a02571e8f01, 2019-06-06 14:00:35+00:00
+# Device 9a02571e8f01, 2019-06-13 13:36:32+00:00 to 2019-06-13 13:43:00+00:00
 
 |  Role  |      Name              | Status |
 |--------|------------------------|--------|
@@ -7,7 +7,7 @@
 
 | Test iteration   |                        |
 |------------------|------------------------|
-| Test report date | 2019-06-06T14:00:34.975Z |
+| Test report date | 2019-06-13T13:36:32.252Z |
 | DAQ version      | 0.9.7 |
 | Attempt number   | 1 |
 
@@ -41,16 +41,16 @@
 
 |Result|Test|Notes|
 |---|---|---|
-|skip|base.switch.ping||	
+|skip|base.switch.ping||
 |pass|base.target.ping|target |
+|fail|connection.mac_oui||
 |skip|connection.port_duplex||
 |skip|connection.port_link||
 |skip|connection.port_speed||
+|fail|network.brute||
 |skip|poe.negotiation||
 |skip|poe.power||
 |skip|poe.support||
-|fail|connection.mac_oui||
-|fail|network.brute||
 |fail|protocol.bacnet.version||
 |pass|security.ports.nmap||
 |skip|security.tls.v3||
@@ -60,23 +60,26 @@
 
 ```
 Baseline ping test report
-%% 82 packets captured.
+%% 64 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.6.38
+RESULT pass base.target.ping target %% 10.20.78.38
 ```
 
 ## Module nmap
 
 ```
-Open port 443 open tcp https
-RESULT fail security.ports.nmap
+Allowing 10000 open tcp snet-sensor-mgmt
+No invalid ports found.
+RESULT pass security.ports.nmap
 ```
 
 ## Module brute
 
 ```
-Target port 10000 not open.
-RESULT skip network.brute
+Username:manager
+Password:friend
+Login success!
+RESULT fail network.brute
 ```
 
 ## Module switch
