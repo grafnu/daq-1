@@ -156,7 +156,10 @@ class ConnectedHost:
         return type_path
 
     def _type_aux_path(self):
-        aux_path = os.path.join(self._type_path(), self._AUX_DIR)
+        type_path = self._type_path()
+        if not type_path:
+            return None
+        aux_path = os.path.join(type_path, self._AUX_DIR)
         if not os.path.exists(aux_path):
             LOGGER.info('Ignoring missing %s', aux_path)
             return None
