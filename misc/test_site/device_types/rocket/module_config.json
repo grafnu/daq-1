@@ -5,6 +5,9 @@
     },
     "switch": {
       "enabled": true
+    },
+    "pass": {
+      "enabled": true
     }
   }
 }

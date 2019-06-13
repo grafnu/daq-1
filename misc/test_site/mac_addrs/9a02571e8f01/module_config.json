@@ -14,7 +14,7 @@
   },
   "device_manuals_url": "*** Device Manuals URL ***",
   "modules": {
-    "nmap": {
+    "pass": {
       "enabled": true
     },
     "switch": {
