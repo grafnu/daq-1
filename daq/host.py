@@ -144,7 +144,7 @@ class ConnectedHost:
             self._create_device_dir(dev_path)
         return dev_path
 
-    def _type_aux_path(self):
+    def _type_path(self):
         dev_config = configurator.load_config(self._device_base, self._MODULE_CONFIG)
         device_type = dev_config.get('device_type')
         if not device_type:
@@ -152,11 +152,15 @@ class ConnectedHost:
         LOGGER.info('Configuring device %s as type %s', self.target_mac, device_type)
         site_path = self.config.get('site_path')
         type_path = os.path.abspath(os.path.join(site_path, 'device_types',
-                                                 device_type, self._AUX_DIR))
-        if not os.path.exists(type_path):
-            LOGGER.info('Ignoring missing %s', type_path)
-            return None
+                                                 device_type))
         return type_path
+
+    def _type_aux_path(self):
+        aux_path = os.path.join(self._type_path(), self._AUX_DIR)
+        if not os.path.exists(aux_path):
+            LOGGER.info('Ignoring missing %s', aux_path)
+            return None
+        return aux_path
 
     def _create_device_dir(self, path):
         LOGGER.warning('Creating new device dir: %s', path)
@@ -493,6 +497,7 @@ class ConnectedHost:
         config = self.runner.get_base_config()
         if run_info:
             self._merge_run_info(config)
+        configurator.load_and_merge(config, self._type_path(), self._MODULE_CONFIG)
         configurator.load_and_merge(config, self._device_base, self._MODULE_CONFIG)
         configurator.load_and_merge(config, self._port_base, self._MODULE_CONFIG)
         return config

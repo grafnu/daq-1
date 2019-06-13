@@ -8,6 +8,9 @@
     },
     "switch": {
       "enabled": false
+    },
+    "bacext": {
+      "enabled": false
     }
   },
   "process": {

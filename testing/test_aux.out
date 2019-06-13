@@ -36,10 +36,10 @@ sec.ofctl
 port-01 module_config modules
 {
   "bacext": {
-    "enabled": true
+    "enabled": false
   },
   "brute": {
-    "enabled": true
+    "enabled": false
   },
   "macoui": {
     "enabled": true
