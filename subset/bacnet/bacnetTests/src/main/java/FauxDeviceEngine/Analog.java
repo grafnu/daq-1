@@ -4,10 +4,7 @@ import com.serotonin.bacnet4j.LocalDevice;
 import com.serotonin.bacnet4j.exception.BACnetServiceException;
 import com.serotonin.bacnet4j.obj.BACnetObject;
 import com.serotonin.bacnet4j.type.Encodable;
-import com.serotonin.bacnet4j.type.constructed.EventTransitionBits;
-import com.serotonin.bacnet4j.type.constructed.LimitEnable;
-import com.serotonin.bacnet4j.type.constructed.SequenceOf;
-import com.serotonin.bacnet4j.type.constructed.StatusFlags;
+import com.serotonin.bacnet4j.type.constructed.*;
 import com.serotonin.bacnet4j.type.enumerated.*;
 import com.serotonin.bacnet4j.type.primitive.CharacterString;
 import com.serotonin.bacnet4j.type.primitive.Real;
@@ -45,8 +42,10 @@ public class Analog {
     private static boolean eventAlgorithmInhibit = false;
     private static int units = 62;
     private static String profileName = "";
+    private static float relinquishDefault = 0.0f;
+    private static boolean priorityArray = false;
 
-    public Analog(LocalDevice localDevice, BACnetObject bacnetObjectType, Map<String, String>bacnetObjectMap) {
+    public Analog(LocalDevice localDevice, BACnetObject bacnetObjectType, Map<String, String>bacnetObjectMap) throws BACnetServiceException {
         for(Map.Entry<String, String> map : bacnetObjectMap.entrySet()) {
             String propertyName = map.getKey();
             String propertyValue = map.getValue();
@@ -55,7 +54,7 @@ public class Analog {
         addObjectType(localDevice, bacnetObjectType, bacnetObjectMap);
     }
 
-    private void addObjectProperty(BACnetObject bacnetObjectType, String objectProperty, String propertyValue) {
+    private void addObjectProperty(BACnetObject bacnetObjectType, String objectProperty, String propertyValue) throws BACnetServiceException {
         Encodable encodable;
         switch (objectProperty) {
             case "Present_Value":
@@ -199,6 +198,18 @@ public class Analog {
                 profileName = propertyValue;
                 encodable = new CharacterString(profileName);
                 add(bacnetObjectType, PropertyIdentifier.profileName, encodable);
+                break;
+            case "Relinquish_Default":
+                relinquishDefault = Float.parseFloat(propertyValue);
+                encodable = new Real(relinquishDefault);
+                add(bacnetObjectType, PropertyIdentifier.relinquishDefault, encodable);
+                break;
+            case "Priority_Array":
+                priorityArray = Boolean.parseBoolean(propertyValue);
+                if(priorityArray) {
+                    encodable = new PriorityArray();
+                    add(bacnetObjectType, PropertyIdentifier.priorityArray, encodable);
+                }
                 break;
 
                 default:

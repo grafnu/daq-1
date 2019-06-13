@@ -66,7 +66,6 @@ public class EntryPoint {
         }
         FileManager fileManager = new FileManager();
         String absolute_path = fileManager.getAbsolutePath();
-        System.out.println(absolute_path);
         JSON json = new JSON(absolute_path + "tmp/" + jsonFile);
         JSONArray bacnetObjectTypesList = json.read();
         return bacnetObjectTypesList;
@@ -81,28 +80,28 @@ public class EntryPoint {
             List<String> bacnetObjectTypeArr = new ArrayList<>(bacnetObject.keySet());
             String bacnetObjectType = bacnetObjectTypeArr.get(0);
             if(bacnetObjectType.contains("AnalogInput")){
-                BACnetObject bacnetType = new BACnetObject(localDevice, localDevice.getNextInstanceObjectIdentifier(ObjectType.analogInput));
+                BACnetObject bacnetType = new BACnetObject(localDevice, localDevice.getNextInstanceObjectIdentifier(ObjectType.analogInput), false);
                 Map<String, String > map = (Map<String, String>) bacnetObject.get(bacnetObjectType);
                 new Analog(localDevice, bacnetType, map);
             } else if(bacnetObjectType.contains("AnalogOutput")) {
-                BACnetObject bacnetType = new BACnetObject(localDevice, localDevice.getNextInstanceObjectIdentifier(ObjectType.analogOutput));
+                BACnetObject bacnetType = new BACnetObject(localDevice, localDevice.getNextInstanceObjectIdentifier(ObjectType.analogOutput), false);
                 Map<String, String > map = (Map<String, String>) bacnetObject.get(bacnetObjectType);
                 new Analog(localDevice, bacnetType, map);
             } else if(bacnetObjectType.contains("AnalogValue")) {
-                BACnetObject bacnetType = new BACnetObject(localDevice, localDevice.getNextInstanceObjectIdentifier(ObjectType.analogValue));
+                BACnetObject bacnetType = new BACnetObject(localDevice, localDevice.getNextInstanceObjectIdentifier(ObjectType.analogValue), false);
                 Map<String, String > map = (Map<String, String>) bacnetObject.get(bacnetObjectType);
                 new Analog(localDevice, bacnetType, map);
             }
             else if(bacnetObjectType.contains("BinaryInput")) {
-                BACnetObject bacnetType = new BACnetObject(localDevice, localDevice.getNextInstanceObjectIdentifier(ObjectType.binaryInput));
+                BACnetObject bacnetType = new BACnetObject(localDevice, localDevice.getNextInstanceObjectIdentifier(ObjectType.binaryInput), false);
                 Map<String, String > map = (Map<String, String>) bacnetObject.get(bacnetObjectType);
                 new Binary(localDevice, bacnetType, map);
             } else if(bacnetObjectType.contains("BinaryOutput")) {
-                BACnetObject bacnetType = new BACnetObject(localDevice, localDevice.getNextInstanceObjectIdentifier(ObjectType.binaryOutput));
+                BACnetObject bacnetType = new BACnetObject(localDevice, localDevice.getNextInstanceObjectIdentifier(ObjectType.binaryOutput), false);
                 Map<String, String > map = (Map<String, String>) bacnetObject.get(bacnetObjectType);
                 new Binary(localDevice, bacnetType, map);
             } else if(bacnetObjectType.contains("BinaryValue")) {
-                BACnetObject bacnetType = new BACnetObject(localDevice, localDevice.getNextInstanceObjectIdentifier(ObjectType.binaryValue));
+                BACnetObject bacnetType = new BACnetObject(localDevice, localDevice.getNextInstanceObjectIdentifier(ObjectType.binaryValue), false);
                 Map<String, String > map = (Map<String, String>) bacnetObject.get(bacnetObjectType);
                 new Binary(localDevice, bacnetType, map);
             }

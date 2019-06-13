@@ -54,7 +54,6 @@ public class BacnetPoints {
                     objectPropertyReference.getPropertyIdentifier().toString();
                 String bacnetPropertyValue =
                     propertyValues.getNoErrorCheck(objectPropertyReference).toString();
-                System.out.println(bacnetObjectType + " --> " + bacnetObjectProperty + " : " + bacnetPropertyValue);
                 Map<String, String> properties = new HashMap<>();
                 properties.put(bacnetObjectProperty, bacnetPropertyValue);
                 bacnetPointsMap.put(bacnetObjectType, properties);

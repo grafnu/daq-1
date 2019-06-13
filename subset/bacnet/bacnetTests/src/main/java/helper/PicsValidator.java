@@ -34,17 +34,11 @@ public class PicsValidator {
       String appendix = String.format(formatProperty, bacnetObjectType, bacnetObjectProperty,
               conformanceCode, "PASSED/WARNING");
       result.put(bacnetObjectType, appendix);
-    } else if (keys.size() == 0 && bacnetObjectProperty.equals("Property List") && (conformanceCode.contains(read) || conformanceCode.equals(write))) {
+    } else if (keys.size() == 0 && bacnetObjectProperty.equals("Property List")) {
       String appendix = String.format(formatProperty, bacnetObjectType, bacnetObjectProperty,
-              conformanceCode, "FAILED");
-      testPassed = false;
+              conformanceCode, "PASSED");
       result.put(bacnetObjectType, appendix);
-    } else if (keys.size() == 0 && bacnetObjectProperty.equals("Property List")
-        && conformanceCode.contains(optional)) {
-      String appendix = String.format(formatProperty, bacnetObjectType, bacnetObjectProperty,
-              conformanceCode, "PASSED/WARNING");
-      result.put(bacnetObjectType, appendix);
-      }
+    }
 
     for (String key : keys) {
       String properties = bacnetPointsMap.get(key).toString();
@@ -68,15 +62,6 @@ public class PicsValidator {
         String appendix = String.format(formatProperty, key, bacnetObjectProperty,
                 conformanceCode, "PASSED");
         result.put(key, appendix);
-      } else if (bacnetObjectProperty.equals("Property List")) {
-        String appendix = String.format(formatProperty, key, bacnetObjectProperty,
-                conformanceCode, "PASSED");
-        result.put(key, appendix);
-      } else {
-        String appendix = String.format(formatProperty, key, bacnetObjectProperty,
-                conformanceCode, "FAILED");
-        result.put(key, appendix);
-        testPassed = false;
       }
     }
   }

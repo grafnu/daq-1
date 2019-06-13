@@ -27,7 +27,8 @@
             "Description": "Faux-Device created to run inside DAQ",
             "Event_Algorithm_Inhibit": "false",
             "Units": "64",
-            "Profile_Name": "FD-01"
+            "Profile_Name": "FD-01",
+            "Out_Of_Service": "false"
         }
     },
     {
@@ -54,7 +55,9 @@
             "Event_Detection_Enable": "false",
             "Event_Message_Texts": "true",
             "High_Limit": "0",
-            "Acked_Transitions": "true true true"
+            "Acked_Transitions": "true true true",
+            "Priority_Array": "true",
+            "Relinquish_Default": "0.1"
         }
     },
     {
@@ -95,7 +98,6 @@
             "Object_Type": "3",
             "Time_Delay_Normal": "0",
             "Inactive_Text": "FALSE",
-            "Polarity": "0",
             "Alarm_Value": "0",
             "Acked_Transitions": "true false true",
             "Status_Flags": "false false false false",
@@ -104,12 +106,13 @@
             "Time_Of_Active_Time_Reset": "13/05/2019",
             "Event_Detection_Enable": "false",
             "Reliability": "4",
-            "Device_Type": "0to1Volts",
             "Event_Message_Texts": "true",
             "Elapsed_Active_Time": "0",
             "Notification_Class": "3",
             "Description": "Faux-Device created to run inside DAQ",
-            "Event_Algorithm_Inhibit": "false"
+            "Event_Algorithm_Inhibit": "false",
+	    "Polarity": "0",
+	    "Device_Type": "0to1Volts"
         }
     },
     {
@@ -125,7 +128,6 @@
             "Object_Type": "4",
             "Time_Delay_Normal": "0",
             "Inactive_Text": "FALSE",
-            "Polarity": "0",
             "Alarm_Value": "0",
             "Acked_Transitions": "true false true",
             "Status_Flags": "false false false false",
@@ -134,7 +136,6 @@
             "Time_Of_Active_Time_Reset": "13/05/2019",
             "Event_Detection_Enable": "false",
             "Reliability": "4",
-            "Device_Type": "0to1Volts",
             "Event_Message_Texts": "true",
             "Elapsed_Active_Time": "0",
             "Notification_Class": "3",
@@ -143,7 +144,9 @@
             "Minimum_On_Time": "0",
             "Minimum_Off_Time": "0",
             "Relinquinsh_Default": "0.0",
-            "Feedback_Value": "0"
+            "Feedback_Value": "0",
+	    "Polarity": "0",
+	    "Device_Type": "0to1Volts"
         }
     },
     {
@@ -159,7 +162,6 @@
             "Object_Type": "4",
             "Time_Delay_Normal": "0",
             "Inactive_Text": "FALSE",
-            "Polarity": "0",
             "Alarm_Value": "0",
             "Acked_Transitions": "true false true",
             "Status_Flags": "false false false false",
@@ -168,7 +170,6 @@
             "Time_Of_Active_Time_Reset": "13/05/2019",
             "Event_Detection_Enable": "false",
             "Reliability": "4",
-            "Device_Type": "0to1Volts",
             "Event_Message_Texts": "true",
             "Elapsed_Active_Time": "0",
             "Notification_Class": "3",
