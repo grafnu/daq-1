@@ -322,6 +322,7 @@ public class SwitchInterrogator implements Runnable {
       }
     } catch (Exception e) {
       System.err.println("Exception parse_packet:" + e.getMessage());
+      System.exit(1);
     }
   }
 
@@ -362,6 +363,7 @@ public class SwitchInterrogator implements Runnable {
       }
     } catch (Exception e) {
       System.err.println("Exception parse_single:" + e.getMessage());
+      System.exit(1);
     }
   }
 
@@ -400,6 +402,7 @@ public class SwitchInterrogator implements Runnable {
       }
     } catch (Exception e) {
       System.err.println("Exception parse_inline:" + e.getMessage());
+      System.exit(1);
     }
   }
 
