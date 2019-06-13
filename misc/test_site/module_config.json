@@ -4,13 +4,13 @@
       "enabled": true
     },
     "nmap": {
-      "enabled": true
+      "enabled": false
     },
     "switch": {
       "enabled": false
     },
     "bacext": {
-      "enabled": false
+      "enabled": true
     }
   },
   "process": {
