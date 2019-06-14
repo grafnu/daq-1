@@ -13,11 +13,9 @@ public class Main {
       case "bacnet_VERSION":
         new VersionTest(localIp, broadcastIp);
         break;
-
       case "bacnet_PICS":
         new PicsTest(localIp, broadcastIp);
         break;
-
       default:
         throw new IllegalArgumentException("Invalid bacnetTestId.");
     }

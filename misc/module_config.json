@@ -3,6 +3,9 @@
     "nmap": {
       "enabled": true
     },
+    "macoui": {
+     "enabled": true 
+    },
     "switch": {
       "enabled": true
     },
@@ -10,6 +13,9 @@
       "enabled": true
     },
     "bacext": {
+      "enabled": true
+    },
+    "tls": {
       "enabled": true
     }
   }

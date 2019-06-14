@@ -8,13 +8,25 @@ cmd/inbuild exit code 0
 Running bacext test...
 RESULT pass protocol.bacnet.version
 Extended tests
+RESULT fail protocol.bacnet.version
+RESULT fail protocol.bacnet.version
+RESULT pass protocol.bacnet.version
 RESULT fail network.brute
 RESULT pass network.brute
 RESULT skip network.brute
+RESULT fail connection.mac_oui
+RESULT fail connection.mac_oui
+RESULT pass connection.mac_oui
+RESULT skip security.tls.v3
+RESULT skip security.x509
+RESULT fail security.tls.v3
+RESULT fail security.x509
+RESULT pass security.tls.v3
+RESULT pass security.x509
 dhcp requests 2 1
 01: ['01:brute:1']
 02: ['02:nmap:1']
-03: []
+03: ['03:nmap:1']
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
@@ -23,6 +35,29 @@ pri.flows
 pri.ofctl
 sec.flows
 sec.ofctl
+{
+  "bacext": {
+    "enabled": true
+  },
+  "brute": {
+    "enabled": true
+  },
+  "foobar": {
+    "enabled": false
+  },
+  "macoui": {
+    "enabled": true
+  },
+  "nmap": {
+    "enabled": true
+  },
+  "switch": {
+    "enabled": true
+  },
+  "tls": {
+    "enabled": true
+  }
+}
 Redacted docs diff
 No report diff
 Done with tests

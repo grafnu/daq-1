@@ -9,7 +9,7 @@
 ROOT=$(dirname $0)/..
 cd $ROOT
 
-FAUCETR=${DAQ_FAUCET_REPO:-https://github.com/faucetsdn/faucet}
+FAUCETR=${DAQ_FAUCET_REPO:-https://github.com/grafnu/faucet}
 FAUCETB=${DAQ_FAUCET_BRANCH}
 FAUCETV=$(cat misc/FAUCET_VERSION)
 MININET=https://github.com/mininet/mininet
@@ -50,7 +50,7 @@ $AG install \
     ca-certificates sudo net-tools tcpdump build-essential \
     isc-dhcp-client network-manager netcat gnupg2 strace \
     python3 python3-pkg-resources python3-setuptools python3-dev \
-    python3-pip openjdk-8-jdk python emacs-nox python3-venv
+    python3-pip openjdk-8-jdk python emacs-nox python3-venv jq
 
 # Jump through some hoops for mininet, which still has some python2 deps.
 $AG install python-pip
