@@ -1,16 +1,17 @@
-Running ./testing/test_aux.sh
+Running testing/test_aux.sh
 Aux Tests
 mudacl tests
 Mudacl exit code 0
 Validator exit code 0
 Lint checks
 cmd/inbuild exit code 0
-Running bacext test...
-RESULT pass protocol.bacnet.version
 Extended tests
 RESULT fail protocol.bacnet.version
-RESULT fail protocol.bacnet.version
+RESULT skip protocol.bacnet.pic
 RESULT pass protocol.bacnet.version
+RESULT fail protocol.bacnet.pic
+RESULT pass protocol.bacnet.version
+RESULT pass protocol.bacnet.pic
 RESULT fail network.brute
 RESULT pass network.brute
 RESULT skip network.brute
