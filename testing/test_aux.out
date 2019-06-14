@@ -47,6 +47,9 @@ port-01 module_config modules
   "nmap": {
     "enabled": true
   },
+  "pass": {
+    "enabled": true
+  },
   "switch": {
     "enabled": true
   },
@@ -57,7 +60,7 @@ port-01 module_config modules
 port-02 module_config modules
 {
   "bacext": {
-    "enabled": false
+    "enabled": true
   },
   "brute": {
     "enabled": true
@@ -69,6 +72,9 @@ port-02 module_config modules
     "enabled": true
   },
   "nmap": {
+    "enabled": true
+  },
+  "pass": {
     "enabled": true
   },
   "switch": {
