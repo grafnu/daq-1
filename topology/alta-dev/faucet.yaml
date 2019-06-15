@@ -70,11 +70,11 @@ dps:
       48:
         lldp_beacon: {enable: true}
         loop_protect_external: true
+        lldp_failover: 49
         native_vlan: 171
         receive_lldp: true
       49:
         lldp_beacon: {enable: true}
-        lldp_failover: 48
         loop_protect_external: true
         native_vlan: 171
         receive_lldp: true
