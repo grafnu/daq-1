@@ -15,7 +15,7 @@ dps:
       28:
         description: egress
         lacp: 0
-        lacp_peers: [9, 10]
+        lacp_passthrough: [9, 10]
         lldp_beacon: {enable: true}
         receive_lldp: true
         tagged_vlans: [171]
@@ -37,7 +37,7 @@ dps:
       28:
         description: egress
         lacp: 0
-        lacp_peers: [9, 10]
+        lacp_passthrough: [9, 10]
         lldp_beacon: {enable: true}
         receive_lldp: true
         tagged_vlans: [171]

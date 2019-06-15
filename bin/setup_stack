@@ -110,14 +110,14 @@ add_br t2sw1 2352 6001 7001
 add_br t1sw2 178 6002 7002
 add_br t2sw2 1296 6002 7002
 
-add_oeth t1sw1 1 corp-eth10
-add_oeth t1sw1 2 corp-eth11
+add_oeth t1sw1 28 corp-eth10
+add_oeth t1sw1 29 corp-eth11
 
 add_link t1sw1 9 t2sw1 49
 add_link t1sw1 10 t2sw2 49
 
-add_oeth t1sw2 1 corp-eth20
-add_oeth t1sw2 2 corp-eth21
+add_oeth t1sw2 28 corp-eth20
+add_oeth t1sw2 29 corp-eth21
 
 add_link t1sw2 9 t2sw2 50
 add_link t1sw2 10 t2sw1 50

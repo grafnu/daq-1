@@ -15,7 +15,7 @@ dps:
       28:
         description: Juniper-Uplink-1
         lacp: 1
-        lacp_peers: [9, 10]
+        lacp_passthrough: [9, 10]
         lldp_beacon: {enable: true}
         receive_lldp: true
         tagged_vlans: [171]
@@ -36,7 +36,7 @@ dps:
       28:
         description: Juniper-Uplink-2
         lacp: 1
-        lacp_peers: [9, 10]
+        lacp_passthrough: [9, 10]
         lldp_beacon: {enable: true}
         receive_lldp: true
         tagged_vlans: [171]
