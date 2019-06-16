@@ -115,6 +115,9 @@ function test_dot1x {
 echo Stacking Tests >> $TEST_RESULTS
 test_stack bond
 bin/net_clean
+sleep 10
+sudo ovs-vsctl show
+sleep 10
 test_stack nobond
 bin/net_clean
 
