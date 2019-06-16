@@ -78,22 +78,6 @@ function add_oeth {
 
 echo Configuring mode $mode...
 
-sudo rm -rf inst/faucet
-mkdir -p inst/faucet/daq-faucet-corp
-cp misc/corp_$mode.yaml inst/faucet/daq-faucet-corp/faucet.yaml
-docker kill daq-faucet-corp || true
-sudo modprobe bonding
-cmd/faucet corp 6683
-
-for index in 1 2; do
-    controller=daq-faucet-$index
-    mkdir -p inst/faucet/$controller/
-    cp topology/zz-$mode/*.yaml inst/faucet/$controller/
-    docker kill $controller || true
-    cmd/faucet $index $((6000 + index))
-    cmd/faucet gauge $index $((7000 + index)) $((9000 + index))
-done
-
 add_br corp  0x111 6683
 add_br t1sw1 177 6001 7001
 add_br t2sw1 2352 6001 7001
@@ -142,6 +126,22 @@ add_iface t2sw1 1 faux-1
 add_iface t2sw2 1 faux-2
 add_iface corp 1 faux-3
 
+echo Starting faucet instances...
+sudo rm -rf inst/faucet
+mkdir -p inst/faucet/daq-faucet-corp
+cp misc/corp_$mode.yaml inst/faucet/daq-faucet-corp/faucet.yaml
+docker kill daq-faucet-corp || true
+sudo modprobe bonding
+cmd/faucet corp 6683
+
+for index in 1 2; do
+    controller=daq-faucet-$index
+    mkdir -p inst/faucet/$controller/
+    cp topology/zz-$mode/*.yaml inst/faucet/$controller/
+    docker kill $controller || true
+    cmd/faucet $index $((6000 + index))
+    cmd/faucet gauge $index $((7000 + index)) $((9000 + index))
+done
 
 echo Starting connection warm-up for 30s...
 docker exec daq-faux-1 ping -q -c 30 192.168.0.2 &
