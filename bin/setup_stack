@@ -80,6 +80,7 @@ echo Configuring mode $mode...
 
 docker kill daq-faucet-1 || true
 docker kill daq-faucet-2 || true
+docker kill daq-faucet-corp || true
 
 add_br corp  0x111 6683
 add_br t1sw1 177 6001 7001
