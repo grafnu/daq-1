@@ -78,6 +78,9 @@ function add_oeth {
 
 echo Configuring mode $mode...
 
+docker kill daq-faucet-1 || true
+docker kill daq-faucet-2 || true
+
 add_br corp  0x111 6683
 add_br t1sw1 177 6001 7001
 add_br t2sw1 2352 6001 7001
