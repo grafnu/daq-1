@@ -113,11 +113,11 @@ function test_dot1x {
 }
 
 echo Stacking Tests >> $TEST_RESULTS
-test_stack nobond
-bin/net_clean
+#test_stack nobond
+#bin/net_clean
 
-echo Restarting ovs...
-sudo /etc/init.d/openvswitch-switch restart
+#echo Restarting ovs...
+#sudo /etc/init.d/openvswitch-switch restart
 
 test_stack bond
 bin/net_clean
