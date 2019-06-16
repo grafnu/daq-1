@@ -90,7 +90,7 @@ for index in 1 2; do
     mkdir -p inst/faucet/$controller/
     cp topology/zz-$mode/*.yaml inst/faucet/$controller/
     docker kill $controller || true
-    cmd/faucet $index $((6000 + index))
+    cmd/faucet local $index $((6000 + index))
     cmd/faucet gauge $index $((7000 + index)) $((9000 + index))
 done
 
