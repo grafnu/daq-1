@@ -113,9 +113,9 @@ function test_dot1x {
 }
 
 echo Stacking Tests >> $TEST_RESULTS
-test_stack nobond
-bin/net_clean
 test_stack bond
+bin/net_clean
+test_stack nobond
 bin/net_clean
 
 echo Dot1x setup >> $TEST_RESULTS
