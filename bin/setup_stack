@@ -147,10 +147,10 @@ for index in 1 2; do
     cmd/faucet gauge $index $((7000 + index)) $((9000 + index))
 done
 
-echo Starting connection warm-up for 30s...
-docker exec daq-faux-1 ping -q -c 30 192.168.0.2 &
-docker exec daq-faux-2 ping -q -c 30 192.168.0.3 &
-docker exec daq-faux-3 ping -q -c 30 192.168.0.1 &
+echo Starting connection warm-up for 60s...
+docker exec daq-faux-1 ping -q -c 60 192.168.0.2 &
+docker exec daq-faux-2 ping -q -c 60 192.168.0.3 &
+docker exec daq-faux-3 ping -q -c 60 192.168.0.1 &
 
 echo Waiting for warm-ups to complete...
 wait
