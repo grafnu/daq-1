@@ -41,7 +41,7 @@ public class Csv {
       setTestResult(picsValidator.getRestult());
     } catch (IOException e) {
       String errorMessage = "Csv error: " + e.getMessage();
-      System.out.println(errorMessage);
+      System.err.println(errorMessage);
       setTestResult(false);
       setTestAppendices(errorMessage);
     }
@@ -61,8 +61,7 @@ public class Csv {
           supported,
           bacnetPointsMap);
     } catch (Exception e) {
-      e.printStackTrace();
-      System.out.println(
+      System.err.println(
           "Error validating property: "
               + e.getMessage()
               + " "
@@ -128,9 +127,9 @@ public class Csv {
       "Trend_Log"
     };
 
-    value = value.replace("Bacnet_", "");
-    value = value.replace("Analogue", "Analog");
-    value = value.replace("_", " ");
+    value = value.replace("Bacnet_", "")
+            .replace("Analogue", "Analog")
+            .replace("_", " ");
 
     for (int count = 0; count < bacnetObjectTypes.length; count++) {
       String bacnetObjectType = bacnetObjectTypes[count];

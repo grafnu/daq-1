@@ -22,7 +22,7 @@ public class VersionTest {
   private String appendixText = "";
   private boolean testPassed = false;
   private String passedReportText = "RESULT pass protocol.bacnet.version\n";
-  private String failedReportText = "RESULT fail protocol.bacnet.version\n";
+  private String failedReportText = "RESULT skip protocol.bacnet.version\n";
   private String errorPropertyMessage = "errorClass=Property, errorCode=Unknown property";
 
   public VersionTest(String localIp, String broadcastIp) throws Exception {

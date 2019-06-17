@@ -20,16 +20,16 @@ public class Analog {
     private static float deadband = 14;
     private static boolean outOfService = false;
     private static float resolution = 0.1f;
-    private static boolean[] eventEnable = {true, true, false};
+    private static boolean[] eventEnable = new boolean[3];
     private static int eventState = 0;
     private static int objectType = 0;
     private static int timeDelayNormal = 0;
     private static float lowLimit = 0;
-    private static boolean[] limitEnable = {false, false};
+    private static boolean[] limitEnable = new boolean[2];
     private static float covIncrement = 1.0f;
-    private static boolean[] statusFlags = {false, false, false, false};
+    private static boolean[] statusFlags = new boolean[4];
     private static int updateInterval = 1000;
-    private static boolean[] ackedTransitions = {true, true, true};
+    private static boolean[] ackedTransitions = new boolean[3];
     private static float highLimit = 0;
     private static int notifyType = 0;
     private static boolean eventDetectionEnable = false;
@@ -45,7 +45,7 @@ public class Analog {
     private static float relinquishDefault = 0.0f;
     private static boolean priorityArray = false;
 
-    public Analog(LocalDevice localDevice, BACnetObject bacnetObjectType, Map<String, String>bacnetObjectMap) throws BACnetServiceException {
+    public Analog(LocalDevice localDevice, BACnetObject bacnetObjectType, Map<String, String>bacnetObjectMap) {
         for(Map.Entry<String, String> map : bacnetObjectMap.entrySet()) {
             String propertyName = map.getKey();
             String propertyValue = map.getValue();
@@ -54,7 +54,7 @@ public class Analog {
         addObjectType(localDevice, bacnetObjectType, bacnetObjectMap);
     }
 
-    private void addObjectProperty(BACnetObject bacnetObjectType, String objectProperty, String propertyValue) throws BACnetServiceException {
+    private void addObjectProperty(BACnetObject bacnetObjectType, String objectProperty, String propertyValue) {
         Encodable encodable;
         switch (objectProperty) {
             case "Present_Value":
@@ -221,8 +221,9 @@ public class Analog {
         try {
             bacnetObjectType.setProperty(propertyIdentifier, encodable);
         } catch (BACnetServiceException e) {
+            System.out.println(propertyIdentifier);
             e.printStackTrace();
-            System.out.println("Error adding bacnet property: " + e.getMessage() + propertyIdentifier.toString());
+            System.err.println("Error adding bacnet property: " + e.getMessage() + propertyIdentifier.toString());
         }
     }
 
@@ -230,7 +231,7 @@ public class Analog {
         try {
             localDevice.addObject(bacnetObject);
         } catch (BACnetServiceException e) {
-            System.out.println("Error adding bacnet object: " + e.getMessage() + " " + map.toString());
+            System.err.println("Error adding bacnet object: " + e.getMessage() + " " + map.toString());
         }
     }
 

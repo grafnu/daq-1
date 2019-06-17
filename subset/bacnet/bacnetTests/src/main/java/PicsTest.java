@@ -12,9 +12,10 @@ public class PicsTest {
   private Connection connection;
   private BacnetValidation validator;
   private BacnetPoints bacnetPoints = new BacnetPoints();
-  private String passedTestReport = "RESULT pass protocol.bacnet.pic\n";
-  private String failedTestReport = "RESULT fail protocol.bacnet.pic\n";
-  private String skippedTestReport = "RESULT skip protocol.bacnet.pic\n";
+  private String testName = "protocol.bacnet.pic";
+  private String passedTestReport = String.format("RESULT pass %s\n", testName);
+  private String failedTestReport = String.format("RESULT fail %s\n", testName);
+  private String skippedTestReport = String.format("RESULT skip %s\n", testName);
   private String reportAppendix = "";
   private String additionalReportAppendix = "";
   private Csv csv;
@@ -65,7 +66,7 @@ public class PicsTest {
         generateReport(deviceMacAddress);
       }
     } catch (Exception e) {
-      System.out.println("Error performing pics check: " + e.getMessage());
+      System.err.println("Error performing pics check: " + e.getMessage());
     }
   }
 

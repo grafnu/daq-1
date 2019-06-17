@@ -1,5 +1,6 @@
 [
     {
+	"DeviceID": "1234",
         "AnalogInput01": {
             "Object_Name": "device_run_command",
             "Device_Type": "0to1Volts",

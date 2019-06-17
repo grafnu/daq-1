@@ -21,12 +21,12 @@ public class Binary {
     private static String objectName = "chiller_water_valve_percentage_command";
     private static String deviceType = "Analog0To10Volts";
     private static boolean outOfService = false;
-    private static boolean[] eventEnable = {true, true, false};
+    private static boolean[] eventEnable = new boolean[3];
     private static int eventState = 0;
     private static int objectType = 0;
     private static int timeDelayNormal = 0;
-    private static boolean[] statusFlags = {false, false, false, false};
-    private static boolean[] ackedTransitions = {true, true, true};
+    private static boolean[] statusFlags = new boolean[4];
+    private static boolean[] ackedTransitions = new boolean[3];
     private static int notifyType = 0;
     private static boolean eventDetectionEnable = false;
     private static int reliability = 4;
@@ -226,7 +226,7 @@ public class Binary {
         try {
             bacnetObjectType.setProperty(propertyIdentifier, encodable);
         } catch (BACnetServiceException e) {
-            System.out.println("Error adding bacnet property: " + e.getMessage() + " " + propertyIdentifier.toString());
+            System.err.println("Error adding bacnet property: " + e.getMessage() + " " + propertyIdentifier.toString());
         }
     }
 
@@ -234,7 +234,7 @@ public class Binary {
         try {
             localDevice.addObject(bacnetObject);
         } catch (BACnetServiceException e) {
-            System.out.println("Error adding bacnet object: " + e.getMessage() + " " + bacnetObject.toString());
+            System.err.println("Error adding bacnet object: " + e.getMessage() + " " + bacnetObject.toString());
         }
     }
 
