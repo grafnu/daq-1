@@ -11,11 +11,15 @@ shift
 
 #############################################################
 
-local_version=$(cd faucet; git rev-list -n 1 HEAD)
-target_version=$(cat misc/FAUCET_VERSION)
-if [ "$target_version" != "$local_version" ]; then
-    echo Local faucet commit is at: $local_version
-    echo Mismatch with misc/FAUCET_VERSION: $target_version
+build_hashf=.build_hash
+build_files=.build_files
+build_built=.build_built
+test -f $build_hashf || touch $build_hashf
+build_hash=$(bin/build_hash)
+local_hash=$(< $build_hashf)
+if [ "$build_hash" != "$local_hash" ]; then
+    echo Local build hash does not match, or not found.
+    echo Please run cmd/build.
     false
 fi
 
@@ -108,8 +112,8 @@ add_link t1sw1 10 t2sw2 49
 
 add_oeth t1sw2 28 $upstream2
 
-add_link t1sw2 9 t2sw2 50
-add_link t1sw2 10 t2sw1 50
+add_link t1sw2 9 t2sw1 50
+add_link t1sw2 10 t2sw2 50
 
 if [ $mode == bond ]; then
     bondif=bond
