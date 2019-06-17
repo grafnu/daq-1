@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+ROOT=$(dirname $0)/..
+cd $ROOT
+
+bin/build_hash -c
+
 TARGET_ROOT=inst/faucet/daq-faucet-faucet
 
 for postfix in 1 2; do

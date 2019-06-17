@@ -3,27 +3,13 @@
 ROOT=$(dirname $0)/..
 cd $ROOT
 
+bin/build_hash -c
+
 if [ -z "$1" ]; then
     echo $0 [mode]
 fi
 mode=$1
 shift
-
-#############################################################
-
-build_hashf=.build_hash
-build_files=.build_files
-build_built=.build_built
-test -f $build_hashf || touch $build_hashf
-build_hash=$(bin/build_hash)
-local_hash=$(< $build_hashf)
-if [ "$build_hash" != "$local_hash" ]; then
-    echo Local build hash does not match, or not found.
-    echo Please run cmd/build.
-    false
-fi
-
-#############################################################
 
 function add_br {
     bname=$1
