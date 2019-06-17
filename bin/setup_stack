@@ -3,7 +3,7 @@
 ROOT=$(dirname $0)/..
 cd $ROOT
 
-bin/build_hash -c
+bin/build_hash check
 
 if [ -z "$1" ]; then
     echo $0 [mode]

@@ -12,7 +12,7 @@ echo "$faucet_version  faucet/HEAD" > $build_files
 find misc/ docker/ subset/ -type f | sort | xargs sha1sum >> $build_files
 build_hash=`cat $build_files | sha256sum | awk '{print $1}'`
 
-if [ "$1" == -c ]; then
+if [ "$1" == check ]; then
     test -f $build_hashf || touch $build_hashf
     local_hash=$(< $build_hashf)
     if [ "$build_hash" != "$local_hash" ]; then
@@ -25,6 +25,11 @@ if [ "$1" == -c ]; then
         echo Please run cmd/build.
         false
     fi
+elif [ "$1" == write ]; then
+    echo $build_hash > $build_hashf
+elif [ -n "$1" ]; then
+    echo Unknown argument $1
+    false
 else
     echo $build_hash
 fi

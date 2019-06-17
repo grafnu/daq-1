@@ -171,5 +171,5 @@ if [ "$do_images" == load ]; then
 fi
 
 echo Updating .build_hash
-bin/build_hash -f
+bin/build_hash write
 mv -f .build_files .build_built
