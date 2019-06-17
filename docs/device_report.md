@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 # DAQ scan report for device 9a02571e8f01
 Started %% 2019-06-04 15:35:26+00:00
+=======
+# Device 9a02571e8f01, 2019-06-06 14:00:35+00:00
+>>>>>>> upstream/master
 
 |  Role  |      Name              | Status |
 |--------|------------------------|--------|
@@ -8,7 +12,7 @@ Started %% 2019-06-04 15:35:26+00:00
 
 | Test iteration   |                        |
 |------------------|------------------------|
-| Test report date | 2019-06-04T15:35:26.211Z |
+| Test report date | 2019-06-06T14:00:34.975Z |
 | DAQ version      | 0.9.7 |
 | Attempt number   | 1 |
 
@@ -44,17 +48,20 @@ Started %% 2019-06-04 15:35:26+00:00
 |---|---|---|
 |skip|base.switch.ping||
 |pass|base.target.ping|target |
+|fail|connection.mac_oui||
 |fail|network.brute||
 |fail|protocol.bacnet.version||
 |pass|security.ports.nmap||
+|skip|security.tls.v3||
+|skip|security.x509||
 
 ## Module ping
 
 ```
 Baseline ping test report
-%% 61 packets captured.
+%% 82 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.2.38
+RESULT pass base.target.ping target %% 10.20.6.38
 ```
 
 ## Module nmap
@@ -80,11 +87,32 @@ RESULT fail network.brute
 LOCAL_IP not configured, assuming no network switch.
 ```
 
+<<<<<<< HEAD
+=======
+## Module macoui
+
+```
+Mac OUI Test
+RESULT fail connection.mac_oui
+```
+
+>>>>>>> upstream/master
 ## Module bacext
 
 ```
 RESULT fail protocol.bacnet.version
 ```
 
+<<<<<<< HEAD
+=======
+## Module tls
+
+```
+IOException unable to connect to server.
+RESULT skip security.tls.v3
+RESULT skip security.x509
+```
+
+>>>>>>> upstream/master
 ## Report complete
 
