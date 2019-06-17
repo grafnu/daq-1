@@ -98,8 +98,8 @@ add_link t1sw1 10 t2sw2 49
 
 add_oeth t1sw2 28 $upstream2
 
-add_link t1sw2 9 t2sw1 50
-add_link t1sw2 10 t2sw2 50
+add_link t1sw2 9 t2sw1 48
+add_link t1sw2 10 t2sw2 48
 
 if [ $mode == bond ]; then
     bondif=bond

@@ -59,18 +59,18 @@ dps:
     interface_ranges:
       1-46: {acl_in: uniform_acl, description: IoT Host, native_vlan: 171}
     interfaces:
+      48:
+        lacp: 2
+        lacp_active: true
+        lldp_beacon: {enable: true}
+        loop_protect_external: true
+        receive_lldp: true
+        tagged_vlans: [171]
       49:
         lacp: 1
         lacp_active: true
         lldp_beacon: {enable: true}
-        lldp_failover: 50
-        loop_protect_external: true
-        receive_lldp: true
-        tagged_vlans: [171]
-      50:
-        lacp: 2
-        lacp_active: true
-        lldp_beacon: {enable: true}
+        lldp_failover: 48
         loop_protect_external: true
         receive_lldp: true
         tagged_vlans: [171]
@@ -83,18 +83,18 @@ dps:
     interface_ranges:
       1-46: {acl_in: uniform_acl, description: IoT Device, native_vlan: 171}
     interfaces:
-      49:
-        lacp: 1
-        lacp_active: true
-        lldp_beacon: {enable: true}
-        loop_protect_external: true
-        receive_lldp: true
-        tagged_vlans: [171]
-      50:
+      48:
         lacp: 2
         lacp_active: true
         lldp_beacon: {enable: true}
         lldp_failover: 49
+        loop_protect_external: true
+        receive_lldp: true
+        tagged_vlans: [171]
+      49:
+        lacp: 1
+        lacp_active: true
+        lldp_beacon: {enable: true}
         loop_protect_external: true
         receive_lldp: true
         tagged_vlans: [171]

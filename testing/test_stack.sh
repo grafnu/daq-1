@@ -6,7 +6,7 @@ out_dir=out/daq-test_stack
 rm -rf $out_dir
 
 t2sw1p49_pcap=$out_dir/t2sw1-eth49.pcap
-t2sw1p50_pcap=$out_dir/t2sw1-eth50.pcap
+t2sw1p48_pcap=$out_dir/t2sw1-eth48.pcap
 nodes_dir=$out_dir/nodes
 
 mkdir -p $out_dir $nodes_dir
@@ -48,7 +48,7 @@ function test_stack {
 
     echo Capturing pcap to $t2sw1p49_pcap for $cap_length seconds...
     timeout $cap_length tcpdump -eni t2sw1-eth49 -w $t2sw1p49_pcap &
-    timeout $cap_length tcpdump -eni t2sw1-eth50 -w $t2sw1p50_pcap &
+    timeout $cap_length tcpdump -eni t2sw1-eth48 -w $t2sw1p48_pcap &
     sleep 5
 
     echo Executing 2nd warm-up
@@ -78,21 +78,21 @@ function test_stack {
     echo Waited $((end_time - start_time))s.
 
     bcount49=$(tcpdump -en -r $t2sw1p49_pcap | wc -l) 2>/dev/null
-    bcount50=$(tcpdump -en -r $t2sw1p50_pcap | wc -l) 2>/dev/null
-    bcount_total=$((bcount49 + bcount50))
-    echo pcap $mode count is $bcount49 $bcount50 $bcount_total
+    bcount48=$(tcpdump -en -r $t2sw1p48_pcap | wc -l) 2>/dev/null
+    bcount_total=$((bcount49 + bcount48))
+    echo pcap $mode count is $bcount49 $bcount48 $bcount_total
     echo pcap sane $((bcount_total > 100)) $((bcount_total < 220)) | tee -a $TEST_RESULTS
     echo pcap t2sw1p49
     tcpdump -en -c 20 -r $t2sw1p49_pcap
-    echo pcap t2sw1p50
-    tcpdump -en -c 20 -r $t2sw1p50_pcap
+    echo pcap t2sw1p48
+    tcpdump -en -c 20 -r $t2sw1p48_pcap
     echo pcap end
 
     telnet49=$(tcpdump -en -r $t2sw1p49_pcap vlan and port 23 | wc -l) 2>/dev/null
     https49=$(tcpdump -en -r $t2sw1p49_pcap vlan and port 443 | wc -l) 2>/dev/null
-    telnet50=$(tcpdump -en -r $t2sw1p50_pcap vlan and port 23 | wc -l) 2>/dev/null
-    https50=$(tcpdump -en -r $t2sw1p50_pcap vlan and port 443 | wc -l) 2>/dev/null
-    echo $mode telnet $((telnet49 + telnet50)) https $((https49 + https50)) | tee -a $TEST_RESULTS
+    telnet48=$(tcpdump -en -r $t2sw1p48_pcap vlan and port 23 | wc -l) 2>/dev/null
+    https48=$(tcpdump -en -r $t2sw1p48_pcap vlan and port 443 | wc -l) 2>/dev/null
+    echo $mode telnet $((telnet49 + telnet48)) https $((https49 + https48)) | tee -a $TEST_RESULTS
 
     cat $nodes_dir/* | tee -a $TEST_RESULTS
 
