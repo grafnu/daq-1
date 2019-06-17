@@ -158,4 +158,11 @@ docker exec daq-faux-3 ping -q -c 30 192.168.0.1 &
 echo Waiting for warm-ups to complete...
 wait
 
+echo
+echo Things to try:
+echo docker exec daq-faux-1 ping -q -c 10 192.168.0.2
+echo docker exec daq-faux-2 ping -q -c 10 192.168.0.3
+echo docker exec daq-faux-3 ping -q -c 10 192.168.0.1
+echo
+
 echo Done with stack setup mode $mode.
