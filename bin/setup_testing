@@ -33,9 +33,9 @@ sudo ovs-vsctl add-port upstream daqnw
 sudo ip link del up_bond || true
 sudo ip link add up_bond type bond mode 802.3ad lacp_rate fast
 sudo ip link set up_bond up
-sudo ip link del yamuna || true
+sudo ip link set yamuna down
 sudo ip link set yamuna master up_bond
-sudo ip link del beas || true
+sudo ip link set beas down
 sudo ip link set beas master up_bond
 sudo ovs-vsctl add-port upstream up_bond
 
