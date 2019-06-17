@@ -11,6 +11,16 @@ shift
 
 #############################################################
 
+local_version=$(cd faucet; git rev-list -n 1 HEAD)
+target_version=$(cat misc/FAUCET_VERSION)
+if [ "$target_version" != "$local_version" ]; then
+    echo Local faucet commit is at: $local_version
+    echo Mismatch with misc/FAUCET_VERSION: $target_version
+    false
+fi
+
+#############################################################
+
 function add_br {
     bname=$1
     dpid=$(printf %016x $2)
