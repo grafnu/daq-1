@@ -30,6 +30,7 @@ sudo ip link set daqnw up
 sudo ip link set t1bond up
 sudo ovs-vsctl add-port upstream daqnw
 
+sudo ip link del up_bond || true
 sudo ip link add up_bond type bond mode 802.3ad lacp_rate fast
 sudo ip link set up_bond up
 sudo ip link del yamuna || true
