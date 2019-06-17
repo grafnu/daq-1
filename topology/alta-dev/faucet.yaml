@@ -11,12 +11,14 @@ dps:
         lldp_beacon: {enable: true}
         native_vlan: 171
         receive_lldp: true
+        lldp_peer_mac: 0e:00:00:00:02:01
       10:
         lacp: 2
         lacp_active: true
         lldp_beacon: {enable: true}
         native_vlan: 171
         receive_lldp: true
+        lldp_peer_mac: 0e:00:00:00:02:02
       28:
         description: Juniper-Uplink-1
         lacp: 3
@@ -37,12 +39,14 @@ dps:
         lldp_beacon: {enable: true}
         native_vlan: 171
         receive_lldp: true
+        lldp_peer_mac: 0e:00:00:00:02:01
       10:
         lacp: 2
         lacp_active: true
         lldp_beacon: {enable: true}
         native_vlan: 171
         receive_lldp: true
+        lldp_peer_mac: 0e:00:00:00:02:02
       28:
         description: Juniper-Uplink-2
         lacp: 3
