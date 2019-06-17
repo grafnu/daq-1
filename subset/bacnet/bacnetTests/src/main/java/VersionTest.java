@@ -21,8 +21,10 @@ public class VersionTest {
 
   private String appendixText = "";
   private boolean testPassed = false;
+  boolean bacnetSupported = false;
   private String passedReportText = "RESULT pass protocol.bacnet.version\n";
   private String failedReportText = "RESULT fail protocol.bacnet.version\n";
+  private String skippedReportText = "RESULT skip protocol.bacnet.version\n";
   private String errorPropertyMessage = "errorClass=Property, errorCode=Unknown property";
 
   public VersionTest(String localIp, String broadcastIp) throws Exception {
@@ -41,11 +43,11 @@ public class VersionTest {
       Thread.sleep(5000);
       System.err.println("Processing...");
       validator = new BacnetValidation(localDevice);
-      boolean bacnetSupported = validator.checkIfBacnetSupported();
+      bacnetSupported = validator.checkIfBacnetSupported();
       if (bacnetSupported) {
         checkDevicesVersionAndGenerateReport();
       } else {
-        appendixText += "Bacnet not supported.\n";
+        appendixText += "Bacnet device not found.\n";
         System.out.println(appendixText);
         generateReport("");
       }
@@ -131,10 +133,14 @@ public class VersionTest {
   private void generateReport(String deviceMacAddress) {
     Report report = new Report("tmp/" + deviceMacAddress + "_BacnetVersionTestReport.txt");
     Report appendices = new Report("tmp/" + deviceMacAddress + "_BacnetVersionTest_APPENDIX.txt");
-    if (testPassed) {
-      report.writeReport(passedReportText);
+    if (bacnetSupported) {
+      if (testPassed) {
+        report.writeReport(passedReportText);
+      } else {
+        report.writeReport(failedReportText);
+      }
     } else {
-      report.writeReport(failedReportText);
+      report.writeReport(skippedReportText);
     }
     appendices.writeReport(appendixText);
   }
