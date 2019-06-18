@@ -93,8 +93,8 @@ upstream2=corp-eth20
 
 add_oeth t1sw1 28 $upstream1
 
-add_link t1sw1 9 t2sw1 49
-add_link t1sw1 10 t2sw2 49
+add_link t1sw1 9 t2sw1 47
+add_link t1sw1 10 t2sw2 47
 
 add_oeth t1sw2 28 $upstream2
 
