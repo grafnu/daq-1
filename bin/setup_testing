@@ -41,7 +41,23 @@ sudo ovs-vsctl add-port upstream up_bond
 
 cmd/faux -n :t1bond
 cmd/faux :satlej
-cmd/faux :tapti
 cmd/faux :ravi
+cmd/faux :tapti
 
+echo
+docker exec daq-networking-t1bond ip addr
+echo Waiting for DHCP...
+sleep 15
+echo
+docker exec daq-faux-satlej ip addr show dev satlej
+echo
+docker exec daq-faux-ravi ip addr show dev ravi
+echo
+docker exec daq-faux-tapti ip addr show dev tapti
+echo
+docker exec daq-faux-satlej ping -c 3 google.com
+docker exec daq-faux-ravi ping -c 3 google.com
+docker exec daq-faux-tapti ping -c 3 google.com
+docker exec daq-faux-satlej ping -c 3 daq-faux-tapti
+echo
 echo Done with testing setup.

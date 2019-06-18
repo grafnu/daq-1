@@ -9,16 +9,16 @@ dps:
         lacp: 1
         lacp_active: true
         lldp_beacon: {enable: true}
+        lldp_peer_mac: 0e:00:00:00:02:01
         native_vlan: 171
         receive_lldp: true
-        lldp_peer_mac: 0e:00:00:00:02:01
       10:
         lacp: 2
         lacp_active: true
         lldp_beacon: {enable: true}
+        lldp_peer_mac: 0e:00:00:00:02:02
         native_vlan: 171
         receive_lldp: true
-        lldp_peer_mac: 0e:00:00:00:02:02
       28:
         description: Juniper-Uplink-1
         lacp: 3
@@ -37,16 +37,16 @@ dps:
         lacp: 1
         lacp_active: true
         lldp_beacon: {enable: true}
+        lldp_peer_mac: 0e:00:00:00:02:01
         native_vlan: 171
         receive_lldp: true
-        lldp_peer_mac: 0e:00:00:00:02:01
       10:
         lacp: 2
         lacp_active: true
         lldp_beacon: {enable: true}
+        lldp_peer_mac: 0e:00:00:00:02:02
         native_vlan: 171
         receive_lldp: true
-        lldp_peer_mac: 0e:00:00:00:02:02
       28:
         description: Juniper-Uplink-2
         lacp: 3
@@ -63,18 +63,18 @@ dps:
     interface_ranges:
       1-46: {description: IoT Host, native_vlan: 171}
     interfaces:
-      48:
-        lacp: 2
-        lacp_active: true
-        lldp_beacon: {enable: true}
-        loop_protect_external: true
-        native_vlan: 171
-        receive_lldp: true
-      49:
+      47:
         lacp: 1
         lacp_active: true
         lldp_beacon: {enable: true}
         lldp_failover: 48
+        loop_protect_external: true
+        native_vlan: 171
+        receive_lldp: true
+      48:
+        lacp: 2
+        lacp_active: true
+        lldp_beacon: {enable: true}
         loop_protect_external: true
         native_vlan: 171
         receive_lldp: true
@@ -87,18 +87,18 @@ dps:
     interface_ranges:
       1-46: {description: IoT Host, native_vlan: 171}
     interfaces:
+      47:
+        lacp: 1
+        lacp_active: true
+        lldp_beacon: {enable: true}
+        loop_protect_external: true
+        native_vlan: 171
+        receive_lldp: true
       48:
         lacp: 2
         lacp_active: true
         lldp_beacon: {enable: true}
-        lldp_failover: 49
-        loop_protect_external: true
-        native_vlan: 171
-        receive_lldp: true
-      49:
-        lacp: 1
-        lacp_active: true
-        lldp_beacon: {enable: true}
+        lldp_failover: 47
         loop_protect_external: true
         native_vlan: 171
         receive_lldp: true
