@@ -96,7 +96,7 @@ public class SwitchInterrogator implements Runnable {
     "current_polarity",
     "configured_duplex",
     "configured_speed",
-    "cofigured_polarity",
+    "configured_polarity",
     "left_chevron",
     "input_packets",
     "bytes",
