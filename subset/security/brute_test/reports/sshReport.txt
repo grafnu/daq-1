@@ -1,0 +1,4 @@
+Brute Test
+MAC Address : 001aeb1100pi
+Manufacturer : Allied Telesis R&D Center K.K.
+RESULT pass security.passwords
