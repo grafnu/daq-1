@@ -32,6 +32,11 @@ if [ -n "${options[macoui]}" ]; then
     ip link set addr $new_mac dev $intf_name
 fi
 
+if [ -n "${options[sshservice]}" ]; then
+    /usr/sbin/sshd -D &
+fi
+
+
 # To capture all the data in/out of the faux device for debugging, uncomment
 # the following lines. The pcap file will end up in inst/faux/{hostname}.pcap
 # on the DAQ controller.

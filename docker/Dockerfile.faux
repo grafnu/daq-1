@@ -17,13 +17,33 @@ RUN bin/retry_cmd git clone https://github.com/grafnu/bacnet4j.git --single-bran
 
 FROM daq/aardvark:latest
 
+#SSH ENV Settings
+ENV DEBIAN_FRONTEND noninteractive
+RUN echo exit 0 > /usr/sbin/policy-rc.d
+
 # Run this separately so it can be shared with other builds.
 RUN $AG update && $AG install openjdk-8-jre
 
-RUN $AG update && $AG install isc-dhcp-client ethtool network-manager netcat curl python ifupdown openssl
+RUN $AG update && $AG install isc-dhcp-client ethtool network-manager netcat curl python ifupdown openssl perl openssh-server
 
 # Prefetch resolvconf to dynamically install at runtime in start_faux.
 RUN $AG update && cd /tmp && ln -s ~/bin bin && $AG download resolvconf && mv resolvconf_*.deb ~
+
+#SSH set password
+RUN echo 'root:redstone' | chpasswd
+
+#SSH set config
+COPY subset/security/ssh.config ssh.config
+RUN cat ssh.config >> /etc/ssh/sshd_config
+
+# SSH login fix. Otherwise user is kicked off after login
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+ENV NOTVISIBLE "in users profile"
+RUN echo "export VISIBLE=now" >> /etc/profile
+
+#SSH Expose Port 22
+EXPOSE 22
+
 
 COPY --from=bacnet_build /root/bacnet4j/*.jar bacnet4j/
 

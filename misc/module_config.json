@@ -17,6 +17,9 @@
     },
     "tls": {
       "enabled": true
+    },
+    "password":{
+      "enabled":true
     }
   }
 }
