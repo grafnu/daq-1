@@ -6,15 +6,11 @@ dps:
     hardware: GenericTFM
     interfaces:
       9:
-        lacp: 1
-        lacp_active: true
         lldp_beacon: {enable: true}
         lldp_peer_mac: 0e:00:00:00:02:01
         native_vlan: 171
         receive_lldp: true
       10:
-        lacp: 2
-        lacp_active: true
         lldp_beacon: {enable: true}
         lldp_peer_mac: 0e:00:00:00:02:02
         native_vlan: 171
@@ -34,15 +30,11 @@ dps:
     hardware: GenericTFM
     interfaces:
       9:
-        lacp: 1
-        lacp_active: true
         lldp_beacon: {enable: true}
         lldp_peer_mac: 0e:00:00:00:02:01
         native_vlan: 171
         receive_lldp: true
       10:
-        lacp: 2
-        lacp_active: true
         lldp_beacon: {enable: true}
         lldp_peer_mac: 0e:00:00:00:02:02
         native_vlan: 171
@@ -64,16 +56,12 @@ dps:
       1-46: {description: IoT Host, native_vlan: 171}
     interfaces:
       47:
-        lacp: 1
-        lacp_active: true
         lldp_beacon: {enable: true}
         lldp_failover: 48
         loop_protect_external: true
         native_vlan: 171
         receive_lldp: true
       48:
-        lacp: 2
-        lacp_active: true
         lldp_beacon: {enable: true}
         loop_protect_external: true
         native_vlan: 171
@@ -88,15 +76,11 @@ dps:
       1-46: {description: IoT Host, native_vlan: 171}
     interfaces:
       47:
-        lacp: 1
-        lacp_active: true
         lldp_beacon: {enable: true}
         loop_protect_external: true
         native_vlan: 171
         receive_lldp: true
       48:
-        lacp: 2
-        lacp_active: true
         lldp_beacon: {enable: true}
         lldp_failover: 47
         loop_protect_external: true
