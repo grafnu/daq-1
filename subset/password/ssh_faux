@@ -1,8 +1,0 @@
-#!/bin/bash
-
-echo Starting faux container of the ssh device  
-
-tail -f /dev/null
-
-
-
