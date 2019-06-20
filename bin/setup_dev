@@ -17,11 +17,13 @@ MININET=https://github.com/mininet/mininet
 MININETV=2.3.0d3
 
 if [ -z "$FAUCETC" ]; then
-    git status
-    git remote -v
-    git branch -a
-    DBRANCH=`git rev-parse --abbrev-ref --symbolic-full-name @{u}`
+    DBRANCH=`git rev-parse --abbrev-ref --symbolic-full-name @{u} || true`
+    echo Working with remote reference $DBRANCH
     DORIGIN=${DBRANCH%/*}
+    if [ -z "$DORIGIN" ]; then
+        echo Origin is undefined, assuming \'origin\'
+        DORIGIN=origin
+    fi
     DURL=`git remote get-url $DORIGIN`
     DREPO=${DURL%/*}
     echo Using extracted repo base $DREPO
