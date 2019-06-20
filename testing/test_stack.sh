@@ -117,7 +117,7 @@ echo Stacking Tests >> $TEST_RESULTS
 #bin/net_clean
 
 #echo Restarting ovs...
-#sudo /etc/init.d/openvswitch-switch restart
+sudo /etc/init.d/openvswitch-switch restart
 
 test_stack bond
 bin/net_clean
