@@ -113,17 +113,14 @@ function test_dot1x {
 }
 
 echo Stacking Tests >> $TEST_RESULTS
-#test_stack nobond
 #bin/net_clean
+#test_stack nobond
 
-#echo Restarting ovs...
-sudo /etc/init.d/openvswitch-switch restart
-
-test_stack bond
 bin/net_clean
+test_stack bond
 
 echo Dot1x setup >> $TEST_RESULTS
-test_dot1x
 bin/net_clean
+test_dot1x
 
 echo Done with cleanup. Goodby.
