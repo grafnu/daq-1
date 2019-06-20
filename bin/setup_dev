@@ -17,6 +17,9 @@ MININET=https://github.com/mininet/mininet
 MININETV=2.3.0d3
 
 if [ -z "$FAUCETC" ]; then
+    git status
+    git remote -v
+    git branch -a
     DBRANCH=`git rev-parse --abbrev-ref --symbolic-full-name @{u}`
     DORIGIN=${DBRANCH%/*}
     DURL=`git remote get-url $DORIGIN`
