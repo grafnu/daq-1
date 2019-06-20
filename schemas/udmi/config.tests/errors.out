@@ -1,8 +1,0 @@
-Validating 1 schemas
-  Validating 1 files against config.json
-    Against input config.tests/errors.json
-      #: 4 schema violations found
-        #/system/max_update_ms: expected type: Number, found: String
-        #: extraneous key [points] is not permitted
-        #: extraneous key [properties] is not permitted
-        #: extraneous key [type] is not permitted
