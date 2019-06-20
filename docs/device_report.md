@@ -1,4 +1,4 @@
-# Device 9a02571e8f01, 2019-06-06 14:00:35+00:00
+# Device 9a02571e8f01, 2019-06-20 12:31:51+00:00 to 2019-06-20 12:39:18+00:00
 
 |  Role  |      Name              | Status |
 |--------|------------------------|--------|
@@ -7,8 +7,8 @@
 
 | Test iteration   |                        |
 |------------------|------------------------|
-| Test report date | 2019-06-06T14:00:34.975Z |
-| DAQ version      | 0.9.7 |
+| Test report date | 2019-06-20T12:31:51.814Z |
+| DAQ version      | 1.0.0 |
 | Attempt number   | 1 |
 
 ## Device Identification
@@ -45,7 +45,7 @@
 |pass|base.target.ping|target |
 |fail|connection.mac_oui||
 |fail|network.brute||
-|fail|protocol.bacnet.version||
+|skip|protocol.bacnet.version||
 |pass|security.ports.nmap||
 |skip|security.tls.v3||
 |skip|security.x509||
@@ -56,7 +56,7 @@
 Baseline ping test report
 %% 82 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.6.38
+RESULT pass base.target.ping target %% 10.20.66.164
 ```
 
 ## Module nmap
@@ -92,7 +92,7 @@ RESULT fail connection.mac_oui
 ## Module bacext
 
 ```
-RESULT fail protocol.bacnet.version
+RESULT skip protocol.bacnet.version
 ```
 
 ## Module tls
