@@ -14,36 +14,36 @@ import java.util.Map;
 
 public class Analog {
 
-    private static float presentValue = 0.1f;
-    private static String objectName = "device_run_command";
-    private static String deviceType = "";
-    private static float deadband = 14;
-    private static boolean outOfService = false;
-    private static float resolution = 0.1f;
-    private static boolean[] eventEnable = new boolean[3];
-    private static int eventState = 0;
-    private static int objectType = 0;
-    private static int timeDelayNormal = 0;
-    private static float lowLimit = 0;
-    private static boolean[] limitEnable = new boolean[2];
-    private static float covIncrement = 1.0f;
-    private static boolean[] statusFlags = new boolean[4];
-    private static int updateInterval = 1000;
-    private static boolean[] ackedTransitions = new boolean[3];
-    private static float highLimit = 0;
-    private static int notifyType = 0;
-    private static boolean eventDetectionEnable = false;
-    private static float minPresValue = 100.90f;
-    private static float maxPresValue = 150.96f;
-    private static int reliability = 4;
-    private static SequenceOf<EventTransitionBits> eventTransitionBits = new SequenceOf<EventTransitionBits>();
-    private static int notificationClass = 0;
-    private static String description = "Faux Device";
-    private static boolean eventAlgorithmInhibit = false;
-    private static int units = 62;
-    private static String profileName = "";
-    private static float relinquishDefault = 0.0f;
-    private static boolean priorityArray = false;
+    private float presentValue = 0.0f;
+    private String objectName = "";
+    private String deviceType = "";
+    private float deadband = 0.0f;
+    private boolean outOfService = false;
+    private float resolution = 0.0f;
+    private boolean[] eventEnable = new boolean[3];
+    private int eventState = 0;
+    private int objectType = 0;
+    private int timeDelayNormal = 0;
+    private float lowLimit = 0;
+    private boolean[] limitEnable = new boolean[2];
+    private float covIncrement = 0.0f;
+    private boolean[] statusFlags = new boolean[4];
+    private int updateInterval = 0;
+    private boolean[] ackedTransitions = new boolean[3];
+    private float highLimit = 0;
+    private int notifyType = 0;
+    private boolean eventDetectionEnable = false;
+    private float minPresValue = 0.0f;
+    private float maxPresValue = 0.0f;
+    private int reliability = 0;
+    private SequenceOf<EventTransitionBits> eventTransitionBits = new SequenceOf<EventTransitionBits>();
+    private int notificationClass = 0;
+    private String description = "";
+    private boolean eventAlgorithmInhibit = false;
+    private int units = 0;
+    private String profileName = "";
+    private float relinquishDefault = 0.0f;
+    private boolean priorityArray = false;
 
     public Analog(LocalDevice localDevice, BACnetObject bacnetObjectType, Map<String, String>bacnetObjectMap) {
         for(Map.Entry<String, String> map : bacnetObjectMap.entrySet()) {

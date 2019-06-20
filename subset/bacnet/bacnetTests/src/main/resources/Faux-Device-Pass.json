@@ -1,5 +1,6 @@
 [
     {
+        "DeviceID": "1234",
         "AnalogInput01": {
             "Present_Value": "5.1",
             "Object_Name": "device_run_command",

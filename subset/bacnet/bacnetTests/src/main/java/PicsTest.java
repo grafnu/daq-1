@@ -23,6 +23,7 @@ public class PicsTest {
   private String localIp = "";
   private String broadcastIp = "";
   boolean bacnetSupported = false;
+  boolean csvFound = true;
 
   public PicsTest(String localIp, String broadcastIp) throws Exception {
     this.localIp = localIp;
@@ -46,7 +47,7 @@ public class PicsTest {
       } else {
         reportAppendix += "Bacnet device not found... Pics check cannot be performed.\n";
         System.out.println(reportAppendix);
-        generateReport("");
+        generateReport();
       }
       connection.doTerminate();
     }
@@ -56,16 +57,20 @@ public class PicsTest {
     try {
       for (RemoteDevice remoteDevice : localDevice.getRemoteDevices()) {
         FileManager fileManager = new FileManager();
-        String deviceMacAddress = getMacAddress(remoteDevice);
         bacnetPoints.get(localDevice);
         Multimap<String, Map<String, String>> bacnetPointsMap = bacnetPoints.getBacnetPointsMap();
-        boolean csvExists = fileManager.checkCsvForMacAddress(deviceMacAddress);
-        if(!csvExists) { additionalReportAppendix = fileManager.getFileName(deviceMacAddress) +
-                " file not found. Reverting to faux device pics \n\n";}
+        boolean csvExists = fileManager.checkDevicePicCSV();
+        if(!csvExists) {
+          additionalReportAppendix = "Pics.csv not found. \n\n";
+          csvFound = false;
+          generateReport();
+          return;
+        }
         validatePics(bacnetPointsMap, fileManager);
-        generateReport(deviceMacAddress);
+        generateReport();
       }
     } catch (Exception e) {
+        e.printStackTrace();
       System.err.println("Error performing pics check: " + e.getMessage());
     }
   }
@@ -77,14 +82,10 @@ public class PicsTest {
     csv.readAndValidate(bacnetPointsMap);
   }
 
-  private String getMacAddress(RemoteDevice remoteDevice) {
-    return remoteDevice.getAddress().getMacAddress().toString().replaceAll("\\[|\\]", "");
-  }
-
-  private void generateReport(String deviceMacAddress) {
-    Report report = new Report("tmp/" + deviceMacAddress + "_BacnetPICSTestReport.txt");
-    Report appendix = new Report("tmp/" + deviceMacAddress + "_BacnetPICSTest_APPENDIX.txt");
-    if (bacnetSupported) {
+  private void generateReport() {
+    Report report = new Report("tmp/BacnetPICSTestReport.txt");
+    Report appendix = new Report("tmp/BacnetPICSTest_APPENDIX.txt");
+    if (bacnetSupported && csvFound) {
       boolean testPassed = csv.getTestResult();
       String reportAppendix = csv.getTestAppendices();
       if (testPassed) {

@@ -20,6 +20,7 @@ rm -rf inst/test_site && mkdir -p inst/test_site
 cp -a misc/test_site inst/
 
 echo Extended tests | tee -a $TEST_RESULTS
+cp misc/test_site/device_types/rocket/aux/pics.csv local/site/mac_addrs/*/aux/
 cp misc/system_all.conf local/system.conf
 cat <<EOF >> local/system.conf
 fail_hook=misc/dump_network.sh
@@ -28,6 +29,7 @@ site_path=inst/test_site
 startup_faux_1_opts=brute
 startup_faux_2_opts="nobrute expiredtls bacnetfail"
 startup_faux_3_opts="tls macoui bacnet"
+host_tests=local/local_tests.conf
 EOF
 cmd/run -b -s
 fgrep -h RESULT inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS
