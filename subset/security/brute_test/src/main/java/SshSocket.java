@@ -47,13 +47,11 @@ public class SshSocket implements Runnable {
   private void getMACAddress() {
     try {
       macAddress = macAddress.replace(":", "");
-      String splicedMac = macAddress.replace(":","");
-      formattedMac = splicedMac.substring(0,6).toUpperCase();
+      formattedMac = macAddress.substring(0,6).toUpperCase();
       System.out.println("MAC ADDRESS : " + macAddress + "  " + macDevices.get(formattedMac));
       getJsonFile(formattedMac);
     } catch (Exception e) {
     	System.out.println(e);
-        e.printStackTrace();
         Report reportHandler = new Report();
         reportHandler.addText("RESULT skip security.passwords");
         reportHandler.writeReport("ssh");

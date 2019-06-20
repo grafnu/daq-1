@@ -30,7 +30,7 @@ RUN $AG update && $AG install isc-dhcp-client ethtool network-manager netcat cur
 RUN $AG update && cd /tmp && ln -s ~/bin bin && $AG download resolvconf && mv resolvconf_*.deb ~
 
 #SSH set password
-RUN echo 'root:redstone' | chpasswd
+#RUN echo 'root:redstone' | chpasswd
 
 #SSH set config
 COPY subset/security/ssh.config ssh.config
