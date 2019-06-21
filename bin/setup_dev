@@ -24,9 +24,14 @@ if [ -z "$FAUCETC" ]; then
         echo Origin is undefined, assuming \'origin\'
         DORIGIN=origin
     fi
-    DURL=`git remote get-url $DORIGIN`
+    DURL=`git remote get-url $DORIGIN || true`
     DREPO=${DURL%/*}
-    echo Using extracted repo base $DREPO
+    if [ -z "$DREPO" ]; then
+        echo No git repo, ignoring faucet install.
+        FAUCETV=
+    else
+        echo Using extracted repo base $DREPO
+    fi
     FAUCETC=$DREPO
 fi
 
