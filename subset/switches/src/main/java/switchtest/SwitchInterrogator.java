@@ -34,6 +34,8 @@ public class SwitchInterrogator implements Runnable {
 
   String reportFilename = "tmp/report.txt";
 
+  boolean switchSupportsPoe = false;
+
   int data_length = 32768;
   int shortPacketLength = 20;
 
@@ -55,11 +57,12 @@ public class SwitchInterrogator implements Runnable {
     "show stack"
   };
 
-  String[] commandToggle = {"interface ethernet port1.0.", "shutdown", "no shutdown"};
-
   int interfacePos = 1;
   int platformPos = 2;
   int powerinlinePos = 3;
+
+  // Power-inline is disabled
+  String[] commandToggle = {"interface ethernet port1.0.", "shutdown", "no shutdown"};
 
   HashMap<String, String> stack_map = new HashMap<String, String>();
 
@@ -263,13 +266,11 @@ public class SwitchInterrogator implements Runnable {
   int continue_flag = 1;
 
   boolean debug = true;
-  boolean switchSupportsPoe = false;
   boolean extendedTests = false;
 
-  public SwitchInterrogator(String remoteIpAddress, int interfacePort, boolean switchSupportsPoe) {
+  public SwitchInterrogator(String remoteIpAddress, int interfacePort) {
     this.remoteIpAddress = remoteIpAddress;
     this.interfacePort = interfacePort;
-    this.switchSupportsPoe = switchSupportsPoe;
     command[interfacePos] = command[interfacePos] + interfacePort;
     command[platformPos] = command[platformPos] + interfacePort;
     command[powerinlinePos] = command[powerinlinePos] + interfacePort;
@@ -466,23 +467,17 @@ public class SwitchInterrogator implements Runnable {
           } else {
             // running configuration requests
             if (data.indexOf(device_hostname) >= 0 && data.length() < shortPacketLength) {
-              int requestFinish = 0;
-              if (switchSupportsPoe) {
-                requestFinish = 4;
-              } else {
-                requestFinish = 3;
-              }
+              int requestFinish = powerinlinePos;
               if (extendedTests) {
                 requestFinish = command.length;
               }
-              if (requestFlag < requestFinish) {
+              if (requestFlag <= requestFinish) {
                 telnetClientSocket.writeData(command[requestFlag] + "\n");
                 System.out.println(
                     "command:" + command[requestFlag] + " request_flag:" + requestFlag);
                 requestFlag += 1;
               } else {
                 System.out.println("finished running configuration requests");
-                // addDataToMaps(requestFinish);
                 validateTests();
                 telnetClientSocket.disposeConnection();
               }
@@ -527,9 +522,15 @@ public class SwitchInterrogator implements Runnable {
         case 4:
           // parse show power-inline
           login_report += "\nshow power-inline:\n";
-          data = trash_line(trash_line(data, 0), 1);
-          parse_inline(data, show_power_expected, show_power_pointers, show_power_data);
-          power_map = dataToMap(power_expected, show_power_data);
+          if (data.contains("Power-inline is disabled")) {
+            login_report += "Power-inline is disabled\n";
+          } else {
+            switchSupportsPoe = true;
+            data = trash_line(trash_line(data, 0), 1);
+            System.out.println("data:" + data);
+            parse_inline(data, show_power_expected, show_power_pointers, show_power_data);
+            power_map = dataToMap(power_expected, show_power_data);
+          }
           writeReport();
           telnetClientSocket.writeData("\n");
           break;
@@ -607,19 +608,19 @@ public class SwitchInterrogator implements Runnable {
         login_report += "RESULT fail connection.port_duplex\n";
       }
 
-      String current_max_power = power_map.get("max").replaceAll("\\D+", "");
-      String current_power = power_map.get("power").replaceAll("\\D+", "");
-      String current_PoE_admin = power_map.get("admin");
-
-      System.out.println(
-          "current_max_power:"
-              + current_max_power
-              + "current_power:"
-              + current_power
-              + "current_PoE_admin:"
-              + current_PoE_admin);
-
       if (switchSupportsPoe) {
+        String current_max_power = power_map.get("max").replaceAll("\\D+", "");
+        String current_power = power_map.get("power").replaceAll("\\D+", "");
+        String current_PoE_admin = power_map.get("admin");
+
+        System.out.println(
+            "current_max_power:"
+                + current_max_power
+                + "current_power:"
+                + current_power
+                + "current_PoE_admin:"
+                + current_PoE_admin);
+
         if (current_max_power.length() > 0
             && current_power.length() > 0
             && current_PoE_admin.length() > 0) {
@@ -638,6 +639,10 @@ public class SwitchInterrogator implements Runnable {
           login_report += "RESULT fail poe.negotiation\n";
           login_report += "RESULT fail poe.support\n";
         }
+      } else {
+        login_report += "RESULT skip poe.power\n";
+        login_report += "RESULT skip poe.negotiation\n";
+        login_report += "RESULT skip poe.support\n";
       }
 
       writeReport();
