@@ -84,15 +84,23 @@ public class Pubber {
     deviceState.pointset = new PointSetState();
   }
 
-  private void startExecutor() {
-    cancelExecutor();
+  private synchronized void maybeRestartExecutor(int intervalMs) {
+    if (scheduledFuture == null || intervalMs != messageDelayMs.get()) {
+      cancelExecutor();
+      messageDelayMs.set(intervalMs);
+      startExecutor();
+    }
+  }
+
+  private synchronized void startExecutor() {
+    Preconditions.checkState(scheduledFuture == null);
     int delay = messageDelayMs.get();
     LOG.info("Starting executor with send message delay " + delay);
     scheduledFuture = executor
         .scheduleAtFixedRate(this::sendMessages, delay, delay, TimeUnit.MILLISECONDS);
   }
 
-  private void cancelExecutor() {
+  private synchronized void cancelExecutor() {
     if (scheduledFuture != null) {
       scheduledFuture.cancel(false);
       scheduledFuture = null;
@@ -168,17 +176,16 @@ public class Pubber {
   private void configHandler(Message.Config config) {
     try {
       info("Received new config " + config);
-      int previous = messageDelayMs.get();
+      final int actualInterval;
       if (config != null) {
         Integer reportInterval = config.system == null ? null : config.system.report_interval_ms;
-        int actualInterval = Integer.max(MIN_REPORT_MS,
+        actualInterval = Integer.max(MIN_REPORT_MS,
             reportInterval == null ? DEFAULT_REPORT_MS : reportInterval);
-        messageDelayMs.set(actualInterval);
         deviceState.system.last_config = config.timestamp;
+      } else {
+        actualInterval = DEFAULT_REPORT_MS;
       }
-      if (scheduledFuture == null || previous != scheduledFuture.getDelay(TimeUnit.MILLISECONDS)) {
-        startExecutor();
-      }
+      maybeRestartExecutor(actualInterval);
       configLatch.countDown();
       publishStateMessage(configuration.gatewayId);
       reportError(null);
