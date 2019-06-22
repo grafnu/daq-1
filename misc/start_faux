@@ -105,6 +105,11 @@ elif [ -n "${options[expiredtls]}" ]; then
     python tlsfaux/server.py expcerts &
 fi
 
+if [ -n "${options[pubber]}" ]; then
+    echo Running cloud pubber tool...
+    pubber/bin/run &
+fi
+
 conf_file=/config/start/start_faux.sh
 if [ -f $conf_file ]; then
     echo Loading $conf_file...
