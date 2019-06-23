@@ -75,6 +75,8 @@ public class Registrar {
     System.err.println("Reading Cloud IoT config from " + cloudIotConfig.getAbsolutePath());
     cloudIotManager = new CloudIotManager(new File(gcpCredPath), cloudIotConfig, schemaName);
     pubSubPusher = new PubSubPusher(new File(gcpCredPath), cloudIotConfig);
+    System.err.println(String.format("Working with project %s registry %s",
+        cloudIotManager.getProjectId(), cloudIotManager.getRegistryId()));
   }
 
   private void processDevices() {
