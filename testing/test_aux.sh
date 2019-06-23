@@ -63,6 +63,12 @@ jq .modules inst/run-port-02/nodes/ping02/tmp/module_config.json | tee -a $TEST_
 cat inst/run-port-02/nodes/ping02/tmp/snake.txt | tee -a $TEST_RESULTS
 cat inst/run-port-02/nodes/ping02/tmp/lizard.txt | tee -a $TEST_RESULTS
 
+for num in 1 2 3; do
+    echo docker logs daq-faux-$num
+    docker logs daq-faux-$num | head -n 100
+done
+echo done with docker logs
+
 function redact {
     sed -e 's/\s*%%.*//' \
         -e 's/2019-.*T.*Z/XXX/' \
