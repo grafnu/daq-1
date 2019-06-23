@@ -37,6 +37,7 @@ public class PubSubClient {
       REFRESH_ERROR_FORMAT = "While refreshing subscription to topic %s subscription %s";
 
   private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
+  private static final long SUBSCRIPTION_RACE_DELAY_MS = 10000;
 
   private final AtomicBoolean active = new AtomicBoolean();
   private final BlockingQueue<PubsubMessage> messages = new LinkedBlockingDeque<>();
@@ -115,9 +116,12 @@ public class PubSubClient {
     // Best way to flush the PubSub queue is to turn it off and back on again.
     try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
       if (subscriptionExists(subscriptionAdminClient, topicName, subscriptionName)) {
+        System.out.println("Deleting old subscription " + subscriptionName);
         subscriptionAdminClient.deleteSubscription(subscriptionName);
+        Thread.sleep(SUBSCRIPTION_RACE_DELAY_MS)
       }
 
+      System.out.println("Creating new subscription " + subscriptionName);
       Subscription subscription = subscriptionAdminClient.createSubscription(
           subscriptionName, topicName, PushConfig.getDefaultInstance(), 0);
 
