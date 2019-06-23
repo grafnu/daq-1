@@ -52,9 +52,14 @@ else
 
     # dhclient relies on systemd to update resolv.conf -- but this setup does
     # not use systemd, so get all hacky and update manually.
-    dhcp_dns=$(fgrep DNS= /run/systemd/resolved.conf.d/isc-dhcp-v4-$intf_name.conf)
-    echo Updating resolv.conf with $dhcp_dns
-    echo nameserver ${dhcp_dns#DNS=} > /etc/resolv.conf
+    function update_dns {
+        dhcp_dns=$(fgrep DNS= /run/systemd/resolved.conf.d/isc-dhcp-v4-$intf_name.conf)
+        echo Updating resolv.conf with $dhcp_dns
+        echo nameserver ${dhcp_dns#DNS=} > /etc/resolv.conf
+    }
+
+    # Need to do periodically for when DHCP address changes.
+    (while true; do update_dns; sleep 120; done) &
 fi
 
 # Pick the one not-lo inet v4 address.

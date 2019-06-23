@@ -21,6 +21,15 @@ Cloud IoT device setting).
 * Devices not found in the target registry are automatically created.
 * Existing device registy entries are unblocked and updated with the appropriate keys.
 
+## Testing
+
+The `test_udmi` test module uses the Registrar and Validator to check that a device is
+properly communicating through Cloud IoT.
+* Run the Registrar as per this doc to properly configure the cloud project.
+* Configure test subsystem with proper cloud endpoint.
+* Configure the DUT with the proper cloud device credentials.
+* Copy the key from **** to ****
+
 ## Device Settings
 
 When registering or updating a device, the Registrar manipulates a few key pieces of device
@@ -39,17 +48,6 @@ Device-specific properties (e.g. device mode).
 Device metadata (e.g. location).
 * `{site_dir}/devices/{device_id}/rsa_private.pem`:
 Generated private key for device (used on-device).
-
-### Device Properties
-
-* `mode`: Specifies how the device communicates with Cloud IoT.
-  * `direct`: Device communicates directly with Cloud IoT, and requires its own auth key and MQTT channel.
-  * `gateway`: Devie is a gateway that proxies for other devices.
-  * `proxy`: Device is proxied through a gateway, and the `gateway_id` proerty must be set accordingly.
-
-### Device Metadata
-
-* `location`: Location of the device in the building.
 
 ## Sample Output
 
