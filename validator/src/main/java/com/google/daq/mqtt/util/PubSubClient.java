@@ -52,6 +52,7 @@ public class PubSubClient {
     try {
       ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(
           PROJECT_ID, SUBSCRIPTION_NAME);
+      System.out.println("Connecting to pubsub subscription " + subscriptionName);
       refreshSubscription(ProjectTopicName.of(PROJECT_ID, topicId), subscriptionName);
       subscriber = Subscriber.newBuilder(subscriptionName, new MessageProcessor()).build();
       subscriber.startAsync().awaitRunning();
