@@ -118,7 +118,7 @@ public class PubSubClient {
       if (subscriptionExists(subscriptionAdminClient, topicName, subscriptionName)) {
         System.out.println("Deleting old subscription " + subscriptionName);
         subscriptionAdminClient.deleteSubscription(subscriptionName);
-        Thread.sleep(SUBSCRIPTION_RACE_DELAY_MS)
+        Thread.sleep(SUBSCRIPTION_RACE_DELAY_MS);
       }
 
       System.out.println("Creating new subscription " + subscriptionName);
