@@ -107,7 +107,7 @@ fi
 
 if [ -n "${options[pubber]}" ]; then
     echo Running cloud pubber tool...
-    pubber/bin/run &
+    (while date; do pubber/bin/run; done) &
 fi
 
 conf_file=/config/start/start_faux.sh

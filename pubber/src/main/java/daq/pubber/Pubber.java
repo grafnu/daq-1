@@ -38,6 +38,7 @@ public class Pubber {
   private static final int CONFIG_WAIT_TIME_MS = 10000;
   private static final int STATE_THROTTLE_MS = 1500;
   private static final String CONFIG_ERROR_STATUS_KEY = "config_error";
+  private static final long CONNECTION_RETRY_DELAY_MS = 10000;
 
   private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
@@ -59,7 +60,8 @@ public class Pubber {
     }
     Pubber pubber = new Pubber(args[0]);
     pubber.initialize();
-    pubber.synchronizeStart();
+    pubber.startConnection();
+    LOG.info("Done with main");
   }
 
   private Pubber(String configFile) {
@@ -70,7 +72,8 @@ public class Pubber {
     } catch (Exception e) {
       throw new RuntimeException("While reading configuration file " + configurationFile.getAbsolutePath(), e);
     }
-    info("Starting instance for registry " + configuration.registryId);
+    info(String.format("Starting instance for project %s registry %s",
+        configuration.projectId, configuration.registryId));
 
     initializeDevice();
     addPoint(new RandomPoint("superimposition_reading", 0, 100, "Celsius"));
@@ -131,9 +134,13 @@ public class Pubber {
     }
   }
 
-  private void synchronizeStart() throws InterruptedException {
+  private void startConnection() throws InterruptedException {
+    connect();
     boolean result = configLatch.await(CONFIG_WAIT_TIME_MS, TimeUnit.MILLISECONDS);
     LOG.info("synchronized start config result " + result);
+    if (!result) {
+      mqttPublisher.close();
+    }
   }
 
   private void addPoint(AbstractPoint point) {
@@ -152,7 +159,17 @@ public class Pubber {
     mqttPublisher = new MqttPublisher(configuration, this::reportError);
     mqttPublisher.registerHandler(configuration.gatewayId, CONFIG_TOPIC,
             this::configHandler, Message.Config.class);
-    mqttPublisher.connect(configuration.gatewayId);
+  }
+
+  private void connect() {
+    try {
+      mqttPublisher.connect(configuration.gatewayId);
+      LOG.info("Connection complete.");
+    } catch (Exception e) {
+      LOG.error("Connection error", e);
+      LOG.error("Forcing termination");
+      System.exit(-1);
+    }
   }
 
   private void reportError(Exception toReport) {
