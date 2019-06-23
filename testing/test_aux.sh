@@ -31,9 +31,10 @@ startup_faux_3_opts="tls macoui bacnet"
 EOF
 
 if [ -n "$GCP_SERVICE_ACCOUNT" ]; then
-    echo Installing GCP_SERVICE_ACCOUNT cred to local/gcp_service_account.json
+    echo Installing GCP_SERVICE_ACCOUNT to gcp_cred=local/gcp_service_account.json
     echo "$GCP_SERVICE_ACCOUNT" > local/gcp_service_account.json
     echo gcp_cred=local/gcp_service_account.json >> local/system.conf
+    cat local/gcp_service_account.json
 else
     echo No GCP_SERVICE_ACCOUNT cred defined.
     echo This varaiable should be defined in your online travis config.
