@@ -12,4 +12,5 @@ public class Configuration {
   public String keyFile = "local/rsa_private.pkcs8";
   public byte[] keyBytes;
   public String algorithm = "RS256";
+  public String extraField;
 }

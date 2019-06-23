@@ -85,6 +85,7 @@ public class Pubber {
     deviceState.system.make_model = "DAQ_pubber";
     deviceState.system.firmware.version = "v1";
     deviceState.pointset = new PointSetState();
+    devicePoints.extraField = configuration.extraField;
   }
 
   private synchronized void maybeRestartExecutor(int intervalMs) {

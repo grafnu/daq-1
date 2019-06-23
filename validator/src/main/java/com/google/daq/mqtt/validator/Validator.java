@@ -134,7 +134,6 @@ public class Validator {
       OBJECT_MAPPER.writeValue(messageFile, message);
 
       File errorFile = new File(OUT_BASE_FILE, String.format(ERROR_FILE_FORMAT, schemaId, deviceId));
-      errorFile.delete();
 
       try {
         Preconditions.checkNotNull(deviceId, "Missing deviceId in message");
