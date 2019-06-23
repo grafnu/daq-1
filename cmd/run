@@ -27,6 +27,12 @@ fi
 
 bin/build_hash check
 
+if [ -n "$gcp_cred" ]; then
+    echo Installing $gcp_cred in inst/config...
+    mkdir -p inst/config
+    cp $gcp_cred inst/config/google_credentials.json
+fi
+
 if [ "$run_mode" == local ]; then
     cmd/exrun $run_args 2>&1 | tee $cmdrun_log
 else

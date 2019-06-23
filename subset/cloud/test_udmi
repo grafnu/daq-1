@@ -1,8 +1,9 @@
 #!/bin/bash -e
 
 REPORT=/tmp/report.txt
+VLOG=/tmp/validaton.log
 
-gcp_cred=local/google_credentials.json
+gcp_cred=/config/inst/google_credentials.json
 gcp_topic=target
 schema_path=schemas/udmi
 
@@ -12,13 +13,13 @@ if [ ! -f $gcp_cred ]; then
     exit 0
 fi
 
-export GOOGLE_APPLICATION_CREDENTIALS=$PWD/$gcp_cred
+export GOOGLE_APPLICATION_CREDENTIALS=$gcp_cred
 echo Using credentials from $GOOGLE_APPLICATION_CREDENTIALS
 echo Configured topic is $gcp_topic
 echo Configured schema is $schema_path
 echo
 
 result=fail
-timeout 60 validator/bin/validate $PWD/$schema_path pubsub:$gcp_topic $gcp_ignoreset && result=pass
+timeout 60 validator/bin/validate $PWD/$schema_path pubsub:$gcp_topic $gcp_ignoreset | tee $VLOG
 
-echo RESULT $result cloud.udmi | tee -a
+echo RESULT $result cloud.udmi | tee -a $REPORT
