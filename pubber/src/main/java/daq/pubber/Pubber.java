@@ -155,6 +155,7 @@ public class Pubber {
   private void initialize() {
     Preconditions.checkState(mqttPublisher == null, "mqttPublisher already defined");
     Preconditions.checkNotNull(configuration.keyFile, "configuration keyFile not defined");
+    System.err.println("Loading device key file from " + configuration.keyFile);
     configuration.keyBytes = getFileBytes(configuration.keyFile);
     mqttPublisher = new MqttPublisher(configuration, this::reportError);
     mqttPublisher.registerHandler(configuration.gatewayId, CONFIG_TOPIC,

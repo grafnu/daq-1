@@ -26,6 +26,7 @@ Cloud IoT device setting).
 The `test_udmi` test module uses the Registrar and Validator to check that a device is
 properly communicating through Cloud IoT.
 * Run the Registrar as per this doc to properly configure the cloud project.
+* Add GCP service account credential to Travis
 * Configure test subsystem with proper cloud endpoint.
 * Configure the DUT with the proper cloud device credentials.
 * Copy the key from **** to ****

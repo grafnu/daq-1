@@ -29,6 +29,16 @@ startup_faux_1_opts=brute
 startup_faux_2_opts="nobrute expiredtls"
 startup_faux_3_opts="tls macoui bacnet"
 EOF
+
+if [ -n "$GCP_SERVICE_ACCOUNT" ]; then
+    echo Installing GCP_SERVICE_ACCOUNT creds to local/gcp_service_account.json
+    echo "$GCP_SERVICE_ACCOUNT" > local/gcp_service_account.json
+    echo gcp_creds=local/gcp_service_account.json >> local/system.conf
+else
+    echo No GCP_SERVICE_ACCOUNT creds defined.
+    echo This varaiable should be defined in your online travis config.
+fi
+
 cmd/run -b -s
 tail -qn 1 inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
