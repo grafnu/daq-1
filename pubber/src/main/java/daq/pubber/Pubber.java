@@ -221,6 +221,10 @@ public class Pubber {
   }
 
   private void sendDeviceMessage(String deviceId) {
+    if (mqttPublisher.clientCount() == 0) {
+      LOG.error("No connected clients, exiting.");
+      System.exit(-2);
+    }
     info(String.format("Sending test message for %s/%s", configuration.registryId, deviceId));
     mqttPublisher.publish(deviceId, POINTSET_TOPIC, devicePoints);
   }
