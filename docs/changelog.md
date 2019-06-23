@@ -1,5 +1,8 @@
 # Changelog
 
+* Next Version
+	* UDMI schema validator test module.
+	* Build improvements for various base system configurations.
 * 1.0.0
 	* Device and system schema validation in web-ui.
 	* Extended BACnet test module for PIC statements.
