@@ -25,9 +25,9 @@ cat <<EOF >> local/system.conf
 fail_hook=misc/dump_network.sh
 test_config=misc/runtime_configs/long_wait
 site_path=inst/test_site
-startup_faux_1_opts="brute udmi"
+startup_faux_1_opts="brute"
 startup_faux_2_opts="nobrute expiredtls udmi"
-startup_faux_3_opts="tls macoui bacnet"
+startup_faux_3_opts="tls macoui bacnet udmi"
 EOF
 
 if [ -n "$GCP_SERVICE_ACCOUNT" ]; then
