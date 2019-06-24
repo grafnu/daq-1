@@ -12,7 +12,7 @@ schema_path=schemas/udmi
 
 if [ ! -f $gcp_cred ]; then
     echo Missing $gcp_cred file, skipping udmi validation. | tee -a $REPORT
-    echo RESULT skip cloud.udmi | tee -a $REPORT
+    echo RESULT skip cloud.udmi.pointset | tee -a $REPORT
     exit 0
 fi
 
@@ -27,4 +27,4 @@ timeout 60 validator/bin/validate $PWD/$schema_path pubsub:$gcp_topic $gcp_ignor
 
 more schemas/udmi/out/* | tee -a $VLOG
 
-echo RESULT $result cloud.udmi | tee -a $REPORT
+echo RESULT $result cloud.udmi.pontset | tee -a $REPORT

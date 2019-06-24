@@ -7,14 +7,14 @@ echo Aux Tests >> $TEST_RESULTS
 echo mudacl tests | tee -a $TEST_RESULTS
 mudacl/bin/test.sh
 echo Mudacl exit code $? | tee -a $TEST_RESULTS
-validator/bin/test.sh
+validator/bin/test_schema
 echo Validator exit code $? | tee -a $TEST_RESULTS
 
 # Runs lint checks and some similar things
 echo Lint checks | tee -a $TEST_RESULTS
 cmd/inbuild skip
 echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
-
+docker logs daq-runner
 
 rm -rf inst/test_site && mkdir -p inst/test_site
 cp -a misc/test_site inst/
@@ -34,10 +34,6 @@ if [ -n "$GCP_SERVICE_ACCOUNT" ]; then
     echo Installing GCP_SERVICE_ACCOUNT to gcp_cred=local/gcp_service_account.json
     echo "$GCP_SERVICE_ACCOUNT" > local/gcp_service_account.json
     echo gcp_cred=local/gcp_service_account.json >> local/system.conf
-    jq . local/gcp_service_account.json
-    echo done1
-    cat local/gcp_service_account.json
-    echo done2
 else
     echo No GCP_SERVICE_ACCOUNT cred defined.
     echo This varaiable should be defined in your online travis config.
@@ -65,6 +61,9 @@ echo port-02 module_config modules | tee -a $TEST_RESULTS
 jq .modules inst/run-port-02/nodes/ping02/tmp/module_config.json | tee -a $TEST_RESULTS
 cat inst/run-port-02/nodes/ping02/tmp/snake.txt | tee -a $TEST_RESULTS
 cat inst/run-port-02/nodes/ping02/tmp/lizard.txt | tee -a $TEST_RESULTS
+
+more inst/run-port-*/nodes/udmi*/activate.log | cat
+more inst/run-port-*/nodes/udmi*/validation.log | cat
 
 for num in 1 2 3; do
     echo docker logs daq-faux-$num
