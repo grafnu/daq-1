@@ -39,6 +39,18 @@ else
     echo This varaiable should be defined in your online travis config.
 fi
 
+mkdir -p inst/faux/daq-faux-2/local
+cp misc/test_site/devices/AHU-1/rsa_private.pkcs8 inst/faux/daq-faux-2/local/
+cat <<EOF > inst/faux/daq-faux-2/local/pubber.json
+{
+  "projectId": "bos-daq-testing",
+  "cloudRegion": "us-central1",
+  "registryId": "registrar_test",
+  "extraField": "fail",
+  "gatewayId": "AHU-1"
+}
+EOF
+
 cmd/run -b -s
 tail -qn 1 inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
