@@ -19,6 +19,7 @@ echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
 function make_pubber {
     device=$1
     faux=$2
+    fail=$3
     mkdir -p inst/faux/$faux/local/
     cp misc/test_site/devices/$device/rsa_private.pkcs8 inst/faux/$faux/local/
     cat <<EOF > inst/faux/$faux/local/pubber.json
@@ -26,7 +27,7 @@ function make_pubber {
     "projectId": $project_id,
     "cloudRegion": $cloud_region,
     "registryId": $registry_id,
-    "extraField": "fail",
+    "extraField": $fail,
     "gatewayId": "$device"
   }
 EOF
@@ -61,8 +62,8 @@ if [ -f $cred_file ]; then
     project_id=`jq .project_id $cred_file`
     registry_id=`jq .registry_id $cloud_file`
     cloud_region=`jq .cloud_region $cloud_file`
-    make_pubber AHU-1 daq-faux-2
-    make_pubber SNS-4 daq-faux-3
+    make_pubber AHU-1 daq-faux-2 null
+    make_pubber SNS-4 daq-faux-3 1234
 else
     echo No GCP_SERVICE_ACCOUNT cred defined.
     echo This varaiable should be defined in your online travis config.
@@ -72,8 +73,6 @@ echo
 cat local/gcp_service_account.json
 echo
 more inst/faux/daq-faux-*/local/pubber.json | cat
-
-exit 0
 
 cmd/run -b -s
 tail -qn 1 inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS
