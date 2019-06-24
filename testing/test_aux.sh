@@ -24,7 +24,7 @@ cp misc/system_all.conf local/system.conf
 cat <<EOF >> local/system.conf
 fail_hook=misc/dump_network.sh
 test_config=misc/runtime_configs/long_wait
-site_path=misc/test_site
+site_path=inst/test_site
 startup_faux_1_opts=brute
 startup_faux_2_opts="nobrute expiredtls"
 startup_faux_3_opts="tls macoui bacnet"
@@ -45,11 +45,17 @@ more inst/run-port-*/nodes/brute*/activate.log | cat
 more inst/run-port-*/nodes/macoui*/activate.log | cat
 more inst/run-port-*/nodes/tls*/activate.log | cat
 ls inst/fail_fail01/ | tee -a $TEST_RESULTS
+echo port-01 module_config modules | tee -a $TEST_RESULTS
+jq .modules inst/run-port-01/nodes/ping01/tmp/module_config.json | tee -a $TEST_RESULTS
+echo port-02 module_config modules | tee -a $TEST_RESULTS
 jq .modules inst/run-port-02/nodes/ping02/tmp/module_config.json | tee -a $TEST_RESULTS
+cat inst/run-port-02/nodes/ping02/tmp/snake.txt | tee -a $TEST_RESULTS
+cat inst/run-port-02/nodes/ping02/tmp/lizard.txt | tee -a $TEST_RESULTS
 
 function redact {
     sed -e 's/\s*%%.*//' \
         -e 's/2019-.*T.*Z/XXX/' \
+        -e 's/2019-.*00:00/XXX/' \
         -e 's/DAQ version.*//'
 }
 
@@ -58,5 +64,8 @@ cat inst/reports/report_9a02571e8f01_*.md | redact > out/redacted_file.md
 
 echo Redacted docs diff | tee -a $TEST_RESULTS
 (diff out/redacted_docs.md out/redacted_file.md && echo No report diff) | tee -a $TEST_RESULTS
+
+# Make sure there's no file pollution from the test run.
+git status --porcelain | tee -a $TEST_RESULTS
 
 echo Done with tests | tee -a $TEST_RESULTS

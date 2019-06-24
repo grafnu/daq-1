@@ -123,7 +123,7 @@ elif [ -n "${options[expiredtls]}" ]; then
 fi
 >>>>>>> upstream/master
 
-conf_file=/config/start_faux.sh
+conf_file=/config/start/start_faux.sh
 if [ -f $conf_file ]; then
     echo Loading $conf_file...
     source $conf_file
