@@ -34,7 +34,10 @@ if [ -n "$GCP_SERVICE_ACCOUNT" ]; then
     echo Installing GCP_SERVICE_ACCOUNT to gcp_cred=local/gcp_service_account.json
     echo "$GCP_SERVICE_ACCOUNT" > local/gcp_service_account.json
     echo gcp_cred=local/gcp_service_account.json >> local/system.conf
+    jq . local/gcp_service_account.json
+    echo done1
     cat local/gcp_service_account.json
+    echo done2
 else
     echo No GCP_SERVICE_ACCOUNT cred defined.
     echo This varaiable should be defined in your online travis config.
