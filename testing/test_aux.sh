@@ -49,13 +49,14 @@ startup_faux_3_opts="tls macoui bacnet pubber"
 EOF
 
 cloud_file=inst/test_site/cloud_iot_config.json
-cred_file=local/gcp_service_account.json
+cred_file=inst/config/gcp_service_account.json
 if [ -n "$GCP_SERVICE_ACCOUNT" ]; then
     echo Installing GCP_SERVICE_ACCOUNT to gcp_cred=$cred_file
     echo "$GCP_SERVICE_ACCOUNT" > $cred_file
     echo gcp_cred=$cred_file >> local/system.conf
 elif [ -f $cred_file ]; then
     echo Using previously configured $cred_file
+    echo gcp_cred=$cred_file >> local/system.conf
 fi
 
 if [ -f $cred_file ]; then

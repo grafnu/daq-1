@@ -6,7 +6,7 @@ VLOG=/tmp/validaton.log
 # Necessary to reach gcp. Should be done by framework but this works for now.
 route add default gw $GATEWAY_IP
 
-gcp_cred=/config/inst/google_credentials.json
+gcp_cred=/config/inst/gcp_service_account.json
 gcp_topic=target
 schema_path=schemas/udmi
 
