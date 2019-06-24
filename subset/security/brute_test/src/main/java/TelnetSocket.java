@@ -44,7 +44,7 @@ public class TelnetSocket implements Runnable {
   InputStream jsonStream = this.getClass().getResourceAsStream("/defaultPasswords.json");
   String[] jsonPasswords;
   String[] jsonUsernames;
-
+  String formattedMac; 
   public TelnetSocket(String host, Map macDevices, int connectionPort, String macAddress) {
     this.connectionPort = connectionPort;
     this.macDevices = macDevices;
@@ -55,17 +55,14 @@ public class TelnetSocket implements Runnable {
 
   private void getMACAddress() {
 	  try {
-
-      //macAddress = macHandler.runShellCommand("arp " + host);
       macAddress = macAddress.replace(":", "");
-      System.out.println(
-          "MAC ADDRESS : " + macAddress + "  " + macDevices.get(macAddress.substring(0, 6)));
-      System.out.println(macDevices.get(macAddress.substring(0, 6).toUpperCase()));
-      getJsonFile(macAddress.substring(0, 6).toString().toUpperCase());
+      formattedMac = macAddress.substring(0,6).toUpperCase();
+      System.out.println("MAC ADDRESS : " + formattedMac + "  " + macDevices.get(formattedMac));
+      getJsonFile(formattedMac);
 
     } catch (Exception e) {
       Report reportHandler = new Report();
-      reportHandler.addText("RESULT security.passwords FAILED : manufacturer not found");
+      reportHandler.addText("RESULT skip security.passwords");
       reportHandler.writeReport("telnet");
     }
   }
@@ -88,7 +85,7 @@ public class TelnetSocket implements Runnable {
     catch(NullPointerException e) {
     	System.out.println("can not find manufacturer in password list. Not yet implmeneted *");
     	Report reportHandler = new Report();
-    	reportHandler.addText("RESULT security.passwords FAILED");
+    	reportHandler.addText("RESULT skip security.passwords");
     	reportHandler.writeReport("telnet");
     }
   }
@@ -102,6 +99,9 @@ public class TelnetSocket implements Runnable {
       System.out.println("Connected");
     } catch (Exception e) {
       System.err.println(e);
+      System.out.println("port was " + connectionPort);
+      System.out.println("ipaddress was " + host);
+  
     }
   }
 
@@ -264,8 +264,7 @@ public class TelnetSocket implements Runnable {
               this,
               jsonUsernames,
               jsonPasswords,
-              macAddress,
-              macDevices.get(macAddress.substring(0, 6)).toString());
+              macAddress);
       Runnable readDataRunnable =
           () -> {
             readData();
@@ -274,7 +273,7 @@ public class TelnetSocket implements Runnable {
 
       readThread.start();
       
-//      Runnable readConsoleRunnable = 
+//      Runnable readConsoleRunnable =
 //    		  ()->{
 //    			  readConsole();
 //    		  };
@@ -293,15 +292,21 @@ public class TelnetSocket implements Runnable {
           () -> {
             checkConnection();
           };
-          
+
       checkThread = new Thread(checkConnectionRunnable);
       checkThread.start();
     } catch (NullPointerException e) {
       System.out.println("Unfound manufacturer of device");
+      System.out.println(e);
+      System.out.println(this);
+      System.out.println(jsonUsernames);
+      System.out.println(jsonPasswords);
+      System.out.println(macAddress);
+      System.out.println(macAddress.substring(0,6).toString().toUpperCase());
       Report reportHandler = new Report();
-      reportHandler.addText(macAddress+ " *");
-      reportHandler.addText("Manufacturer not found to run telnet tests *");
-      reportHandler.addText("RESULT security.passwords FAILED");
+      reportHandler.addText(macAddress.substring(0, 6).toString());
+      reportHandler.addText("Manufacturer not found to run telnet tests");
+      reportHandler.addText("RESULT skip security.passwords");
       reportHandler.writeReport("telnet");
     }
   }

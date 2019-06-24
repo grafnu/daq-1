@@ -30,6 +30,10 @@ RUN $AG update && $AG install isc-dhcp-client ethtool network-manager netcat cur
 # Prefetch resolvconf to dynamically install at runtime in start_faux.
 RUN $AG update && cd /tmp && ln -s ~/bin bin && $AG download resolvconf && mv resolvconf_*.deb ~
 
+RUN $AG update && $AG install -y telnetd
+
+RUN $AG update && $AG install xinetd
+
 #SSH set config
 COPY subset/security/ssh.config ssh.config
 RUN cat ssh.config >> /etc/ssh/sshd_config

@@ -22,14 +22,12 @@ public class Interrogator {
       TelnetSocket telnetSocket,
       String[] username,
       String[] password,
-      String macAddress,
-      String manufacturer) {
+      String macAddress) {
     this.telnetSocket = telnetSocket;
     reportHandler = new Report();
     this.username = username;
     this.password = password;
     reportHandler.addText("MAC Address : " + macAddress + "*");
-    reportHandler.addText("Manufacturer : " + manufacturer + "*");
   }
 
   public void receiveData(String data) {
@@ -88,7 +86,7 @@ public class Interrogator {
       passwordIndex++;
     } else if (data.indexOf(expected[4]) >= 0) {
       reportHandler.addText("RESULT skip "+ testName);
-      reportHandeler.writeReport("telnet");
+      reportHandler.writeReport("telnet");
       System.out.println("Failed after 3 tries");
       telnetSocket.disconnect();
     }
