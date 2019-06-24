@@ -47,12 +47,17 @@ startup_faux_2_opts="nobrute expiredtls pubber"
 startup_faux_3_opts="tls macoui bacnet pubber"
 EOF
 
+cloud_file=inst/test_site/cloud_iot_config.json
+cred_file=local/gcp_service_account.json
 if [ -n "$GCP_SERVICE_ACCOUNT" ]; then
-    cred_file=local/gcp_service_account.json
-    cloud_file=inst/test_site/cloud_iot_config.json
     echo Installing GCP_SERVICE_ACCOUNT to gcp_cred=$cred_file
     echo "$GCP_SERVICE_ACCOUNT" > $cred_file
     echo gcp_cred=$cred_file >> local/system.conf
+elif [ -f $cred_file ]; then
+    echo Using previously configured $cred_file
+fi
+
+if [ -f $cred_file ]; then
     project_id=`jq .project_id $cred_file`
     registry_id=`jq .registry_id $cloud_file`
     cloud_region=`jq .cloud_region $cloud_file`
