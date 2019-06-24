@@ -5,17 +5,34 @@ source testing/test_preamble.sh
 echo Aux Tests >> $TEST_RESULTS
 
 echo mudacl tests | tee -a $TEST_RESULTS
-mudacl/bin/test.sh
+#mudacl/bin/test.sh
 echo Mudacl exit code $? | tee -a $TEST_RESULTS
-validator/bin/test_schema
+#validator/bin/test_schema
 echo Validator exit code $? | tee -a $TEST_RESULTS
 
 # Runs lint checks and some similar things
 echo Lint checks | tee -a $TEST_RESULTS
-cmd/inbuild skip
+#cmd/inbuild skip
 echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
-docker logs daq-runner
+#docker logs daq-runner
 
+function make_pubber {
+    device=$1
+    faux=$2
+    mkdir -p inst/faux/$faux/local/
+    cp misc/test_site/devices/$device/rsa_private.pkcs8 inst/faux/$faux/local/
+    cat <<EOF > inst/faux/$faux/local/pubber.json
+  {
+    "projectId": $project_id,
+    "cloudRegion": $cloud_region,
+    "registryId": $registry_id,
+    "extraField": "fail",
+    "gatewayId": "$device"
+  }
+EOF
+}
+
+# Setup an instance test site
 rm -rf inst/test_site && mkdir -p inst/test_site
 cp -a misc/test_site inst/
 
@@ -31,25 +48,27 @@ startup_faux_3_opts="tls macoui bacnet pubber"
 EOF
 
 if [ -n "$GCP_SERVICE_ACCOUNT" ]; then
-    echo Installing GCP_SERVICE_ACCOUNT to gcp_cred=local/gcp_service_account.json
-    echo "$GCP_SERVICE_ACCOUNT" > local/gcp_service_account.json
-    echo gcp_cred=local/gcp_service_account.json >> local/system.conf
+    cred_file=local/gcp_service_account.json
+    cloud_file=inst/test_site/cloud_iot_config.json
+    echo Installing GCP_SERVICE_ACCOUNT to gcp_cred=$cred_file
+    echo "$GCP_SERVICE_ACCOUNT" > $cred_file
+    echo gcp_cred=$cred_file >> local/system.conf
+    project_id=`jq .project_id $cred_file`
+    registry_id=`jq .registry_id $cloud_file`
+    cloud_region=`jq .cloud_region $cloud_file`
+    make_pubber AHU-1 daq-faux-2
+    make_pubber SNS-4 daq-faux-3
 else
     echo No GCP_SERVICE_ACCOUNT cred defined.
     echo This varaiable should be defined in your online travis config.
 fi
 
-mkdir -p inst/faux/daq-faux-2/local
-cp misc/test_site/devices/AHU-1/rsa_private.pkcs8 inst/faux/daq-faux-2/local/
-cat <<EOF > inst/faux/daq-faux-2/local/pubber.json
-{
-  "projectId": "bos-daq-testing",
-  "cloudRegion": "us-central1",
-  "registryId": "registrar_test",
-  "extraField": "fail",
-  "gatewayId": "AHU-1"
-}
-EOF
+echo
+cat local/gcp_service_account.json
+echo
+more inst/faux/daq-faux-*/local/pubber.json | cat
+
+exit 0
 
 cmd/run -b -s
 tail -qn 1 inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS
