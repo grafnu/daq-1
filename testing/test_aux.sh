@@ -50,6 +50,7 @@ EOF
 
 cloud_file=inst/test_site/cloud_iot_config.json
 cred_file=inst/config/gcp_service_account.json
+mkdir -p inst/config
 if [ -n "$GCP_SERVICE_ACCOUNT" ]; then
     echo Installing GCP_SERVICE_ACCOUNT to gcp_cred=$cred_file
     echo "$GCP_SERVICE_ACCOUNT" > $cred_file

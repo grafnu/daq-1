@@ -26,7 +26,7 @@ fi
 
 bin/build_hash check
 
-if [ -n "$gcp_cred" ]; then
+if [ -f "$gcp_cred" ]; then
     echo Installing $gcp_cred into inst/config...
     gcp_target=inst/config/gcp_service_account.json
     if ! diff $gcp_cred $gcp_target; then
