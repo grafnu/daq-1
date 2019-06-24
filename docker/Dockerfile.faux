@@ -38,8 +38,8 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
-#SSH Expose Port 22
-EXPOSE 22
+#SSH Expose Telnet and SSH Port 22 23
+EXPOSE 22 23
 
 
 COPY --from=bacnet_build /root/bacnet4j/*.jar bacnet4j/

@@ -1,7 +1,7 @@
 public class Interrogator {
 
   String[] expected = {
-    "OFS2 login:", "Password:", "Last login:", "Login incor", "Connection closed by foreign host."
+    "login:", "Password:", "Last login:", "Login incor", "Connection closed by foreign host.", "Welcome"
   };
   String[] username;
   String[] password;
@@ -50,7 +50,7 @@ public class Interrogator {
       attemptCount++;
       System.out.println("number of attempts: " + attemptCount);
     }
-    if (data.contains(expected[2])) {
+    if (data.contains(expected[2]) || data.contains(expected[5])) {
       System.out.println("Login Success");
       reportHandler.addText("Login Success" + ":-" + usedUsername + " : " + usedPassword + "*");
       reportHandler.addText("RESULT fail " + testName + "*");
@@ -87,6 +87,8 @@ public class Interrogator {
       writeData(trimmedPass);
       passwordIndex++;
     } else if (data.indexOf(expected[4]) >= 0) {
+      reportHandler.addText("RESULT skip "+ testName);
+      reportHandeler.writeReport("telnet");
       System.out.println("Failed after 3 tries");
       telnetSocket.disconnect();
     }

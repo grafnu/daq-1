@@ -52,6 +52,12 @@ if [ -n "${options[sshservicefail]}" ]; then
     /usr/sbin/sshd -D &
 fi
 
+if [-n "${options[telnetservicepass]}" ]; then
+   /etc/init.d/openbsd-inetd restart
+   /etc/init.d/xinetd restart
+   echo "pass\npass\n\n\n\n\n\ny\n" | adduser admin
+   echo admin:redstone | chpasswd
+fi
 
 # To capture all the data in/out of the faux device for debugging, uncomment
 # the following lines. The pcap file will end up in inst/faux/{hostname}.pcap
