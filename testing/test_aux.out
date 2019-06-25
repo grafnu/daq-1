@@ -12,6 +12,7 @@ RESULT pass protocol.bacnet.version
 RESULT fail network.brute
 RESULT pass network.brute
 RESULT skip network.brute
+RESULT skip cloud.udmi.pointset
 RESULT fail connection.mac_oui
 RESULT fail connection.mac_oui
 RESULT pass connection.mac_oui
@@ -55,6 +56,9 @@ port-01 module_config modules
   },
   "tls": {
     "enabled": true
+  },
+  "udmi": {
+    "enabled": true
   }
 }
 port-02 module_config modules
@@ -85,6 +89,9 @@ port-02 module_config modules
   },
   "typeconf": {
     "enabled": false
+  },
+  "udmi": {
+    "enabled": true
   }
 }
     SNAKE!         ____
