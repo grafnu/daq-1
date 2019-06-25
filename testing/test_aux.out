@@ -6,11 +6,11 @@ Validator exit code 0
 Lint checks
 cmd/inbuild exit code 0
 Extended tests
-RESULT fail protocol.bacnet.version
+RESULT skip protocol.bacnet.version
 RESULT skip protocol.bacnet.pic
-RESULT pass protocol.bacnet.version
+RESULT info protocol.bacnet.version
 RESULT fail protocol.bacnet.pic
-RESULT pass protocol.bacnet.version
+RESULT info protocol.bacnet.version
 RESULT pass protocol.bacnet.pic
 RESULT fail network.brute
 RESULT pass network.brute
@@ -27,7 +27,7 @@ RESULT pass security.x509
 dhcp requests 2 1
 01: ['01:brute:1']
 02: ['02:nmap:1']
-03: ['03:nmap:1']
+03: []
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
@@ -58,6 +58,9 @@ port-01 module_config modules
   },
   "tls": {
     "enabled": true
+  },
+  "typeconf": {
+    "enabled": false
   }
 }
 port-02 module_config modules
