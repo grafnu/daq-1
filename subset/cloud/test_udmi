@@ -11,16 +11,20 @@ schema_path=schemas/udmi
 
 if [ ! -f $gcp_cred ]; then
     echo Missing $gcp_cred file, skipping udmi validation. | tee -a $REPORT
-    echo RESULT skip cloud.udmi.pointset | tee -a $REPORT
+    echo RESULT skip cloud.udmi.pointset No credentials. | tee -a $REPORT
     exit 0
 fi
 
-device_id=`jq .device_id /config/device/module_config.json`
-project_id=`jq .project_id $gcp_cred`
-service_id=`jq .client_email $gcp_cred`
+device_id=`jq -r .device_id /config/device/module_config.json`
+project_id=`jq -r .project_id $gcp_cred`
+service_id=`jq -r .client_email $gcp_cred`
 service_id=${service_id%@*}
 
-cat $gcp_cred
+if [ "$device_id" == null ]; then
+    echo Device id is null, skipping.
+    echo RESULT skip cloud.udmi.pointset No device id. | tee -a $REPORT
+    exit 0
+fi
 
 export GOOGLE_APPLICATION_CREDENTIALS=$gcp_cred
 echo Using credentials from $GOOGLE_APPLICATION_CREDENTIALS
