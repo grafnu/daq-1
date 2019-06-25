@@ -32,7 +32,7 @@ public class PubSubClient {
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
       .enable(SerializationFeature.INDENT_OUTPUT)
       .setSerializationInclusion(Include.NON_NULL);
-  private static final String SUBSCRIPTION_NAME = "daq-validator";
+  private static final String SUBSCRIPTION_NAME_FORMAT = "daq-validator-%s";
   private static final String
       REFRESH_ERROR_FORMAT = "While refreshing subscription to topic %s subscription %s";
 
@@ -49,10 +49,11 @@ public class PubSubClient {
     LoadBalancerRegistry.getDefaultRegistry().register(new PickFirstLoadBalancerProvider());
   }
 
-  public PubSubClient(String topicId) {
+  public PubSubClient(String instName, String topicId) {
     try {
+      String name = String.format(SUBSCRIPTION_NAME_FORMAT, instName);
       ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(
-          PROJECT_ID, SUBSCRIPTION_NAME);
+          PROJECT_ID, name);
       System.out.println("Connecting to pubsub subscription " + subscriptionName);
       refreshSubscription(ProjectTopicName.of(PROJECT_ID, topicId), subscriptionName);
       subscriber = Subscriber.newBuilder(subscriptionName, new MessageProcessor()).build();
