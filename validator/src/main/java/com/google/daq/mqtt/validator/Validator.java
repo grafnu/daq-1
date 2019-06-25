@@ -55,6 +55,8 @@ public class Validator {
   public static void main(String[] args) {
     Validator validator = new Validator();
     try {
+      System.out.println("GOOGLE_APPLICATION_CREDENTIALS=" +
+          System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
       if (args.length != 3) {
         throw new IllegalArgumentException("Args: [schema] [target] [inst_name]");
       }
