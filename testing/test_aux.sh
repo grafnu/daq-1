@@ -20,7 +20,8 @@ rm -rf inst/test_site && mkdir -p inst/test_site
 cp -a misc/test_site inst/
 
 echo Extended tests | tee -a $TEST_RESULTS
-cp misc/test_site/device_types/rocket/aux/pics.csv local/site/mac_addrs/*/aux/
+cp -r misc/test_site/device_types/faux local/site/device_types/
+cp -r misc/test_site/mac_addrs/* local/site/mac_addrs/
 cp misc/system_all.conf local/system.conf
 cat <<EOF >> local/system.conf
 fail_hook=misc/dump_network.sh
