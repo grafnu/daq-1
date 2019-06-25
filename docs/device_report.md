@@ -42,9 +42,9 @@
 |Result|Test|Notes|
 |---|---|---|
 |skip|base.switch.ping||
-|pass|base.target.ping|target |
-|fail|connection.mac_oui||
+|pass|base.target.ping|target|
 |skip|cloud.udmi.pointset|No device id.|
+|fail|connection.mac_oui||
 |fail|network.brute||
 |fail|protocol.bacnet.version||
 |pass|security.ports.nmap||
