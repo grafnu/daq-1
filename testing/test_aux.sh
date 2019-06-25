@@ -79,6 +79,7 @@ tail -qn 1 inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/macoui*/tmp/report.txt | tee -a $TEST_RESULTS
 fgrep -h RESULT inst/run-port-*/nodes/tls*/tmp/report.txt | tee -a $TEST_RESULTS
+fgrep -h RESULT inst/run-port-*/nodes/udmi*/tmp/report.txt | tee -a $TEST_RESULTS
 more inst/run-port-*/scans/dhcp_triggers.txt | cat
 dhcp_short=$(fgrep pass inst/run-port-01/scans/dhcp_triggers.txt | wc -l)
 dhcp_long=$(fgrep long inst/run-port-01/scans/dhcp_triggers.txt | wc -l)
@@ -96,9 +97,6 @@ echo port-02 module_config modules | tee -a $TEST_RESULTS
 jq .modules inst/run-port-02/nodes/ping02/tmp/module_config.json | tee -a $TEST_RESULTS
 cat inst/run-port-02/nodes/ping02/tmp/snake.txt | tee -a $TEST_RESULTS
 cat inst/run-port-02/nodes/ping02/tmp/lizard.txt | tee -a $TEST_RESULTS
-
-more inst/run-port-*/nodes/udmi*/activate.log | cat
-more inst/run-port-*/nodes/udmi*/validation.log | cat
 
 for num in 1 2 3; do
     echo docker logs daq-faux-$num
