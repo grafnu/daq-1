@@ -1,4 +1,4 @@
-# Device 9a02571e8f01, 2019-06-14 08:44:49+00:00 to 2019-06-14 08:52:31+00:00
+# Device 9a02571e8f01, 2019-06-25 13:40:24+00:00 to 2019-06-25 13:47:53+00:00
 
 |  Role  |      Name              | Status |
 |--------|------------------------|--------|
@@ -7,8 +7,8 @@
 
 | Test iteration   |                        |
 |------------------|------------------------|
-| Test report date | 2019-06-14T08:44:49.083Z |
-| DAQ version      | 0.9.7 |
+| Test report date | 2019-06-25T13:40:24.163Z |
+| DAQ version      | 1.0.0 |
 | Attempt number   | 1 |
 
 ## Device Identification
@@ -46,7 +46,7 @@
 |fail|connection.mac_oui||
 |fail|network.brute||
 |skip|protocol.bacnet.pic||
-|fail|protocol.bacnet.version||
+|skip|protocol.bacnet.version||
 |pass|security.ports.nmap||
 |skip|security.tls.v3||
 |skip|security.x509||
@@ -55,9 +55,9 @@
 
 ```
 Baseline ping test report
-%% 82 packets captured.
+%% 81 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.62.164
+RESULT pass base.target.ping target %% 10.20.75.164
 ```
 
 ## Module nmap
@@ -93,8 +93,8 @@ RESULT fail connection.mac_oui
 ## Module bacext
 
 ```
-RESULT fail protocol.bacnet.version
-Bacnet not supported.
+RESULT skip protocol.bacnet.version
+Bacnet device not found.
 RESULT skip protocol.bacnet.pic
 Bacnet device not found... Pics check cannot be performed.
 ```
