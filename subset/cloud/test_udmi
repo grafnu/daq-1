@@ -26,7 +26,13 @@ if [ "$device_id" == null ]; then
     exit 0
 fi
 
+env
+
+unset GOOGLE_CLOUD_PROJECT
+unset GCLOUD_PROJECT
+
 export GOOGLE_APPLICATION_CREDENTIALS=$gcp_cred
+
 echo Using credentials from $GOOGLE_APPLICATION_CREDENTIALS
 echo Extracted project $project_id
 echo Extracted service $service_id
