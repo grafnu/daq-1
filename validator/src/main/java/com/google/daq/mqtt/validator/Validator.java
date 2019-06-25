@@ -3,6 +3,7 @@ package com.google.daq.mqtt.validator;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.cloud.ServiceOptions;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -55,8 +56,8 @@ public class Validator {
   public static void main(String[] args) {
     Validator validator = new Validator();
     try {
-      System.out.println("GOOGLE_APPLICATION_CREDENTIALS=" +
-          System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
+      System.out.println(ServiceOptions.CREDENTIAL_ENV_NAME + "=" +
+          System.getenv(ServiceOptions.CREDENTIAL_ENV_NAME));
       if (args.length != 3) {
         throw new IllegalArgumentException("Args: [schema] [target] [inst_name]");
       }
