@@ -1,10 +1,12 @@
 #!/bin/bash
 
-echo Cleaning veth...
-veths=`ip link | fgrep @| sed 's/@.*//' | awk '{ print $2 }'`
-for veth in $veths; do
-    echo Deleting veth $veth
-    sudo ip link del $veth
+echo Cleaning docker...
+for image in daq/faucet daq/faux daq/networking daqf/networking daqf/faux faucet/gauge; do
+    echo Cleaning docker $image...
+    images=$(docker ps --filter ancestor=$image -q)
+    if [ -n "$images" ]; then
+        docker kill $images > /dev/null
+    fi
 done
 
 echo Cleaning ovs...
@@ -17,13 +19,13 @@ if [ -n "$(which ovs-vsctl)" ]; then
     done
 fi
 
-echo Cleaning docker...
-for image in daq/faucet daq/faux daqf/networking daqf/faux faucet/gauge; do
-    echo Cleaning docker $image...
-    images=$(docker ps --filter ancestor=$image -q)
-    if [ -n "$images" ]; then
-        docker kill $images > /dev/null
-    fi
+sudo /etc/init.d/openvswitch-switch restart
+
+echo Cleaning veth...
+veths=`ip link | fgrep @| sed 's/@.*//' | awk '{ print $2 }'`
+for veth in $veths; do
+    echo Deleting veth $veth
+    sudo ip link del $veth
 done
 
 echo Cleaning netnses...
@@ -31,10 +33,25 @@ netnses=$(ip netns)
 if [ -n "$netnses" ]; then
     for netns in $netnses; do
         echo Cleaning netns $netns...
-        sudo ip netns del $netnses
+        sudo ip netns del $netns
     done
 else
     echo No netnses to clean!
+fi
+
+echo Cleaning bonds...
+bonds=$(ip link show type bond | cut -d " " -f 2 | sed 's/.$//')
+if [ -n "$bonds" ]; then
+    for bond in $bonds; do
+	if [ "$bond" = "bond0" ]; then
+	    echo Skipping bond0
+        else	    
+            echo Cleaning bond $bond...
+            sudo ip link del $bond
+	fi;
+    done
+else
+    echo No bonds to clean!
 fi
 
 echo Done with network cleanup.
