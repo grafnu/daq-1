@@ -16,15 +16,22 @@ if [ ! -f $gcp_cred ]; then
 fi
 
 device_id=`jq .device_id /config/device/module_config.json`
+project_id=`jq .project_id $gcp_cred`
+service_id=`jq .client_email $gcp_cred`
+service_id=${service_id%@*}
+
+cat $gcp_cred
 
 export GOOGLE_APPLICATION_CREDENTIALS=$gcp_cred
 echo Using credentials from $GOOGLE_APPLICATION_CREDENTIALS
+echo Extracted project $project_id
+echo Extracted service $service_id
 echo Configured topic is $gcp_topic
 echo Configured schema is $schema_path
 echo Target device is $device_id
 echo
 
-timeout 60 validator/bin/validate $PWD/$schema_path pubsub:$gcp_topic $HOSTNAME
+timeout 60 validator/bin/validate $PWD/$schema_path pubsub:$gcp_topic $service_id-$HOSTNAME
 
 base=schemas/udmi/out/pointset_$device_id
 
