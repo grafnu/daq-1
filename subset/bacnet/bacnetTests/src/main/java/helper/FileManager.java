@@ -10,6 +10,7 @@ public class FileManager {
 
     public boolean checkDevicePicCSV() {
         String csvFolder = getCSVPath();
+        try{
         File[] listFiles = new File(csvFolder).listFiles();
         for (int i = 0; i < listFiles.length; i++) {
             if (listFiles[i].isFile()) {
@@ -24,6 +25,9 @@ public class FileManager {
         }
         String errorMessage = "Pics.csv not found.\n";
         System.err.println(errorMessage);
+        } catch(Exception e) {
+            System.out.println("Error in reading " + csvName + csvExtension + " in " + csvFolder);
+        }
         return false;
     }
 
