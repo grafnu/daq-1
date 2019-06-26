@@ -219,7 +219,8 @@ public class LocalDevice {
     String assetName = metadata.system.physical_tag.asset.name;
     Preconditions.checkState(desiredTag.equals(assetName),
         String.format(PHYSICAL_TAG_ERROR, assetName, desiredTag));
-    Preconditions.checkState(expected_site_name.equals(siteName));
+    String errorMessage = "Site name " + siteName + " is not expected " + expected_site_name;
+    Preconditions.checkState(expected_site_name.equals(siteName), errorMessage);
   }
 
   private String makeNumId(Envelope envelope) {

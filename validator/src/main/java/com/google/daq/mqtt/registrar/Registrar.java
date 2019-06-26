@@ -167,7 +167,7 @@ public class Registrar {
   }
 
   private void validateFiles(Map<String, LocalDevice> localDevices) {
-    ExceptionMap exceptionMap = new ExceptionMap("Error loading local devices");
+    ExceptionMap exceptionMap = new ExceptionMap("Error validating local devices");
     for (LocalDevice device : localDevices.values()) {
       try {
         device.validatedDeviceDir();
@@ -179,7 +179,7 @@ public class Registrar {
   }
 
   private void writeNormalized(Map<String, LocalDevice> localDevices) {
-    ExceptionMap exceptionMap = new ExceptionMap("Error loading local devices");
+    ExceptionMap exceptionMap = new ExceptionMap("Error writing local devices");
     for (String deviceName : localDevices.keySet()) {
       try {
         System.err.println("Writing normalized device " + deviceName);
@@ -192,7 +192,7 @@ public class Registrar {
   }
 
   private void validateKeys(Map<String, LocalDevice> localDevices) {
-    ExceptionMap exceptionMap = new ExceptionMap("Error loading local devices");
+    ExceptionMap exceptionMap = new ExceptionMap("Error validating keys");
     Map<DeviceCredential, String> privateKeys = new HashMap<>();
     for (String deviceName : localDevices.keySet()) {
       CloudDeviceSettings settings = localDevices.get(deviceName).getSettings();
