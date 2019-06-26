@@ -28,7 +28,7 @@ function make_pubber {
     "cloudRegion": $cloud_region,
     "registryId": $registry_id,
     "extraField": $fail,
-    "gatewayId": "$device"
+    "deviceId": "$device"
   }
 EOF
 }

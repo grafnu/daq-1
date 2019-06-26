@@ -113,7 +113,7 @@ public class Pubber {
 
   private void sendMessages() {
     try {
-      sendDeviceMessage(configuration.gatewayId);
+      sendDeviceMessage(configuration.deviceId);
       updatePoints();
     } catch (Exception e) {
       LOG.error("Fatal error during execution", e);
@@ -156,16 +156,17 @@ public class Pubber {
   private void initialize() {
     Preconditions.checkState(mqttPublisher == null, "mqttPublisher already defined");
     Preconditions.checkNotNull(configuration.keyFile, "configuration keyFile not defined");
+    Preconditions.checkState(configuration.gatewayId == null, "gatewayId not currently supported");
     System.err.println("Loading device key file from " + configuration.keyFile);
     configuration.keyBytes = getFileBytes(configuration.keyFile);
     mqttPublisher = new MqttPublisher(configuration, this::reportError);
-    mqttPublisher.registerHandler(configuration.gatewayId, CONFIG_TOPIC,
+    mqttPublisher.registerHandler(configuration.deviceId, CONFIG_TOPIC,
             this::configHandler, Message.Config.class);
   }
 
   private void connect() {
     try {
-      mqttPublisher.connect(configuration.gatewayId);
+      mqttPublisher.connect(configuration.deviceId);
       LOG.info("Connection complete.");
     } catch (Exception e) {
       LOG.error("Connection error", e);
@@ -179,11 +180,11 @@ public class Pubber {
       LOG.error("Error receiving message: " + toReport);
       Report report = new Report(toReport);
       deviceState.system.statuses.put(CONFIG_ERROR_STATUS_KEY, report);
-      publishStateMessage(configuration.gatewayId);
+      publishStateMessage(configuration.deviceId);
     } else {
       Report previous = deviceState.system.statuses.remove(CONFIG_ERROR_STATUS_KEY);
       if (previous != null) {
-        publishStateMessage(configuration.gatewayId);
+        publishStateMessage(configuration.deviceId);
       }
     }
   }
@@ -206,7 +207,7 @@ public class Pubber {
       }
       maybeRestartExecutor(actualInterval);
       configLatch.countDown();
-      publishStateMessage(configuration.gatewayId);
+      publishStateMessage(configuration.deviceId);
       reportError(null);
     } catch (Exception e) {
       reportError(e);

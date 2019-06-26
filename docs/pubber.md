@@ -41,7 +41,7 @@ The `local/pubber.json` file configures the key cloud parameters needed for oper
   "projectId": "gcp-account",
   "cloudRegion": "us-central1",
   "registryId": "sensor_hub",
-  "gatewayId": "GAT-001"
+  "deviceId": "AHU-1"
 }
 </pre>
 
