@@ -109,6 +109,16 @@ Success validating out/logentry_FCU_01_SE_04.json
 <em>&hellip;</em>
 </pre>
 
+## CI Testing
+
+The `test_udmi` test module uses the Registrar and Validator to check that a device is
+properly communicating through Cloud IoT, automated through DAQ.
+* Run the [registrar tool](registrar.md) to properly configure the cloud project.
+* Add GOOGLE_CLOUD_PROJECT credential to Travis, using escaping like `printf "%q" "$(<local/gcp_cred_file.json)"`
+* `gcp_topic` config as per this doc.
+* Configure test subsystem with proper cloud endpoint.
+* Configure the DUT with the proper cloud device credentials.
+
 ### Types and Topics
 
 When using the
