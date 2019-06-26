@@ -1,7 +1,7 @@
 public class Interrogator {
 
   String[] expected = {
-    "login:", "Password:", "Last login:", "Login incor", "Connection closed by foreign host.", "Welcome"
+    "login:", "Password:", "Last login:", "Login incor", "Connection closed by foreign host.", "Welcome","timed out"
   };
   String[] username;
   String[] password;
@@ -27,7 +27,7 @@ public class Interrogator {
     reportHandler = new Report();
     this.username = username;
     this.password = password;
-    reportHandler.addText("MAC Address : " + macAddress + "*");
+    reportHandler.addText("MAC Address : " + macAddress);
   }
 
   public void receiveData(String data) {
@@ -43,23 +43,33 @@ public class Interrogator {
 
   private void parseData(String data) {
     data = data.trim();
-    if (data.contains(expected[3])) {
-      reportHandler.addText("Failed Login" + ":-" + usedUsername + " : " + usedPassword + "*");
-      attemptCount++;
-      System.out.println("number of attempts: " + attemptCount);
+    if (data.contains(expected[3]) && passwordIndex == 0) {
+      reportHandler.addText("Failed Login" + ":-" + usedUsername + " : " + usedPassword);
+      usernameCount++;
     }
-    if (data.contains(expected[2]) || data.contains(expected[5])) {
+    attemptCount++;
+    System.out.println("number of attempts: " + attemptCount);
+    if(data.contains(expected[6])){
+      System.out.println("TIMEOUT");
+      reportHandler.addText("RESULT skip security.passwords");
+      reportHandler.writeReport("telnet");
+      telnetSocket.disconnect();
+    }
+
+
+    else if (data.contains(expected[2]) || data.contains(expected[5])) {
       System.out.println("Login Success");
-      reportHandler.addText("Login Success" + ":-" + usedUsername + " : " + usedPassword + "*");
-      reportHandler.addText("RESULT fail " + testName + "*");
+      reportHandler.addText("Login Success" + ":-" + usedUsername + " : " + usedPassword);
+      reportHandler.addText("RESULT fail " + testName);
       writeData("\n");
       telnetSocket.disconnect();
       reportHandler.printReport();
       reportHandler.writeReport("telnet");
     } else if (data.endsWith(expected[0])) {
       try {
+        System.out.println(username.length);
         if (usernameCount == username.length) {
-          reportHandler.addText("RESULT pass " + testName + "*");
+          reportHandler.addText("RESULT pass " + testName);
           telnetSocket.disconnect();
           reportHandler.writeReport("telnet");
         } else {
@@ -67,22 +77,22 @@ public class Interrogator {
             usernameCount++;
             passwordIndex = 0;
           }
-          String value = username[usernameCount] + "\n";
+          String value = username[usernameCount];
           String trimmedVal = value.trim();
           usedUsername = trimmedVal;
-          writeData(trimmedVal);
+          writeData(trimmedVal+"\n");
         }
       } catch (ArrayIndexOutOfBoundsException e) {
-        reportHandler.addText("RESULT pass " + testName + "*");
+        reportHandler.addText("RESULT pass " + testName);
         telnetSocket.disconnect();
         reportHandler.writeReport("telnet");
         System.out.println("Could not log into server with provided credentials ");
       }
     } else if (data.endsWith(expected[1])) {
-      String passValue = password[passwordIndex] + "\n";
+      String passValue = password[passwordIndex];
       String trimmedPass = passValue.trim();
       usedPassword = trimmedPass;
-      writeData(trimmedPass);
+      writeData(trimmedPass+"\n");
       passwordIndex++;
     } else if (data.indexOf(expected[4]) >= 0) {
       reportHandler.addText("RESULT skip "+ testName);

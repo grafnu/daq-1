@@ -83,10 +83,11 @@ public class TelnetSocket implements Runnable {
       System.err.println(e);
     }
     catch(NullPointerException e) {
-    	System.out.println("can not find manufacturer in password list. Not yet implmeneted *");
+    	System.out.println(e);
     	Report reportHandler = new Report();
     	reportHandler.addText("RESULT skip security.passwords");
     	reportHandler.writeReport("telnet");
+
     }
   }
 

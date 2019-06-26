@@ -27,7 +27,7 @@ public class Report {
     try {
       reportFile.getParentFile().mkdirs();
       try (BufferedWriter writer = new BufferedWriter(new FileWriter(reportFile))){
-	writer.write(report);
+	  writer.write(report);
       }
     } catch (IOException e) {
       System.err.println("could not write report");
