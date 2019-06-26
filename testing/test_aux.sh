@@ -77,9 +77,9 @@ echo Starting aux test run...
 cmd/run -b -s
 tail -qn 1 inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
+fgrep -h RESULT inst/run-port-*/nodes/udmi*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/macoui*/tmp/report.txt | tee -a $TEST_RESULTS
 fgrep -h RESULT inst/run-port-*/nodes/tls*/tmp/report.txt | tee -a $TEST_RESULTS
-fgrep -h RESULT inst/run-port-*/nodes/udmi*/tmp/report.txt | tee -a $TEST_RESULTS
 more inst/run-port-*/scans/dhcp_triggers.txt | cat
 dhcp_short=$(fgrep pass inst/run-port-01/scans/dhcp_triggers.txt | wc -l)
 dhcp_long=$(fgrep long inst/run-port-01/scans/dhcp_triggers.txt | wc -l)
