@@ -13,8 +13,7 @@ and somewhere in here this needs to get described when setting up a new project.
 1. Goto the [Firebase Console](https://console.firebase.google.com/) and add a new project.
    * Add the hosting GCP project to link it to this Firebase setup.
 2. Navigate to the
-[Google Cloud Platform (GCP) service accounts page]
-(https://console.cloud.google.com/iam-admin/serviceaccounts?project=daq-project)
+[Google Cloud Platform (GCP) service accounts page](https://console.cloud.google.com/iam-admin/serviceaccounts?project=daq-project)
    * This is <em>not</em> from the Firebase page: it has to be from the base GCP page.
    * Create a new service account with a semi-meaningful name like `daq-testlab`.
    * Add the _Pub/Sub Admin_, _Storage Admin_, _Cloud Datastore User_, and _Firebase Admin_ roles.
