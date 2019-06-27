@@ -1,7 +1,7 @@
 service firebase.storage {
   match /b/{bucket}/o {
     match /{document=**} {
-      allow read: if get(/databases/$(database)/documents/permissions/$(request.auth.uid)).data.enabled == true
+      allow read: if request.auth.uid != null;
     }
   }
 }
