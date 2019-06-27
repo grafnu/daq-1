@@ -34,6 +34,8 @@ and somewhere in here this needs to get described when setting up a new project.
    * Select "</>" (Web)
    * Use a clever nickname and register app.
    * Copy the `var firebaseConfig = { ... }` snippet to `local/firebase_config.js`
+   * Add an [API Key Restriction](https://cloud.google.com/docs/authentication/api-keys#api_key_restrictions)
+   for an _HTTP Referrer_, which will be the https:// address of the daq hosted web addp.
 7. Enable Google sign-in from 
    * https://console.firebase.google.com/
    * Select your project.
