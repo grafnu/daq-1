@@ -53,7 +53,7 @@ Firestore rules are enforced requiring enabled user login to access data and rep
 two phases to this process:
 * Web-app needs to be configured and deployed with appropriate web-app credentials (see above).
 * Users need to access the assigned web-app, and sign in. Initially, they will not be 'enabled'.
-* The system administrator will need to run `bin/user_enable` to enable any new users.
+* The system administrator will need to run `bin/user_enable` any time there is a new user.
 
 ## Datapath Debugging
 
