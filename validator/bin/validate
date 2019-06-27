@@ -36,6 +36,8 @@ echo Running schema $schemafile in $schemadir
 
 rm -rf $schemadir/out
 
+ls -l validator/build/libs/ || true
+
 error=0
 absjar=$(realpath $jarfile)
 (cd $schemadir; java -jar $absjar $schemafile $target $devset) || error=$?
