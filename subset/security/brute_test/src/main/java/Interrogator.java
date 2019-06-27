@@ -1,7 +1,7 @@
 public class Interrogator {
 
   String[] expected = {
-    "login:", "Password:", "Last login:", "Login incor", "Connection closed by foreign host.", "Welcome","timed out"
+          "login:", "P", "Last login:", "Login incor", "Connection closed by foreign host.", "Welcome","timed out"
   };
   String[] username;
   String[] password;
@@ -17,12 +17,16 @@ public class Interrogator {
   Report reportHandler;
   TelnetSocket telnetSocket;
   boolean debug = false;
+  int nameCount = 0;
+  int passCount =0;
+  boolean userValid = false;
+  int attempts = 0;
 
   public Interrogator(
-      TelnetSocket telnetSocket,
-      String[] username,
-      String[] password,
-      String macAddress) {
+          TelnetSocket telnetSocket,
+          String[] username,
+          String[] password,
+          String macAddress) {
     this.telnetSocket = telnetSocket;
     reportHandler = new Report();
     this.username = username;
@@ -34,10 +38,10 @@ public class Interrogator {
 
     if (debug) {
       System.out.println(
-          java.time.LocalTime.now() + "receiveDataLen:" + data.length() + "receiveData:" + data);
+              java.time.LocalTime.now() + "receiveDataLen:" + data.length() + "receiveData:" + data);
     }
     if (data != null) {
-    	parseData(data);
+      parseData(data);
     }
   }
 
@@ -55,7 +59,6 @@ public class Interrogator {
       reportHandler.writeReport("telnet");
       telnetSocket.disconnect();
     }
-
 
     else if (data.contains(expected[2]) || data.contains(expected[5])) {
       System.out.println("Login Success");
@@ -88,7 +91,7 @@ public class Interrogator {
         reportHandler.writeReport("telnet");
         System.out.println("Could not log into server with provided credentials ");
       }
-    } else if (data.endsWith(expected[1])) {
+    } else if (data.startsWith(expected[1])) {
       String passValue = password[passwordIndex];
       String trimmedPass = passValue.trim();
       usedPassword = trimmedPass;

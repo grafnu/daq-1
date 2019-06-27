@@ -4,22 +4,22 @@
       "enabled": true
     },
     "nmap": {
-      "enabled": true
+      "enabled": false
     },
     "macoui": {
-     "enabled": true 
+     "enabled": true
     },
     "switch": {
-      "enabled": true
+      "enabled": false
     },
     "brute": {
-      "enabled": true
+      "enabled": false
     },
     "bacext": {
-      "enabled": true
+      "enabled": false
     },
     "tls": {
-      "enabled": true
+      "enabled": false
     },
     "password":{
       "enabled":true

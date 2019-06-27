@@ -18,7 +18,7 @@ public class Main {
 //      String host = "127.0.0.1";
 //     String protocol = "telnet";
 //     int connectionPort = 32768;
-//     String macAddress = "02:42:de:10:b0:8d";
+//   String macAddress = "02:42:AC:a3:r4:eo";
 
     System.out.println("Main Started...");
     SetupTest setupTest = new SetupTest(protocol, host, connectionPort, macAddress);
