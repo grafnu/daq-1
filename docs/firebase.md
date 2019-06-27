@@ -19,9 +19,9 @@ and somewhere in here this needs to get described when setting up a new project.
    * Add the _Pub/Sub Admin_, _Storage Admin_, _Cloud Datastore User_, and _Firebase Admin_ roles.
    * Furnish a new private key.
 4. Install the downloaded key into the DAQ install.
-   * Copy the download JSON key file to the `daq/local/` directory.
-   * Edit `daq/local/system.conf` to specify the `gcp_cred` setting to point to the downloaded file
-     (with a path relative to the `daq/` install directory), e.g.
+   * Copy the download JSON key file to the `local/` directory.
+   * Edit `local/system.conf` to specify the `gcp_cred` setting to point to the downloaded file
+     (with a path relative to the `daq` install directory), e.g.
      `gcp_cred=local/daq-testlab-de56aa4b1e47.json`.
 5. (Re)Start DAQ (`cmd/run`).
    * There should be something in the top 10-20 startup log lines that look something like:
@@ -43,8 +43,8 @@ and somewhere in here this needs to get described when setting up a new project.
    * Select "Sign-in method"
    * Enable "Google" sign-in.
 8. Follow the [Firebase CLI setup instructions](https://firebase.google.com/docs/cli/).
-9. Goto the `daq/firebase/` directory.
-   * Run <code>./deploy.sh <em>project_name</em></code> to deploy firebase.
+9. Goto the `firebase/` directory.
+   * Run <code>firebase/deploy.sh</code> to deploy firebase to your <em>gcp_cred<em> project.
    * Follow the link to the indicated _Hosting URL_ to see the newly installed pages.
 
 ## Authentication

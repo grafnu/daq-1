@@ -3,12 +3,18 @@
 ROOT=$(realpath $(dirname $0)/..)
 cd $ROOT
 
-if [ $# != 1 ]; then
-    echo Usage: $0 [project_id]
+source misc/config_base.sh
+
+if [ -z "$gcp_cred" ]; then
+    echo gcp_cred not defined in system configuration.
     false
 fi
 
-PROJECT=$1
+PROJECT=`jq .project_id $gcp_cred`
+if [ -z "$PROJECT" ]; then
+    echo project_id not extracted from $gcp_cred.
+    false
+fi
 
 CFILE=firebase_config.js
 
