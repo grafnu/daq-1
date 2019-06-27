@@ -31,19 +31,19 @@ div {
     color: rgba(0,0,0,0);
 }
 
-#testgrid table tr ~ tr td[status=pass] {
+#testgrid table tr ~ tr td[status=done] {
     background: #AEA;
 }
 
-#testgrid table tr ~ tr td[status=fail] {
+#testgrid table tr ~ tr td[status=merr] {
     background: #FAA;
 }
 
-#testgrid table tr ~ tr td[status=err] {
+#testgrid table tr ~ tr td[status=fine] {
     background: #E66;
 }
 
-#testgrid table tr ~ tr td[status=run] {
+#testgrid table tr ~ tr td[status=runn] {
     background: #EE6;
 }
 
