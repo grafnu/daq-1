@@ -13,35 +13,21 @@ var uiConfig = {
 initApp = function() {
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-      // User is signed in.
-      var displayName = user.displayName;
-      var email = user.email;
-      var emailVerified = user.emailVerified;
-      var photoURL = user.photoURL;
-      var uid = user.uid;
-      var phoneNumber = user.phoneNumber;
-      var providerData = user.providerData;
+      document.querySelector('#auth-body').classList.add('authenticated');
       user.getIdToken().then(function(accessToken) {
-        document.getElementById('sign-in-status').textContent = 'Signed in';
-        document.getElementById('sign-in').textContent = 'Sign out';
-        document.getElementById('account-details').textContent = JSON.stringify({
-          displayName: displayName,
-          email: email,
-          emailVerified: emailVerified,
-          phoneNumber: phoneNumber,
-          photoURL: photoURL,
-          uid: uid,
-          accessToken: accessToken,
-          providerData: providerData
-        }, null, '  ');
+        document.getElementById('user-name').textContent = user.displayName;
+        document.getElementById('user-email').textContent = user.email;
+        console.log('Access token is ' + accessToken)
       });
+
       document.getElementById('sign-out').addEventListener('click', function() {
         firebase.auth().signOut();
       });
     } else {
-      document.getElementById('sign-in-status').textContent = 'Signed out';
-      document.getElementById('sign-in').textContent = 'Sign in';
-      document.getElementById('account-details').textContent = 'null';
+      document.querySelector('#auth-body').classList.remove('authenticated');
+      document.getElementById('user-name').textContent = '';
+      document.getElementById('user-email').textContent = '';
+
       var ui = new firebaseui.auth.AuthUI(firebase.auth());
       ui.start('#firebaseui-auth-container', uiConfig);
     }

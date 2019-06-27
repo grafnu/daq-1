@@ -25,7 +25,6 @@ var db;
 document.addEventListener('DOMContentLoaded', () => {
   db = firebase.firestore();
   const settings = {
-    timestampsInSnapshots: true
   };
   db.settings(settings);
 });
