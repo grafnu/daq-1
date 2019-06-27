@@ -61,7 +61,6 @@ public class SwitchInterrogator implements Runnable {
   int platformPos = 2;
   int powerinlinePos = 3;
 
-  // Power-inline is disabled
   String[] commandToggle = {"interface ethernet port1.0.", "shutdown", "no shutdown"};
 
   HashMap<String, String> stack_map = new HashMap<String, String>();
