@@ -28,7 +28,8 @@ and somewhere in here this needs to get described when setting up a new project.
      <br>`INFO:gcp:Loading gcp credentials from local/daq-testlab-de56aa4b1e47.json`
      <br>`INFO:gcp:Initialized gcp publisher client daq-project:daq-testlab`
 6. Follow the relevant parts of the
-   * Goto https://console.firebase.google.com/
+   * https://console.firebase.google.com/
+   * Select your project.
    * Select "+ Add app"
    * Select "</>" (Web)
    * Use a clever nickname and register app.
@@ -40,7 +41,7 @@ and somewhere in here this needs to get described when setting up a new project.
    * Select "Sign-in method"
    * Enable "Google" sign-in.
 8. Follow the [Firebase CLI setup instructions](https://firebase.google.com/docs/cli/).
-9. Goto the 'daq/firebase/` directory.
+9. Goto the `daq/firebase/` directory.
    * Run <code>./deploy.sh <em>project_name</em></code> to deploy firebase.
    * Follow the link to the indicated _Hosting URL_ to see the newly installed pages.
 
