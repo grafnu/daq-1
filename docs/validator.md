@@ -13,7 +13,7 @@ available, defined in the `schemas/` subdirectory:
 
 ## Validation Mechanisms
 
-There are several different ways to run the validator depending on your specific objective:
+There are several different ways to run the validator depending on the specific objective:
 * Local File Validation
 * Integration Testing
 * PubSub Stream Validation
@@ -109,15 +109,17 @@ Success validating out/logentry_FCU_01_SE_04.json
 <em>&hellip;</em>
 </pre>
 
-## CI Testing
+## Travis CI Testing
 
 The `test_udmi` test module uses the Registrar and Validator to check that a device is
 properly communicating through Cloud IoT, automated through DAQ.
 * Run the [registrar tool](registrar.md) to properly configure the cloud project.
-* Add GOOGLE_CLOUD_PROJECT credential to Travis, using escaping like `printf "%q" "$(<local/gcp_cred_file.json)"`
-* `gcp_topic` config as per this doc.
-* Configure test subsystem with proper cloud endpoint.
-* Configure the DUT with the proper cloud device credentials.
+* Add GOOGLE_CLOUD_PROJECT credential to Travis, using escaping like `printf "%q" "$(<local/gcp_cred_file.json)"`.
+* `gcp_topic` config to `local/system.conf` as described in this doc.
+* Configure test subsystem with proper cloud endpoint in `{test_site}/cloud_iot_config.json`.
+* Configure the DUT with the proper cloud device credentials (device specific). For _faux_ devices, this means copying
+the assocatied `rsa_private.pkcs8` file to someting like `inst/faux/daq-faux-2/local/` (exact path depends on which faux).
+* Test with `bin/registrar`, `pubber/bin/run`, and `bin/validate` manually, before integrated testing through DAQ.
 
 ### Types and Topics
 
