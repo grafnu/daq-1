@@ -197,6 +197,7 @@ class GcpManager:
         LOGGER.info('Uploaded test report to %s', report_file_name)
 
     def register_offenders(self):
+        """Register any offenders: people who are not enabled to use the system"""
         if not self._firestore:
             LOGGER.error('Firestore not initialized.')
             return
@@ -207,18 +208,18 @@ class GcpManager:
             user_email = user.to_dict().get('email')
             enabled = permissions.to_dict() and permissions.to_dict().get('enabled')
             if enabled:
-                LOGGER.info('Access already enabled for %s' % user_email)
-            elif self._query_user('Enable access for %s? (N/y) ' % user_email):
-                LOGGER.info('Enabling access for %s' % user_email)
+                LOGGER.info('Access already enabled for %s', user_email)
+            elif self._query_user('Enable access for %s? (N/y) ', user_email):
+                LOGGER.info('Enabling access for %s', user_email)
                 self._firestore.collection(u'permissions').document(user.id).set({
                     'enabled': True
                 })
             else:
-                LOGGER.info('Ignoring user %s' % user_email)
+                LOGGER.info('Ignoring user %s', user_email)
 
     def _query_user(self, message):
         reply = input(message)
-        if reply == 'y' or reply == 'Y':
+        if reply in ['y', 'Y', 'yes', 'YES', 'Yes', 'sure']:
             return True
         return False
 
