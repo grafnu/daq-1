@@ -39,11 +39,15 @@ div {
     background: #FAA;
 }
 
-#testgrid table tr ~ tr td[status=fine] {
-    background: #E66;
+#testgrid table tr ~ tr td[status=serr] {
+    background: #F88;
 }
 
-#testgrid table tr ~ tr td[status=runn] {
+#testgrid table tr ~ tr td[status=fine] {
+    background: #BBF;
+}
+
+#testgrid table tr ~ tr td[status=exec] {
     background: #EE6;
 }
 

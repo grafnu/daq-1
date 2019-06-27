@@ -34,8 +34,8 @@ class MODE:
     INIT = 'init'
     PREP = 'prep'
     HOLD = 'hold'
-    REDY = 'redy'
-    RUNN = 'runn'
+    CONF = 'conf'
+    EXEC = 'exec'
     FINE = 'fine'
     NOPE = 'nope'
     HOLD = 'hold'
@@ -211,8 +211,8 @@ class ConnectedHost:
     def _start_run(self):
         self._state_transition(_STATE.INIT, _STATE.READY)
         self._mark_skipped_tests()
-        self.record_result('startup', state=MODE.READY, config=self._make_config_bundle())
-        self.record_result('sanity', state=MODE.RUNN)
+        self.record_result('startup', state=MODE.DONE, config=self._make_config_bundle())
+        self.record_result('sanity', state=MODE.EXEC)
         self._startup_scan()
 
     def _mark_skipped_tests(self):
@@ -245,7 +245,7 @@ class ConnectedHost:
         LOGGER.info('Target port %d waiting for dhcp as %s', self.target_port, self.target_mac)
         self._state_transition(_STATE.WAITING, _STATE.INIT)
         self.record_result('sanity', state=MODE.DONE)
-        self.record_result('dhcp', state=MODE.RUNN)
+        self.record_result('dhcp', state=MODE.EXEC)
 
     def terminate(self, trigger=True):
         """Terminate this host"""
@@ -364,7 +364,7 @@ class ConnectedHost:
             LOGGER.info('Target port %d skipping background scan', self.target_port)
             self._monitor_continue()
             return
-        self.record_result('monitor', time=self._monitor_scan_sec, state=MODE.RUNN)
+        self.record_result('monitor', time=self._monitor_scan_sec, state=MODE.EXEC)
         monitor_file = os.path.join(self.scan_base, 'monitor.pcap')
         LOGGER.info('Target port %d background scan for %ds',
                     self.target_port, self._monitor_scan_sec)
@@ -394,7 +394,7 @@ class ConnectedHost:
         self._run_next_test()
 
     def _base_tests(self):
-        self.record_result('base', state=MODE.RUNN)
+        self.record_result('base', state=MODE.EXEC)
         if not self._ping_test(self.gateway, self.target_ip):
             LOGGER.debug('Target port %d warmup ping failed', self.target_port)
         try:
@@ -435,7 +435,6 @@ class ConnectedHost:
 
     def _docker_test(self, test_name):
         self._state_transition(_STATE.TESTING, _STATE.NEXT)
-        self.record_result(test_name, state=MODE.RUNN)
         params = {
             'target_ip': self.target_ip,
             'target_mac': self.target_mac,
@@ -450,14 +449,14 @@ class ConnectedHost:
         self.test_host = docker_test.DockerTest(self.runner, self.target_port, self.devdir,
                                                 test_name)
         self.test_port = self.runner.allocate_test_port(self.target_port)
-        host_name = self.test_host.host_name if self.test_host else 'unknown'
         if 'ext_loip' in self.config:
             ext_loip = self.config['ext_loip'].replace('@', '%d')
             params['local_ip'] = ext_loip % self.test_port
             params['switch_ip'] = self.config['ext_addr']
             params['switch_port'] = str(self.target_port)
-        LOGGER.debug('test_host start %s/%s', self.test_name, host_name)
+        LOGGER.debug('test_host start %s/%s', self.test_name, self._host_name())
         self._set_module_config(test_name, self._loaded_config)
+        self.record_result(test_name, state=MODE.EXEC)
         self.test_host.start(self.test_port, params, self._docker_callback)
 
     def _host_name(self):
@@ -501,7 +500,7 @@ class ConnectedHost:
     def _set_module_config(self, name, loaded_config):
         tmp_dir = self._host_tmp_path()
         configurator.write_config(tmp_dir, self._MODULE_CONFIG, loaded_config)
-        self._record_result(name, config=self._loaded_config)
+        self._record_result(name, config=self._loaded_config, state=MODE.CONF)
 
     def _merge_run_info(self, config):
         config['run_info'] = {

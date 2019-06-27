@@ -79,7 +79,7 @@ class DhcpMonitor():
         delta = int(time.time()) - self.scan_start
         LOGGER.debug('DHCP monitor %s received reply after %ds: %s/%s',
                      self.name, delta, self.target_ip, self.target_mac)
-        mode = MODE.LONG if delta > self.DHCP_THRESHHOLD_SEC else MODE.GOOD
+        mode = MODE.LONG if delta > self.DHCP_THRESHHOLD_SEC else MODE.DONE
         target = {
             'ip': self.target_ip,
             'mac': self.target_mac,
