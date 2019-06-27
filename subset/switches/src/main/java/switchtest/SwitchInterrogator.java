@@ -268,9 +268,10 @@ public class SwitchInterrogator implements Runnable {
   boolean debug = true;
   boolean extendedTests = false;
 
-  public SwitchInterrogator(String remoteIpAddress, int interfacePort) {
+  public SwitchInterrogator(String remoteIpAddress, int interfacePort, boolean switchSupportsPoe) {
     this.remoteIpAddress = remoteIpAddress;
     this.interfacePort = interfacePort;
+    this.switchSupportsPoe = switchSupportsPoe;
     command[interfacePos] = command[interfacePos] + interfacePort;
     command[platformPos] = command[platformPos] + interfacePort;
     command[powerinlinePos] = command[powerinlinePos] + interfacePort;
