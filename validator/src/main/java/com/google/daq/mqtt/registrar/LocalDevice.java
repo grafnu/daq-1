@@ -56,7 +56,7 @@ public class LocalDevice {
 
   private static final Set<String> allowedFiles = ImmutableSet.of(METADATA_JSON, RSA_PUBLIC_PEM, RSA_PRIVATE_PEM,
       RSA_PRIVATE_PKCS8, PROPERTIES_JSON);
-  private static final String KEYGEN_EXEC_FORMAT = "validator/bin/keygen.sh %s %s";
+  private static final String KEYGEN_EXEC_FORMAT = "validator/bin/keygen %s %s";
   public static final String METADATA_SUBFOLDER = "metadata";
 
   private final String deviceId;
