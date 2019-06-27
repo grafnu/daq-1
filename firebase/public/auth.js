@@ -15,12 +15,9 @@ initApp = function() {
     if (user) {
       document.querySelector('body').classList.add('authenticated');
       document.querySelector('body').classList.remove('unauthenticated');
-      user.getIdToken().then(function(accessToken) {
-        document.getElementById('user-name').textContent = user.displayName;
-        document.getElementById('user-email').textContent = user.email;
-        console.log('Access token is ' + accessToken)
-        authenticated(true)
-      });
+      document.getElementById('user-name').textContent = user.displayName;
+      document.getElementById('user-email').textContent = user.email;
+      authenticated(user)
 
       document.getElementById('sign-out').addEventListener('click', function() {
         firebase.auth().signOut();
@@ -34,7 +31,7 @@ initApp = function() {
       var ui = new firebaseui.auth.AuthUI(firebase.auth());
       ui.start('#firebaseui-auth-container', uiConfig);
 
-      authenticated(false);
+      authenticated(null);
     }
   }, function(error) {
     console.log(error);

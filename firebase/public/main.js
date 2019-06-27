@@ -528,12 +528,32 @@ function loadJsonEditors() {
   document.querySelector('#config_body .save_button').onclick = () => pushConfigChange(config_editor, config_doc)
 }
 
-function authenticated(state) {
-  if (!state) {
-    statusUpdate('Waiting for authentication...');
+function authenticated(userData) {
+  if (!userData) {
+    statusUpdate('Authentication failed, please sign in.');
     return;
   }
 
+  const perm_doc = db.collection('permissions').doc(userData.uid);
+  const user_doc = db.collection('users').doc(userData.uid);
+  const timestamp = new Date().toJSON();
+  user_doc.set({
+    name: userData.displayName,
+    email: userData.email,
+    updated: timestamp
+  }).then(function() {
+    statusUpdate('User info updated');
+    perm_doc.get().then((doc) => {
+      if (doc.exists && doc.data().enabled) {
+        setupUser();
+      } else {
+        statusUpdate('User not enabled, contact your system administrator.');
+      }
+    });
+  }).catch((e) => statusUpdate('Error updating user info', e));
+}
+
+function setupUser() {
   try {
     if (document.getElementById('config_editor')) {
       loadJsonEditors();
@@ -543,6 +563,6 @@ function authenticated(state) {
     statusUpdate('System initialized.');
     setInterval(interval_updater, 1000);
   } catch (e) {
-    statusUpdate('Loading error', e)
+    statusUpdate('Loading error', e);
   }
 }
