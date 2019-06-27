@@ -28,11 +28,30 @@ and somewhere in here this needs to get described when setting up a new project.
    * There should be something in the top 10-20 startup log lines that look something like:
      <br>`INFO:gcp:Loading gcp credentials from local/daq-testlab-de56aa4b1e47.json`
      <br>`INFO:gcp:Initialized gcp publisher client daq-project:daq-testlab`
-6. Follow the [Firebase CLI setup instructions](https://firebase.google.com/docs/cli/).
-7. Goto the 'daq/firebase/` directory.
-   * Run `firebase use` to set the GCP project to use (as created above).
-   * Run `firebase deploy` to deploy the necessary parts of the system.
+6. Follow the relevant parts of the
+   * Goto https://console.firebase.google.com/
+   * Select "+ Add app"
+   * Select "</>" (Web)
+   * Use a clever nickname and register app.
+   * Copy the `var firebaseConfig = { ... }` snippet to `local/firebase_config.js`
+7. Enable Google sign-in from 
+   * https://console.firebase.google.com/
+   * Select your project.
+   * Select "Authentication"
+   * Select "Sign-in method"
+   * Enable "Google" sign-in.
+8. Follow the [Firebase CLI setup instructions](https://firebase.google.com/docs/cli/).
+9. Goto the 'daq/firebase/` directory.
+   * Run <code>./deploy.sh <em>project_name</em></code> to deploy firebase.
    * Follow the link to the indicated _Hosting URL_ to see the newly installed pages.
+
+## Authentication
+
+Firestore rules are enforced requiring enabled user login to access data and reports. There's
+two phases to this process:
+* Web-app needs to be configured and deployed with appropriate web-app credentials (see above).
+* Users need to access the assigned web-app, and sign in. Initially, they will not be 'enabled'.
+* The system administrator will need to run `bin/user_enable` to enable any new users.
 
 ## Datapath Debugging
 
