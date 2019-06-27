@@ -3,8 +3,6 @@
 ROOT=$(dirname $0)/..
 cd $ROOT
 
-bin/build.sh
-
 schema_root=../schemas
 
 errorfile=`mktemp`
@@ -32,7 +30,7 @@ outroot=out
 rm -rf $outroot
 
 if [ "$build" == y ]; then
-    bin/build.sh
+    bin/build
 fi
 
 schemas=$(cd $schema_root && ls)
