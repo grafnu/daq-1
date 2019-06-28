@@ -31,6 +31,7 @@ class _STATE:
 
 
 class MODE:
+    """Test module modes for state reporting."""
     INIT = 'init'
     PREP = 'prep'
     HOLD = 'hold'
