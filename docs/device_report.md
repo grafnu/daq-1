@@ -42,7 +42,8 @@
 |Result|Test|Notes|
 |---|---|---|
 |skip|base.switch.ping||
-|pass|base.target.ping|target |
+|pass|base.target.ping|target|
+|skip|cloud.udmi.pointset|No device id.|
 |fail|connection.mac_oui||
 |skip|connection.port_duplex||
 |skip|connection.port_link||
@@ -113,6 +114,12 @@ RESULT fail protocol.bacnet.version
 IOException unable to connect to server.
 RESULT skip security.tls.v3
 RESULT skip security.x509
+```
+
+## Module udmi
+
+```
+RESULT skip cloud.udmi.pointset No device id.
 ```
 
 ## Report complete
