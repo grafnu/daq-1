@@ -52,7 +52,7 @@ public class Interrogator {
       usernameCount++;
     }
     attemptCount++;
-    System.out.println("number of attempts: " + attemptCount);
+  //  System.out.println("number of attempts: " + attemptCount);
     if(data.contains(expected[6])){
       System.out.println("TIMEOUT");
       reportHandler.addText("RESULT skip security.passwords");
@@ -70,7 +70,7 @@ public class Interrogator {
       reportHandler.writeReport("telnet");
     } else if (data.endsWith(expected[0])) {
       try {
-        System.out.println(username.length);
+     //   System.out.println(username.length);
         if (usernameCount == username.length) {
           reportHandler.addText("RESULT pass " + testName);
           telnetSocket.disconnect();

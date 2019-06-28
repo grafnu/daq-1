@@ -26,10 +26,11 @@ fail_hook=misc/dump_network.sh
 test_config=misc/runtime_configs/long_wait
 site_path=inst/test_site
 startup_faux_1_opts=brute
-startup_faux_2_opts="nobrute expiredtls"
-startup_faux_3_opts="tls macoui bacnet"
+startup_faux_2_opts="nobrute expiredtls passwordfail"
+startup_faux_3_opts="tls macoui bacnet passwordpass"
 EOF
 cmd/run -b -s
+tail -qn 1 inst/run-port-*/nodes/password*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/macoui*/tmp/report.txt | tee -a $TEST_RESULTS
