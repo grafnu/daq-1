@@ -209,7 +209,7 @@ class GcpManager:
             enabled = permissions.to_dict() and permissions.to_dict().get('enabled')
             if enabled:
                 LOGGER.info('Access already enabled for %s', user_email)
-            elif self._query_user('Enable access for %s? (N/y) ', user_email):
+            elif self._query_user('Enable access for %s? (N/y) ' % user_email):
                 LOGGER.info('Enabling access for %s', user_email)
                 self._firestore.collection(u'permissions').document(user.id).set({
                     'enabled': True
@@ -219,7 +219,8 @@ class GcpManager:
 
     def _query_user(self, message):
         reply = input(message)
-        if reply in ['y', 'Y', 'yes', 'YES', 'Yes', 'sure']:
+        options = ['y', 'Y', 'yes', 'YES', 'Yes', 'sure']
+        if reply in options:
             return True
         return False
 
