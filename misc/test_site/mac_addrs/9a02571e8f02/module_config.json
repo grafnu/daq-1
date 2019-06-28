@@ -11,9 +11,6 @@
   },
   "device_type": "rocket", 
   "modules": {
-    "switch": {
-      "enabled": false
-    },
     "foobar": {
       "enabled": false
     }
