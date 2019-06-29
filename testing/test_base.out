@@ -22,12 +22,12 @@ By default would be in local/site/ rather than misc/test_site/.
 |Expectation|skip|pass|
 |---|---|---|
 |Other|2|2|
-|Result|Test|Expectation|Notes|
+|Result|Test|Category|Expectation|Notes|
 |---|---|---|---|
-|skip|base.switch.ping|Other||
-|pass|base.target.ping|Other|target|
-|skip|network.brute|Other||
-|pass|security.ports.nmap|Other||
+|skip|base.switch.ping|Other|Other||
+|pass|base.target.ping|Other|Other|target|
+|skip|network.brute|Other|Other||
+|pass|security.ports.nmap|Other|Other||
 
 ## Module ping
 
