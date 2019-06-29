@@ -44,7 +44,7 @@ and somewhere in here this needs to get described when setting up a new project.
    * Enable "Google" sign-in.
 8. Follow the [Firebase CLI setup instructions](https://firebase.google.com/docs/cli/).
 9. Goto the `firebase/` directory.
-   * Run <code>firebase/deploy.sh</code> to deploy firebase to your <em>gcp_cred<em> project.
+   * Run <code>firebase/deploy.sh</code> to deploy firebase to your <em>gcp_cred</em> project.
    * Follow the link to the indicated _Hosting URL_ to see the newly installed pages.
 
 ## Authentication
