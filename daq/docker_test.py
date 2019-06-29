@@ -5,7 +5,7 @@ import logging
 import os
 
 from clib import docker_host
-import exception
+import wrappers
 
 LOGGER = logging.getLogger('docker')
 
@@ -59,7 +59,7 @@ class DockerTest():
                                         vol_maps=vol_maps, tmpdir=self.tmpdir)
             self.docker_host = host
         except Exception as e:
-            raise exception.DaqException(e)
+            raise wrappers.DaqException(e)
         try:
             LOGGER.debug("Target port %d activating docker test %s", self.target_port, image)
             host = self.docker_host
