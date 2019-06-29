@@ -115,7 +115,7 @@ cat docs/device_report.md | redact > out/redacted_docs.md
 cat inst/reports/report_9a02571e8f01_*.md | redact > out/redacted_file.md
 
 echo Redacted docs diff | tee -a $TEST_RESULTS
-(diff -b out/redacted_docs.md out/redacted_file.md && echo No report diff) \
+(diff out/redacted_docs.md out/redacted_file.md && echo No report diff) \
     | tee -a $TEST_RESULTS
 
 # Make sure there's no file pollution from the test run.
