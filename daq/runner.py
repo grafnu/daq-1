@@ -15,7 +15,7 @@ import gcp
 import host as connected_host
 import network
 import stream_monitor
-import wrapper
+import wrappers
 
 LOGGER = logging.getLogger('runner')
 
