@@ -164,7 +164,7 @@ class ReportGenerator:
         for category in self._categories:
             total = 0
             match = 0
-            for test_name in self._results.keys():
+            for test_name in self._results:
                 test_info = self._get_test_info(test_name)
                 category_name = test_info.get('category', self._DEFAULT_CATEGORY)
                 if category_name == category and 'required' in test_info:
