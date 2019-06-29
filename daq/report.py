@@ -31,8 +31,8 @@ class ReportGenerator:
     _TABLE_DIV = "---"
     _TABLE_MARK = '|'
     _CATEGORY_HEADERS = ["Category", "Result"]
-    _EXPECTED_HEADER = "Expected"
-    _SUMMARY_HEADERS = ["Result", "Test", "Expected", "Notes"]
+    _EXPECTED_HEADER = "Expectation"
+    _SUMMARY_HEADERS = ["Result", "Test", "Expectation", "Notes"]
     _MISSING_TEST_RESULT = 'gone'
     _NO_REQUIRED = 'n/a'
     _PASS_REQUIRED = 'PASS'

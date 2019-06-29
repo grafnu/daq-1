@@ -47,13 +47,13 @@ Overall device result FAIL
 |Other|1/2|
 |Connectivity|n/a|
 
-|Expected|pass|fail|skip|gone|
+|Expectation|pass|fail|skip|gone|
 |---|---|---|---|---|
 |Required|1|1|0|0|
 |Recommended|1|0|0|0|
 |Other|0|2|4|2|
 
-|Result|Test|Expected|Notes|
+|Result|Test|Expectation|Notes|
 |---|---|---|---|
 |skip|base.switch.ping|Other||
 |pass|base.target.ping|Required|target|
@@ -128,4 +128,3 @@ RESULT skip cloud.udmi.pointset No device id.
 ```
 
 ## Report complete
-

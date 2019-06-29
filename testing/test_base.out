@@ -19,10 +19,10 @@ By default would be in local/site/ rather than misc/test_site/.
 |Category|Result|
 |---|---|
 |Other|n/a|
-|Expected|skip|pass|
+|Expectation|skip|pass|
 |---|---|---|
 |Other|2|2|
-|Result|Test|Expected|Notes|
+|Result|Test|Expectation|Notes|
 |---|---|---|---|
 |skip|base.switch.ping|Other||
 |pass|base.target.ping|Other|target|
