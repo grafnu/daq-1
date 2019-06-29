@@ -32,7 +32,7 @@ class ReportGenerator:
     _TABLE_MARK = '|'
     _CATEGORY_HEADERS = ["Category", "Result"]
     _EXPECTED_HEADER = "Expectation"
-    _SUMMARY_HEADERS = ["Result", "Test", "Expectation", "Notes"]
+    _SUMMARY_HEADERS = ["Result", "Test", "Category", "Expectation", "Notes"]
     _MISSING_TEST_RESULT = 'gone'
     _NO_REQUIRED = 'n/a'
     _PASS_REQUIRED = 'PASS'
@@ -148,7 +148,7 @@ class ReportGenerator:
         if result not in expected:
             expected[result] = 0
         expected[result] += 1
-        self._results[test_name] = [result, test_name, expected_name, extra]
+        self._results[test_name] = [result, test_name, category_name, expected_name, extra]
 
     def _write_test_tables(self):
         self._write_category_table()

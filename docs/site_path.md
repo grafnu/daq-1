@@ -54,7 +54,8 @@ All fields are optional.
 
 * `required`: The required test result, which normally would be `pass` but could be any other
 test result. The presence of this field means that it must match the actual test result
-in order for the device to pass overall.
+in order for the device to pass overall. A _required_ test entry will always be tracked
+in the report, even if no module implements it (using the sekrit `gone` result).
 * `category`: The test category, which is used to accumulate tests into top-level groups. There is
 no semantic meaning to this value.
 * `expected`: The expected state of this test, which is purely informational and again used to bucket
