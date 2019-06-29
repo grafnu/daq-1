@@ -16,12 +16,18 @@ By default would be in local/site/ rather than misc/test_site/.
 
 ## Report summary
 
-|Result|Test|Notes|
+|Category|Result|
+|---|---|
+|Other|n/a|
+|Expected|skip|pass|
 |---|---|---|
-|skip|base.switch.ping||
-|pass|base.target.ping|target|
-|skip|network.brute||
-|pass|security.ports.nmap||
+|Other|2|2|
+|Result|Test|Expected|Notes|
+|---|---|---|---|
+|skip|base.switch.ping|Other||
+|pass|base.target.ping|Other|target|
+|skip|network.brute|Other||
+|pass|security.ports.nmap|Other||
 
 ## Module ping
 
