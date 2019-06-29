@@ -46,10 +46,10 @@ class DockerTest():
 
         vol_maps = [params['scan_base'] + ":/scans"]
 
-        self._map_if_exists(vol_maps, params, 'inst'))
-        self._map_if_exists(vol_maps, params, 'port'))
-        self._map_if_exists(vol_maps, params, 'device'))
-        self._map_if_exists(vol_maps, params, 'type'))
+        self._map_if_exists(vol_maps, params, 'inst')
+        self._map_if_exists(vol_maps, params, 'port')
+        self._map_if_exists(vol_maps, params, 'device')
+        self._map_if_exists(vol_maps, params, 'type')
 
         image = self.IMAGE_NAME_FORMAT % self.test_name
         LOGGER.debug("Target port %d running docker test %s", self.target_port, image)
@@ -77,9 +77,10 @@ class DockerTest():
         LOGGER.info("Target port %d test %s running", self.target_port, self.test_name)
 
     def _map_if_exists(self, vol_maps, params, kind):
-        base = os.path.abspath(params.get('%s_base' % kind))
+        base = params.get('%s_base' % kind)
         if base and os.path.exists(base):
-            vol_maps += ['%s:/config/%s' % (base, kind)]
+            abs_base = os.path.abspath(base)
+            vol_maps += ['%s:/config/%s' % (abs_base, kind)]
 
     def _docker_error(self, e):
         LOGGER.error('Target port %d docker error: %s', self.target_port, e)
