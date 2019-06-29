@@ -9,6 +9,7 @@ import time
 import traceback
 
 import configurator
+import exception
 import faucet_event_client
 import gateway as gateway_manager
 import gcp
@@ -511,8 +512,11 @@ class DAQRunner:
     def target_set_error(self, target_port, e):
         """Handle an error in the target port set"""
         active = target_port in self.port_targets
-        message = ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
-        LOGGER.error('Target port %d (%s) exception: %s', target_port, active, message)
+        if isinstance(e, DaqException):
+            message = str(e)
+        else:
+            message = ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
+        LOGGER.error('Target port %d active %s exception: %s', target_port, active, message)
         self._detach_gateway(target_port)
         err_str = str(e)
         if active:
