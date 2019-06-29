@@ -159,8 +159,8 @@ class ReportGenerator:
         self._writeln()
 
     def _write_category_table(self):
-        self._write_table(self._CATEGORY_HEADERS)
-        self._write_table([self._TABLE_DIV] * len(self._CATEGORY_HEADERS))
+        passes = True
+        rows = []
         for category in self._categories:
             total = 0
             match = 0
@@ -172,9 +172,19 @@ class ReportGenerator:
                     total += 1
                     if self._results[test_name][0] == required_result:
                         match += 1
+                    else:
+                        passes = False
+
             output = self._NO_REQUIRED if total == 0 else (self._PASS_REQUIRED \
                      if match == total else '%s/%s' % (match, total))
-            self._write_table([category, output])
+            rows.append([category, output])
+
+        self._writeln('Overall device result %s' % ('PASS' if passes else 'FAIL'))
+        self._writeln()
+        self._write_table(self._CATEGORY_HEADERS)
+        self._write_table([self._TABLE_DIV] * len(self._CATEGORY_HEADERS))
+        for row in rows:
+            self._write_table(row)
 
     def _write_expected_table(self):
         self._write_table([self._EXPECTED_HEADER] + self._result_headers)
