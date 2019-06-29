@@ -53,19 +53,19 @@ Overall device result FAIL
 |Recommended|1|0|0|0|
 |Other|0|2|4|2|
 
-|Result|Test|Expectation|Notes|
-|---|---|---|---|
-|skip|base.switch.ping|Other||
-|pass|base.target.ping|Required|target|
-|skip|cloud.udmi.pointset|Other|No device id.|
-|fail|connection.mac_oui|Other||
-|fail|network.brute|Required||
-|fail|protocol.bacnet.version|Other||
-|pass|security.ports.nmap|Recommended||
-|skip|security.tls.v3|Other||
-|skip|security.x509|Other||
-|gone|unknown.fake.llama|Other||
-|gone|unknown.fake.monkey|Other||
+|Result|Test|Category|Expectation|Notes|
+|---|---|---|---|---|
+|skip|base.switch.ping|Other|Other||
+|pass|base.target.ping|Connectivity|Required|target|
+|skip|cloud.udmi.pointset|Other|Other|No device id.|
+|fail|connection.mac_oui|Other|Other||
+|fail|network.brute|Security|Required||
+|fail|protocol.bacnet.version|Other|Other||
+|pass|security.ports.nmap|Security|Recommended||
+|skip|security.tls.v3|Other|Other||
+|skip|security.x509|Other|Other||
+|gone|unknown.fake.llama|Other|Other||
+|gone|unknown.fake.monkey|Other|Other||
 
 
 ## Module ping
