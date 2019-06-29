@@ -9,6 +9,7 @@ import wrappers
 
 LOGGER = logging.getLogger('docker')
 
+
 class DockerTest():
     """Class for running docker tests"""
 
@@ -59,6 +60,7 @@ class DockerTest():
                                         vol_maps=vol_maps, tmpdir=self.tmpdir)
             self.docker_host = host
         except Exception as e:
+            # pylint: disable=no-member
             raise wrappers.DaqException(e)
         try:
             LOGGER.debug("Target port %d activating docker test %s", self.target_port, image)

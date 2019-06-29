@@ -513,6 +513,7 @@ class DAQRunner:
         """Handle an error in the target port set"""
         active = target_port in self.port_targets
         err_str = str(e)
+        # pylint: disable=no-member
         message = err_str if isinstance(e, wrappers.DaqException) else \
                   ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
         LOGGER.error('Target port %d active %s exception: %s', target_port, active, message)
