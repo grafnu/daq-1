@@ -52,9 +52,9 @@ which should look something like:
 
 All fields are optional.
 
-* `required`: The _required_ test result, which normally would be `pass` but could be any other
-test result. The presence of this field means that it is required to achieve this given test result
-state in order for the device to pass overall.
+* `required`: The required test result, which normally would be `pass` but could be any other
+test result. The presence of this field means that it must match the actual test result
+in order for the device to pass overall.
 * `category`: The test category, which is used to accumulate tests into top-level groups. There is
 no semantic meaning to this value.
 * `expected`: The expected state of this test, which is purely informational and again used to bucket
