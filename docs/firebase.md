@@ -187,7 +187,7 @@ Don't take this diagram as gospel, the only true truth comes from the source.
     |                         |                  |           |                      |
 ```
 
-Generated with (Text Art Sequence Generator)[https://textart.io/sequence] with the contents:
+Generated with [Text Art Sequence Generator](https://textart.io/sequence) with the contents:
 ```
 object Disk DAQ Test Firebase WebApp
 note left of DAQ: DAQ startup
