@@ -70,7 +70,7 @@ class DockerTest():
                                         vol_maps=vol_maps, tmpdir=self.tmpdir)
             self.docker_host = host
         except Exception as e:
-            raise DaqException(e)
+            raise exception.DaqException(e)
         try:
             LOGGER.debug("Target port %d activating docker test %s", self.target_port, image)
             host = self.docker_host

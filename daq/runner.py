@@ -512,13 +512,11 @@ class DAQRunner:
     def target_set_error(self, target_port, e):
         """Handle an error in the target port set"""
         active = target_port in self.port_targets
-        if isinstance(e, DaqException):
-            message = str(e)
-        else:
-            message = ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
+        err_str = str(e)
+        message = err_str if isinstance(e, exception.DaqException) else \
+                  ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
         LOGGER.error('Target port %d active %s exception: %s', target_port, active, message)
         self._detach_gateway(target_port)
-        err_str = str(e)
         if active:
             target_set = self.port_targets[target_port]
             target_set.record_result(target_set.test_name, exception=err_str)
@@ -551,21 +549,23 @@ class DAQRunner:
         if target_port in self.port_targets:
             target_host = self.port_targets[target_port]
             del self.port_targets[target_port]
-            target_gateway = self.port_gateways[target_port]
+            target_gateway = self.port_gateways.get(target_port)
             target_mac = self._active_ports[target_port]
             del self.mac_targets[target_mac]
             LOGGER.info('Target port %d cancel %s (#%d/%s).',
                         target_port, target_mac, self.run_count, self.run_limit)
             results = self._combine_result_set(target_port, self.result_sets[target_port])
             this_result_linger = results and self.result_linger
-            if target_gateway.result_linger or this_result_linger:
+            target_gateway_linger = target_gateway and target_gateway.result_linger
+            if target_gateway_linger or this_result_linger:
                 LOGGER.warning('Target port %d result_linger: %s', target_port, results)
                 self._activate_port(target_port, True)
                 target_gateway.result_linger = True
             else:
                 self._direct_port_traffic(target_mac, target_port, None)
                 target_host.terminate(trigger=False)
-                self._detach_gateway(target_port)
+                if target_gateway:
+                    self._detach_gateway(target_port)
             if self.run_limit and self.run_count >= self.run_limit and self.run_tests:
                 LOGGER.warning('Suppressing future tests because run limit reached.')
                 self.run_tests = False
