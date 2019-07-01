@@ -129,7 +129,7 @@ public class TelnetSocket implements Runnable {
         {
         String item = (new String(buff, 0, ret_read));
         System.out.println(item);
-      
+
         interrogator.receiveData(item);
         }
 
