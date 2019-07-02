@@ -13,11 +13,12 @@ public class FileManager {
         try{
         File[] listFiles = new File(csvFolder).listFiles();
         for (int i = 0; i < listFiles.length; i++) {
+//            System.out.println(listFiles[i].getName());
             if (listFiles[i].isFile()) {
                 String fileName = listFiles[i].getName();
                 if (fileName.contains(csvName)
                         && fileName.endsWith(csvExtension)) {
-                    System.out.println("Pic.csv file found.");
+                    System.out.println("pics.csv file found.");
                     setFilePath(fileName);
                     return true;
                 }
@@ -57,4 +58,9 @@ public class FileManager {
     public String getCSVPath() {
         return "/config/type";
     }
+
+      // For debugging
+//    public String getCSVPath() {
+//        return "src/main/resources";
+//    }
 }
