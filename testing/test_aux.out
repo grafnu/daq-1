@@ -6,6 +6,9 @@ Validator exit code 0
 Lint checks
 cmd/inbuild exit code 0
 Extended tests
+RESULT skip security.passwords
+RESULT fail security.passwords
+RESULT pass security.passwords
 RESULT fail protocol.bacnet.version
 RESULT fail protocol.bacnet.version
 RESULT pass protocol.bacnet.version
@@ -15,16 +18,10 @@ RESULT skip network.brute
 RESULT fail connection.mac_oui
 RESULT fail connection.mac_oui
 RESULT pass connection.mac_oui
-RESULT skip security.tls.v3
-RESULT skip security.x509
-RESULT fail security.tls.v3
-RESULT fail security.x509
-RESULT pass security.tls.v3
-RESULT pass security.x509
 dhcp requests 2 1
 01: ['01:brute:1']
-02: ['02:nmap:1']
-03: ['03:nmap:1']
+02: []
+03: []
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
@@ -45,16 +42,19 @@ port-01 module_config modules
     "enabled": true
   },
   "nmap": {
-    "enabled": true
+    "enabled": false
   },
   "pass": {
+    "enabled": true
+  },
+  "password": {
     "enabled": true
   },
   "switch": {
     "enabled": true
   },
   "tls": {
-    "enabled": true
+    "enabled": false
   }
 }
 port-02 module_config modules
@@ -72,16 +72,19 @@ port-02 module_config modules
     "enabled": true
   },
   "nmap": {
-    "enabled": true
+    "enabled": false
   },
   "pass": {
+    "enabled": true
+  },
+  "password": {
     "enabled": true
   },
   "switch": {
     "enabled": false
   },
   "tls": {
-    "enabled": true
+    "enabled": false
   },
   "typeconf": {
     "enabled": false
@@ -100,5 +103,29 @@ port-02 module_config modules
     `'''       `\__   /\
                 ')
 Redacted docs diff
-No report diff
+91,95c91
+< Brute Test
+< MAC Address : 9a02571e8f01
+< Manufacturer : Faux Container
+< RESULT skip security.passwords
+< Brute Test
+---
+> security.passwords Test
+ M docker/Dockerfile.faux
+ M docs/device_report.md
+ M subset/security/Dockerfile.test_password
+ M subset/security/brute_test/src/main/java/Main.java
+ M subset/security/brute_test/src/main/java/Report.java
+ M subset/security/brute_test/src/main/java/SshSocket.java
+ M subset/security/test_password
+?? misc/test_site/mac_addrs/3c5ab41e8f0a/
+?? misc/test_site/mac_addrs/3c5ab41e8f0b/
+?? misc/test_site/mac_addrs/9a02571e8f01/aux/
+?? misc/test_site/mac_addrs/9a02571e8f01/device_report.md
+?? misc/test_site/mac_addrs/9a02571e8f02/aux/module_config.json
+?? misc/test_site/mac_addrs/9a02571e8f02/device_report.md
+?? subset/password/
+?? subset/security/brute_test/.idea/
+?? subset/security/brute_test/reports/
+?? subset/security/brute_test/src/main/java/.TelnetSocket.java.swp
 Done with tests

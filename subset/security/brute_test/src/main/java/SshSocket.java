@@ -20,10 +20,7 @@ public class SshSocket implements Runnable {
   int attempts = -1;
   int passwordIndex = 0;
   int usernameIndex = 0;
-  int passedTests;
-  int passedTestsIndex;
   Report reportHandler;
-  Map<String, String> passedCombination;
   Map macDevices;
   boolean testFinished = false;
   int timeout = 30000;
@@ -83,8 +80,6 @@ public class SshSocket implements Runnable {
 
   public void connectSshSocket() {
     System.out.println("Port number is:  " + connectionPort);
-    reportHandler.addText("MAC Address : " + macAddress);
-    reportHandler.addText("Manufacturer : " + macDevices.get(formattedMac));
     while (!testFinished) {
       if (passwordIndex == jsonPasswords.length) {
         usernameIndex++;

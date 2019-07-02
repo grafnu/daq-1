@@ -4,7 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Report {
-  String report = "Brute Test\n";
+  String report = "security.passwords Test\n";
   File reportFile;
 
   public void addText(String text) {
