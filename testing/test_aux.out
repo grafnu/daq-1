@@ -4,27 +4,12 @@ mudacl tests
 Mudacl exit code 0
 Validator exit code 0
 Lint checks
-cmd/inbuild exit code 0
+cmd/inbuild exit code 1
 Extended tests
-RESULT fail protocol.bacnet.version
-RESULT fail protocol.bacnet.version
-RESULT pass protocol.bacnet.version
-RESULT fail network.brute
-RESULT pass network.brute
-RESULT skip network.brute
-RESULT fail connection.mac_oui
-RESULT fail connection.mac_oui
-RESULT pass connection.mac_oui
-RESULT skip security.tls.v3
-RESULT skip security.x509
-RESULT fail security.tls.v3
-RESULT fail security.x509
-RESULT pass security.tls.v3
-RESULT pass security.x509
-dhcp requests 2 1
+dhcp requests 0 0
 01: ['01:brute:1']
-02: ['02:nmap:1']
-03: ['03:nmap:1']
+02: []
+03: []
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
@@ -33,29 +18,106 @@ pri.flows
 pri.ofctl
 sec.flows
 sec.ofctl
-{
-  "bacext": {
-    "enabled": true
-  },
-  "brute": {
-    "enabled": true
-  },
-  "foobar": {
-    "enabled": false
-  },
-  "macoui": {
-    "enabled": true
-  },
-  "nmap": {
-    "enabled": true
-  },
-  "switch": {
-    "enabled": true
-  },
-  "tls": {
-    "enabled": true
-  }
-}
 Redacted docs diff
-No report diff
+1,100d0
+< # Device 9a02571e8f01, 2019-06-27 18:00:27+00:00 to 2019-06-27 18:07:40+00:00
+< 
+< |  Role  |      Name              | Status |
+< |--------|------------------------|--------|
+< |Operator| *** Operator Name *** |        |
+< |Approver| *** Approver Name *** |        |
+< 
+< | Test iteration   |                        |
+< |------------------|------------------------|
+< | Test report date | XXX |
+< | 
+< | Attempt number   | 1 |
+< 
+< ## Device Identification
+< 
+< | Device            | Entry              |
+< |-------------------|--------------------|
+< | Name              | *** Name *** |
+< | GUID              | *** GUID *** |
+< | MAC addr          | 9a:02:57:1e:8f:01 |
+< | Hostname          | *** Network Hostname *** |
+< | Type              | *** Type *** |
+< | Make              | *** Make *** |
+< | Model             | *** Model *** |
+< | Serial Number     | *** Serial *** |
+< | Firmware Version  | *** Firmware Version *** |
+< 
+< ## Device Description
+< 
+< ![Image of device](*** Device Image URL ***)
+< 
+< *** Device Description ***
+< 
+< 
+< ### Device documentation
+< 
+< [Device datasheets](*** Device Datasheets URL ***)
+< [Device manuals](*** Device Manuals URL ***)
+< 
+< ## Report summary
+< 
+< |Result|Test|Notes|
+< |---|---|---|
+< |skip|base.switch.ping||
+< |pass|base.target.ping|target |
+< |fail|connection.mac_oui||
+< |fail|network.brute||
+< |fail|protocol.bacnet.version||
+< |skip|security.passwords||
+< 
+< ## Module ping
+< 
+< ```
+< Baseline ping test report
+< 
+< RESULT skip base.switch.ping
+< RESULT pass base.target.ping target
+< ```
+< 
+< ## Module brute
+< 
+< ```
+< Username:manager
+< Password:friend
+< Login success!
+< RESULT fail network.brute
+< ```
+< 
+< ## Module switch
+< 
+< ```
+< LOCAL_IP not configured, assuming no network switch.
+< ```
+< 
+< ## Module macoui
+< 
+< ```
+< Mac OUI Test
+< RESULT fail connection.mac_oui
+< ```
+< 
+< ## Module bacext
+< 
+< ```
+< RESULT fail protocol.bacnet.version
+< ```
+< 
+< ## Module password
+< 
+< ```
+< Brute Test
+< MAC Address : 9a02571e8f01
+< Manufacturer : Faux Container
+< RESULT skip security.passwords
+< Brute Test
+< RESULT skip security.passwords
+< ```
+< 
+< ## Report complete
+< 
 Done with tests

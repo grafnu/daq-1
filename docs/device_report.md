@@ -1,5 +1,4 @@
-# DAQ scan report for device 9a02571e8f01
-Started %% 2019-06-06 14:00:35+00:00
+# Device 9a02571e8f01, 2019-06-27 18:00:27+00:00 to 2019-06-27 18:07:40+00:00
 
 |  Role  |      Name              | Status |
 |--------|------------------------|--------|
@@ -8,8 +7,8 @@ Started %% 2019-06-06 14:00:35+00:00
 
 | Test iteration   |                        |
 |------------------|------------------------|
-| Test report date | 2019-06-06T14:00:34.975Z |
-| DAQ version      | 0.9.7 |
+| Test report date | 2019-06-27T18:00:27.656Z |
+| DAQ version      | 1.0.0 |
 | Attempt number   | 1 |
 
 ## Device Identification
@@ -47,25 +46,15 @@ Started %% 2019-06-06 14:00:35+00:00
 |fail|connection.mac_oui||
 |fail|network.brute||
 |fail|protocol.bacnet.version||
-|pass|security.ports.nmap||
-|skip|security.tls.v3||
-|skip|security.x509||
+|skip|security.passwords||
 
 ## Module ping
 
 ```
 Baseline ping test report
-%% 82 packets captured.
+%% 81 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.6.38
-```
-
-## Module nmap
-
-```
-Allowing 10000 open tcp snet-sensor-mgmt
-No invalid ports found.
-RESULT pass security.ports.nmap
+RESULT pass base.target.ping target %% 10.20.70.164
 ```
 
 ## Module brute
@@ -96,12 +85,15 @@ RESULT fail connection.mac_oui
 RESULT fail protocol.bacnet.version
 ```
 
-## Module tls
+## Module password
 
 ```
-IOException unable to connect to server.
-RESULT skip security.tls.v3
-RESULT skip security.x509
+Brute Test
+MAC Address : 9a02571e8f01
+Manufacturer : Faux Container
+RESULT skip security.passwords
+Brute Test
+RESULT skip security.passwords
 ```
 
 ## Report complete
