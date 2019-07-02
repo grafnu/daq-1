@@ -7,7 +7,7 @@
       "enabled": false
     },
     "macoui": {
-     "enabled": true
+      "enabled": true
     },
     "switch": {
       "enabled": false
@@ -19,10 +19,10 @@
       "enabled": false
     },
     "tls": {
-      "enabled": false
+      "enabled": true
     },
-    "password":{
-      "enabled":true
+    "udmi": {
+      "enabled": true
     }
   }
 }

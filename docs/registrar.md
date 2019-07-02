@@ -6,10 +6,14 @@ build the executable, and register/update devices.
 
 ## Configuration
 
-* `gcp_creds`: Defines the target project and service account to use for configuration.
+The `local/system.conf` file should have the following parameters (in `x=y` syntax):
+* `gcp_cred`: Defines the target project and service account to use for configuration.
 Can be generated and downloaded from the Cloud IoT Service Account page.
 * `site_path`: Path of site-specific configuration. See example in `misc/test_site`.
 * `schema_path`: Path to metadata schema (for validation).
+
+The target `gcp_cred` service account will need the _Cloud IoT Provisioner_ and _Pub/Sub Publisher_ roles.
+There also needs to be an existing `registrar` topic (or as configured in `cloud_iot_config.json`, below).
 
 ## Theory Of Operation
 
@@ -39,17 +43,6 @@ Device-specific properties (e.g. device mode).
 Device metadata (e.g. location).
 * `{site_dir}/devices/{device_id}/rsa_private.pem`:
 Generated private key for device (used on-device).
-
-### Device Properties
-
-* `mode`: Specifies how the device communicates with Cloud IoT.
-  * `direct`: Device communicates directly with Cloud IoT, and requires its own auth key and MQTT channel.
-  * `gateway`: Devie is a gateway that proxies for other devices.
-  * `proxy`: Device is proxied through a gateway, and the `gateway_id` proerty must be set accordingly.
-
-### Device Metadata
-
-* `location`: Location of the device in the building.
 
 ## Sample Output
 

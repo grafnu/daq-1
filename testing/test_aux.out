@@ -20,8 +20,13 @@ RESULT fail connection.mac_oui
 RESULT pass connection.mac_oui
 dhcp requests 2 1
 01: ['01:brute:1']
+<<<<<<< HEAD
 02: []
 03: []
+=======
+02: ['02:nmap:1', '02:udmi:2']
+03: ['03:nmap:1', '03:udmi:2']
+>>>>>>> 5b376827637780af4e9352ad7217d3eef8321156
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
@@ -54,7 +59,14 @@ port-01 module_config modules
     "enabled": true
   },
   "tls": {
+<<<<<<< HEAD
     "enabled": false
+=======
+    "enabled": true
+  },
+  "udmi": {
+    "enabled": true
+>>>>>>> 5b376827637780af4e9352ad7217d3eef8321156
   }
 }
 port-02 module_config modules
@@ -88,6 +100,9 @@ port-02 module_config modules
   },
   "typeconf": {
     "enabled": false
+  },
+  "udmi": {
+    "enabled": true
   }
 }
     SNAKE!         ____
