@@ -31,19 +31,27 @@ div {
     color: rgba(0,0,0,0);
 }
 
-#testgrid table tr ~ tr td[status=pass] {
+#testgrid table tr ~ tr td[status=done] {
     background: #AEA;
 }
 
-#testgrid table tr ~ tr td[status=fail] {
+#testgrid table tr ~ tr td[status=merr] {
     background: #FAA;
 }
 
-#testgrid table tr ~ tr td[status=err] {
-    background: #E66;
+#testgrid table tr ~ tr td[status=serr] {
+    background: #F88;
 }
 
-#testgrid table tr ~ tr td[status=run] {
+#testgrid table tr ~ tr td[status=term] {
+    background: #F88;
+}
+
+#testgrid table tr ~ tr td[status=fine] {
+    background: #BBF;
+}
+
+#testgrid table tr ~ tr td[status=exec] {
     background: #EE6;
 }
 
@@ -93,4 +101,30 @@ div {
 
 #config_body.dirty .save_button {
     opacity: 1;
+}
+
+.simple-button {
+    padding: 5px;
+    background: #ddd;
+    display: inline
+}
+
+#auth-body {
+    margin: 5px;
+}
+
+.auth-info {
+    display: block
+}
+
+.unauthenticated .auth-info {
+    display: none
+}
+
+.unauthenticated .content {
+    display: none
+}
+
+.auth-main {
+    width: 20em;
 }
