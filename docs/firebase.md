@@ -5,30 +5,55 @@ of test results.
 
 ## Initial Setup
 
+**TODO**: The system needs to be setup in
+"[Cloud Firestore in Native Mode](https://cloud.google.com/datastore/docs/firestore-or-datastore)",
+and somewhere in here this needs to get described when setting up a new project.
+
 0. There should be a GCP project that can be used to host everything.
 1. Goto the [Firebase Console](https://console.firebase.google.com/) and add a new project.
    * Add the hosting GCP project to link it to this Firebase setup.
 2. Navigate to the
-[Google Cloud Platform (GCP) service accounts page]
-(https://console.cloud.google.com/iam-admin/serviceaccounts?project=daq-project)
+[Google Cloud Platform (GCP) service accounts page](https://console.cloud.google.com/iam-admin/serviceaccounts?project=daq-project)
    * This is <em>not</em> from the Firebase page: it has to be from the base GCP page.
    * Create a new service account with a semi-meaningful name like `daq-testlab`.
    * Add the _Pub/Sub Admin_, _Storage Admin_, _Cloud Datastore User_, and _Firebase Admin_ roles.
    * Furnish a new private key.
 4. Install the downloaded key into the DAQ install.
-   * Copy the download JSON key file to the `daq/local/` directory.
-   * Edit `daq/local/system.conf` to specify the `gcp_cred` setting to point to the downloaded file
-     (with a path relative to the `daq/` install directory), e.g.
+   * Copy the download JSON key file to the `local/` directory.
+   * Edit `local/system.conf` to specify the `gcp_cred` setting to point to the downloaded file
+     (with a path relative to the `daq` install directory), e.g.
      `gcp_cred=local/daq-testlab-de56aa4b1e47.json`.
 5. (Re)Start DAQ (`cmd/run`).
    * There should be something in the top 10-20 startup log lines that look something like:
      <br>`INFO:gcp:Loading gcp credentials from local/daq-testlab-de56aa4b1e47.json`
      <br>`INFO:gcp:Initialized gcp publisher client daq-project:daq-testlab`
-6. Follow the [Firebase CLI setup instructions](https://firebase.google.com/docs/cli/).
-7. Goto the 'daq/firebase/` directory.
-   * Run `firebase use` to set the GCP project to use (as created above).
-   * Run `firebase deploy` to deploy the necessary parts of the system.
+6. Follow the relevant parts of the
+   * https://console.firebase.google.com/
+   * Select your project.
+   * Select "+ Add app"
+   * Select "</>" (Web)
+   * Use a clever nickname and register app.
+   * Copy the `var firebaseConfig = { ... }` snippet to `local/firebase_config.js`
+   * Add an [API Key Restriction](https://cloud.google.com/docs/authentication/api-keys#api_key_restrictions)
+   for an _HTTP Referrer_, which will be the https:// address of the daq hosted web addp.
+7. Enable Google sign-in from 
+   * https://console.firebase.google.com/
+   * Select your project.
+   * Select "Authentication"
+   * Select "Sign-in method"
+   * Enable "Google" sign-in.
+8. Follow the [Firebase CLI setup instructions](https://firebase.google.com/docs/cli/).
+9. Goto the `firebase/` directory.
+   * Run <code>firebase/deploy.sh</code> to deploy firebase to your <em>gcp_cred</em> project.
    * Follow the link to the indicated _Hosting URL_ to see the newly installed pages.
+
+## Authentication
+
+Firestore rules are enforced requiring enabled user login to access data and reports. There's
+two phases to this process:
+* Web-app needs to be configured and deployed with appropriate web-app credentials (see above).
+* Users need to access the assigned web-app, and sign in. Initially, they will not be 'enabled'.
+* The system administrator will need to run `bin/user_enable` any time there is a new user.
 
 ## Datapath Debugging
 
@@ -82,4 +107,109 @@ The test [Web Application](https://daq-project.firebaseapp.com/) (again, will ha
 should show a list of all accounts with ingested data. If nothing is showing here, or the `accountId` is missing,
 check the web dev console to see if there's any obvious errors.
 
-TODO: Make an additional comment here
+## Configuration Data Flow
+
+The high-level flow for configuration data is shown below. This is not a complete outlay, since
+it doesn't cover all the cases, but it gives a rough indicator of how the flow works. This same
+overall process applies to both the base system configuration as well as device-specific configs.
+Don't take this diagram as gospel, the only true truth comes from the source.
+
+```
++-------+                  +-----+           +-------+ +-----------+           +---------+
+| Disk  |                  | DAQ |           | Test  | | Firebase  |           | WebApp  |
++-------+                  +-----+           +-------+ +-----------+           +---------+
+    |         --------------\ |                  |           |                      |
+    |         | DAQ startup |-|                  |           |                      |
+    |         |-------------| |                  |           |                      |
+    |                         |                  |           |                      |
+    | Raw Config              |                  |           |                      |
+    |------------------------>|                  |           |                      |
+    |                         |                  |           |                      |
+    |    Merged Config (aux/) |                  |           |                      |
+    |<------------------------|                  |           |                      |
+    |                         |                  |           |                      |
+    |                         | Raw & Merged     |           |                      |
+    |                         |----------------------------->|                      |
+    |                         | -------------\   |           |                      |
+    |                         |-| Test Start |   |           |                      |
+    |                         | |------------|   |           |                      |
+    |                         |                  |           |                      |
+    | Merged Config (/config/device/)            |           |                      |
+    |------------------------------------------->|           |                      |
+    |                         |                  |           |                      |
+    |                         | Merged (active)  |           |                      |
+    |                         |----------------------------->|                      |
+    |                         |                  |           |    ----------------\ |
+    |                         |                  |           |    | Page (re)load |-|
+    |                         |                  |           |    |---------------| |
+    |                         |                  |           |                      |
+    |                         |                  |           | Raw & Merged         |
+    |                         |                  |           |--------------------->|
+    |                         |                  |           |                      | ------------\
+    |                         |                  |           |                      |-| JSON Edit |
+    |                         |                  |           |                      | |-----------|
+    |                         |                  |           |                      |
+    |                         |                  |           |                  Raw |
+    |                         |                  |           |<---------------------|
+    |                         |                  |           |                      | -----------------\
+    |                         |                  |           |                      |-| "Saving" state |
+    |                         |                  |           |                      | |----------------|
+    |                         |                  |           |                      |
+    |                         |                  |       Raw |                      |
+    |                         |<-----------------------------|                      |
+    |                         |                  |           |                      |
+    |            Raw & Merged |                  |           |                      |
+    |<------------------------|                  |           |                      |
+    |                         |                  |           |                      |
+    |                         | Merged (next)    |           |                      |
+    |                         |----------------------------->|                      |
+    |                         |                  |           |                      |
+    |                         |                  |           | Merged (next)        |
+    |                         |                  |           |--------------------->|
+    |                         |                  |           |                      | ----------------------\
+    |                         |                  |           |                      |-| "Provisional" state |
+    |                         |                  |           |                      | |---------------------|
+    |                         | -------------\   |           |                      |
+    |                         |-| Test Start |   |           |                      |
+    |                         | |------------|   |           |                      |
+    |                         |                  |           |                      |
+    | Merged Config (/config/device/)            |           |                      |
+    |------------------------------------------->|           |                      |
+    |                         |                  |           |                      |
+    |                         | Merged (active)  |           |                      |
+    |                         |----------------------------->|                      |
+    |                         |                  |           |                      |
+    |                         |                  |           | Merged (active)      |
+    |                         |                  |           |--------------------->|
+    |                         |                  |           |                      | -----------------\
+    |                         |                  |           |                      |-| "Normal" state |
+    |                         |                  |           |                      | |----------------|
+    |                         |                  |           |                      |
+```
+
+Generated with [Text Art Sequence Generator](https://textart.io/sequence) with the contents:
+```
+object Disk DAQ Test Firebase WebApp
+note left of DAQ: DAQ startup
+Disk -> DAQ: Raw Config
+DAQ -> Disk: Merged Config (aux/)
+DAQ -> Firebase: Raw & Merged
+note right of DAQ: Test Start
+Disk -> Test: Merged Config (/config/device/)
+DAQ -> Firebase: Merged (active)
+note left of WebApp: Page (re)load
+Firebase -> WebApp: Raw & Merged
+note right of WebApp: JSON Edit
+WebApp -> Firebase: Raw
+note right of WebApp: "Saving" state
+Firebase -> DAQ: Raw
+DAQ -> Disk: Raw & Merged
+DAQ -> Firebase: Merged (next)
+Firebase -> WebApp: Merged (next)
+note right of WebApp: "Provisional" state
+note right of DAQ: Test Start
+Disk -> Test: Merged Config (/config/device/)
+DAQ -> Firebase: Merged (active)
+Firebase -> WebApp: Merged (active)
+note right of WebApp: "Normal" state
+```

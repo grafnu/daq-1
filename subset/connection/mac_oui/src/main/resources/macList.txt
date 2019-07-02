@@ -4,6 +4,7 @@
 # See http://standards.ieee.org/faqs/OUI.html
 # We have added a few unregistered OUIs at the end.
 
+E043DB Shenzhen ViewAt Technology
 2405F5 Integrated Device Technology (Malaysia) Sdn. Bhd.
 3CD92B Hewlett Packard
 9C8E99 Hewlett Packard
@@ -33,6 +34,7 @@ CC46D6 Cisco Systems
 28BC18 SourcingOverseas
 807ABF HTC
 409F87 Jide Technology (Hong Kong) Limited
+3C5AB4 Google
 001A11 Google
 D83C69 Shenzhen Tinno Mobile Technology
 74AC5F Qiku Internet Network Scientific (Shenzhen)

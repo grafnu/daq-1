@@ -1,9 +1,20 @@
 # Changelog
 
-* Next Version
+* 1.0.1
+	* Category and expectation table outputs.
+	* UDMI schema validator test module.
+	* Build improvements for various base system configurations.
+	* Firebase web authentication
+	* Test module state names update
+* 1.0.0
 	* Device and system schema validation in web-ui.
+	* Extended BACnet test module for PIC statements.
+	* TLS security test module for certificate validation.
+	* MAC OUI test module for manufacturer lookup.
+	* Fix for Firestore-disconnect bug with long standing sessions.
 	* Automatic population of new device directory from template.
-	* Faucet version 1.9.4 update.
+	* Numerous docs fixes and updates.
+	* Faucet version 1.9.8 update.
 * 0.9.7:
         * Device-level test configuration (e.g. allowed open ports)
 	* Use table for test report output

@@ -1,25 +1,27 @@
-## Testing BACnet
+## BACnet Manual Tests
+
+(This is how to manually work with BACnet testing, not an automated BACnet test.)
 
 * Setup system like `misc/system_multi.conf`
-* Run in no-test mode with bacnet device enabled on faux3: `sudo DAQ_FAUX3_OPTS=bacnet cmd/run -n`
+* Run in no-test mode with bacnet device enabled on faux3: `cmd/run startup_faux_3_opts=bacnet -n`
 * Wait until faux-3 gets an IP address:<pre>
 &hellip;
 INFO:runner:DHCP notify 9a:02:57:1e:8f:03 is 10.20.83.164 on gw02 (None)
 &hellip;
 </pre>
 
-* Check that bacnet client is running (requires IP address):<pre>
+* Check that bacnet client is running:<pre>
 ~/daq$ docker exec -ti daq-faux-3 ps ax -H
    PID TTY      STAT   TIME COMMAND
    226 pts/0    Rs+    0:00 ps ax -H
      1 ?        Ss     0:00 /bin/bash bin/start_faux bacnet
    177 ?        Ss     0:00   dhclient
-   183 ?        Sl     0:00   java -cp bacnet4j/bacnet4j-1.0-SNAPSHOT-all.jar co
+   183 ?        Sl     0:00   <b>java -cp bacnet4j/bacnet4j-1.0-SNAPSHOT-all.jar co</b>
    184 ?        S      0:00   tail -f /dev/null
 </pre>
 
 * Run BACnet discovery in the other container:<pre>
-~/daq$ docker exec -ti daq-faux-2 bin/bacnet_discover
+~/daq$ <b>docker exec -ti daq-faux-2 bin/bacnet_discover</b>
 Scanning bacnet 10.255.255.255 from 10.20.83.163
 Binding to address 0.0.0.0:47808
 Local address is 10.20.83.163:47808
@@ -40,7 +42,7 @@ Done with receive loop
 </pre>
 
 * Also can monitor BACnet traffic exchange (in another window when running discovery):<pre>
-~/daq$ sudo tcpdump -eni pri-eth1 port 47808
+~/daq$ <b>sudo tcpdump -eni pri-eth1 port 47808</b>
 tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
 listening on pri-eth1, link-type EN10MB (Ethernet), capture size 262144 bytes
 20:32:19.258922 9a:02:57:1e:8f:02 > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 63: 10.20.83.163.47808 > 10.255.255.255.47808: UDP, length 21
