@@ -185,16 +185,17 @@ function statusUpdate(message, e) {
 }
 
 function getResultStatus(result) {
+  console.log(result)
   if (result.exception) {
-    return 'err';
+    return 'serr';
   }
   if (result.state) {
     return result.state;
   }
   if (Number(result.code)) {
-    return 'fail';
+    return 'merr';
   }
-  return 'unknown';
+  return '????';
 }
 
 function handleOriginResult(origin, port, runid, test, result) {
@@ -511,6 +512,8 @@ function loadJsonEditors() {
         ? `${origin_id} device ${device_id}`
         : `${origin_id} system`;
   document.getElementById('title_origin').innerHTML = subtitle;
+
+  document.getElementById('dashboard_link').href = `index.html?origin=${origin_id}`
 
   const origin_doc = db.collection('origin').doc(origin_id);
   if (device_id) {

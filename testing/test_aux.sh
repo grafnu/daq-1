@@ -14,7 +14,6 @@ echo Validator exit code $? | tee -a $TEST_RESULTS
 echo Lint checks | tee -a $TEST_RESULTS
 cmd/inbuild skip
 echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
-docker logs daq-runner
 
 function make_pubber {
     device=$1
@@ -80,9 +79,9 @@ tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/macoui*/tmp/report.txt | tee -a $TEST_RESULTS
 fgrep -h RESULT inst/run-port-*/nodes/tls*/tmp/report.txt | tee -a $TEST_RESULTS
 more inst/run-port-*/scans/dhcp_triggers.txt | cat
-dhcp_short=$(fgrep pass inst/run-port-01/scans/dhcp_triggers.txt | wc -l)
+dhcp_done=$(fgrep done inst/run-port-01/scans/dhcp_triggers.txt | wc -l)
 dhcp_long=$(fgrep long inst/run-port-01/scans/dhcp_triggers.txt | wc -l)
-echo dhcp requests $dhcp_short $dhcp_long | tee -a $TEST_RESULTS
+echo dhcp requests $dhcp_done $dhcp_long | tee -a $TEST_RESULTS
 sort inst/result.log | tee -a $TEST_RESULTS
 more inst/run-port-*/nodes/ping*/activate.log | cat
 more inst/run-port-*/nodes/nmap*/activate.log | cat
@@ -116,7 +115,8 @@ cat docs/device_report.md | redact > out/redacted_docs.md
 cat inst/reports/report_9a02571e8f01_*.md | redact > out/redacted_file.md
 
 echo Redacted docs diff | tee -a $TEST_RESULTS
-(diff out/redacted_docs.md out/redacted_file.md && echo No report diff) | tee -a $TEST_RESULTS
+(diff out/redacted_docs.md out/redacted_file.md && echo No report diff) \
+    | tee -a $TEST_RESULTS
 
 # Make sure there's no file pollution from the test run.
 git status --porcelain | tee -a $TEST_RESULTS

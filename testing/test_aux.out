@@ -24,7 +24,7 @@ RESULT pass security.x509
 dhcp requests 2 1
 01: ['01:brute:1']
 02: ['02:nmap:1']
-03: ['03:nmap:1']
+03: []
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
@@ -51,10 +51,16 @@ port-01 module_config modules
     "enabled": true
   },
   "switch": {
-    "enabled": true
+    "enabled": true,
+    "poe": {
+      "enabled": true
+    }
   },
   "tls": {
     "enabled": true
+  },
+  "typeconf": {
+    "enabled": false
   },
   "udmi": {
     "enabled": true
@@ -81,7 +87,10 @@ port-02 module_config modules
     "enabled": true
   },
   "switch": {
-    "enabled": false
+    "enabled": true,
+    "poe": {
+      "enabled": true
+    }
   },
   "tls": {
     "enabled": true
@@ -106,5 +115,13 @@ port-02 module_config modules
     `'''       `\__   /\
                 ')
 Redacted docs diff
-No report diff
+46c46
+< |skip|cloud.udmi.pointset|No device id.|
+---
+> |skip|cloud.udmi.pointset|No credentials.|
+122c122,123
+< RESULT skip cloud.udmi.pointset No device id.
+---
+> Missing /config/inst/gcp_service_account.json file, skipping udmi validation.
+> RESULT skip cloud.udmi.pointset No credentials.
 Done with tests
