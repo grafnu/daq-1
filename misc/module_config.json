@@ -9,6 +9,9 @@
     "macoui": {
       "enabled": true
     },
+    "password":{
+      "enabled": true
+    },
     "switch": {
       "enabled": false
     },

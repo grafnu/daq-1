@@ -49,11 +49,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 #SSH Expose Telnet and SSH Port 22 23
 EXPOSE 22 23
 
-
-COPY --from=bacnet_build /root/bacnet4j/*.jar bacnet4j/
-
-COPY misc/start_faux bin/
-
+COPY --from=java_build /root/bacnet4j/*.jar bacnet4j/
 COPY misc/bacnet_discover bin/
 
 COPY --from=java_build /root/pubber/build/libs/*.jar pubber/build/libs/
@@ -62,6 +58,8 @@ COPY pubber/bin/run pubber/bin/
 
 COPY subset/pentests/brute_server.py pentests/
 COPY subset/security/tlsfaux tlsfaux/
+
+COPY misc/start_faux bin/
 
 # Weird workaround for problem running tcdump in a privlidged container.
 RUN mv /usr/sbin/tcpdump /usr/bin/tcpdump
