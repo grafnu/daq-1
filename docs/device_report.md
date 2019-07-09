@@ -1,14 +1,24 @@
-# Device 9a02571e8f01, 2019-06-20 12:31:51+00:00 to 2019-06-20 12:39:18+00:00
+# Device 9a:02:57:1e:8f:01, *** Make *** *** Model ***
+
+## Test Roles
 
 |  Role  |      Name              | Status |
 |--------|------------------------|--------|
 |Operator| *** Operator Name *** |        |
 |Approver| *** Approver Name *** |        |
 
-| Test iteration   |                        |
+## Test Iteration
+
+| Test             |                        |
 |------------------|------------------------|
+<<<<<<< HEAD
 | Test report date | 2019-06-20T12:31:51.814Z |
 | DAQ version      | 1.0.0 |
+=======
+| Test report start date | 2019-06-29 21:30:06+00:00 |
+| Test report end date   | 2019-06-29 21:37:30+00:00 |
+| DAQ version      | 1.0.1 |
+>>>>>>> master
 | Attempt number   | 1 |
 
 ## Device Identification
@@ -39,6 +49,7 @@
 
 ## Report summary
 
+<<<<<<< HEAD
 |Result|Test|Notes|
 |---|---|---|
 |skip|base.switch.ping||
@@ -49,14 +60,48 @@
 |pass|security.ports.nmap||
 |skip|security.tls.v3||
 |skip|security.x509||
+=======
+Overall device result FAIL
+
+|Category|Result|
+|---|---|
+|Security|PASS|
+|Other|1/2|
+|Connectivity|n/a|
+
+|Expectation|pass|fail|skip|gone|
+|---|---|---|---|---|
+|Required|1|1|0|0|
+|Recommended|1|0|0|0|
+|Other|0|2|4|2|
+
+|Result|Test|Category|Expectation|Notes|
+|---|---|---|---|---|
+|skip|base.switch.ping|Other|Other||
+|pass|base.target.ping|Connectivity|Required|target|
+|skip|cloud.udmi.pointset|Other|Other|No device id.|
+|fail|connection.mac_oui|Other|Other||
+|fail|network.brute|Security|Required||
+|fail|protocol.bacnet.version|Other|Other||
+|pass|security.ports.nmap|Security|Recommended||
+|skip|security.tls.v3|Other|Other||
+|skip|security.x509|Other|Other||
+|gone|unknown.fake.llama|Other|Other||
+|gone|unknown.fake.monkey|Other|Other||
+
+>>>>>>> master
 
 ## Module ping
 
 ```
 Baseline ping test report
-%% 82 packets captured.
+%% 107 packets captured.
 RESULT skip base.switch.ping
+<<<<<<< HEAD
 RESULT pass base.target.ping target %% 10.20.66.164
+=======
+RESULT pass base.target.ping target %% 10.20.96.164
+>>>>>>> master
 ```
 
 ## Module nmap
@@ -101,6 +146,12 @@ RESULT skip protocol.bacnet.version
 IOException unable to connect to server.
 RESULT skip security.tls.v3
 RESULT skip security.x509
+```
+
+## Module udmi
+
+```
+RESULT skip cloud.udmi.pointset No device id.
 ```
 
 ## Report complete
