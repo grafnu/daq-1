@@ -1,7 +1,6 @@
 #!/bin/bash -e 
 
 echo Using the host hardware address $TARGET_MAC
-
 curl https://svn.nmap.org/nmap/nmap-mac-prefixes | tee mac_oui/src/main/resources/macList.txt
 java -jar mac_oui/build/libs/mac_oui-all.jar $TARGET_MAC
 cp report/report.txt /tmp/report.txt

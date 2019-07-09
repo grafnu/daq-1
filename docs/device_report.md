@@ -1,10 +1,6 @@
-<<<<<<< HEAD
-# Device 9a02571e8f01, 2019-06-27 18:00:27+00:00 to 2019-06-27 18:07:40+00:00
-=======
 # Device 9a:02:57:1e:8f:01, *** Make *** *** Model ***
 
 ## Test Roles
->>>>>>> 5b376827637780af4e9352ad7217d3eef8321156
 
 |  Role  |      Name              | Status |
 |--------|------------------------|--------|
@@ -15,14 +11,9 @@
 
 | Test             |                        |
 |------------------|------------------------|
-<<<<<<< HEAD
-| Test report date | 2019-06-27T18:00:27.656Z |
-| DAQ version      | 1.0.0 |
-=======
 | Test report start date | 2019-06-29 21:30:06+00:00 |
 | Test report end date   | 2019-06-29 21:37:30+00:00 |
 | DAQ version      | 1.0.1 |
->>>>>>> 5b376827637780af4e9352ad7217d3eef8321156
 | Attempt number   | 1 |
 
 ## Device Identification
@@ -53,16 +44,6 @@
 
 ## Report summary
 
-<<<<<<< HEAD
-|Result|Test|Notes|
-|---|---|---|
-|skip|base.switch.ping||
-|pass|base.target.ping|target |
-|fail|connection.mac_oui||
-|fail|network.brute||
-|fail|protocol.bacnet.version||
-|skip|security.passwords||
-=======
 Overall device result FAIL
 
 |Category|Result|
@@ -91,17 +72,11 @@ Overall device result FAIL
 |gone|unknown.fake.llama|Other|Other||
 |gone|unknown.fake.monkey|Other|Other||
 
->>>>>>> 5b376827637780af4e9352ad7217d3eef8321156
 
 ## Module ping
 
 ```
 Baseline ping test report
-<<<<<<< HEAD
-%% 81 packets captured.
-RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.70.164
-=======
 %% 107 packets captured.
 RESULT skip base.switch.ping
 RESULT pass base.target.ping target %% 10.20.96.164
@@ -113,7 +88,6 @@ RESULT pass base.target.ping target %% 10.20.96.164
 Allowing 10000 open tcp snet-sensor-mgmt
 No invalid ports found.
 RESULT pass security.ports.nmap
->>>>>>> 5b376827637780af4e9352ad7217d3eef8321156
 ```
 
 ## Module brute
@@ -144,15 +118,12 @@ RESULT fail connection.mac_oui
 RESULT fail protocol.bacnet.version
 ```
 
-## Module password
+## Module tls
 
 ```
-Brute Test
-MAC Address : 9a02571e8f01
-Manufacturer : Faux Container
-RESULT skip security.passwords
-Brute Test
-RESULT skip security.passwords
+IOException unable to connect to server.
+RESULT skip security.tls.v3
+RESULT skip security.x509
 ```
 
 ## Module udmi
