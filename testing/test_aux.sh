@@ -41,12 +41,10 @@ cp misc/system_all.conf local/system.conf
 cat <<EOF >> local/system.conf
 fail_hook=misc/dump_network.sh
 test_config=misc/runtime_configs/long_wait
-host_tests=misc/all_tests.conf
-site_path=misc/test_site
-startup_faux_1_opts=brute
+site_path=inst/test_site
+startup_faux_1_opts="brute"
 startup_faux_2_opts="nobrute expiredtls pubber"
 startup_faux_3_opts="tls macoui bacnet pubber"
-
 EOF
 
 cloud_file=inst/test_site/cloud_iot_config.json
@@ -69,7 +67,7 @@ if [ -f $cred_file ]; then
     make_pubber SNS-4 daq-faux-3 1234
 else
     echo No GCP_SERVICE_ACCOUNT cred defined.
-    echo This varaiable should be defined in your online travis config.
+    echo This variable should be defined in your online travis config.
 fi
 
 more inst/faux/daq-faux-*/local/pubber.json | cat
