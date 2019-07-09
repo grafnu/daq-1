@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2019-06-29 21:30:06+00:00 |
-| Test report end date   | 2019-06-29 21:37:30+00:00 |
+| Test report start date | 2019-07-09 13:34:34+00:00 |
+| Test report end date   | 2019-07-09 13:42:18+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -56,7 +56,7 @@ Overall device result FAIL
 |---|---|---|---|---|
 |Required|1|1|0|0|
 |Recommended|1|0|0|0|
-|Other|0|2|4|2|
+|Other|0|2|10|2|
 
 |Result|Test|Category|Expectation|Notes|
 |---|---|---|---|---|
@@ -64,7 +64,13 @@ Overall device result FAIL
 |pass|base.target.ping|Connectivity|Required|target|
 |skip|cloud.udmi.pointset|Other|Other|No device id.|
 |fail|connection.mac_oui|Other|Other||
+|skip|connection.port_duplex|Other|Other||
+|skip|connection.port_link|Other|Other||
+|skip|connection.port_speed|Other|Other||
 |fail|network.brute|Security|Required||
+|skip|poe.negotiation|Other|Other||
+|skip|poe.power|Other|Other||
+|skip|poe.support|Other|Other||
 |fail|protocol.bacnet.version|Other|Other||
 |pass|security.ports.nmap|Security|Recommended||
 |skip|security.tls.v3|Other|Other||
@@ -72,13 +78,14 @@ Overall device result FAIL
 |gone|unknown.fake.llama|Other|Other||
 |gone|unknown.fake.monkey|Other|Other||
 
+
 ## Module ping
 
 ```
 Baseline ping test report
-%% 107 packets captured.
+%% 81 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.96.164
+RESULT pass base.target.ping target %% 10.20.11.164
 ```
 
 ## Module nmap
