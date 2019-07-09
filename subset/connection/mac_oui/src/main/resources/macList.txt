@@ -3,9 +3,8 @@
 # These values are known as Organizationally Unique Identifiers (OUIs)
 # See http://standards.ieee.org/faqs/OUI.html
 # We have added a few unregistered OUIs at the end.
-
 E043DB Shenzhen ViewAt Technology
-2405F5 Integrated Device Technology (Malaysia) Sdn. Bhd.
+2405F5 Integrated Device Technology (Malaysia) Sdn. Bhd.a
 3CD92B Hewlett Packard
 9C8E99 Hewlett Packard
 B499BA Hewlett Packard
