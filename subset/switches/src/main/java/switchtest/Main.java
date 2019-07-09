@@ -12,7 +12,7 @@ public class Main {
 
     int interfacePort = Integer.parseInt(args[1]);
 
-    boolean supportsPOE = (args[2].equals("true")) ? true : false;
+    boolean supportsPOE = args[2].equals("true");
 
     SwitchInterrogator switchInterrogator = new SwitchInterrogator(ipAddress, interfacePort, supportsPOE);
 

@@ -500,6 +500,27 @@ public class SwitchInterrogator implements Runnable {
     return hashMap;
   }
 
+  private String poeNormalizeData(String data) {
+    int interfaceIndex = data.indexOf("Interface");
+
+    byte[] dataBytes = data.getBytes();
+    int counter = 0;
+
+    for (int i = 0; i < interfaceIndex; i++) {
+      if (dataBytes[i] == '\n') {
+        counter++;
+      }
+    }
+
+    for (int i = counter; i > 0; i--) {
+      data = trash_line(data, 0);
+    }
+
+    data = trash_line(data, 1);
+
+    return data;
+  }
+
   private void parseRequestFlag(String data, int requestFlag) {
     try {
       switch (requestFlag) {
@@ -526,8 +547,7 @@ public class SwitchInterrogator implements Runnable {
             login_report += "Power-inline is disabled\n";
           } else {
             switchSupportsPoe = true;
-            data = trash_line(trash_line(data, 0), 1);
-            System.out.println("data:" + data);
+            data = poeNormalizeData(data);
             parse_inline(data, show_power_expected, show_power_pointers, show_power_data);
             power_map = dataToMap(power_expected, show_power_data);
           }
