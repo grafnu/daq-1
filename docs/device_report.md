@@ -1,4 +1,6 @@
-# Device 9a02571e8f01, 2019-06-27 18:00:27+00:00 to 2019-06-27 18:07:40+00:00
+# Device 9a:02:57:1e:8f:01, *** Make *** *** Model ***
+
+## Test Roles
 
 |  Role  |      Name              | Status |
 |--------|------------------------|--------|
@@ -12,7 +14,6 @@
 | Test report start date | 2019-06-29 21:30:06+00:00 |
 | Test report end date   | 2019-06-29 21:37:30+00:00 |
 | DAQ version      | 1.0.1 |
-
 | Attempt number   | 1 |
 
 ## Device Identification
@@ -72,12 +73,10 @@ Overall device result FAIL
 |gone|unknown.fake.monkey|Other|Other||
 
 
-
 ## Module ping
 
 ```
 Baseline ping test report
-
 %% 107 packets captured.
 RESULT skip base.switch.ping
 RESULT pass base.target.ping target %% 10.20.96.164
@@ -89,7 +88,6 @@ RESULT pass base.target.ping target %% 10.20.96.164
 Allowing 10000 open tcp snet-sensor-mgmt
 No invalid ports found.
 RESULT pass security.ports.nmap
-
 ```
 
 ## Module brute
@@ -120,15 +118,12 @@ RESULT fail connection.mac_oui
 RESULT fail protocol.bacnet.version
 ```
 
-## Module password
+## Module tls
 
 ```
-Brute Test
-MAC Address : 9a02571e8f01
-Manufacturer : Faux Container
-RESULT skip security.passwords
-Brute Test
-RESULT skip security.passwords
+IOException unable to connect to server.
+RESULT skip security.tls.v3
+RESULT skip security.x509
 ```
 
 ## Module udmi
