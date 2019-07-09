@@ -55,6 +55,9 @@ def add_packet_info_to_report():
 
 shell_result = shell_command_with_result(tests[test_request], 0, False)
 
+print("shell_result")
+print shell_result
+
 if shell_result is None:
     write_report("RESULT fail %s\n" % test_request)
 
