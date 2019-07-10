@@ -500,24 +500,23 @@ public class SwitchInterrogator implements Runnable {
     return hashMap;
   }
 
-  private String poeNormalizeData(String data) {
-    int interfaceIndex = data.indexOf("Interface");
-
+  private String trashLagLines(String data, int index, int lineIndex) {
     byte[] dataBytes = data.getBytes();
     int counter = 0;
-
-    for (int i = 0; i < interfaceIndex; i++) {
+    for (int i = 0; i < index; i++) {
       if (dataBytes[i] == '\n') {
         counter++;
       }
     }
-
     for (int i = counter; i > 0; i--) {
-      data = trash_line(data, 0);
+      data = trash_line(data, lineIndex);
     }
+    return data;
+  }
 
-    data = trash_line(data, 1);
-
+  private String poeNormalizeData(String data) {
+    data = trashLagLines(data, data.indexOf("Interface"), 0);
+    data = trashLagLines(data, data.indexOf("port"), 1);
     return data;
   }
 
