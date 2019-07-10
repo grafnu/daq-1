@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2019-06-29 21:30:06+00:00 |
-| Test report end date   | 2019-06-29 21:37:30+00:00 |
+| Test report start date | 2019-07-10 11:11:26+00:00 |
+| Test report end date   | 2019-07-10 11:18:50+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -56,7 +56,7 @@ Overall device result FAIL
 |---|---|---|---|---|
 |Required|1|1|0|0|
 |Recommended|1|0|0|0|
-|Other|0|2|4|2|
+|Other|0|1|5|2|
 
 |Result|Test|Category|Expectation|Notes|
 |---|---|---|---|---|
@@ -65,20 +65,21 @@ Overall device result FAIL
 |skip|cloud.udmi.pointset|Other|Other|No device id.|
 |fail|connection.mac_oui|Other|Other||
 |fail|network.brute|Security|Required||
-|fail|protocol.bacnet.version|Other|Other||
+|skip|protocol.bacnet.version|Other|Other||
 |pass|security.ports.nmap|Security|Recommended||
 |skip|security.tls.v3|Other|Other||
 |skip|security.x509|Other|Other||
 |gone|unknown.fake.llama|Other|Other||
 |gone|unknown.fake.monkey|Other|Other||
 
+
 ## Module ping
 
 ```
 Baseline ping test report
-%% 107 packets captured.
+%% 72 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.96.164
+RESULT pass base.target.ping target %% 10.20.11.164
 ```
 
 ## Module nmap
@@ -132,3 +133,4 @@ RESULT skip cloud.udmi.pointset No device id.
 ```
 
 ## Report complete
+
