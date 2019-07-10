@@ -70,7 +70,6 @@ public class SshSocket implements Runnable {
     } catch (JsonIOException e) {
       e.printStackTrace();
     } catch (NullPointerException e) {
-      System.out.println("can not find manufacturer in password list. Not yet implemented");
       reportHandler = new Report();
       reportHandler.addText(macAddress);
       reportHandler.addText("RESULT skip security.passwords");
@@ -79,7 +78,6 @@ public class SshSocket implements Runnable {
   }
 
   public void connectSshSocket() {
-    System.out.println("Port number is:  " + connectionPort);
     while (!testFinished) {
       if (passwordIndex == jsonPasswords.length) {
         usernameIndex++;
@@ -87,7 +85,6 @@ public class SshSocket implements Runnable {
       }
       if (usernameIndex > jsonUsernames.length - 1) {
         testFinished = true;
-        System.err.println("ran out of sign in options");
         reportHandler.addText("RESULT pass " + testName);
       } else {
         attempts++;
@@ -108,7 +105,6 @@ public class SshSocket implements Runnable {
             config.put("StrictHostKeyChecking", "no");
             session.setConfig(config);
             session.connect();
-            System.out.println("username/password correct");
             reportHandler.addText("RESULT fail " + testName);
             testFinished = true;
           } catch (JSchException e) {
@@ -118,7 +114,6 @@ public class SshSocket implements Runnable {
               testFinished = true;
               break;
             } else {
-              System.out.println(e + "username/password incorrect");
               passwordIndex++;
             }
           }
@@ -130,7 +125,6 @@ public class SshSocket implements Runnable {
     }
 
     reportHandler.writeReport();
-    System.out.println("All tests have been run");
     session.disconnect();
   }
 

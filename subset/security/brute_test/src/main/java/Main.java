@@ -9,12 +9,9 @@ public class Main {
     }
 
     String host = args[0];
+    int connectionPort = Integer.parseInt(args[1]);
+    String macAddress = args[2];
 
-    String protocol = args[1];
-    int connectionPort = Integer.parseInt(args[2]);
-    String macAddress = args[3];
-
-    System.out.println("Main Started...");
-    SetupTest setupTest = new SetupTest(protocol, host, connectionPort, macAddress);
+    SetupTest setupTest = new SetupTest(host, connectionPort, macAddress);
   }
 }

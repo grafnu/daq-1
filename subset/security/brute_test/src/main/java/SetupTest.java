@@ -10,14 +10,12 @@ public class SetupTest {
   int connectionPort;
   String macAddress;
   SshSocket sshSocket = null;
-  String protocol;
   Map<String, String> macDevices = new HashMap<String, String>();
   boolean debug = false;
   static final int minimumMACAddressLength = 5;
 
   public void readLocalFile() {
     try {
-      System.out.println("Reading local file...");
       InputStream inputStream = this.getClass().getResourceAsStream("/macList.txt");
       StringBuilder resultStringBuilder = new StringBuilder();
       BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
@@ -40,7 +38,7 @@ public class SetupTest {
     }
   }
 
-  public SetupTest(String protocol, String host, int connectionPort, String macAddress) {
+  public SetupTest(String host, int connectionPort, String macAddress) {
     try {
       System.out.println("Package manager started...");
       this.host = host;

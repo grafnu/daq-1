@@ -14,7 +14,6 @@ public class Report {
   public void writeReport() {
 
     reportFile = new File("reports/sshReport.txt");
-
     try {
       reportFile.getParentFile().mkdirs();
       try (BufferedWriter writer = new BufferedWriter(new FileWriter(reportFile))) {
