@@ -116,7 +116,7 @@ Integration Testing Flow
 
 3. Commit
 
-4. cp misc/test_site/mac_addrs/../device_report.md inst/device_report.md
+4. cp misc/test_site/mac_addrs/../device_report.md docs/device_report.md
  
 5. Run testing/test_aux.sh 
 
