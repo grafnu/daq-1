@@ -508,6 +508,9 @@ public class SwitchInterrogator implements Runnable {
         counter++;
       }
     }
+    if(counter > 0) {
+      counter -= lineIndex;
+    }
     for (int i = counter; i > 0; i--) {
       data = trash_line(data, lineIndex);
     }
