@@ -3,6 +3,7 @@
 source testing/test_preamble.sh
 
 echo Aux Tests >> $TEST_RESULTS
+echo $TEST_RESULTS
 
 echo mudacl tests | tee -a $TEST_RESULTS
 mudacl/bin/test.sh

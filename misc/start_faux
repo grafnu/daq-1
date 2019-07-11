@@ -45,7 +45,7 @@ if [ -n "${options[macoui]}" ]; then
 fi
 
 if [ -n "${options[passwordpass]}" ]; then
-    new_mac=3c:5a:b4:1e:8f:0b
+    new_mac=3c:5a:b4:1e:8f:0a
     set_mac_addrs $new_mac
     set_passwd 'root:pass'
     telnetsetup

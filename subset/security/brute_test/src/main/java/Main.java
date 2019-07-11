@@ -4,7 +4,7 @@ public class Main {
 
     // telnet OR ssh AS A PROTOCOL
 
-    if (args.length != 4) {
+    if (args.length != 3) {
       throw new IllegalArgumentException("Usage: target_ip protocol(ssh) target_port target_mac");
     }
 
