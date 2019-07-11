@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2019-07-09 09:26:24+00:00 |
-| Test report end date   | 2019-07-09 09:33:46+00:00 |
+| Test report start date | 2019-06-29 21:30:06+00:00 |
+| Test report end date   | 2019-06-29 21:37:30+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -48,15 +48,15 @@ Overall device result FAIL
 
 |Category|Result|
 |---|---|
-|Security|0/1|
+|Security|PASS|
 |Other|1/2|
 |Connectivity|n/a|
 
 |Expectation|pass|fail|skip|gone|
 |---|---|---|---|---|
 |Required|1|1|0|0|
-|Recommended|0|0|0|1|
-|Other|0|2|5|2|
+|Recommended|1|0|0|0|
+|Other|0|2|4|2|
 
 |Result|Test|Category|Expectation|Notes|
 |---|---|---|---|---|
@@ -66,8 +66,7 @@ Overall device result FAIL
 |fail|connection.mac_oui|Other|Other||
 |fail|network.brute|Security|Required||
 |fail|protocol.bacnet.version|Other|Other||
-|skip|security.passwords|Other|Other||
-|gone|security.ports.nmap|Security|Recommended||
+|pass|security.ports.nmap|Security|Recommended||
 |skip|security.tls.v3|Other|Other||
 |skip|security.x509|Other|Other||
 |gone|unknown.fake.llama|Other|Other||
@@ -78,9 +77,17 @@ Overall device result FAIL
 
 ```
 Baseline ping test report
-%% 82 packets captured.
+%% 107 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.92.164
+RESULT pass base.target.ping target %% 10.20.96.164
+```
+
+## Module nmap
+
+```
+Allowing 10000 open tcp snet-sensor-mgmt
+No invalid ports found.
+RESULT pass security.ports.nmap
 ```
 
 ## Module brute
@@ -117,13 +124,6 @@ RESULT fail protocol.bacnet.version
 IOException unable to connect to server.
 RESULT skip security.tls.v3
 RESULT skip security.x509
-```
-
-## Module password
-
-```
-security.passwords Test
-RESULT skip security.passwords
 ```
 
 ## Module udmi
