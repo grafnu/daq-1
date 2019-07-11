@@ -510,7 +510,7 @@ public class SwitchInterrogator implements Runnable {
       }
     }
     if(counter > 0) {
-    	counter -= lineIndex;
+      counter -= lineIndex;
     }
     for (int i = counter; i > 0; i--) {
       data = trash_line(data, lineIndex);
