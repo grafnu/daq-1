@@ -35,6 +35,7 @@ public class SwitchInterrogator implements Runnable {
   String reportFilename = "tmp/report.txt";
 
   boolean switchSupportsPoe = false;
+  boolean deviceConfigPoeEnabled = false;
 
   int data_length = 32768;
   int shortPacketLength = 20;
@@ -267,10 +268,10 @@ public class SwitchInterrogator implements Runnable {
   boolean debug = true;
   boolean extendedTests = false;
 
-  public SwitchInterrogator(String remoteIpAddress, int interfacePort, boolean switchSupportsPoe) {
+  public SwitchInterrogator(String remoteIpAddress, int interfacePort, boolean deviceConfigPoeEnabled) {
     this.remoteIpAddress = remoteIpAddress;
     this.interfacePort = interfacePort;
-    this.switchSupportsPoe = switchSupportsPoe;
+    this.deviceConfigPoeEnabled = deviceConfigPoeEnabled;
     command[interfacePos] = command[interfacePos] + interfacePort;
     command[platformPos] = command[platformPos] + interfacePort;
     command[powerinlinePos] = command[powerinlinePos] + interfacePort;
@@ -509,7 +510,7 @@ public class SwitchInterrogator implements Runnable {
       }
     }
     if(counter > 0) {
-      counter -= lineIndex;
+    	counter -= lineIndex;
     }
     for (int i = counter; i > 0; i--) {
       data = trash_line(data, lineIndex);
@@ -630,7 +631,7 @@ public class SwitchInterrogator implements Runnable {
         login_report += "RESULT fail connection.port_duplex\n";
       }
 
-      if (switchSupportsPoe) {
+      if (switchSupportsPoe && deviceConfigPoeEnabled) {
         String current_max_power = power_map.get("max").replaceAll("\\D+", "");
         String current_power = power_map.get("power").replaceAll("\\D+", "");
         String current_PoE_admin = power_map.get("admin");
