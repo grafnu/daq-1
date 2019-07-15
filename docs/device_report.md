@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2019-07-09 13:34:34+00:00 |
-| Test report end date   | 2019-07-09 13:42:18+00:00 |
+| Test report start date | 2019-07-15 15:16:57+00:00 |
+| Test report end date   | 2019-07-15 15:24:22+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -56,7 +56,7 @@ Overall device result FAIL
 |---|---|---|---|---|
 |Required|1|1|0|0|
 |Recommended|1|0|0|0|
-|Other|0|2|10|2|
+|Other|0|1|12|2|
 
 |Result|Test|Category|Expectation|Notes|
 |---|---|---|---|---|
@@ -79,14 +79,14 @@ Overall device result FAIL
 |gone|unknown.fake.llama|Other|Other||
 |gone|unknown.fake.monkey|Other|Other||
 
+
 ## Module ping
 
 ```
 Baseline ping test report
-%% 74 packets captured.
+%% 76 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.20.164
-
+RESULT pass base.target.ping target %% 10.20.10.164
 ```
 
 ## Module nmap
