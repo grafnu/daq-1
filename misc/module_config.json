@@ -4,7 +4,7 @@
       "enabled": true
     },
     "nmap": {
-      "enabled": false
+      "enabled": true
     },
     "macoui": {
       "enabled": true
@@ -13,13 +13,13 @@
       "enabled": true
     },
     "switch": {
-      "enabled": false
+      "enabled": true
     },
     "brute": {
-      "enabled": false
+      "enabled": true
     },
     "bacext": {
-      "enabled": false
+      "enabled": true
     },
     "tls": {
       "enabled": true

@@ -110,18 +110,19 @@ different places that are dynamically mapped in to the system at runtime:
 TODO: write note about hold_tests and test development
 
 Integration Testing Flow 
+
 1. Commit
 
 2. Run testing/test_aux.sh
 
-3. Commit
+3. cp misc/test_site/mac_addrs/../device_report.md docs/device_report.md
 
-4. cp misc/test_site/mac_addrs/../device_report.md docs/device_report.md
- 
+4. Commit
+
 5. Run testing/test_aux.sh 
 
-6. Commit
+6. cp out/test_aux.out testing/test_aux.out 
 
-7. cp out/test_aux.out testing/test_aux.out 
+7. Commit
 
 8. Push
