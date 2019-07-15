@@ -64,8 +64,14 @@ Overall device result FAIL
 |pass|base.target.ping|Connectivity|Required|target|
 |skip|cloud.udmi.pointset|Other|Other|No device id.|
 |fail|connection.mac_oui|Other|Other||
+|skip|connection.port_duplex|Other|Other||
+|skip|connection.port_link|Other|Other||
+|skip|connection.port_speed|Other|Other||
 |fail|network.brute|Security|Required||
-|skip|protocol.bacnet.version|Other|Other||
+|skip|poe.negotiation|Other|Other||
+|skip|poe.power|Other|Other||
+|skip|poe.support|Other|Other||
+|fail|protocol.bacnet.version|Other|Other||
 |pass|security.ports.nmap|Security|Recommended||
 |skip|security.tls.v3|Other|Other||
 |skip|security.x509|Other|Other||
@@ -77,9 +83,9 @@ Overall device result FAIL
 
 ```
 Baseline ping test report
-%% 65 packets captured.
+%% 81 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.10.164
+RESULT pass base.target.ping target %% 10.20.11.164
 ```
 
 ## Module nmap
@@ -103,6 +109,12 @@ RESULT fail network.brute
 
 ```
 LOCAL_IP not configured, assuming no network switch.
+RESULT skip connection.port_link
+RESULT skip connection.port_speed
+RESULT skip connection.port_duplex
+RESULT skip poe.power
+RESULT skip poe.negotiation
+RESULT skip poe.support
 ```
 
 ## Module macoui
