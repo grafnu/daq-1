@@ -6,6 +6,9 @@ Validator exit code 0
 Lint checks
 cmd/inbuild exit code 0
 Extended tests
+RESULT skip security.passwords
+RESULT fail security.passwords
+RESULT pass security.passwords
 RESULT fail protocol.bacnet.version
 RESULT fail protocol.bacnet.version
 RESULT pass protocol.bacnet.version
@@ -23,8 +26,8 @@ RESULT pass security.tls.v3
 RESULT pass security.x509
 dhcp requests 2 1
 01: ['01:brute:1']
-02: ['02:nmap:1']
-03: []
+02: ['02:nmap:1', '02:udmi:2']
+03: ['03:nmap:1', '03:udmi:2']
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
@@ -50,17 +53,14 @@ port-01 module_config modules
   "pass": {
     "enabled": true
   },
+  "password": {
+    "enabled": true
+  },
   "switch": {
-    "enabled": true,
-    "poe": {
-      "enabled": true
-    }
+    "enabled": true
   },
   "tls": {
     "enabled": true
-  },
-  "typeconf": {
-    "enabled": false
   },
   "udmi": {
     "enabled": true
@@ -86,11 +86,11 @@ port-02 module_config modules
   "pass": {
     "enabled": true
   },
+  "password": {
+    "enabled": true
+  },
   "switch": {
-    "enabled": true,
-    "poe": {
-      "enabled": true
-    }
+    "enabled": false
   },
   "tls": {
     "enabled": true
