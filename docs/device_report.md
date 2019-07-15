@@ -1,4 +1,4 @@
-# Device 9a02571e8f01, 2019-06-25 13:40:24+00:00 to 2019-06-25 13:47:53+00:00
+# Device 9a02571e8f01, 2019-07-15 09:23:01+00:00 to 2019-07-15 09:30:23+00:00
 
 |  Role  |      Name              | Status |
 |--------|------------------------|--------|
@@ -7,7 +7,7 @@
 
 | Test iteration   |                        |
 |------------------|------------------------|
-| Test report date | 2019-06-25T13:40:24.163Z |
+| Test report date | 2019-07-15T09:23:01.382Z |
 | DAQ version      | 1.0.0 |
 | Attempt number   | 1 |
 
@@ -55,9 +55,9 @@
 
 ```
 Baseline ping test report
-%% 81 packets captured.
+%% 74 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.75.164
+RESULT pass base.target.ping target %% 10.20.20.164
 ```
 
 ## Module nmap
