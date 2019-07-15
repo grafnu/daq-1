@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2019-07-15 10:10:38+00:00 |
-| Test report end date   | 2019-07-15 10:18:13+00:00 |
+| Test report start date | 2019-07-09 13:34:34+00:00 |
+| Test report end date   | 2019-07-09 13:42:18+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -56,7 +56,7 @@ Overall device result FAIL
 |---|---|---|---|---|
 |Required|1|1|0|0|
 |Recommended|1|0|0|0|
-|Other|0|2|5|2|
+|Other|0|2|10|2|
 
 |Result|Test|Category|Expectation|Notes|
 |---|---|---|---|---|
@@ -64,7 +64,13 @@ Overall device result FAIL
 |pass|base.target.ping|Connectivity|Required|target|
 |skip|cloud.udmi.pointset|Other|Other|No device id.|
 |fail|connection.mac_oui|Other|Other||
+|skip|connection.port_duplex|Other|Other||
+|skip|connection.port_link|Other|Other||
+|skip|connection.port_speed|Other|Other||
 |fail|network.brute|Security|Required||
+|skip|poe.negotiation|Other|Other||
+|skip|poe.power|Other|Other||
+|skip|poe.support|Other|Other||
 |fail|protocol.bacnet.version|Other|Other||
 |skip|security.passwords|Other|Other||
 |pass|security.ports.nmap|Security|Recommended||
@@ -78,9 +84,9 @@ Overall device result FAIL
 
 ```
 Baseline ping test report
-%% 75 packets captured.
+%% 81 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.9.164
+RESULT pass base.target.ping target %% 10.20.11.164
 ```
 
 ## Module nmap
@@ -104,6 +110,12 @@ RESULT fail network.brute
 
 ```
 LOCAL_IP not configured, assuming no network switch.
+RESULT skip connection.port_link
+RESULT skip connection.port_speed
+RESULT skip connection.port_duplex
+RESULT skip poe.power
+RESULT skip poe.negotiation
+RESULT skip poe.support
 ```
 
 ## Module macoui
