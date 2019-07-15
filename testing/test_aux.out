@@ -57,10 +57,16 @@ port-01 module_config modules
     "enabled": true
   },
   "switch": {
-    "enabled": true
+    "enabled": true,
+    "poe": {
+      "enabled": true
+    }
   },
   "tls": {
     "enabled": true
+  },
+  "typeconf": {
+    "enabled": false
   },
   "udmi": {
     "enabled": true
@@ -90,7 +96,10 @@ port-02 module_config modules
     "enabled": true
   },
   "switch": {
-    "enabled": false
+    "enabled": true,
+    "poe": {
+      "enabled": true
+    }
   },
   "tls": {
     "enabled": true
