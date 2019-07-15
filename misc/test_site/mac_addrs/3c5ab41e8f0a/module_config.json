@@ -38,5 +38,6 @@
   "process": {
      "attempt_number": 1,
   },
-  "device_type": "rocket"
+  "device_type": "rocket",
+  "device_id": "SNS-4"
 }

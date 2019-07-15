@@ -1,14 +1,19 @@
-# Device 9a02571e8f01, 2019-07-15 09:23:01+00:00 to 2019-07-15 09:30:23+00:00
+# Device 9a:02:57:1e:8f:01, *** Make *** *** Model ***
+
+## Test Roles
 
 |  Role  |      Name              | Status |
 |--------|------------------------|--------|
 |Operator| *** Operator Name *** |        |
 |Approver| *** Approver Name *** |        |
 
-| Test iteration   |                        |
+## Test Iteration
+
+| Test             |                        |
 |------------------|------------------------|
-| Test report date | 2019-07-15T09:23:01.382Z |
-| DAQ version      | 1.0.0 |
+| Test report start date | 2019-07-09 13:34:34+00:00 |
+| Test report end date   | 2019-07-09 13:42:18+00:00 |
+| DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
 ## Device Identification
@@ -39,17 +44,40 @@
 
 ## Report summary
 
-|Result|Test|Notes|
-|---|---|---|
-|skip|base.switch.ping||
-|pass|base.target.ping|target |
-|fail|connection.mac_oui||
-|fail|network.brute||
-|skip|protocol.bacnet.pic||
-|skip|protocol.bacnet.version||
-|pass|security.ports.nmap||
-|skip|security.tls.v3||
-|skip|security.x509||
+Overall device result FAIL
+
+|Category|Result|
+|---|---|
+|Security|PASS|
+|Other|1/2|
+|Connectivity|n/a|
+
+|Expectation|pass|fail|skip|gone|
+|---|---|---|---|---|
+|Required|1|1|0|0|
+|Recommended|1|0|0|0|
+|Other|0|2|10|2|
+
+|Result|Test|Category|Expectation|Notes|
+|---|---|---|---|---|
+|skip|base.switch.ping|Other|Other||
+|pass|base.target.ping|Connectivity|Required|target|
+|skip|cloud.udmi.pointset|Other|Other|No device id.|
+|fail|connection.mac_oui|Other|Other||
+|skip|connection.port_duplex|Other|Other||
+|skip|connection.port_link|Other|Other||
+|skip|connection.port_speed|Other|Other||
+|fail|network.brute|Security|Required||
+|skip|poe.negotiation|Other|Other||
+|skip|poe.power|Other|Other||
+|skip|poe.support|Other|Other||
+|skip|protocol.bacnet.pic|Other|Other||
+|skip|protocol.bacnet.version|Other|Other||
+|pass|security.ports.nmap|Security|Recommended||
+|skip|security.tls.v3|Other|Other||
+|skip|security.x509|Other|Other||
+|gone|unknown.fake.llama|Other|Other||
+|gone|unknown.fake.monkey|Other|Other||
 
 ## Module ping
 
@@ -58,6 +86,7 @@ Baseline ping test report
 %% 74 packets captured.
 RESULT skip base.switch.ping
 RESULT pass base.target.ping target %% 10.20.20.164
+
 ```
 
 ## Module nmap
@@ -81,6 +110,12 @@ RESULT fail network.brute
 
 ```
 LOCAL_IP not configured, assuming no network switch.
+RESULT skip connection.port_link
+RESULT skip connection.port_speed
+RESULT skip connection.port_duplex
+RESULT skip poe.power
+RESULT skip poe.negotiation
+RESULT skip poe.support
 ```
 
 ## Module macoui
@@ -105,6 +140,12 @@ Bacnet device not found... Pics check cannot be performed.
 IOException unable to connect to server.
 RESULT skip security.tls.v3
 RESULT skip security.x509
+```
+
+## Module udmi
+
+```
+RESULT skip cloud.udmi.pointset No device id.
 ```
 
 ## Report complete

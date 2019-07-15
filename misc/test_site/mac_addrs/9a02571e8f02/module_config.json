@@ -10,10 +10,8 @@
     "version": "*** Version ***"
   },
   "device_type": "rocket", 
+  "device_id": "AHU-1",
   "modules": {
-    "switch": {
-      "enabled": false
-    },
     "foobar": {
       "enabled": false
     }
