@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2019-07-15 16:28:03+00:00 |
-| Test report end date   | 2019-07-15 16:36:27+00:00 |
+| Test report start date | 2019-07-15 22:55:25+00:00 |
+| Test report end date   | 2019-07-15 23:01:50+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -84,9 +84,9 @@ Overall device result FAIL
 
 ```
 Baseline ping test report
-%% 87 packets captured.
+%% 61 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.87.164
+RESULT pass base.target.ping target %% 10.20.92.164
 ```
 
 ## Module nmap
@@ -128,7 +128,7 @@ RESULT fail connection.mac_oui
 ## Module bacext
 
 ```
-RESULT fail protocol.bacnet.version
+RESULT skip protocol.bacnet.version
 ```
 
 ## Module tls
