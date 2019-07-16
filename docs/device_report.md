@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2019-07-15 22:55:25+00:00 |
-| Test report end date   | 2019-07-15 23:01:50+00:00 |
+| Test report start date | 2019-07-16 12:49:31+00:00 |
+| Test report end date   | 2019-07-16 12:57:14+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -56,7 +56,7 @@ Overall device result FAIL
 |---|---|---|---|---|
 |Required|1|1|0|0|
 |Recommended|1|0|0|0|
-|Other|0|2|11|2|
+|Other|0|1|12|2|
 
 |Result|Test|Category|Expectation|Notes|
 |---|---|---|---|---|
@@ -71,7 +71,7 @@ Overall device result FAIL
 |skip|poe.negotiation|Other|Other||
 |skip|poe.power|Other|Other||
 |skip|poe.support|Other|Other||
-|fail|protocol.bacnet.version|Other|Other||
+|skip|protocol.bacnet.version|Other|Other||
 |skip|security.passwords|Other|Other||
 |pass|security.ports.nmap|Security|Recommended||
 |skip|security.tls.v3|Other|Other||
@@ -84,9 +84,9 @@ Overall device result FAIL
 
 ```
 Baseline ping test report
-%% 61 packets captured.
+%% 82 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.92.164
+RESULT pass base.target.ping target %% 10.20.99.164
 ```
 
 ## Module nmap
