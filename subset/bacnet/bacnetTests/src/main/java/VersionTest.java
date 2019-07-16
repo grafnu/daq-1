@@ -22,7 +22,7 @@ public class VersionTest {
   private boolean testPassed = false;
   boolean bacnetSupported = false;
   private String testName = "protocol.bacnet.version";
-  private String infoReportText = String.format("RESULT info %s\n", testName);
+  private String infoReportText = String.format("RESULT info %s", testName);
   private String skippedReportText = String.format("RESULT skip %s\n", testName);
   private String errorPropertyMessage = "errorClass=Property, errorCode=Unknown property";
   private String protocolVersionText = "";
