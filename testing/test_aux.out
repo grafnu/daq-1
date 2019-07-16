@@ -8,9 +8,9 @@ cmd/inbuild exit code 0
 Extended tests
 RESULT skip protocol.bacnet.version
 RESULT skip protocol.bacnet.pic
-RESULT info protocol.bacnet.version
+RESULT info protocol.bacnet.version Protocol version: 1
 RESULT fail protocol.bacnet.pic
-RESULT info protocol.bacnet.version
+RESULT info protocol.bacnet.version Protocol version: 1
 RESULT pass protocol.bacnet.pic
 RESULT fail network.brute
 RESULT pass network.brute
