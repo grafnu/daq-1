@@ -10,7 +10,7 @@ RESULT skip protocol.bacnet.version
 RESULT skip protocol.bacnet.pic
 RESULT info protocol.bacnet.version
 RESULT fail protocol.bacnet.pic
-RESULT info protocol.bacnet.version Protocol version: 1
+RESULT info protocol.bacnet.version
 RESULT pass protocol.bacnet.pic
 RESULT fail network.brute
 RESULT pass network.brute
