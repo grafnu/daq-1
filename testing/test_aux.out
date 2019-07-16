@@ -10,7 +10,7 @@ RESULT skip protocol.bacnet.version
 RESULT skip protocol.bacnet.pic
 RESULT info protocol.bacnet.version
 RESULT fail protocol.bacnet.pic
-RESULT info protocol.bacnet.version
+RESULT info protocol.bacnet.version Protocol version: 1
 RESULT pass protocol.bacnet.pic
 RESULT fail network.brute
 RESULT pass network.brute
@@ -26,8 +26,8 @@ RESULT pass security.tls.v3
 RESULT pass security.x509
 dhcp requests 2 1
 01: ['01:brute:1']
-02: ['02:nmap:1']
-03: []
+02: ['02:nmap:1', '02:udmi:2']
+03: ['03:udmi:2']
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
@@ -119,4 +119,6 @@ port-02 module_config modules
                 ')
 Redacted docs diff
 No report diff
+ M docs/device_report.md
+ M subset/bacnet/bacnetTests/src/main/java/VersionTest.java
 Done with tests

@@ -25,6 +25,7 @@ public class VersionTest {
   private String infoReportText = String.format("RESULT info %s\n", testName);
   private String skippedReportText = String.format("RESULT skip %s\n", testName);
   private String errorPropertyMessage = "errorClass=Property, errorCode=Unknown property";
+  private String protocolVersionText = "";
 
   public VersionTest(String localIp, String broadcastIp) throws Exception {
     this.localIp = localIp;
@@ -108,6 +109,7 @@ public class VersionTest {
           if (!value.isEmpty()) {
               testPassed = true;
           }
+          if (key.equals("Protocol version")) protocolVersionText = " Protocol version: " + value + "\n";
       }
     }
     appendixText += ("\n\n\n");
@@ -134,7 +136,7 @@ public class VersionTest {
     Report report = new Report("tmp/" + deviceMacAddress + "_BacnetVersionTestReport.txt");
     Report appendices = new Report("tmp/" + deviceMacAddress + "_BacnetVersionTest_APPENDIX.txt");
     if (bacnetSupported && testPassed) {
-        report.writeReport(infoReportText);
+        report.writeReport(infoReportText + protocolVersionText);
     } else {
       report.writeReport(skippedReportText);
     }
