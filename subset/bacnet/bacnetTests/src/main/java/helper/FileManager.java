@@ -7,6 +7,7 @@ public class FileManager {
     private String filePath = "";
     private String csvName = "pics";
     private String csvExtension = ".csv";
+    private boolean debug = false;
 
     public boolean checkDevicePicCSV() {
         String csvFolder = getCSVPath();
@@ -56,11 +57,9 @@ public class FileManager {
     }
 
     public String getCSVPath() {
+        if (debug) {
+            return "src/main/resources";
+        }
         return "/config/type";
     }
-
-      // For debugging
-//    public String getCSVPath() {
-//        return "src/main/resources";
-//    }
 }

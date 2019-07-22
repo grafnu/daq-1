@@ -15,7 +15,8 @@ public class PicsValidator {
 
   Multimap<String, String> result = ArrayListMultimap.create();
 
-  boolean testPassed = true;
+  boolean testPassed = false;
+  private int count = 0;
 
   public void validate(String bacnetObjectType, String bacnetObjectProperty, String conformanceCode,
                        String supported, Multimap bacnetPointsMap) {
@@ -28,16 +29,19 @@ public class PicsValidator {
       String appendix = String.format(formatProperty, bacnetObjectType, bacnetObjectProperty,
               conformanceCode, "FAILED");
       result.put(bacnetObjectType, appendix);
-      testPassed = false;
+      //testPassed = false;
+      setResult(false);
     } else if (keys.size() == 0 && conformanceCode.contains(optional)
             && !bacnetObjectProperty.equals("Property List")) {
       String appendix = String.format(formatProperty, bacnetObjectType, bacnetObjectProperty,
               conformanceCode, "PASSED/WARNING");
       result.put(bacnetObjectType, appendix);
+      setResult(true);
     } else if (keys.size() == 0 && bacnetObjectProperty.equals("Property List")) {
       String appendix = String.format(formatProperty, bacnetObjectType, bacnetObjectProperty,
               conformanceCode, "PASSED");
       result.put(bacnetObjectType, appendix);
+      setResult(true);
     }
 
     for (String key : keys) {
@@ -51,17 +55,20 @@ public class PicsValidator {
         String appendix = String.format(formatProperty, key, bacnetObjectProperty,
                 conformanceCode, "FAILED");
         result.put(key, appendix);
-        testPassed = false;
+        //testPassed = false;
+        setResult(false);
       } else if (!bacnetObjectPropertyIsFound && conformanceCode.contains(optional)
           && supported.equals(Supported) && !bacnetObjectProperty.equals("Property List")) {
         String appendix = String.format(formatProperty, key, bacnetObjectProperty,
                 conformanceCode, "PASSED/WARNING");
         result.put(key, appendix);
+        setResult(true);
       } else if (bacnetObjectPropertyIsFound && supported.equals(Supported)
           && !bacnetObjectProperty.equals("Property List")) {
         String appendix = String.format(formatProperty, key, bacnetObjectProperty,
                 conformanceCode, "PASSED");
         result.put(key, appendix);
+        setResult(true);
       }
     }
   }
@@ -74,6 +81,17 @@ public class PicsValidator {
       }
     }
     return keys;
+  }
+
+  private void setResult(boolean propertyValidated) {
+    if(count == 0) {
+      this.testPassed = propertyValidated;
+    } else {
+      if(!testPassed) {
+        return;
+      } else { testPassed = propertyValidated; }
+    }
+    count++;
   }
 
   public Multimap<String, String> getResultMap() {

@@ -1,5 +1,6 @@
 package FauxDeviceEngine;
 
+import FauxDeviceEngine.helper.Device;
 import com.serotonin.bacnet4j.LocalDevice;
 import com.serotonin.bacnet4j.exception.BACnetServiceException;
 import com.serotonin.bacnet4j.obj.BACnetObject;
@@ -44,6 +45,7 @@ public class Analog {
     private String profileName = "";
     private float relinquishDefault = 0.0f;
     private boolean priorityArray = false;
+    Device device = new Device();
 
     public Analog(LocalDevice localDevice, BACnetObject bacnetObjectType, Map<String, String>bacnetObjectMap) {
         for(Map.Entry<String, String> map : bacnetObjectMap.entrySet()) {
@@ -51,7 +53,7 @@ public class Analog {
             String propertyValue = map.getValue();
             addObjectProperty(bacnetObjectType, propertyName, propertyValue);
         }
-        addObjectType(localDevice, bacnetObjectType, bacnetObjectMap);
+        device.addObjectType(localDevice, bacnetObjectType, bacnetObjectMap);
     }
 
     private void addObjectProperty(BACnetObject bacnetObjectType, String objectProperty, String propertyValue) {
@@ -60,187 +62,160 @@ public class Analog {
             case "Present_Value":
                 presentValue = Float.parseFloat(propertyValue);
                 encodable = new Real(presentValue);
-                add(bacnetObjectType, PropertyIdentifier.presentValue, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.presentValue, encodable);
                 break;
             case "Object_Name":
                 objectName = propertyValue;
                 encodable = new CharacterString(objectName);
-                add(bacnetObjectType, PropertyIdentifier.objectName, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.objectName, encodable);
                 break;
             case "Device_Type":
                 deviceType = propertyValue;
                 encodable = new CharacterString(deviceType);
-                add(bacnetObjectType, PropertyIdentifier.deviceType, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.deviceType, encodable);
                 break;
             case "Deadband":
                 deadband = Float.parseFloat(propertyValue);
                 encodable = new Real(deadband);
-                add(bacnetObjectType, PropertyIdentifier.deadband, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.deadband, encodable);
                 break;
             case "Out_Of_Service":
                 outOfService = Boolean.valueOf(propertyValue);
                 encodable = new com.serotonin.bacnet4j.type.primitive.Boolean(outOfService);
-                add(bacnetObjectType, PropertyIdentifier.outOfService, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.outOfService, encodable);
                 break;
             case "Resolution" :
                 resolution = Float.parseFloat(propertyValue);
                 encodable = new Real(resolution);
-                add(bacnetObjectType, PropertyIdentifier.resolution, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.resolution, encodable);
                 break;
             case "Event_Enable":
-                eventEnable = castToArrayBoolean(propertyValue);
+                eventEnable = device.castToArrayBoolean(propertyValue);
                 encodable = new EventTransitionBits(eventEnable[0], eventEnable[1], eventEnable[2]);
-                add(bacnetObjectType, PropertyIdentifier.eventEnable, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.eventEnable, encodable);
                 break;
             case "Event_State":
                 eventState = Integer.parseInt(propertyValue);
                 encodable = new EventState(eventState);
-                add(bacnetObjectType, PropertyIdentifier.eventState, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.eventState, encodable);
                 break;
             case "Object_Type":
                 objectType = Integer.parseInt(propertyValue);
                 encodable = new ObjectType(objectType);
-                add(bacnetObjectType, PropertyIdentifier.objectType, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.objectType, encodable);
                 break;
             case "Time_Delay_Normal":
                 timeDelayNormal = Integer.parseInt(propertyValue);
                 encodable = new UnsignedInteger(timeDelayNormal);
-                add(bacnetObjectType, PropertyIdentifier.timeDelayNormal, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.timeDelayNormal, encodable);
                 break;
             case "Low_Limit":
                 lowLimit = Float.parseFloat(propertyValue);
                 encodable = new Real(lowLimit);
-                add(bacnetObjectType, PropertyIdentifier.lowLimit, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.lowLimit, encodable);
                 break;
             case "Limit_Enable":
-                limitEnable = castToArrayBoolean(propertyValue);
+                limitEnable = device.castToArrayBoolean(propertyValue);
                 encodable = new LimitEnable(limitEnable[0], limitEnable[1]);
-                add(bacnetObjectType, PropertyIdentifier.limitEnable, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.limitEnable, encodable);
                 break;
             case "Cov_Increment":
                 covIncrement = Float.parseFloat(propertyValue);
                 encodable = new Real(covIncrement);
-                add(bacnetObjectType, PropertyIdentifier.covIncrement, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.covIncrement, encodable);
                 break;
             case "Status_Flags":
-                statusFlags = castToArrayBoolean(propertyValue);
+                statusFlags = device.castToArrayBoolean(propertyValue);
                 encodable = new StatusFlags(statusFlags[0], statusFlags[1], statusFlags[2], statusFlags[3]);
-                add(bacnetObjectType, PropertyIdentifier.statusFlags, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.statusFlags, encodable);
                 break;
             case "Update_Interval":
                 updateInterval = Integer.parseInt(propertyValue);
                 encodable = new UnsignedInteger(updateInterval);
-                add(bacnetObjectType, PropertyIdentifier.updateInterval, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.updateInterval, encodable);
                 break;
             case "Acked_Transitions":
-                ackedTransitions = castToArrayBoolean(propertyValue);
+                ackedTransitions = device.castToArrayBoolean(propertyValue);
                 encodable = new EventTransitionBits(ackedTransitions[0], ackedTransitions[1], ackedTransitions[2]);
-                add(bacnetObjectType, PropertyIdentifier.ackedTransitions, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.ackedTransitions, encodable);
                 break;
             case "High_Limit":
                 highLimit = Float.parseFloat(propertyValue);
                 encodable = new Real(highLimit);
-                add(bacnetObjectType, PropertyIdentifier.highLimit, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.highLimit, encodable);
                 break;
             case "Notify_Type":
                 notifyType = Integer.parseInt(propertyValue);
                 encodable = new NotifyType(notifyType);
-                add(bacnetObjectType, PropertyIdentifier.notifyType, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.notifyType, encodable);
                 break;
             case "Event_Detection_Enable":
                 eventDetectionEnable = Boolean.parseBoolean(propertyValue);
                 encodable = new com.serotonin.bacnet4j.type.primitive.Boolean(eventDetectionEnable);
-                add(bacnetObjectType, PropertyIdentifier.eventDetectionEnable, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.eventDetectionEnable, encodable);
                 break;
             case "Max_Pres_Value":
                 maxPresValue = Float.parseFloat(propertyValue);
                 encodable = new Real(maxPresValue);
-                add(bacnetObjectType, PropertyIdentifier.maxPresValue, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.maxPresValue, encodable);
                 break;
             case "Min_Pres_Value":
                 minPresValue = Float.parseFloat(propertyValue);
                 encodable = new Real(minPresValue);
-                add(bacnetObjectType, PropertyIdentifier.minPresValue, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.minPresValue, encodable);
                 break;
             case "Reliability":
                 reliability = Integer.parseInt(propertyValue);
                 encodable = new Reliability(reliability);
-                add(bacnetObjectType, PropertyIdentifier.reliability, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.reliability, encodable);
                 break;
             case "Event_Message_Texts":
                 if(Boolean.parseBoolean(propertyValue)) {
                     eventTransitionBits = new SequenceOf<EventTransitionBits>();
                     encodable = eventTransitionBits;
-                add(bacnetObjectType, PropertyIdentifier.eventMessageTexts, encodable);
+                    device.addProperty(bacnetObjectType, PropertyIdentifier.eventMessageTexts, encodable);
                 }
                 break;
             case "Notification_Class":
                 notificationClass = Integer.parseInt(propertyValue);
                 encodable = new UnsignedInteger(notificationClass);
-                add(bacnetObjectType, PropertyIdentifier.notificationClass, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.notificationClass, encodable);
                 break;
             case "Description":
                 description = propertyValue;
                 encodable = new CharacterString(description);
-                add(bacnetObjectType, PropertyIdentifier.description, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.description, encodable);
                 break;
             case "Event_Algorithm_Inhibit":
                 eventAlgorithmInhibit = Boolean.parseBoolean(propertyValue);
                 encodable = new com.serotonin.bacnet4j.type.primitive.Boolean(eventAlgorithmInhibit);
-                add(bacnetObjectType, PropertyIdentifier.eventAlgorithmInhibit, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.eventAlgorithmInhibit, encodable);
                 break;
             case "Units":
                 units = Integer.parseInt(propertyValue);
                 encodable = new EngineeringUnits(units);
-                add(bacnetObjectType, PropertyIdentifier.units, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.units, encodable);
                 break;
             case "Profile_Name":
                 profileName = propertyValue;
                 encodable = new CharacterString(profileName);
-                add(bacnetObjectType, PropertyIdentifier.profileName, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.profileName, encodable);
                 break;
             case "Relinquish_Default":
                 relinquishDefault = Float.parseFloat(propertyValue);
                 encodable = new Real(relinquishDefault);
-                add(bacnetObjectType, PropertyIdentifier.relinquishDefault, encodable);
+                device.addProperty(bacnetObjectType, PropertyIdentifier.relinquishDefault, encodable);
                 break;
             case "Priority_Array":
                 priorityArray = Boolean.parseBoolean(propertyValue);
                 if(priorityArray) {
                     encodable = new PriorityArray();
-                    add(bacnetObjectType, PropertyIdentifier.priorityArray, encodable);
+                    device.addProperty(bacnetObjectType, PropertyIdentifier.priorityArray, encodable);
                 }
                 break;
 
                 default:
                 System.out.println(objectProperty + " not found.");
         }
-    }
-
-    private void add(BACnetObject bacnetObjectType, PropertyIdentifier propertyIdentifier, Encodable encodable) {
-        try {
-            bacnetObjectType.setProperty(propertyIdentifier, encodable);
-        } catch (BACnetServiceException e) {
-            System.out.println(propertyIdentifier);
-            e.printStackTrace();
-            System.err.println("Error adding bacnet property: " + e.getMessage() + propertyIdentifier.toString());
-        }
-    }
-
-    private void addObjectType(LocalDevice localDevice, BACnetObject bacnetObject, Map<String, String>map) {
-        try {
-            localDevice.addObject(bacnetObject);
-        } catch (BACnetServiceException e) {
-            System.err.println("Error adding bacnet object: " + e.getMessage() + " " + map.toString());
-        }
-    }
-
-    private boolean[] castToArrayBoolean(String string_of_booleans) {
-        String[] booleans_arr = string_of_booleans.split(" ");
-        boolean[] array = new boolean[booleans_arr.length];
-        for (int i = 0; i < booleans_arr.length; i++) {
-            array[i] = Boolean.parseBoolean(booleans_arr[i]);
-        }
-        return array;
     }
 }

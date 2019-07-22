@@ -23,15 +23,16 @@ public class EntryPoint {
     private static int deviceId = 0;
     private static IpNetwork network;
     private static LocalDevice localDevice;
-    private static String testCase = "";
+    private static String fauxDeviceJSONFilename = "";
 
     public static void main(String[] args) {
         if (args.length != 3) {
-            throw new RuntimeException("Usage: testCase localIpAddr broadcastIpAddr");
+            throw new RuntimeException("Usage: localIpAddr broadcastIpAddr fauxDeviceJSONFilename");
         }
-        testCase = args[0];
-        String localIpAddr = args[1];
-        String broadcastIpAddr = args[2];
+        String localIpAddr = args[0];
+        String broadcastIpAddr = args[1];
+        fauxDeviceJSONFilename = args[2];
+
         int port = IpNetwork.DEFAULT_PORT;
         network = new IpNetwork(broadcastIpAddr, port,
                 IpNetwork.DEFAULT_BIND_IP, 0, localIpAddr);
@@ -65,12 +66,7 @@ public class EntryPoint {
     }
 
     private static JSONArray readJSONFile() {
-        String jsonFile = "";
-        if (testCase.equals("pass")) {
-            jsonFile = "Faux-Device-Pass.json";
-        } else if (testCase.equals("fail")) {
-            jsonFile = "Faux-Device-Fail.json";
-        }
+        String jsonFile = fauxDeviceJSONFilename;
         FileManager fileManager = new FileManager();
         String absolute_path = fileManager.getAbsolutePath();
         JSON json = new JSON(absolute_path + "tmp/" + jsonFile);
