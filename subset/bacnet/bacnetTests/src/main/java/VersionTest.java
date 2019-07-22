@@ -47,7 +47,7 @@ public class VersionTest {
       if (bacnetSupported) {
         checkDevicesVersionAndGenerateReport();
       } else {
-        appendixText += "Bacnet device not found.\n";
+        appendixText += " Bacnet device not found.\n";
         System.out.println(appendixText);
         generateReport("");
       }
