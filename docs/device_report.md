@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2019-07-16 15:41:26+00:00 |
-| Test report end date   | 2019-07-16 15:48:30+00:00 |
+| Test report start date | 2019-07-22 13:52:58+00:00 |
+| Test report end date   | 2019-07-22 14:00:22+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -72,7 +72,7 @@ Overall device result FAIL
 |skip|poe.power|Other|Other||
 |skip|poe.support|Other|Other||
 |skip|protocol.bacnet.pic|Other|Other||
-|skip|protocol.bacnet.version|Other|Other||
+|skip|protocol.bacnet.version|Other|Other|Bacnet device not found.|
 |pass|security.ports.nmap|Security|Recommended||
 |skip|security.tls.v3|Other|Other||
 |skip|security.x509|Other|Other||
@@ -84,9 +84,9 @@ Overall device result FAIL
 
 ```
 Baseline ping test report
-%% 63 packets captured.
+%% 67 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.99.164
+RESULT pass base.target.ping target %% 10.20.55.164
 ```
 
 ## Module nmap
@@ -128,8 +128,7 @@ RESULT fail connection.mac_oui
 ## Module bacext
 
 ```
-RESULT skip protocol.bacnet.version
-Bacnet device not found.
+RESULT skip protocol.bacnet.version Bacnet device not found.
 RESULT skip protocol.bacnet.pic
 Bacnet device not found... Pics check cannot be performed.
 ```
