@@ -78,6 +78,9 @@ INFO:host:Target port 1 monitor scan complete
 INFO:docker:Target port 1 PASSED test mudgee
 INFO:docker:Target port 1 <b>PASSED test flaky</b>
 INFO:host:Target port 1 no more tests remaining
+
+
+
 INFO:host:Finalizing report inst/report_9a02571e8f00_2018-11-06T21:20:51.txt
 &hellip;
 </pre>
@@ -111,18 +114,19 @@ TODO: write note about hold_tests and test development
 
 Integration Testing Flow 
 
-1. Commit
+Could be done by modifying the test_x.out file to what is expected for the test to output.
 
-2. Run testing/test_aux.sh
+Another method invloves running test_x.sh file multiple times and copying it over to the out file
+*All of the commands in these steps are run as the root user by typing "sudo -i" into your console 
 
-3. cp misc/test_site/mac_addrs/../device_report.md docs/device_report.md
-
-4. Commit
-
-5. Run testing/test_aux.sh 
-
-6. cp out/test_aux.out testing/test_aux.out 
-
-7. Commit
-
-8. Push
+1. Run daq from the base directory using the command cmd/run -s 
+2. Run testing_x.sh  
+3. Copy the file inst/reports/report_9a02571e8f01_2019-07-10T100509+0000.md to docs/device_report.md
+4. Run testing/test_x.sh 
+5. Copy out/test_x.out to testing/test_x.out 
+6. Run testing/test_x.sh 
+7. Commit to github
+8. Run testing/test_x.sh 
+9. Copy out/test_x.out to testing/test_x.out
+10. Commit to github
+11. Test should now pass Intergration Testing

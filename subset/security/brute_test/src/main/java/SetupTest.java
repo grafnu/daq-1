@@ -13,8 +13,11 @@ public class SetupTest {
   Map<String, String> macDevices = new HashMap<String, String>();
   boolean debug = false;
   static final int minimumMACAddressLength = 5;
+  private static final int addressStartPosition = 0;
+  private static final int addressEndPosition = 6;
+  private static final int manufacturerNamePosition = 7;
 
-  public void readLocalFile() {
+  public void readMacList() {
     try {
       InputStream inputStream = this.getClass().getResourceAsStream("/macList.txt");
       StringBuilder resultStringBuilder = new StringBuilder();
@@ -25,9 +28,9 @@ public class SetupTest {
         String macAddress;
         String manufacturer;
         if (line.length() > minimumMACAddressLength) {
-          macAddress = line.substring(0, 6);
-          manufacturer = line.substring(7);
-          if (manufacturer.length() > 0) {
+          macAddress = line.substring(addressStartPosition, addressEndPosition);
+          manufacturer = line.substring(manufacturerNamePosition);
+          if (manufacturer.length() > addressStartPosition) {
             macDevices.put(macAddress, manufacturer);
           }
         }
@@ -45,7 +48,7 @@ public class SetupTest {
       this.connectionPort = connectionPort;
       this.macAddress = macAddress;
 
-      readLocalFile();
+      readMacList();
       setUpSshConnection();
     } catch (Exception e) {
       System.out.println("PackageManager CONSTRUCTOR:" + e.getMessage());
