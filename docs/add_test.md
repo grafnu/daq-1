@@ -78,9 +78,6 @@ INFO:host:Target port 1 monitor scan complete
 INFO:docker:Target port 1 PASSED test mudgee
 INFO:docker:Target port 1 <b>PASSED test flaky</b>
 INFO:host:Target port 1 no more tests remaining
-
-
-
 INFO:host:Finalizing report inst/report_9a02571e8f00_2018-11-06T21:20:51.txt
 &hellip;
 </pre>
