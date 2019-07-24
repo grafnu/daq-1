@@ -2,3 +2,6 @@
 /build/
 .idea
 /reports/
+gradlew
+gradlew.bat
+.settings

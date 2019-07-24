@@ -48,16 +48,11 @@ if [ -n "${options[passwordpass]}" ]; then
     new_mac=3c:5a:b4:1e:8f:0a
     set_mac_addrs $new_mac
     set_passwd 'root:pass'
-    telnetsetup
-    /etc/init.d/openbsd-inetd restart
-    /etc/init.d/xinetd restart
     /usr/sbin/sshd -D &
 fi
 
 if [ -n "${options[passwordfail]}" ]; then
     set_passwd 'root:redstone'
-    /etc/init.d/openbsd-inetd restart
-    /etc/init.d/xinetd restart
     echo "pass\npass\n\n\n\n\n\ny\n" | adduser "admin"
     echo "admin:redstone" | chpasswd
     /usr/sbin/sshd -D &

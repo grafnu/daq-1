@@ -32,11 +32,9 @@ RUN $AG update && $AG install isc-dhcp-client ethtool network-manager netcat cur
 
 # Prefetch resolvconf to dynamically install at runtime in start_faux.
 RUN $AG update && cd /tmp && ln -s ~/bin bin && $AG download resolvconf && mv resolvconf_*.deb ~
-RUN $AG update && $AG install -y telnetd
-RUN $AG update && $AG install xinetd
 
 #SSH set config
-COPY subset/security/ssh.config ssh.config
+COPY subset/security/brute_test/src/main/resources/ssh.config ssh.config
 RUN cat ssh.config >> /etc/ssh/sshd_config
 
 # SSH login fix. Otherwise user is kicked off after login
@@ -44,8 +42,8 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
-#SSH Expose Telnet and SSH Port 22 23
-EXPOSE 22 23
+#SSH Expose SSH Port 22
+EXPOSE 22
 
 COPY --from=java_build /root/bacnet4j/*.jar bacnet4j/
 COPY misc/bacnet_discover bin/
