@@ -83,15 +83,9 @@ Overall device result FAIL
 
 ```
 Baseline ping test report
-<<<<<<< HEAD
 %% 61 packets captured.
 RESULT skip base.switch.ping
 RESULT pass base.target.ping target %% 10.20.92.164
-=======
-%% 107 packets captured.
-RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.96.164
->>>>>>> 390452f515616502d7708ab34d2c36f1e59e7ddc
 ```
 
 ## Module nmap
