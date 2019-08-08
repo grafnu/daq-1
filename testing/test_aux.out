@@ -116,6 +116,4 @@ port-02 module_config modules
                 ')
 Redacted docs diff
 No report diff
- M docs/device_report.md
- M subset/bacnet/bacnetTests/src/main/java/VersionTest.java
 Done with tests
