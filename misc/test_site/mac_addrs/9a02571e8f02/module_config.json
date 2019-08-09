@@ -23,5 +23,6 @@
         "reason": "Administrative Web-Server"
       }
     }
-  }
+  },
+  "device_type": "rocket"
 }

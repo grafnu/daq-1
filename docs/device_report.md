@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2019-07-15 22:55:25+00:00 |
-| Test report end date   | 2019-07-15 23:01:50+00:00 |
+| Test report start date | 2019-08-06 11:45:23+00:00 |
+| Test report end date   | 2019-08-06 11:53:04+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -56,7 +56,7 @@ Overall device result FAIL
 |---|---|---|---|---|
 |Required|1|1|0|0|
 |Recommended|1|0|0|0|
-|Other|0|1|11|2|
+|Other|0|1|12|2|
 
 |Result|Test|Category|Expectation|Notes|
 |---|---|---|---|---|
@@ -71,7 +71,8 @@ Overall device result FAIL
 |skip|poe.negotiation|Other|Other||
 |skip|poe.power|Other|Other||
 |skip|poe.support|Other|Other||
-|skip|protocol.bacnet.version|Other|Other||
+|skip|protocol.bacnet.pic|Other|Other|Bacnet device not found... Pics check cannot be performed.|
+|skip|protocol.bacnet.version|Other|Other|Bacnet device not found.|
 |pass|security.ports.nmap|Security|Recommended||
 |skip|security.tls.v3|Other|Other||
 |skip|security.x509|Other|Other||
@@ -83,9 +84,9 @@ Overall device result FAIL
 
 ```
 Baseline ping test report
-%% 61 packets captured.
+%% 81 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.92.164
+RESULT pass base.target.ping target %% 10.20.29.164
 ```
 
 ## Module nmap
@@ -127,7 +128,8 @@ RESULT fail connection.mac_oui
 ## Module bacext
 
 ```
-RESULT skip protocol.bacnet.version
+RESULT skip protocol.bacnet.version Bacnet device not found.
+RESULT skip protocol.bacnet.pic Bacnet device not found... Pics check cannot be performed.
 ```
 
 ## Module tls

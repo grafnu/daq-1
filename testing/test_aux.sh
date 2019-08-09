@@ -37,13 +37,16 @@ rm -rf inst/test_site && mkdir -p inst/test_site
 cp -a misc/test_site inst/
 
 echo Extended tests | tee -a $TEST_RESULTS
+cp -r misc/test_site/device_types/rocket local/site/device_types/
+cp subset/bacnet/bacnetTests/src/main/resources/pics.csv local/site/device_types/rocket/aux/
+cp -r misc/test_site/mac_addrs/* local/site/mac_addrs/
 cp misc/system_all.conf local/system.conf
 cat <<EOF >> local/system.conf
 fail_hook=misc/dump_network.sh
 test_config=misc/runtime_configs/long_wait
 site_path=inst/test_site
 startup_faux_1_opts="brute"
-startup_faux_2_opts="nobrute expiredtls pubber"
+startup_faux_2_opts="nobrute expiredtls bacnetfail pubber"
 startup_faux_3_opts="tls macoui bacnet pubber"
 EOF
 
@@ -74,7 +77,7 @@ more inst/faux/daq-faux-*/local/pubber.json | cat
 
 echo Starting aux test run...
 cmd/run -b -s
-tail -qn 1 inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS
+fgrep -h RESULT inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/macoui*/tmp/report.txt | tee -a $TEST_RESULTS
 fgrep -h RESULT inst/run-port-*/nodes/tls*/tmp/report.txt | tee -a $TEST_RESULTS
@@ -88,6 +91,7 @@ more inst/run-port-*/nodes/nmap*/activate.log | cat
 more inst/run-port-*/nodes/brute*/activate.log | cat
 more inst/run-port-*/nodes/macoui*/activate.log | cat
 more inst/run-port-*/nodes/tls*/activate.log | cat
+more inst/run-port-*/nodes/bacext*/activate.log | cat
 ls inst/fail_fail01/ | tee -a $TEST_RESULTS
 echo port-01 module_config modules | tee -a $TEST_RESULTS
 jq .modules inst/run-port-01/nodes/ping01/tmp/module_config.json | tee -a $TEST_RESULTS

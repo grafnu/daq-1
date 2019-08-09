@@ -6,9 +6,12 @@ Validator exit code 0
 Lint checks
 cmd/inbuild exit code 0
 Extended tests
-RESULT skip protocol.bacnet.version
-RESULT skip protocol.bacnet.version
+RESULT skip protocol.bacnet.version Bacnet device not found.
+RESULT skip protocol.bacnet.pic Bacnet device not found... Pics check cannot be performed.
 RESULT info protocol.bacnet.version Protocol version: 1
+RESULT fail protocol.bacnet.pic
+RESULT info protocol.bacnet.version Protocol version: 1
+RESULT pass protocol.bacnet.pic
 RESULT fail network.brute
 RESULT pass network.brute
 RESULT skip network.brute
