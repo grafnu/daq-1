@@ -11,8 +11,13 @@
 
 | Test             |                        |
 |------------------|------------------------|
+<<<<<<< HEAD
 | Test report start date | 2019-07-15 22:55:25+00:00 |
 | Test report end date   | 2019-07-15 23:01:50+00:00 |
+=======
+| Test report start date | 2019-06-29 21:30:06+00:00 |
+| Test report end date   | 2019-06-29 21:37:30+00:00 |
+>>>>>>> f22ab39e143d87c8b2e2e6b482f77dd3684a27fc
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -56,7 +61,11 @@ Overall device result FAIL
 |---|---|---|---|---|
 |Required|1|1|0|0|
 |Recommended|1|0|0|0|
+<<<<<<< HEAD
 |Other|0|1|11|2|
+=======
+|Other|0|2|10|2|
+>>>>>>> f22ab39e143d87c8b2e2e6b482f77dd3684a27fc
 
 |Result|Test|Category|Expectation|Notes|
 |---|---|---|---|---|
@@ -71,7 +80,11 @@ Overall device result FAIL
 |skip|poe.negotiation|Other|Other||
 |skip|poe.power|Other|Other||
 |skip|poe.support|Other|Other||
+<<<<<<< HEAD
 |skip|protocol.bacnet.version|Other|Other||
+=======
+|fail|protocol.bacnet.version|Other|Other||
+>>>>>>> f22ab39e143d87c8b2e2e6b482f77dd3684a27fc
 |pass|security.ports.nmap|Security|Recommended||
 |skip|security.tls.v3|Other|Other||
 |skip|security.x509|Other|Other||
@@ -83,9 +96,15 @@ Overall device result FAIL
 
 ```
 Baseline ping test report
+<<<<<<< HEAD
 %% 61 packets captured.
 RESULT skip base.switch.ping
 RESULT pass base.target.ping target %% 10.20.92.164
+=======
+%% 107 packets captured.
+RESULT skip base.switch.ping
+RESULT pass base.target.ping target %% 10.20.96.164
+>>>>>>> f22ab39e143d87c8b2e2e6b482f77dd3684a27fc
 ```
 
 ## Module nmap
