@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2019-08-06 11:45:23+00:00 |
-| Test report end date   | 2019-08-06 11:53:04+00:00 |
+| Test report start date | 2019-07-15 22:55:25+00:00 |
+| Test report end date   | 2019-07-15 23:01:50+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -56,7 +56,7 @@ Overall device result FAIL
 |---|---|---|---|---|
 |Required|1|1|0|0|
 |Recommended|1|0|0|0|
-|Other|0|1|12|2|
+|Other|0|1|13|2|
 
 |Result|Test|Category|Expectation|Notes|
 |---|---|---|---|---|
@@ -73,6 +73,7 @@ Overall device result FAIL
 |skip|poe.support|Other|Other||
 |skip|protocol.bacnet.pic|Other|Other|Bacnet device not found... Pics check cannot be performed.|
 |skip|protocol.bacnet.version|Other|Other|Bacnet device not found.|
+|skip|security.firmware|Other|Other|Could not retrieve a firmware version with nmap. Bacnet port could be closed or filtered|
 |pass|security.ports.nmap|Security|Recommended||
 |skip|security.tls.v3|Other|Other||
 |skip|security.x509|Other|Other||
@@ -84,9 +85,9 @@ Overall device result FAIL
 
 ```
 Baseline ping test report
-%% 81 packets captured.
+%% 61 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.29.164
+RESULT pass base.target.ping target %% 10.20.92.164
 ```
 
 ## Module nmap
@@ -104,6 +105,22 @@ Username:manager
 Password:friend
 Login success!
 RESULT fail network.brute
+```
+
+## Module discover
+
+```
+--------------------
+security.firmware
+--------------------
+Automatic bacnet firmware scan using nmap
+--------------------
+PORT      STATE  SERVICE
+47808/udp closed bacnet
+MAC Address: 9A:02:57:1E:8F:01 (Unknown)
+Firmware test complete
+--------------------
+RESULT skip security.firmware Could not retrieve a firmware version with nmap. Bacnet port could be closed or filtered
 ```
 
 ## Module switch
