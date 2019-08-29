@@ -18,8 +18,6 @@ RUN $AG update && $AG install openjdk-8-jdk git nano
 
 COPY subset/bacnet/ .
 
-#COPY subset/bacnet/bacnetTests/src/main/resources/csv tmp/
-
 RUN mkdir -p /bacnetTests/libs
 
 COPY --from=bacnet_build /root/bacnet4j/bacnet4j-1.0-SNAPSHOT-all.jar bacnetTests/libs/
