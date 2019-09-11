@@ -49,9 +49,9 @@ class GcpManager:
         #self._firestore = self._initialize_firestore(cred_file)
         self._firestore = None
         #self._storage = storage.Client(project=self._project, credentials=self._credentials)
+        #self._ensure_report_bucket()
         self._storage = None
         self._report_bucket_name = self.REPORT_BUCKET_FORMAT % self._project
-        self._ensure_report_bucket()
         self._config_callbacks = {}
         LOGGER.info('Connection initialized at %s', get_timestamp())
 
