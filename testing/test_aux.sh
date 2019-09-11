@@ -6,6 +6,7 @@ echo Aux Tests >> $TEST_RESULTS
 
 echo Dumping GCP_SERVICE_ACCOUNT env
 echo "$GCP_SERVICE_ACCOUNT"
+echo "$GCP_SERVICE"ACCOUNT" | jq .client_email
 
 echo mudacl tests | tee -a $TEST_RESULTS
 mudacl/bin/test.sh
@@ -63,6 +64,7 @@ elif [ -f $cred_file ]; then
 fi
 
 if [ -f $cred_file ]; then
+    echo Using cloud service account `jq .client_email $cred_file`
     project_id=`jq .project_id $cred_file`
     registry_id=`jq .registry_id $cloud_file`
     cloud_region=`jq .cloud_region $cloud_file`

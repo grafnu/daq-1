@@ -6,21 +6,14 @@ DAQ currently uses Travis CI for integration testing: https://travis-ci.org/
 
 ### GCP
 
-If you're running cloud tests using pubber, Travis will need to be able to connect to your GCP account via the service account you've set up.  
+To run cloud-based tests, setup the Travis `GCP_SERVICE_ACCOUNT` env variable with an encoded service account key for your project. It's recommended
+to use a dedicated key with a nice name like `daq-travis`, but not required. Encode the key value as per below, and cut/paste the resulting string
+into the Travis settings page for your project.
 
-You'll need to add another environment variable to Travis for this to work: 
-
-- GCP_SERVICE_ACCOUNT
-
-This variable is an string of your GCP account credentials file linked to the service account **with all spaces removed surrounded by single quotes**. If you've set everything up correctly, the json file you downloaded when you created the service account should be in your `local/` directory.
-
-There are infinite ways to stringify JSON Use something like https://www.freeformatter.com/json-escape.html to convert your json object to a string, write a script to do it yourself, or use JSON.stringify in your browser JavaScript console.
-
-Your new JSON string will look something like the below. Remember to *enclose the entire thing with single quotes*
-
-```
-'{"type":"service_account","project_id":"<here be a project id>","private_key_id":"<here be a private key>","private_key":"-----BEGINPRIVATEKEY-----\n<here be a key>\n-----ENDPRIVATEKEY-----\n","client_email":"<here be a sercret email>","client_id":"<here be a client id>","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_x509_cert_url":"<here be another secret>"}'
-```
+<code>
+peringknife@peringknife-glaptop:~/daq$ <b>printf "%q" `cat local/daq-testing-8d606c2d678c.json` && echo</b>
+\{\"type\":\"service_account\"\,\"project_id\":\"bos-daq-testing\"\,\"private_key_id\":\"8d606c2d678c90008348d6c93d96cc82a76e70e5\"\,\"private_key\":\"-----BEGINPRIVATEKEY-----\\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDxT/xSq0WHrO3v\\nTjJNP3Hitz7OjcFQCj9u1l7rdBcZlyMUNUQU+PF0kokcwC4VQ5y3S407RRWlDCMe\\nIBOlE71W+VzK7lDedJvl/g2JoW5JGcEhRdhZgb+l2ynkwKEwlcrdjtrjhmU090yT\\nwzhVd9oRiQT3oMhXlpMS0X8zodeH7AYvUqJMISN7MR5KRK7qphu+HLaf9m+MUxqp\\ngC2qViAxvbU4VwzRuZ9tsxlPVAP4SBXojzhej5VUDMWn485tuOswCtrG9HcHivn/\\nTxu5kTsNfIHLQWCwFS6JqOETsgyfhg/JLL/r2jpYEyYKzGU0Kl/ovnDuRldmNTl2\\ndDp9+1ZNAgMBAAECggEAIBsbv6YA9Lm52HaHc8amsNrflNzAZRVP9j+4VkxWTHXS\\n2XvyyHWMro1Wh8g7+WFLBwoaytF4vUJdo8LxyitTrDA2O9u0T7ylB1cjVvXu9fPi\\nwboIvHPqWzdLHh/Q8mVjndHFZrM5YPAsNJarNpfhICciTY4LSbgDbmQIMAbu5arr\\ny5+mIL7dYXni2GKmmpHBO+R7znCuDg1v1p6g7YhtZBV/z3cAwstzas+mi03UlT/u\\nQLq93UEmE69/nYg5EXLsvRhXorXPytIxGca8kMVpvwsmW5BZrcp8D6sMvn0th1aG\\ngBAJsl/c7JQWbAgGVhPOK8ksAqvXvhprkczBDTyTAwKBgQD9FaTlaR+8dj60aGFs\\nUSz6+LQCm2BfaUs4/KhC/xOsfp4Q+bHiSbAgi7lljAeZ1fzgepD+vDHZ3jx2p9zp\\nr7P53KVwYuvURqhaIH7fB5nNwQlIiCx+7PMaJg9IV2Zc5IXTJ3bfBqwNyCKHe8ug\\nUCYjikqFmAKWNOPOHx1NNvfqdwKBgQD0F6AIxPiPvt9omOZyK4ptMIVLIibOMElu\\nBsmDs1Zyr7xdl5hfmsbjLoN5zwB+iVSaifzMZwP8O2pdF31qMNRrrkptbYw5kbg/\\nErYJ1GQhQkPxcUXJo6erbKd09bmfXLJZ07znCLBcJBopu9YknUGLuZbZLsfNLENw\\nafVp6J5yWwKBgEbH++MxYG/b/jOEkeKyXUsfrXChNfXZQ/F/MCv0nPL8Qobq3qY0\\nB69ChKpy3FlY8K1zegPUbHjLX8urrOwqeMJjxF1HPT+UN1dliTYlMQ3LdCY194PU\\nDzV7+YA4+Wb3froMaoF7ozkDhSyxIcUHRXNhJPByEB8kUaX/K7nBqtqHAoGBAKKm\\nE3eEePSgBZJXQEeXh9gWWtuj2CPQvT1ZvHHL0LD/NQ9QcrJSGnFLj0RdkUDAFeYc\\nSJ2Tj25F0SxS+LkH7KQMMYAVXTkHRrSQrUiDhG09ELUT+6LPMGzkK/mdu6DbTeTZ\\nWKjCe3IKhHyGs70WJJUMh94UdALdmdqQYH3ACcS9AoGAWIzQARc9A9La85BZnx/j\\n5IXQ9SGIUBbaCv1lNwj1GnA1+qDgSdOphQa1EFvfewR05BOTn9BCTN304pBQs52M\\nt0lDL7SRkiyMuOh8rxAfx7wHb8TJmNk8Cs/EIwb3kmiCpf5MTMt5YYJ9QJih/N9g\\n0ZCqMxDeMOSNecFe1TstHV4=\\n-----ENDPRIVATEKEY-----\\n\"\,\"client_email\":\"daq-travis@bos-daq-testing.iam.gserviceaccount.com\"\,\"client_id\":\"102414822232261244848\"\,\"auth_uri\":\"https://accounts.google.com/o/oauth2/auth\"\,\"token_uri\":\"https://oauth2.googleapis.com/token\"\,\"auth_provider_x509_cert_url\":\"https://www.googleapis.com/oauth2/v1/certs\"\,\"client_x509_cert_url\":\"https://www.googleapis.com/robot/v1/metadata/x509/daq-travis%40bos-daq-testing.iam.gserviceaccount.com\"\}
+</code>
 
 #### YOUR TRAVIS BUILD MAY ALWAYS FAIL! Unless...
 
