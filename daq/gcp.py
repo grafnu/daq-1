@@ -32,7 +32,7 @@ class GcpManager:
     def __init__(self, config, callback_handler):
         self.config = config
         self._callback_handler = callback_handler
-        if 'gcp_cred' not in config:
+        if 'gcp_credX' not in config:
             LOGGER.info('No gcp_cred credential specified in config')
             self._pubber = None
             self._storage = None

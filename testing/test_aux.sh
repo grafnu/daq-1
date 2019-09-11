@@ -5,14 +5,14 @@ source testing/test_preamble.sh
 echo Aux Tests >> $TEST_RESULTS
 
 echo mudacl tests | tee -a $TEST_RESULTS
-#mudacl/bin/test.sh
+mudacl/bin/test.sh
 echo Mudacl exit code $? | tee -a $TEST_RESULTS
-#validator/bin/test_schema
+validator/bin/test_schema
 echo Validator exit code $? | tee -a $TEST_RESULTS
 
 # Runs lint checks and some similar things
 echo Lint checks | tee -a $TEST_RESULTS
-#cmd/inbuild skip
+cmd/inbuild skip
 echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
 
 function make_pubber {
