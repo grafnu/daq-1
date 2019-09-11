@@ -15,6 +15,9 @@ echo Lint checks | tee -a $TEST_RESULTS
 cmd/inbuild skip
 echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
 
+echo Dumping gcp sergice account
+echo "$GCP_SERVICE_ACCOUNT"
+
 function make_pubber {
     device=$1
     faux=$2
