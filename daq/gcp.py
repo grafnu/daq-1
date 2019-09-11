@@ -10,7 +10,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 from google.cloud import pubsub_v1
-#from google.cloud import storage
+from google.cloud import storage
 from google.auth import _default as google_auth
 from grpc import StatusCode
 
@@ -46,11 +46,11 @@ class GcpManager:
         self._client_name = self._parse_creds(cred_file)
         self._pubber = pubsub_v1.PublisherClient(credentials=self._credentials)
         LOGGER.info('Initialized gcp pub/sub %s:%s', self._project, self._client_name)
-        self._firestore = self._initialize_firestore(cred_file)
-        #self._storage = storage.Client(project=self._project, credentials=self._credentials)
-        #self._ensure_report_bucket()
-        self._storage = None
+        #self._firestore = self._initialize_firestore(cred_file)
+        self._firestore = None
         self._report_bucket_name = self.REPORT_BUCKET_FORMAT % self._project
+        self._storage = storage.Client(project=self._project, credentials=self._credentials)
+        self._ensure_report_bucket()
         self._config_callbacks = {}
         LOGGER.info('Connection initialized at %s', get_timestamp())
 
