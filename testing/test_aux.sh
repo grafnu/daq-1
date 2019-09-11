@@ -74,7 +74,7 @@ fi
 more inst/faux/daq-faux-*/local/pubber.json | cat
 
 echo Starting aux test run...
-cmd/run -s
+cmd/run -b -s
 tail -qn 1 inst/run-port-*/nodes/bacext*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/brute*/tmp/report.txt | tee -a $TEST_RESULTS
 tail -qn 1 inst/run-port-*/nodes/macoui*/tmp/report.txt | tee -a $TEST_RESULTS
