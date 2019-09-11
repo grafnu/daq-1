@@ -4,6 +4,9 @@ source testing/test_preamble.sh
 
 echo Aux Tests >> $TEST_RESULTS
 
+echo Dumping GCP_SERVICE_ACCOUNT env
+echo "$GCP_SERVICE_ACCOUNT"
+
 echo mudacl tests | tee -a $TEST_RESULTS
 mudacl/bin/test.sh
 echo Mudacl exit code $? | tee -a $TEST_RESULTS
@@ -14,9 +17,6 @@ echo Validator exit code $? | tee -a $TEST_RESULTS
 echo Lint checks | tee -a $TEST_RESULTS
 cmd/inbuild skip
 echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
-
-echo Dumping gcp sergice account
-echo "$GCP_SERVICE_ACCOUNT"
 
 function make_pubber {
     device=$1
