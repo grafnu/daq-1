@@ -10,7 +10,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 from google.cloud import pubsub_v1
-from google.cloud import storage
+#from google.cloud import storage
 from google.auth import _default as google_auth
 from grpc import StatusCode
 
