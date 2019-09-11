@@ -32,7 +32,7 @@ class GcpManager:
     def __init__(self, config, callback_handler):
         self.config = config
         self._callback_handler = callback_handler
-        if 'gcp_credX' not in config:
+        if 'gcp_cred' not in config:
             LOGGER.info('No gcp_cred credential specified in config')
             self._pubber = None
             self._storage = None
@@ -46,8 +46,10 @@ class GcpManager:
         self._client_name = self._parse_creds(cred_file)
         self._pubber = pubsub_v1.PublisherClient(credentials=self._credentials)
         LOGGER.info('Initialized gcp pub/sub %s:%s', self._project, self._client_name)
-        self._firestore = self._initialize_firestore(cred_file)
-        self._storage = storage.Client(project=self._project, credentials=self._credentials)
+        #self._firestore = self._initialize_firestore(cred_file)
+        self._firestore = None
+        #self._storage = storage.Client(project=self._project, credentials=self._credentials)
+        self._storage = None
         self._report_bucket_name = self.REPORT_BUCKET_FORMAT % self._project
         self._ensure_report_bucket()
         self._config_callbacks = {}
