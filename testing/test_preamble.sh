@@ -23,9 +23,11 @@ cred_file=inst/config/gcp_service_account.json
 
 if [ -f $cred_file ]; then
   echo Found previously configured $cred_file
-elif [ -n "$GCP_BASE64_CREDS" ]; then
-  echo Decoding GCP_BASE64_CREDS to $cred_file
-  echo "$GCP_BASE64_CREDS" | base64 -d > $cred_file
+elif [ -n "$GCP_BASE64_CRED" ]; then
+  echo Decoding GCP_BASE64_CRED to $cred_file
+  echo "$GCP_BASE64_CRED" | base64 -d > $cred_file
+else
+  echo No GCP credentials found.
 fi
 
 if [ -f $cred_file ]; then
