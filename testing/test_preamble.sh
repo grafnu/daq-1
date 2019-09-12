@@ -26,6 +26,7 @@ if [ -f $cred_file ]; then
 elif [ -n "$GCP_BASE64_CRED" ]; then
   echo Decoding GCP_BASE64_CRED to $cred_file
   echo "$GCP_BASE64_CRED"
+  echo base64 wc: `echo "$GCP_BASE64_CRED" | wc`
   echo "$GCP_BASE64_CRED" | base64 -d > $cred_file
 else
   echo No GCP credentials found.
