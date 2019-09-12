@@ -50,20 +50,19 @@ EOF
 if [ -f $cred_file ]; then
     echo Using credentials from $cred_file
     echo gcp_cred=$cred_file >> local/system.conf
-fi
-cloud_file=inst/test_site/cloud_iot_config.json
-
-if [ -f $cred_file ]; then
-    echo Pulling cloud service arrount in $cred_file...
     project_id=`jq .project_id $cred_file`
+
+    cloud_file=inst/test_site/cloud_iot_config.json
     echo Pulling cloud iot details in $cloud_file...
     registry_id=`jq .registry_id $cloud_file`
     cloud_region=`jq .cloud_region $cloud_file`
+
+    echo Pubber target $project_id $cloud_region $registry_id
     make_pubber AHU-1 daq-faux-2 null
     make_pubber SNS-4 daq-faux-3 1234
 else
-    echo No GCP_SERVICE_ACCOUNT cred defined.
-    echo This variable should be defined in your online travis config.
+    echo No gcp service account defined, as required for cloud-based tests.
+    echo Please check install/setup documentation to enable.
 fi
 
 more inst/faux/daq-faux-*/local/pubber.json | cat
