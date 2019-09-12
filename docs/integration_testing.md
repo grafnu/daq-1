@@ -16,7 +16,7 @@ newlines in the copied string.
 <code>
 $ <b>base64 -w 0 local/gcp_service_account.json</b>
 ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAiYm9zLWRhcS10ZXN0aW5nIiwKICAicHJpd
-&hellip;
+<br/>&hellip;
 iOiAiaHR0cHM6Ly93LWRhcS10ZXN0aW5nLmlhbS5nc2VydmljZWFjY291bnQuY29tIgp9Cg==
 </code>
 
@@ -46,9 +46,8 @@ If the `3097` character count is wildly off, then likely something went wrong wi
 Travis will not use encrypted environment variables when testing against pull requests
 from foreign github repositories, even if you've forked from another repository that you
 have full control of via Github. Travis authorization != Github authorization, even if
-you sign into Travis using Github! This is as it should be b/c security.
-
-see the following for more info:
+you sign into Travis using Github! This is as it should be b/c security. see the following
+for more info:
 
 - https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings
 - https://docs.travis-ci.com/user/pull-requests/#pull-requests-and-security-restrictions
@@ -65,10 +64,7 @@ $ export DAQ_TEST=aux
 
 ### Other Travis Caveats
 
-Take note the URL in your browser's address bar when running Travis. You might be on either:
-
-- travis-ci**.com**
-- travis-ci**.org**
-
-Any particular setup may end up across both sites for undertermined reasons. Please consult with
-your browser's exact URL for more clarity.
+Take note the URL in your browser's address bar when running Travis. You might be on either
+<code>travis-ci<b>.com</b></code> or <code>travis-ci<b>.org</b></code>. Any particular setup
+may end up across both sites for undertermined reasons. Please consult with your browser's
+exact URL for more clarity.
