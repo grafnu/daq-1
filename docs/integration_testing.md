@@ -14,7 +14,7 @@ Note the `-w 0` option is required for proper parsing/formatting, as there can't
 newlines in the copied string.
 
 <code>
-peringknife@peringknife-glaptop:~/daq$ <b>base64 -w 0 local/gcp_service_account.json</b>
+$ <b>base64 -w 0 local/gcp_service_account.json</b>
 ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAiYm9zLWRhcS10ZXN0aW5nIiwKICAicHJpd
 &elip;
 iOiAiaHR0cHM6Ly93LWRhcS10ZXN0aW5nLmlhbS5nc2VydmljZWFjY291bnQuY29tIgp9Cg==
@@ -23,7 +23,6 @@ iOiAiaHR0cHM6Ly93LWRhcS10ZXN0aW5nLmlhbS5nc2VydmljZWFjY291bnQuY29tIgp9Cg==
 ### Is my Travis set up correctly?
 
 If Travis is set up correctly, you should see something like:
-
 ```
 Setting environment variables from repository settings
 $ export DOCKER_USERNAME=[secure]
@@ -32,7 +31,15 @@ $ export GCP_BASE64_CRED=[secure]
 ```
 
 At the start of your Travis test log. And then, further down there would be something like:
+```
+Running test script testing/test_aux.sh
+Writing test results to inst/test_aux.out and inst/test_aux.gcp
+Decoding GCP_BASE64_CRED to inst/config/gcp_service_account.json
+base64 wc: 1 1 3097
+GCP service account is "daq-travis@daq-testing.iam.gserviceaccount.com"
+```
 
+If the `3097` character count is wildly off, then likely something went wrong with the newlines.
 
 ### Travis Build For "External" Pull Requests
 
