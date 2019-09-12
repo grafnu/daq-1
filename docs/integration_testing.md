@@ -9,17 +9,15 @@ DAQ currently uses Travis CI for integration testing: https://travis-ci.org/
 To run cloud-based tests, setup the Travis `GCP_BASE64_CRED` env variable with a `base64` encoded
 service account key for your project. It's recommended to use a dedicated key with a nice name
 like `daq-travis`, but not required. Encode the key value as per below, and cut/paste the
-resulting string into the Travis settings page for a `GCP_BASE64_CRED` varaible in the project.
+resulting string into the Travis settings page for a `GCP_BASE64_CRED` varaible.
+Note the `-w 0` option is required for proper parsing/formatting, as there can't be any
+newlines in the copied string.
 
 <code>
-peringknife@peringknife-glaptop:~/daq$ <b>base64 local/gcp_service_account.json</b>
-ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAiYm9zLWRhcS10
-ZXN0aW5nIiwKICAicHJpdmF0ZV9rZXlfaWQiOiAiOGQ2MDZjMmQ2NzhjOTAwMDgzNDhkNmM5M2Q5
-NmNjODJhNzZlNzBlNSIsCiAgInByaXZhdGVfa2V5IjogIi0tLS0tQkVHSU4gUFJJVkFURSBLRVkt
+peringknife@peringknife-glaptop:~/daq$ <b>base64 -w 0 local/gcp_service_account.json</b>
+ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAiYm9zLWRhcS10ZXN0aW5nIiwKICAicHJpd
 &elip;
-b20vb2F1dGgyL3YxL2NlcnRzIiwKICAiY2xpZW50X3g1MDlfY2VydF91cmwiOiAiaHR0cHM6Ly93
-d3cuZ29vZ2xlYXBpcy5jb20vcm9ib3QvdjEvbWV0YWRhdGEveDUwOS9kYXEtdHJhdmlzJTQwYm9z
-LWRhcS10ZXN0aW5nLmlhbS5nc2VydmljZWFjY291bnQuY29tIgp9Cg==
+iOiAiaHR0cHM6Ly93LWRhcS10ZXN0aW5nLmlhbS5nc2VydmljZWFjY291bnQuY29tIgp9Cg==
 </code>
 
 ### Is my Travis set up correctly?
