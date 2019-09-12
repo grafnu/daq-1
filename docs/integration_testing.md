@@ -16,13 +16,13 @@ newlines in the copied string.
 <code>
 $ <b>base64 -w 0 local/gcp_service_account.json</b>
 ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAiYm9zLWRhcS10ZXN0aW5nIiwKICAicHJpd
-&elip;
+&hellip;
 iOiAiaHR0cHM6Ly93LWRhcS10ZXN0aW5nLmlhbS5nc2VydmljZWFjY291bnQuY29tIgp9Cg==
 </code>
 
 ### Is my Travis set up correctly?
 
-If Travis is set up correctly, you should see something like:
+If Travis is set up correctly, you should see messages at the beginning of the log file:
 ```
 Setting environment variables from repository settings
 $ export DOCKER_USERNAME=[secure]
@@ -30,7 +30,7 @@ $ export DOCKER_PASSWORD=[secure]
 $ export GCP_BASE64_CRED=[secure]
 ```
 
-At the start of your Travis test log. And then, further down there would be something like:
+Further down there would be more details about the cred itself:
 ```
 Running test script testing/test_aux.sh
 Writing test results to inst/test_aux.out and inst/test_aux.gcp
