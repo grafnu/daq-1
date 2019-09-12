@@ -4,10 +4,6 @@ source testing/test_preamble.sh
 
 echo Aux Tests >> $TEST_RESULTS
 
-echo Dumping GCP_SERVICE_ACCOUNT env
-echo "$GCP_SERVICE_ACCOUNT"
-echo "$GCP_SERVICE"ACCOUNT" | jq .client_email
-
 echo mudacl tests | tee -a $TEST_RESULTS
 mudacl/bin/test.sh
 echo Mudacl exit code $? | tee -a $TEST_RESULTS
@@ -51,21 +47,16 @@ startup_faux_2_opts="nobrute expiredtls pubber"
 startup_faux_3_opts="tls macoui bacnet pubber"
 EOF
 
-cloud_file=inst/test_site/cloud_iot_config.json
-cred_file=inst/config/gcp_service_account.json
-mkdir -p inst/config
-if [ -n "$GCP_SERVICE_ACCOUNT" ]; then
-    echo Installing GCP_SERVICE_ACCOUNT to gcp_cred=$cred_file
-    echo "$GCP_SERVICE_ACCOUNT" > $cred_file
-    echo gcp_cred=$cred_file >> local/system.conf
-elif [ -f $cred_file ]; then
-    echo Using previously configured $cred_file
+if [ -f $cred_file ]; then
+    echo Using credentials from $cred_file
     echo gcp_cred=$cred_file >> local/system.conf
 fi
+cloud_file=inst/test_site/cloud_iot_config.json
 
 if [ -f $cred_file ]; then
-    echo Using cloud service account `jq .client_email $cred_file`
+    echo Pulling cloud service arrount in $cred_file...
     project_id=`jq .project_id $cred_file`
+    echo Pulling cloud iot details in $cloud_file...
     registry_id=`jq .registry_id $cloud_file`
     cloud_region=`jq .cloud_region $cloud_file`
     make_pubber AHU-1 daq-faux-2 null
