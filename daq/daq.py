@@ -3,7 +3,6 @@
 """Main entry-point for DAQ. Handles command line parsing and other
 misc setup tasks."""
 
-import faulthandler
 import logging
 import os
 import signal
@@ -77,8 +76,6 @@ def _execute():
         return 0
 
     _write_pid_file()
-
-    faulthandler.register(signal.SIGUSR1)
 
     signal.signal(signal.SIGINT, signal.default_int_handler)
     signal.signal(signal.SIGTERM, signal.default_int_handler)

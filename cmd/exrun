@@ -93,8 +93,7 @@ elif [ -n "$DAQ_CODECOV" ]; then
     echo Running with codecov analysis...
     runcmd="coverage run --source=daq -a"
 else
-    echo Triggering USR1 after 5m
-    runcmd="timeout -s USR1 5m python3 -u"
+    runcmd="python3 -u"
 fi
 
 if [ -d venv ]; then
@@ -111,9 +110,6 @@ export TERM=dumb
 echo Prepending $ROOT/binhack to PATH
 export OVSVSCTL_ORIG=`which ovs-vsctl`
 export PATH=$ROOT/binhack:$PATH
-
-pip -V
-pip list
 
 exit_code=0
 $runcmd daq/daq.py $LOCAL_CONFIG $@ || exit_code=$?

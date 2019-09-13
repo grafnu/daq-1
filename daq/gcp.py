@@ -86,7 +86,6 @@ class GcpManager:
             self._config_callbacks[full_path]['future'].unsubscribe()
             del self._config_callbacks[full_path]
 
-        LOGGER.info('New firestore doc %s', full_path)
         config_doc = self._firestore.document(full_path)
         if config is not None:
             timestamp = get_timestamp()
