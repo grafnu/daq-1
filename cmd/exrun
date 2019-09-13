@@ -93,7 +93,7 @@ elif [ -n "$DAQ_CODECOV" ]; then
     echo Running with codecov analysis...
     runcmd="coverage run --source=daq -a"
 else
-    runcmd="python3 -u"
+    runcmd="timeout -s USR1 10m python3 -u"
 fi
 
 if [ -d venv ]; then
