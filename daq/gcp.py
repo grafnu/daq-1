@@ -83,7 +83,7 @@ class GcpManager:
 
         if full_path in self._config_callbacks:
             LOGGER.info('Unsubscribe callback %s', path)
-            #self._config_callbacks[full_path]['future'].unsubscribe()
+            self._config_callbacks[full_path]['future'].unsubscribe()
             del self._config_callbacks[full_path]
 
         LOGGER.info('New firestore doc %s', full_path)
