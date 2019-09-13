@@ -112,6 +112,8 @@ echo Prepending $ROOT/binhack to PATH
 export OVSVSCTL_ORIG=`which ovs-vsctl`
 export PATH=$ROOT/binhack:$PATH
 
+pip list
+
 exit_code=0
 $runcmd daq/daq.py $LOCAL_CONFIG $@ || exit_code=$?
 
