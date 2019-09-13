@@ -53,11 +53,11 @@ if [ -f $cred_file ]; then
     project_id=`jq .project_id $cred_file`
 
     cloud_file=inst/test_site/cloud_iot_config.json
-    echo Pulling cloud iot details in $cloud_file...
+
+    echo Pulling cloud iot details from $cloud_file...
     registry_id=`jq .registry_id $cloud_file`
     cloud_region=`jq .cloud_region $cloud_file`
 
-    echo Pubber target $project_id $cloud_region $registry_id
     make_pubber AHU-1 daq-faux-2 null
     make_pubber SNS-4 daq-faux-3 1234
 else
