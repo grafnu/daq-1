@@ -112,6 +112,7 @@ echo Prepending $ROOT/binhack to PATH
 export OVSVSCTL_ORIG=`which ovs-vsctl`
 export PATH=$ROOT/binhack:$PATH
 
+pip -V
 pip list
 
 exit_code=0
