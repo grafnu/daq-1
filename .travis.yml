@@ -3,7 +3,7 @@ dist: bionic
 services:
   - docker
 jdk:
-  - openjdk8
+  - openjdk9
 addons:
   apt:
     update: true
