@@ -3,10 +3,9 @@
 ROOT=$(dirname $0)/..
 cd $ROOT
 
-#sudo rm -rf inst/faucet/daq-faucet-dot1x
 mkdir -p inst/faucet/daq-faucet-dot1x
 
-cp misc/faucet_dot1x.yaml.nodot inst/faucet/daq-faucet-dot1x/faucet.yaml
+cp misc/faucet_dot1x_nodot.yaml inst/faucet/daq-faucet-dot1x/faucet.yaml
 
 sudo ovs-vsctl del-br br-dot1x || true
 
@@ -58,7 +57,7 @@ sudo ip link add dplane0 type veth peer name dplane-eth0 addr 9a:02:57:1e:8f:2a 
 sudo ip link set dplane0 up
 docker exec daq-faucet-dot1x ip link set dplane-eth0 up
 
-cp misc/faucet_dot1x.yaml.dot inst/faucet/daq-faucet-dot1x/faucet.yaml
+cp misc/faucet_dot1x_dot.yaml inst/faucet/daq-faucet-dot1x/faucet.yaml
 
 sudo ovs-vsctl --if-exists del-br br-dot1x \
     -- add-br br-dot1x \

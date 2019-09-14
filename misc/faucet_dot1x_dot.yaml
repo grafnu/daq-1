@@ -16,7 +16,6 @@ dps:
             2:
                 native_vlan: 100
             3:
-                    #native_vlan: 100
                 output_only: True
             4:
                 native_vlan: 100
