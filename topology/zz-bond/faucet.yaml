@@ -53,7 +53,7 @@ dps:
     hardware: Generic
     lacp_timeout: 5
     interface_ranges:
-      1-46: {description: IoT Host, native_vlan: 171}
+      1-46: {acl_in: uniform_acl, description: IoT Host, native_vlan: 171}
     interfaces:
       47:
         description: "to t1sw1 port 9"
@@ -72,7 +72,7 @@ dps:
     hardware: Allied-Telesis
     lacp_timeout: 5
     interface_ranges:
-      1-46: {description: IoT Device, native_vlan: 171}
+      1-46: {acl_in: uniform_acl, description: IoT Device, native_vlan: 171}
     interfaces:
       47:
         description: "to t1sw1 port 10"
