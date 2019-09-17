@@ -67,10 +67,9 @@ public class EntryPoint {
     }
 
     private static JSONArray readJSONFile() {
-        String jsonFile = fauxDeviceJSONFilename;
         FileManager fileManager = new FileManager();
         String absolute_path = fileManager.getAbsolutePath();
-        JSON json = new JSON(absolute_path + "tmp/" + jsonFile);
+        JSON json = new JSON(absolute_path + "tmp/" + fauxDeviceJSONFilename);
         JSONArray bacnetObjectTypesList = json.read();
         return bacnetObjectTypesList;
     }
