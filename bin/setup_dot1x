@@ -45,7 +45,7 @@ docker exec daq-ntwk freeradius &
 
 echo "freeradius setup"
 
-cmd/faucet local dot1x 6653
+cmd/faucet dot1x 6653
 docker exec daq-faucet-dot1x ip addr flush eth0
 ip_fc=${ip_br}1
 docker exec daq-faucet-dot1x ifconfig eth0 $ip_fc
