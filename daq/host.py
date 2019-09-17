@@ -67,7 +67,7 @@ class ConnectedHost:
     _FAIL_BASE_FORMAT = "inst/fail_%s"
     _MODULE_CONFIG = "module_config.json"
     _CONTROL_PATH = "control/port-%s"
-    _CORE_TESTS = ['pass', 'fail', 'ping']
+    _CORE_TESTS = ['pass', 'fail', 'ping', 'hold']
     _AUX_DIR = "aux/"
     _CONFIG_DIR = "config/"
 
