@@ -71,6 +71,9 @@ class Forchestrator:
             'params': params
         }
 
+    def get_switches(self, params):
+        return faucet_events.get_switches()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
@@ -79,5 +82,6 @@ if __name__ == '__main__':
     FORCH.initialize()
     HTTP = http_server.HttpServer(CONFIG)
     HTTP.map_request('overview', FORCH.get_overview)
+    HTTP.map_request('switches', FORCH.get_switches)
     HTTP.start_server()
     FORCH.main_loop()
