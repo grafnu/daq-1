@@ -11,7 +11,7 @@ import time
 import configurator
 import faucet_event_client
 import http_server
-import faucet_events
+from faucet_states_collector import FaucetStatesCollector
 
 LOGGER = logging.getLogger('forch')
 
@@ -26,6 +26,7 @@ class Forchestrator:
         self._config = config
         self._faucet_events = None
         self._server = None
+        self._faucet_states_collector = FaucetStatesCollector()
 
     def initialize(self):
         """Initialize forchestrator instance"""
@@ -51,20 +52,17 @@ class Forchestrator:
             (dpid, port, active) = self._faucet_events.as_port_state(event)
             if dpid and port:
                 LOGGER.info('Port state %s %s %s', dpid, port, active)
-                port_state_event = faucet_events.PortStateEvent(dpid, timestamp, port, active)
-                faucet_events.process_port_state(port_state_event)
+                self._faucet_states_collector.process_port_state(dpid, port, active, timestamp)
 
             (dpid, port, target_mac) = self._faucet_events.as_port_learn(event)
             if dpid and port:
                 LOGGER.info('Port learn %s %s %s', dpid, port, target_mac)
-                port_learn_event = faucet_events.process_port_learn(dpid, timestamp, port, target_mac)
-                faucet_events.process_port_learn(port_learn_event)
+                self._faucet_states_collector.process_port_learn(dpid, port, target_mac, timestamp)
 
             (dpid, restart_type) = self._faucet_events.as_config_change(event)
             if dpid is not None:
                 LOGGER.info('DP restart %d %s', dpid, restart_type)
-                config_change_event = faucet_events.ConfigChangeEvent(dpid, timestamp, restart_type)
-                faucet_events.process_config_change(config_change_event)
+                self._faucet_states_collector.process_config_change(dpid, restart_type, timestamp)
 
         return False
 
@@ -76,7 +74,7 @@ class Forchestrator:
         }
 
     def get_switches(self, params):
-        return faucet_events.get_switches()
+        return self._faucet_states_collector.get_switches()
 
     def get_topology(self, params):
         with open(self._TOPOLOGY_FILE, 'r') as in_file:
