@@ -22,7 +22,7 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         self._context = context
         super().__init__(*args, **kwargs)
 
-    # pylint: disable=invalid-name
+    # pylint: disable=snake-case
     def do_GET(self):
         """Handle a basic http request get method"""
         self.send_response(200)
@@ -48,7 +48,7 @@ class HttpServer():
     def start_server(self):
         """Start serving thread"""
         address = ('0.0.0.0', 9019)
-        LOGGER.info('Starting http server on http://%s:%s', address[0], address[1])
+        LOGGER.info('Starting http server on %s', address)
         handler = functools.partial(RequestHandler, self)
         self._server = ThreadedHTTPServer(address, handler)
 
