@@ -48,7 +48,7 @@ class HttpServer():
     def start_server(self):
         """Start serving thread"""
         address = ('0.0.0.0', 9019)
-        LOGGER.info('Starting http server on %s', address)
+        LOGGER.info('Starting http server on http://%s:%s', address[0], address[1])
         handler = functools.partial(RequestHandler, self)
         self._server = ThreadedHTTPServer(address, handler)
 
