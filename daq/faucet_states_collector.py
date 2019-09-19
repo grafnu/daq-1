@@ -24,8 +24,9 @@ class FaucetStatesCollector:
     TABLE_ENTRY_LAST_RESTART_TYPE = "last_restart"
     TABLE_ENTRY_LAST_RESTART_TS = "last_restart_timestamp"
 
-    system_states = {TABLE_ENTRY_SWITCH: {}}
-    switch_states = system_states[TABLE_ENTRY_SWITCH]
+    def __init__(self):
+        self.system_states = {FaucetStatesCollector.TABLE_ENTRY_SWITCH: {}}
+        self.switch_states = self.system_states[FaucetStatesCollector.TABLE_ENTRY_SWITCH]
 
     def get_switches():
         return self.system_states
