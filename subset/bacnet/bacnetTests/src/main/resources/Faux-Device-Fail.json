@@ -1,6 +1,5 @@
 [
     {
-	"DeviceID": "1234",
         "AnalogInput01": {
             "Object_Name": "device_run_command",
             "Device_Type": "0to1Volts",
@@ -29,7 +28,8 @@
             "Units": "64",
             "Profile_Name": "FD-01",
             "Out_Of_Service": "false"
-        }
+        },
+        "DeviceID": "1234"
     },
     {
         "AnalogOutput01": {

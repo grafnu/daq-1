@@ -33,9 +33,7 @@ public class EntryPoint {
         String localIpAddr = args[0];
         String broadcastIpAddr = args[1];
         fauxDeviceJSONFilename = args[2];
-
-        int port = IpNetwork.DEFAULT_PORT;
-        network = new IpNetwork(broadcastIpAddr, port,
+        network = new IpNetwork(broadcastIpAddr, IpNetwork.DEFAULT_PORT,
                 IpNetwork.DEFAULT_BIND_IP, 0, localIpAddr);
         Transport transport = new Transport(network);
         transport.setTimeout(timeout);
@@ -84,12 +82,17 @@ public class EntryPoint {
 
     private static void getID(JSONObject bacnetObject) {
         List<String> bacnetObjectTypeArr = new ArrayList<>(bacnetObject.keySet());
+        // deviceID, AnalogInput01
+        System.out.println("BOTA:");
+        System.out.println(bacnetObjectTypeArr);
         String bacnetObjectType = bacnetObjectTypeArr.get(0);
         if(bacnetObjectType.contains("DeviceID")) {
             String IDString = (String) bacnetObject.get(bacnetObjectType);
             int DeviceID = Integer.parseInt(IDString);
-            System.out.println("Device ID found in JSON file.");
+            System.out.println("Device ID found in JSON file");
             deviceId = DeviceID;
+        } else {
+            System.out.println("NO Device ID FOUND IN JSON file");
         }
     }
 
