@@ -49,6 +49,7 @@ class HttpServer():
         """Start serving thread"""
         address = ('0.0.0.0', 9019)
 
+        LOGGER.info('Starting http server on http://%s:%s', address[0], address[1])
         handler = functools.partial(RequestHandler, self)
         self._server = ThreadedHTTPServer(address, handler)
 
@@ -57,6 +58,7 @@ class HttpServer():
         thread.start()
 
     def map_request(self, path, target):
+        """Register a request mapping"""
         self._paths[path] = target
 
     def get_data(self, path, opts):
