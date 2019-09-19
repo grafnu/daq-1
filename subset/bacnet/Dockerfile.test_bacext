@@ -14,11 +14,11 @@ FROM daq/aardvark:latest
 
 RUN $AG update && $AG install openjdk-8-jre
 
-RUN $AG update && $AG install openjdk-8-jdk git nano
+RUN $AG update && $AG install openjdk-8-jdk git
+
+RUN $AG update && $AG install nano
 
 COPY subset/bacnet/ .
-
-#COPY subset/bacnet/bacnetTests/src/main/resources/csv tmp/
 
 RUN mkdir -p /bacnetTests/libs
 
