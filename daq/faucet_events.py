@@ -41,6 +41,10 @@ def process_config_change(event):
         .append({"ts":event.timestamp, "type": event.restart_type})
 
 
+def get_switches():
+    return all_events
+
+
 class PortStateEvent(namedtuple("PortStateEvent", "dpid timestamp port active")):
     pass
 
