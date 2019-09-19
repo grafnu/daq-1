@@ -66,6 +66,7 @@ class Forchestrator:
         return False
 
     def get_overview(self, params):
+        """Get an overview of the system"""
         return {
             'hello': 'world',
             'params': params
