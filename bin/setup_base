@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 #
 # Setup the basics for using DAQ. Minimum subset necessary to run anything,
 # since some specific kernel modules are required.
@@ -28,6 +28,7 @@ echo AG is $AG
 # Need to remove the || true at the end of the update line. Same as for instance below. Also in bin/setup_dev.
 $AG update || true
 $AG install realpath || true  # On newer versions this is included elsewhere.
+echo ag install git
 $AG install lsb-release git curl sudo apt-transport-https software-properties-common gnupg-agent
 
 retry=bin/retry_cmd
@@ -41,10 +42,12 @@ echo "deb http://packages.wand.net.nz $release main" | sudo tee /etc/apt/sources
 $retry sudo curl http://packages.wand.net.nz/keyring.gpg -o /etc/apt/trusted.gpg.d/wand.gpg
 
 $retry curl -fsSL https://download.docker.com/linux/$distrib/gpg | sudo apt-key add -
+echo add repo
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/$distrib $release stable"
 
 # Hacky workaround for https://travis-ci.community/t/sometimes-build-fails-when-apt-is-updating-postgresql-apt-repository/4872/17
 # Need to remove the || true at the end of the update line. Same as for instance above. Also in bin/setup_dev.
+echo ag update
 $AG update || true
 
 DOCKER_VERSION=${DOCKER_VERSION_BASE}~${distrib}
