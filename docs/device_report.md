@@ -62,15 +62,15 @@ Overall device result FAIL
 |---|---|---|---|---|
 |skip|base.switch.ping|Other|Other||
 |pass|base.target.ping|Connectivity|Required|target|
-|skip|cloud.udmi.pointset|Other|Other|No device id.|
+|skip|cloud.udmi.pointset|Other|Other|No device id|
 |fail|connection.mac_oui|Other|Other||
-|skip|connection.port_duplex|Other|Other||
-|skip|connection.port_link|Other|Other||
-|skip|connection.port_speed|Other|Other||
+|skip|connection.port_duplex|Other|Other|No local IP|
+|skip|connection.port_link|Other|Other|No local IP|
+|skip|connection.port_speed|Other|Other|No local IP|
 |fail|network.brute|Security|Required||
-|skip|poe.negotiation|Other|Other||
-|skip|poe.power|Other|Other||
-|skip|poe.support|Other|Other||
+|skip|poe.negotiation|Other|Other|No local IP|
+|skip|poe.power|Other|Other|No local IP|
+|skip|poe.support|Other|Other|No local IP|
 |skip|protocol.bacnet.pic|Other|Other|Bacnet device not found... Pics check cannot be performed.|
 |skip|protocol.bacnet.version|Other|Other|Bacnet device not found.|
 |skip|security.firmware|Other|Other|Could not retrieve a firmware version with nmap. Bacnet port could be closed or filtered|
@@ -118,21 +118,68 @@ Automatic bacnet firmware scan using nmap
 PORT      STATE  SERVICE
 47808/udp closed bacnet
 MAC Address: 9A:02:57:1E:8F:01 (Unknown)
-Firmware test complete
 --------------------
 RESULT skip security.firmware Could not retrieve a firmware version with nmap. Bacnet port could be closed or filtered
+
 ```
 
 ## Module switch
 
 ```
+--------------------
+connection.port_link
+--------------------
+description
+--------------------
 LOCAL_IP not configured, assuming no network switch.
-RESULT skip connection.port_link
-RESULT skip connection.port_speed
-RESULT skip connection.port_duplex
-RESULT skip poe.power
-RESULT skip poe.negotiation
-RESULT skip poe.support
+--------------------
+RESULT skip connection.port_link No local IP
+
+--------------------
+connection.port_speed
+--------------------
+description
+--------------------
+LOCAL_IP not configured, assuming no network switch.
+--------------------
+RESULT skip connection.port_speed No local IP
+
+--------------------
+connection.port_duplex
+--------------------
+description
+--------------------
+LOCAL_IP not configured, assuming no network switch.
+--------------------
+RESULT skip connection.port_duplex No local IP
+
+--------------------
+poe.power
+--------------------
+description
+--------------------
+LOCAL_IP not configured, assuming no network switch.
+--------------------
+RESULT skip poe.power No local IP
+
+--------------------
+poe.negotiation
+--------------------
+description
+--------------------
+LOCAL_IP not configured, assuming no network switch.
+--------------------
+RESULT skip poe.negotiation No local IP
+
+--------------------
+poe.support
+--------------------
+description
+--------------------
+LOCAL_IP not configured, assuming no network switch.
+--------------------
+RESULT skip poe.support No local IP
+
 ```
 
 ## Module macoui
@@ -160,7 +207,15 @@ RESULT skip security.x509
 ## Module udmi
 
 ```
-RESULT skip cloud.udmi.pointset No device id.
+--------------------
+cloud.udmi.pointset
+--------------------
+Validates the payloads from the DUT to a predefined schema
+--------------------
+Device id is null, skipping.
+--------------------
+RESULT skip cloud.udmi.pointset No device id
+
 ```
 
 ## Report complete

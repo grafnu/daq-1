@@ -1,4 +1,6 @@
 #!/bin/bash -e
+source reporting_utils
+REPORT=/tmp/report.txt
 
 # Setup for accessing control plane switch. If LOCAL_IP is defined, which
 # is the intended local address for this node on the control plane then
@@ -12,11 +14,45 @@ if [ -n "$LOCAL_IP" ]; then
     java -jar switches/target/switchtest-0.0.1-jar-with-dependencies.jar $SWITCH_IP $SWITCH_PORT $POE_ENABLED
     cp -r tmp/report.txt /tmp/report.txt
 else
-    echo LOCAL_IP not configured, assuming no network switch. | tee /tmp/report.txt
-    echo RESULT skip connection.port_link | tee -a /tmp/report.txt
-    echo RESULT skip connection.port_speed | tee -a /tmp/report.txt
-    echo RESULT skip connection.port_duplex | tee -a /tmp/report.txt
-    echo RESULT skip poe.power | tee -a /tmp/report.txt
-    echo RESULT skip poe.negotiation | tee -a /tmp/report.txt
-    echo RESULT skip poe.support | tee -a /tmp/report.txt
+
+    SKIP_REASON="LOCAL_IP not configured, assuming no network switch."
+    RESULT="skip"
+    SUMMARY="No local IP"
+
+    write_out_result $REPORT \
+                     "connection.port_link" \
+                     "description" \
+                     "$SKIP_REASON" \
+                     "RESULT $RESULT connection.port_link $SUMMARY"
+
+    write_out_result $REPORT \
+                     "connection.port_speed" \
+                     "description" \
+                     "$SKIP_REASON" \
+                     "RESULT $RESULT connection.port_speed $SUMMARY"
+
+    write_out_result $REPORT \
+                     "connection.port_duplex" \
+                     "description" \
+                     "$SKIP_REASON" \
+                     "RESULT $RESULT connection.port_duplex $SUMMARY"
+
+    write_out_result $REPORT \
+                     "poe.power" \
+                     "description" \
+                     "$SKIP_REASON" \
+                     "RESULT $RESULT poe.power $SUMMARY"
+
+    write_out_result $REPORT \
+                     "poe.negotiation" \
+                     "description" \
+                     "$SKIP_REASON" \
+                     "RESULT $RESULT poe.negotiation $SUMMARY"
+
+    write_out_result $REPORT \
+                     "poe.support" \
+                     "description" \
+                     "$SKIP_REASON" \
+                     "RESULT $RESULT poe.support $SUMMARY"
+
 fi
