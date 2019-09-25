@@ -1,6 +1,5 @@
 """Processing faucet events"""
 from datetime import datetime
-import json
 
 
 def save_states(func):
@@ -32,7 +31,8 @@ class FaucetStatesCollector:
     TOPOLOGY_CHANGE_COUNT = "change_count"
 
     def __init__(self):
-        self.system_states = {FaucetStatesCollector.MAP_ENTRY_SWITCH: {}, FaucetStatesCollector.TOPOLOGY_ENTRY: {}}
+        self.system_states = {FaucetStatesCollector.MAP_ENTRY_SWITCH: {},\
+                FaucetStatesCollector.TOPOLOGY_ENTRY: {}}
         self.switch_states = self.system_states[FaucetStatesCollector.MAP_ENTRY_SWITCH]
         self.topo_state = self.system_states[FaucetStatesCollector.TOPOLOGY_ENTRY]
 
