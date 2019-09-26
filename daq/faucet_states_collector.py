@@ -26,7 +26,7 @@ class FaucetStatesCollector:
     MAP_ENTRY_PORTS = "ports"
     MAP_ENTRY_PORT_STATUS_COUNT = "change_count"
     MAP_ENTRY_PORT_STATUS_TS = "timestamp"
-    MAP_ENTRY_PORT_STATUS_UP = "is_up"
+    MAP_ENTRY_PORT_STATUS_UP = "status_up"
     MAP_ENTRY_LEARNED_MACS = "learned_macs"
     MAP_ENTRY_MAC_LEARNING_PORT = "port"
     MAP_ENTRY_MAC_LEARNING_IP = "ip_address"
@@ -91,12 +91,12 @@ class FaucetStatesCollector:
             switch_port_attributes_map["stack_peer_port"] = None
 
             # port dynamics
-            port_map["is_up"] = \
+            port_map["status_up"] = \
                 port_states.get(FaucetStatesCollector.MAP_ENTRY_PORT_STATUS_UP, "")
             port_map["port_type"] = ""
-            port_map["change_timestamp"] = \
+            port_map["status_timestamp"] = \
                 port_states.get(FaucetStatesCollector.MAP_ENTRY_PORT_STATUS_TS, "")
-            port_map["change_count"] = \
+            port_map["status_count"] = \
                 port_states.get(FaucetStatesCollector.MAP_ENTRY_PORT_STATUS_COUNT, "")
             port_map["packet_count"] = ""
 
