@@ -74,9 +74,9 @@ class FaucetStatesCollector:
         switch_map["config_change_count"] = \
             switch_states.get(FaucetStatesCollector.MAP_ENTRY_CONFIG_CHANGE_COUNT, "")
         switch_map["config_change_type"] = \
-            switch_states.get(FaucetStatesCollector.MAP_ENTRY_LAST_RESTART_TYPE, "")
+            switch_states.get(FaucetStatesCollector.MAP_ENTRY_CONFIG_CHANGE_TYPE, "")
         switch_map["config_change_timestamp"] = \
-            switch_states.get(FaucetStatesCollector.MAP_ENTRY_LAST_RESTART_TS, "")
+            switch_states.get(FaucetStatesCollector.MAP_ENTRY_CONFIG_CHANGE_TS, "")
 
         switch_port_map = switch_map.setdefault("ports", {})
 
@@ -95,7 +95,7 @@ class FaucetStatesCollector:
                 port_states.get(FaucetStatesCollector.MAP_ENTRY_PORT_STATUS, "")
             port_map["port_type"] = ""
             port_map["change_timestamp"] = \
-1                port_states.get(FaucetStatesCollector.MAP_ENTRY_PORT_CHANGE_TS, "")
+                port_states.get(FaucetStatesCollector.MAP_ENTRY_PORT_CHANGE_TS, "")
             port_map["change_count"] = \
                 port_states.get(FaucetStatesCollector.MAP_ENTRY_PORT_CHANGE_COUNT, "")
             port_map["packet_count"] = ""
@@ -157,8 +157,8 @@ class FaucetStatesCollector:
         """process config change event"""
         config_change_table = self.switch_states.setdefault(dp_name, {})
 
-        config_change_table[FaucetStatesCollector.MAP_ENTRY_LAST_RESTART_TYPE] = restart_type
-        config_change_table[FaucetStatesCollector.MAP_ENTRY_LAST_RESTART_TS] = \
+        config_change_table[FaucetStatesCollector.MAP_ENTRY_CONFIG_CHANGE_TYPE] = restart_type
+        config_change_table[FaucetStatesCollector.MAP_ENTRY_CONFIG_CHANGE_TS] = \
             datetime.fromtimestamp(timestamp).isoformat()
         config_change_table[FaucetStatesCollector.MAP_ENTRY_CONFIG_CHANGE_COUNT] = \
             config_change_table.setdefault(
