@@ -2,7 +2,6 @@
 
 import logging
 import sys
-import time
 
 import configurator
 import faucet_event_client

@@ -147,6 +147,7 @@ class FaucetEventClient():
                 return event
         return None
 
+    # pylint: disable=too-many-arguments
     def _make_port_state(self, name, dpid, port, status, debounced=False):
         port_change = {}
         port_change['port_no'] = port

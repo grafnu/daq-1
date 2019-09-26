@@ -6,6 +6,7 @@ from datetime import datetime
 
 def dump_states(func):
     """Decorator to dump the current states after the states map is modified"""
+    # pylint: disable=unused-variable
     def set_default(obj):
         if isinstance(obj, set):
             return list(obj)
@@ -54,6 +55,7 @@ class FaucetStatesCollector:
         return self.topo_state
 
     def get_switches(self):
+        """get a set of all switches"""
         switch_data = {}
         for switch_name in self.switch_states:
             switch_data[switch_name] = self.get_switch(switch_name)
