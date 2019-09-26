@@ -157,6 +157,7 @@ class FaucetEventClient():
         event['dp_id'] = dpid
         event['PORT_CHANGE'] = port_change
         event['debounced'] = debounced
+        event['time'] = time.time()
         return event
 
     def as_config_change(self, event):
