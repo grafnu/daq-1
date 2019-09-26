@@ -17,11 +17,6 @@ dps:
         lldp_beacon: {enable: true}
         receive_lldp: true
         stack: {dp: nz-kiwi-t2sw2, port: 47}
-      12:
-        description: "to t1sw2 port 12"
-        lldp_beacon: {enable: true}
-        receive_lldp: true
-        stack: {dp: nz-kiwi-t1sw2, port: 12}
       28:
         description: egress
         lacp: 3
@@ -46,11 +41,6 @@ dps:
         lldp_beacon: {enable: true}
         receive_lldp: true
         stack: {dp: nz-kiwi-t2sw2, port: 48}
-      12:
-        description: "to t1sw1 port 12"
-        lldp_beacon: {enable: true}
-        receive_lldp: true
-        stack: {dp: nz-kiwi-t1sw1, port: 12}
       28:
         description: egress
         lacp: 3

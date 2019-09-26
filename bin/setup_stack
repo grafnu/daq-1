@@ -4,6 +4,10 @@ ROOT=$(dirname $0)/..
 cd $ROOT
 local=
 
+if [ -z "$1" ]; then
+    echo $0 '(local)' [mode]
+fi
+
 if [ "$1" == "local" ]; then
     local=local
     shift
@@ -11,12 +15,8 @@ else
     bin/build_hash check
 fi
 
-if [ -z "$1" ]; then
-    mode=bond
-else
-    mode=$1
-    shift
-fi
+mode=$1
+shift
 
 function add_br {
     bname=$1
@@ -86,6 +86,7 @@ function add_oeth {
 echo Configuring mode $mode...
 
 docker kill daq-faucet-1 || true
+docker kill daq-faucet-2 || true
 docker kill daq-faucet-corp || true
 
 add_br corp  0x111 6683
@@ -106,8 +107,6 @@ add_oeth t1sw2 28 $upstream2
 
 add_link t1sw2 9 t2sw1 48
 add_link t1sw2 10 t2sw2 48
-
-add_link t1sw1 12 t1sw2 12
 
 if [ $mode == bond ]; then
     bondif=bond
@@ -146,7 +145,7 @@ docker kill daq-faucet-corp || true
 sudo modprobe bonding
 cmd/faucet corp 6683
 
-for index in 1; do
+for index in 1 2; do
     controller=daq-faucet-$index
     mkdir -p inst/faucet/$controller/
     cp topology/zz-$mode/*.yaml inst/faucet/$controller/
@@ -160,6 +159,8 @@ sleep 30
 
 echo daq-faucet-1
 head inst/faucet/daq-faucet-1/faucet.log
+echo daq-faucet-2
+head inst/faucet/daq-faucet-2/faucet.log
 echo
 
 echo Starting connection warm-up for 30s...

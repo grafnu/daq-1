@@ -10,12 +10,8 @@ echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
 out_dir=out/daq-test_stack
 rm -rf $out_dir
 
-t1sw1p28_pcap=$out_dir/t1sw1-eth28.pcap
-t1sw2p28_pcap=$out_dir/t1sw2-eth28.pcap
-t2sw1p1_pcap=$out_dir/t2sw1-eth1.pcap
 t2sw1p47_pcap=$out_dir/t2sw1-eth47.pcap
 t2sw1p48_pcap=$out_dir/t2sw1-eth48.pcap
-t2sw2p1_pcap=$out_dir/t2sw2-eth1.pcap
 nodes_dir=$out_dir/nodes
 
 mkdir -p $out_dir $nodes_dir
@@ -55,23 +51,12 @@ function test_stack {
     echo Testing stack mode $mode | tee -a $TEST_RESULTS
     bin/setup_stack $mode || exit 1
 
-    echo Capturing pcaps for $cap_length seconds...
-    timeout $cap_length tcpdump -eni t1sw1-eth28 -w $t1sw1p28_pcap &
-    timeout $cap_length tcpdump -eni t1sw2-eth28 -w $t1sw2p28_pcap &
-    timeout $cap_length tcpdump -eni faux-1 -w $t2sw1p1_pcap &
+    echo Capturing pcap to $t2sw1p47_pcap for $cap_length seconds...
     timeout $cap_length tcpdump -eni t2sw1-eth47 -w $t2sw1p47_pcap &
     timeout $cap_length tcpdump -eni t2sw1-eth48 -w $t2sw1p48_pcap &
-    timeout $cap_length tcpdump -eni faux-2 -w $t2sw2p1_pcap &
     sleep 5
 
-    echo Cleaning ARP
-    docker exec daq-faux-1 arp -d 192.168.0.2 &
-    docker exec daq-faux-1 arp -d 192.168.0.3 &
-    docker exec daq-faux-2 arp -d 192.168.0.1 &
-    docker exec daq-faux-2 arp -d 192.168.0.3 &
-    docker exec daq-faux-3 arp -d 192.168.0.2 &
-    docker exec daq-faux-3 arp -d 192.168.0.3 &
-    sleep 1
+    echo Executing 2nd warm-up
     docker exec daq-faux-1 ping -c 3 192.168.0.2 &
     docker exec daq-faux-1 ping -c 3 192.168.0.3 &
     docker exec daq-faux-2 ping -c 3 192.168.0.1 &
@@ -133,11 +118,14 @@ function test_dot1x {
 }
 
 echo Stacking Tests >> $TEST_RESULTS
+#bin/net_clean
+#test_stack nobond
+
 bin/net_clean
 test_stack bond
 
-#echo Dot1x setup >> $TEST_RESULTS
-#bin/net_clean
-#test_dot1x
+echo Dot1x setup >> $TEST_RESULTS
+bin/net_clean
+test_dot1x
 
 echo Done with cleanup. Goodby.

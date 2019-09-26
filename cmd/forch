@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-if [ -z "$1" ];then 
+if [ -z "$1" ]; then
     SOCK=inst/faucet_event.sock
 else
     SOCK=inst/faucet/daq-faucet-$1/faucet_event.sock
