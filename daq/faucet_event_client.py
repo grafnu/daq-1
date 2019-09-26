@@ -71,19 +71,19 @@ class FaucetEventClient():
                 return False
 
     def _filter_faucet_event(self, event):
-        (dpid, port, active, name) = self.as_port_state(event)
+        (name, dpid, port, active) = self.as_port_state(event)
         if dpid and port:
             if not event.get('debounced'):
-                self._debounce_port_event(dpid, port, active, name)
+                self._debounce_port_event(name, dpid, port, active)
             elif self._process_state_update(dpid, port, active):
                 return event
             return None
 
-        (dpid, status, name) = self.as_ports_status(event)
+        (name, dpid, status) = self.as_ports_status(event)
         if dpid:
             for port in status:
                 # Prepend events so they functionally replace the current one in the queue.
-                self._prepend_event(self._make_port_state(dpid, port, status[port], name))
+                self._prepend_event(self._make_port_state(name, dpid, port, status[port]))
             return None
         return event
 
@@ -95,26 +95,26 @@ class FaucetEventClient():
         self.previous_state[state_key] = active
         return True
 
-    def _debounce_port_event(self, dpid, port, active, name):
+    def _debounce_port_event(self, name, dpid, port, active):
         if not self._port_debounce_sec:
-            self._handle_debounce(dpid, port, active, name)
+            self._handle_debounce(name, dpid, port, active)
             return
         state_key = '%s-%d' % (dpid, port)
         if state_key in self._port_timers:
             LOGGER.debug('Port cancel %s', state_key)
             self._port_timers[state_key].cancel()
         if active:
-            self._handle_debounce(dpid, port, active, name)
+            self._handle_debounce(name, dpid, port, active)
             return
         LOGGER.debug('Port timer %s = %s', state_key, active)
         timer = threading.Timer(self._port_debounce_sec,
-                                lambda: self._handle_debounce(dpid, port, active, name))
+                                lambda: self._handle_debounce(name, dpid, port, active))
         timer.start()
         self._port_timers[state_key] = timer
 
-    def _handle_debounce(self, dpid, port, active, name):
+    def _handle_debounce(self, name, dpid, port, active):
         LOGGER.debug('Port handle %s-%s as %s', dpid, port, active)
-        self._append_event(self._make_port_state(dpid, port, active, name, debounced=True))
+        self._append_event(self._make_port_state(name, dpid, port, active, debounced=True))
 
     def _prepend_event(self, event):
         with self._buffer_lock:
@@ -147,7 +147,7 @@ class FaucetEventClient():
                 return event
         return None
 
-    def _make_port_state(self, dpid, port, status, name, debounced=False):
+    def _make_port_state(self, name, dpid, port, status, debounced=False):
         port_change = {}
         port_change['port_no'] = port
         port_change['status'] = status
