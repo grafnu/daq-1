@@ -1,10 +1,10 @@
-#!/bin/bash -x
+#!/bin/bash
 
 source testing/test_preamble.sh
 
 # Runs lint checks and some similar things
 echo Lint checks | tee -a $TEST_RESULTS
-#cmd/inbuild skip
+cmd/inbuild skip
 echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
 
 out_dir=out/daq-test_stack
@@ -136,7 +136,7 @@ echo Stacking Tests >> $TEST_RESULTS
 bin/net_clean
 test_stack bond
 
-echo Dot1x setup >> $TEST_RESULTS
+#echo Dot1x setup >> $TEST_RESULTS
 #bin/net_clean
 #test_dot1x
 
