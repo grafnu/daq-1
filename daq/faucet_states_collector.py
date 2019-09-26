@@ -37,6 +37,10 @@ class FaucetStatesCollector:
     TOPOLOGY_ROOT = "stack_root"
     TOPOLOGY_GRAPH = "graph_obj"
     TOPOLOGY_CHANGE_COUNT = "change_count"
+    TOPO_API_HEALTH = "is_healthy"
+    TOPO_API_NOT_HEALTH = "is_wounded"
+    TOPO_API_DP_MAP = "switch_map"
+    TOPO_API_LINK_MAP = "physical_stack_links"
 
     def __init__(self):
         self.system_states = {FaucetStatesCollector.MAP_ENTRY_SWITCH: {},\
@@ -50,7 +54,9 @@ class FaucetStatesCollector:
 
     def get_topology(self):
         """get the topology state"""
-        return self.topo_state
+        topo_map = {}
+        topo_map[TOPO_API_DP_MAP] = self.get_switch_map()
+        return self.topo_map
 
     def get_switches(self, switch_name):
         """get switches state"""
@@ -108,6 +114,13 @@ class FaucetStatesCollector:
             mac_map["ip_address"] = \
                 mac_states.get(FaucetStatesCollector.MAP_ENTRY_MAC_LEARNING_IP, "")
 
+        return switch_map
+
+    def get_switch_map(self):
+        switch_map = {}
+        topo_obj = self.topo_state
+        for switch in topo_obj[TOPOLOGY_ENTRY][TOPOLOGY_GRAPH]["nodes"]:
+            switch_map[switch["id"]] = None
         return switch_map
 
     @dump_states
