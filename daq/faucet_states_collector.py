@@ -6,7 +6,7 @@ from datetime import datetime
 
 def dump_states(func):
     """Decorator to dump the current states after the states map is modified"""
-    # pylint: disable=unused-variable
+
     def set_default(obj):
         if isinstance(obj, set):
             return list(obj)
@@ -14,7 +14,8 @@ def dump_states(func):
 
     def wrapped(self, *args, **kwargs):
         res = func(self, *args, **kwargs)
-        #print(json.dumps(self.system_states, default=set_default))
+        output = json.dumps(self.system_states, default=set_default)
+        #print(output)
         return res
 
     return wrapped
