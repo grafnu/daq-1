@@ -14,8 +14,8 @@ def dump_states(func):
 
     def wrapped(self, *args, **kwargs):
         res = func(self, *args, **kwargs)
-        output = json.dumps(self.system_states, default=set_default)
-        #print(output)
+        _output = json.dumps(self.system_states, default=set_default)
+        #print(_output)
         return res
 
     return wrapped
