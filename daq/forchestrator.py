@@ -46,7 +46,6 @@ class Forchestrator:
 
             (name, dpid, port, active) = self._faucet_events.as_port_state(event)
             if dpid and port:
-                print(event)
                 LOGGER.info('Port state %s %s %s', name, port, active)
                 self._collector.process_port_state(timestamp, name, port, active)
 
