@@ -137,15 +137,15 @@ class DAQRunner:
             LOGGER.debug('Faucet event %s', event)
             if not event:
                 break
-            (dpid, port, active) = self.faucet_events.as_port_state(event)
+            (name, dpid, port, active) = self.faucet_events.as_port_state(event)
             if dpid and port:
-                self._handle_port_state(dpid, port, active)
-            (dpid, port, target_mac, _) = self.faucet_events.as_port_learn(event)
+                self._handle_port_state(name, port, active)
+            (name, dpid, port, target_mac) = self.faucet_events.as_port_learn(event)
             if dpid and port:
-                self._handle_port_learn(dpid, port, target_mac)
-            (dpid, restart_type) = self.faucet_events.as_config_change(event)
+                self._handle_port_learn(name, port, target_mac)
+            (name, dpid, restart_type) = self.faucet_events.as_config_change(event)
             if dpid is not None:
-                LOGGER.debug('dp_id %d restart %s', dpid, restart_type)
+                LOGGER.debug('dp_id %d %s restart %s', dpid, name, restart_type)
 
     def _handle_port_state(self, dpid, port, active):
         if self.network.is_system_port(dpid, port):

@@ -1,10 +1,12 @@
 """Processing faucet events"""
+
 import json
 from datetime import datetime
 
 
 def dump_states(func):
     """Decorator to dump the current states after the states map is modified"""
+
     def set_default(obj):
         if isinstance(obj, set):
             return list(obj)
@@ -12,7 +14,8 @@ def dump_states(func):
 
     def wrapped(self, *args, **kwargs):
         res = func(self, *args, **kwargs)
-        print(json.dumps(self.system_states, default=set_default))
+        _output = json.dumps(self.system_states, default=set_default)
+        #print(_output)
         return res
 
     return wrapped
@@ -23,16 +26,16 @@ class FaucetStatesCollector:
 
     MAP_ENTRY_SWITCH = "dpids"
     MAP_ENTRY_PORTS = "ports"
-    MAP_ENTRY_PORT_STATE_CHANGED_COUNT = "change_count"
-    MAP_ENTRY_PORT_STATUS = "is_up"
-    MAP_ENTRY_PORT_LAST_CHANGED_TS = "last_changed_timestamp"
+    MAP_ENTRY_PORT_STATUS_COUNT = "change_count"
+    MAP_ENTRY_PORT_STATUS_TS = "timestamp"
+    MAP_ENTRY_PORT_STATUS_UP = "status_up"
     MAP_ENTRY_LEARNED_MACS = "learned_macs"
     MAP_ENTRY_MAC_LEARNING_PORT = "port"
     MAP_ENTRY_MAC_LEARNING_IP = "ip_address"
     MAP_ENTRY_MAC_LEARNING_TS = "timestamp"
-    MAP_ENTRY_CONFIG_CHANGE_COUNT = "change_count"
-    MAP_ENTRY_LAST_RESTART_TYPE = "last_restart"
-    MAP_ENTRY_LAST_RESTART_TS = "last_restart_timestamp"
+    MAP_ENTRY_CONFIG_CHANGE_COUNT = "config_change_count"
+    MAP_ENTRY_CONFIG_CHANGE_TYPE = "config_change_type"
+    MAP_ENTRY_CONFIG_CHANGE_TS = "config_change_timestamp"
     TOPOLOGY_ENTRY = "topology"
     TOPOLOGY_ROOT = "stack_root"
     TOPOLOGY_GRAPH = "graph_obj"
@@ -52,24 +55,31 @@ class FaucetStatesCollector:
         """get the topology state"""
         return self.topo_state
 
-    def get_switches(self, switch_name):
+    def get_switches(self):
+        """get a set of all switches"""
+        switch_data = {}
+        for switch_name in self.switch_states:
+            switch_data[switch_name] = self.get_switch(switch_name)
+        return switch_data
+
+    def get_switch(self, switch_name):
         """get switches state"""
         switch_map = {}
 
         # filling switch attributes
         attributes_map = switch_map.setdefault("attributes", {})
-        attributes_map["name"] = ""
-        attributes_map["dp_id"] = switch_name
-        attributes_map["description"] = ""
+        attributes_map["name"] = switch_name
+        attributes_map["dp_id"] = None
+        attributes_map["description"] = None
 
         # filling switch dynamics
-        switch_states = self.switch_states.get(int(switch_name), {})
+        switch_states = self.switch_states.get(str(switch_name), {})
         switch_map["config_change_count"] = \
             switch_states.get(FaucetStatesCollector.MAP_ENTRY_CONFIG_CHANGE_COUNT, "")
-        switch_map["last_restart_type"] = \
-            switch_states.get(FaucetStatesCollector.MAP_ENTRY_LAST_RESTART_TYPE, "")
-        switch_map["last_restart_timestamp"] = \
-            switch_states.get(FaucetStatesCollector.MAP_ENTRY_LAST_RESTART_TS, "")
+        switch_map["config_change_type"] = \
+            switch_states.get(FaucetStatesCollector.MAP_ENTRY_CONFIG_CHANGE_TYPE, "")
+        switch_map["config_change_timestamp"] = \
+            switch_states.get(FaucetStatesCollector.MAP_ENTRY_CONFIG_CHANGE_TS, "")
 
         switch_port_map = switch_map.setdefault("ports", {})
 
@@ -79,19 +89,18 @@ class FaucetStatesCollector:
             port_map = switch_port_map.setdefault(port_id, {})
             # port attributes
             switch_port_attributes_map = port_map.setdefault("attributes", {})
-            switch_port_attributes_map["name"] = ""
-            switch_port_attributes_map["description"] = ""
-            switch_port_attributes_map["stack_peer_switch"] = ""
-            switch_port_attributes_map["stack_peer_port"] = ""
+            switch_port_attributes_map["description"] = None
+            switch_port_attributes_map["stack_peer_switch"] = None
+            switch_port_attributes_map["stack_peer_port"] = None
 
             # port dynamics
-            port_map["is_up"] = \
-                port_states.get(FaucetStatesCollector.MAP_ENTRY_PORT_STATUS, "")
+            port_map["status_up"] = \
+                port_states.get(FaucetStatesCollector.MAP_ENTRY_PORT_STATUS_UP, "")
             port_map["port_type"] = ""
-            port_map["last_changed_timestamp"] = \
-                port_states.get(FaucetStatesCollector.MAP_ENTRY_PORT_LAST_CHANGED_TS, "")
-            port_map["change_count"] = \
-                port_states.get(FaucetStatesCollector.MAP_ENTRY_PORT_STATE_CHANGED_COUNT, "")
+            port_map["status_timestamp"] = \
+                port_states.get(FaucetStatesCollector.MAP_ENTRY_PORT_STATUS_TS, "")
+            port_map["status_count"] = \
+                port_states.get(FaucetStatesCollector.MAP_ENTRY_PORT_STATUS_COUNT, "")
             port_map["packet_count"] = ""
 
         # filling learned macs
@@ -111,24 +120,24 @@ class FaucetStatesCollector:
         return switch_map
 
     @dump_states
-    def process_port_state(self, timestamp, dpid, port, status):
+    def process_port_state(self, timestamp, name, port, status):
         """process port state event"""
         port_table = self.switch_states\
-            .setdefault(dpid, {})\
+            .setdefault(name, {})\
             .setdefault(FaucetStatesCollector.MAP_ENTRY_PORTS, {})\
             .setdefault(port, {})
 
-        port_table[FaucetStatesCollector.MAP_ENTRY_PORT_STATUS] = status
-        port_table[FaucetStatesCollector.MAP_ENTRY_PORT_LAST_CHANGED_TS] = \
+        port_table[FaucetStatesCollector.MAP_ENTRY_PORT_STATUS_UP] = status
+        port_table[FaucetStatesCollector.MAP_ENTRY_PORT_STATUS_TS] = \
             datetime.fromtimestamp(timestamp).isoformat()
 
-        port_table[FaucetStatesCollector.MAP_ENTRY_PORT_STATE_CHANGED_COUNT] = \
+        port_table[FaucetStatesCollector.MAP_ENTRY_PORT_STATUS_COUNT] = \
             port_table.setdefault(
-                FaucetStatesCollector.MAP_ENTRY_PORT_STATE_CHANGED_COUNT, 0) + 1
+                FaucetStatesCollector.MAP_ENTRY_PORT_STATUS_COUNT, 0) + 1
 
     @dump_states
     # pylint: disable=too-many-arguments
-    def process_port_learn(self, timestamp, dpid, port, mac, src_ip):
+    def process_port_learn(self, timestamp, name, port, mac, src_ip):
         """process port learn event"""
         # update global mac table
         global_mac_table = self.system_states\
@@ -142,18 +151,22 @@ class FaucetStatesCollector:
 
         # update per switch mac table
         self.switch_states\
-            .setdefault(dpid, {})\
+            .setdefault(name, {})\
             .setdefault(FaucetStatesCollector.MAP_ENTRY_LEARNED_MACS, set())\
             .add(mac)
 
     @dump_states
-    def process_config_change(self, timestamp, dpid, restart_type):
+    def process_config_change(self, timestamp, dp_name, restart_type, dp_id):
         """process config change event"""
-        config_change_table = self.switch_states\
-            .setdefault(dpid, {})
 
-        config_change_table[FaucetStatesCollector.MAP_ENTRY_LAST_RESTART_TYPE] = restart_type
-        config_change_table[FaucetStatesCollector.MAP_ENTRY_LAST_RESTART_TS] = \
+        # No dp_id (or 0) indicates that this is system-wide, not for a given switch.
+        if not dp_id:
+            return
+
+        config_change_table = self.switch_states.setdefault(dp_name, {})
+
+        config_change_table[FaucetStatesCollector.MAP_ENTRY_CONFIG_CHANGE_TYPE] = restart_type
+        config_change_table[FaucetStatesCollector.MAP_ENTRY_CONFIG_CHANGE_TS] = \
             datetime.fromtimestamp(timestamp).isoformat()
         config_change_table[FaucetStatesCollector.MAP_ENTRY_CONFIG_CHANGE_COUNT] = \
             config_change_table.setdefault(

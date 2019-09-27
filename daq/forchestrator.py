@@ -2,7 +2,6 @@
 
 import logging
 import sys
-import time
 
 import configurator
 import faucet_event_client
@@ -22,7 +21,7 @@ class Forchestrator:
         self._config = config
         self._faucet_events = None
         self._server = None
-        self._faucet_states_collector = FaucetStatesCollector()
+        self._collector = FaucetStatesCollector()
 
     def initialize(self):
         """Initialize forchestrator instance"""
@@ -42,31 +41,27 @@ class Forchestrator:
             if not event:
                 return True
 
-            LOGGER.debug('Faucet event %s', event)
-            timestamp = event.get("timestamp", time.time())
+            timestamp = event.get("time")
 
-            (dpid, port, active) = self._faucet_events.as_port_state(event)
+            (name, dpid, port, active) = self._faucet_events.as_port_state(event)
             if dpid and port:
-                LOGGER.info('Port state %s %s %s', dpid, port, active)
-                self._faucet_states_collector.process_port_state(timestamp, dpid, port, active)
+                LOGGER.info('Port state %s %s %s', name, port, active)
+                self._collector.process_port_state(timestamp, name, port, active)
 
-            (dpid, port, target_mac, src_ip) = self._faucet_events.as_port_learn(event)
+            (name, dpid, port, target_mac, src_ip) = self._faucet_events.as_port_learn(event)
             if dpid and port:
-                LOGGER.info('Port learn %s %s %s', dpid, port, target_mac)
-                self._faucet_states_collector.process_port_learn(
-                    timestamp, dpid, port, target_mac, src_ip)
+                LOGGER.info('Port learn %s %s %s', name, port, target_mac)
+                self._collector.process_port_learn(timestamp, name, port, target_mac, src_ip)
 
-            (dpid, restart_type) = self._faucet_events.as_config_change(event)
+            (name, dpid, restart_type) = self._faucet_events.as_config_change(event)
             if dpid is not None:
-                LOGGER.info('DP restart %d %s', dpid, restart_type)
-                self._faucet_states_collector.process_config_change(timestamp, dpid, restart_type)
+                LOGGER.info('DP restart %s %s', name, restart_type)
+                self._collector.process_config_change(timestamp, name, restart_type, dpid)
 
             (stack_root, graph) = self._faucet_events.as_stack_topo_change(event)
             if stack_root is not None:
-                LOGGER.info('stack topology change root:%s graph:%s', stack_root, graph)
-                self._faucet_states_collector\
-                        .process_stack_topo_change(timestamp, stack_root, graph)
-
+                LOGGER.info('stack topology change root:%s', stack_root)
+                self._collector.process_stack_topo_change(timestamp, stack_root, graph)
 
         return False
 
@@ -77,13 +72,17 @@ class Forchestrator:
             'params': params
         }
 
+    def get_switch(self, path, params):
+        """Get the state of the switches"""
+        return self._collector.get_switch(params['switch_name'])
+
     def get_switches(self, path, params):
         """Get the state of the switches"""
-        return self._faucet_states_collector.get_switches(params['switch_name'])
+        return self._collector.get_switches()
 
     def get_topology(self, path, params):
         """Get the network topology overview"""
-        return self._faucet_states_collector.get_topology()
+        return self._collector.get_topology()
 
 
 if __name__ == '__main__':
@@ -95,6 +94,7 @@ if __name__ == '__main__':
     HTTP.map_request('overview', FORCH.get_overview)
     HTTP.map_request('topology', FORCH.get_topology)
     HTTP.map_request('switches', FORCH.get_switches)
+    HTTP.map_request('switch', FORCH.get_switch)
     HTTP.map_request('', HTTP.static_file(''))
     HTTP.start_server()
     FORCH.main_loop()
