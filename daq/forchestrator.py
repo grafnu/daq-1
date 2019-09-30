@@ -9,7 +9,6 @@ import configurator
 import faucet_event_client
 import http_server
 from faucet_states_collector import FaucetStatesCollector
-import json
 
 LOGGER = logging.getLogger('forch')
 
@@ -17,8 +16,6 @@ LOGGER = logging.getLogger('forch')
 class Forchestrator:
     """Main class encompassing faucet orchestrator components for dynamically
     controlling faucet ACLs at runtime"""
-
-    _TOPOLOGY_FILE = 'inst/dp_graph.json'
 
     def __init__(self, config):
         self._config = config
