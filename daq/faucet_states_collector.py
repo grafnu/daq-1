@@ -112,6 +112,7 @@ class FaucetStatesCollector:
         return switch_map
 
     def get_active_host_route(self, src_mac, dst_mac):
+        """give two MAC addresses in the core network, find the active route between them"""
         def get_switches_ports_from_link(link_map):
             return (link_map["port_map"]["dp_a"], int(link_map["port_map"]["port_a"][5:])), \
                    (link_map["port_map"]["dp_z"], int(link_map["port_map"]["port_z"][5:]))
@@ -157,13 +158,14 @@ class FaucetStatesCollector:
         path = []
         next_hops = {}
 
-        learned_macs = self.system_states.get(KEY_LEARNED_MACS, {})
-
-        if src_mac not in learned_macs or dst_mac not in learned_macs:
+        if src_mac not in self.system_states.get(KEY_LEARNED_MACS, {}) or \
+                dst_mac not in self.system_states.get(KEY_LEARNED_MACS, {}):
             return path
 
-        src_learned_switches = learned_macs[src_mac].get(KEY_MAC_LEARNING_SWITCH, {})
-        dst_learned_switches = learned_macs[dst_mac].get(KEY_MAC_LEARNING_SWITCH, {})
+        src_learned_switches = \
+            self.system_states.get(KEY_LEARNED_MACS, {})[src_mac].get(KEY_MAC_LEARNING_SWITCH, {})
+        dst_learned_switches = \
+            self.system_states.get(KEY_LEARNED_MACS, {})[dst_mac].get(KEY_MAC_LEARNING_SWITCH, {})
 
         get_graph()
 
