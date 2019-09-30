@@ -1,7 +1,9 @@
 """Processing faucet events"""
 import json
 from datetime import datetime
+import logging
 
+LOGGER = logging.getLogger('forch')
 
 def dump_states(func):
     """Decorator to dump the current states after the states map is modified"""
@@ -12,7 +14,7 @@ def dump_states(func):
 
     def wrapped(self, *args, **kwargs):
         res = func(self, *args, **kwargs)
-        print(json.dumps(self.system_states, default=set_default))
+        LOGGER.debug(json.dumps(self.system_states, default=set_default))
         return res
 
     return wrapped
@@ -41,6 +43,8 @@ class FaucetStatesCollector:
     TOPO_API_NOT_HEALTH = "is_wounded"
     TOPO_API_DP_MAP = "switch_map"
     TOPO_API_LINK_MAP = "physical_stack_links"
+    TOPO_API_LACP = "lacp_lag_status"
+    TOPO_API_ROOT = "active_root"
 
     def __init__(self):
         self.system_states = {FaucetStatesCollector.MAP_ENTRY_SWITCH: {},\
@@ -54,9 +58,12 @@ class FaucetStatesCollector:
 
     def get_topology(self):
         """get the topology state"""
-        topo_map = {}
-        topo_map[TOPO_API_DP_MAP] = self.get_switch_map()
-        return self.topo_map
+        dplane_map = {}
+        dplane_map[FaucetStatesCollector.TOPO_API_DP_MAP] = self.get_switch_map()
+        dplane_map[FaucetStatesCollector.TOPO_API_LINK_MAP] = self.get_stack_topo()
+        dplane_map[FaucetStatesCollector.TOPO_API_LACP] = None
+        dplane_map[FaucetStatesCollector.TOPO_API_ROOT] = None
+        return dplane_map
 
     def get_switches(self, switch_name):
         """get switches state"""
@@ -119,9 +126,29 @@ class FaucetStatesCollector:
     def get_switch_map(self):
         switch_map = {}
         topo_obj = self.topo_state
-        for switch in topo_obj[TOPOLOGY_ENTRY][TOPOLOGY_GRAPH]["nodes"]:
-            switch_map[switch["id"]] = None
+        for switch in topo_obj.get(FaucetStatesCollector.TOPOLOGY_GRAPH, {}).get("nodes", []):
+            id = switch.get("id")
+            if id:
+                switch_map[id] = {}
+                switch_map[id]["status"] = None
+
         return switch_map
+
+    def get_stack_topo(self):
+        topo_map = {}
+        topo_obj = self.topo_state
+        for link in topo_obj.get(FaucetStatesCollector.TOPOLOGY_GRAPH, {}).get("links", []):
+            link_obj = {}
+            port_map = link.get("port_map")
+            if port_map:
+                link_obj["switch_a"] = port_map["dp_a"]
+                link_obj["port_a"] = port_map["port_a"]
+                link_obj["switch_b"] = port_map["dp_z"]
+                link_obj["port_b"] = port_map["port_z"]
+                link_obj["status"] = None
+                topo_map[link["key"]] = link_obj
+        return topo_map
+
 
     @dump_states
     def process_port_state(self, timestamp, dpid, port, status):

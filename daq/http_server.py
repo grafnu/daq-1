@@ -61,6 +61,11 @@ class HttpServer():
         thread.deamon = False
         thread.start()
 
+    def stop_server(self):
+        LOGGER.info("Stopping server.")
+        self._server.server_close()
+        self._server.shutdown()
+
     def map_request(self, path, target):
         """Register a request mapping"""
         self._paths[path] = target

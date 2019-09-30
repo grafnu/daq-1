@@ -3,11 +3,13 @@
 import logging
 import sys
 import time
+import threading
 
 import configurator
 import faucet_event_client
 import http_server
 from faucet_states_collector import FaucetStatesCollector
+import json
 
 LOGGER = logging.getLogger('forch')
 
@@ -33,8 +35,15 @@ class Forchestrator:
     def main_loop(self):
         """Main event processing loop"""
         LOGGER.info('Entering main event loop...')
-        while self._handle_faucet_events():
-            pass
+        try:
+            while self._handle_faucet_events():
+                pass
+        except KeyboardInterrupt:
+            LOGGER.info('Keyboard interrupt. Exiting.')
+            self._faucet_events.disconnect()
+        except Exception as e:
+            LOGGER.error("Exception:", str(e))
+            raise
 
     def _handle_faucet_events(self):
         while self._faucet_events:
@@ -47,23 +56,23 @@ class Forchestrator:
 
             (dpid, port, active) = self._faucet_events.as_port_state(event)
             if dpid and port:
-                LOGGER.info('Port state %s %s %s', dpid, port, active)
+                LOGGER.debug('Port state %s %s %s', dpid, port, active)
                 self._faucet_states_collector.process_port_state(timestamp, dpid, port, active)
 
             (dpid, port, target_mac, src_ip) = self._faucet_events.as_port_learn(event)
             if dpid and port:
-                LOGGER.info('Port learn %s %s %s', dpid, port, target_mac)
+                LOGGER.debug('Port learn %s %s %s', dpid, port, target_mac)
                 self._faucet_states_collector.process_port_learn(
                     timestamp, dpid, port, target_mac, src_ip)
 
             (dpid, restart_type) = self._faucet_events.as_config_change(event)
             if dpid is not None:
-                LOGGER.info('DP restart %d %s', dpid, restart_type)
+                LOGGER.debug('DP restart %d %s', dpid, restart_type)
                 self._faucet_states_collector.process_config_change(timestamp, dpid, restart_type)
 
             (stack_root, graph) = self._faucet_events.as_stack_topo_change(event)
             if stack_root is not None:
-                LOGGER.info('stack topology change root:%s graph:%s', stack_root, graph)
+                LOGGER.debug('stack topology change root:%s graph:%s', stack_root, graph)
                 self._faucet_states_collector\
                         .process_stack_topo_change(timestamp, stack_root, graph)
 
@@ -98,3 +107,6 @@ if __name__ == '__main__':
     HTTP.map_request('', HTTP.static_file(''))
     HTTP.start_server()
     FORCH.main_loop()
+    LOGGER.warning('Exiting program')
+    HTTP.stop_server()
+
