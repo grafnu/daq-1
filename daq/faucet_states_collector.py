@@ -155,12 +155,12 @@ class FaucetStatesCollector:
 
             return src_switches_ports.popitem(), dst_switches_ports.popitem()
 
-        path = []
+        res = {"Path", []}
         next_hops = {}
 
         if src_mac not in self.system_states.get(KEY_LEARNED_MACS, {}) or \
                 dst_mac not in self.system_states.get(KEY_LEARNED_MACS, {}):
-            return path
+            return res
 
         src_learned_switches = \
             self.system_states.get(KEY_LEARNED_MACS, {})[src_mac].get(KEY_MAC_LEARNING_SWITCH, {})
@@ -170,7 +170,7 @@ class FaucetStatesCollector:
         get_graph()
 
         if not next_hops:
-            return path
+            return res
 
         (src_switch, src_port), _ = get_access_switches()
 
@@ -178,14 +178,14 @@ class FaucetStatesCollector:
 
         while next_hop['switch'] in next_hops:
             next_hop['egress'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
-            path.append(copy.copy(next_hop))
+            res["Path"].append(copy.copy(next_hop))
             next_hop['switch'] = next_hops[next_hop['switch']]
             next_hop['ingress'] = src_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
 
         next_hop['egress'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
-        path.append(copy.copy(next_hop))
+        res["Path"].append(copy.copy(next_hop))
 
-        return path
+        return res
 
     @dump_states
     def process_port_state(self, timestamp, name, port, status):
