@@ -114,12 +114,18 @@ class FaucetStatesCollector:
     def get_active_host_route(self, src_mac, dst_mac):
         """give two MAC addresses in the core network, find the active route between them"""
         def get_switches_ports_from_link(link_map):
-            return (link_map["port_map"]["dp_a"], int(link_map["port_map"]["port_a"][5:])), \
-                   (link_map["port_map"]["dp_z"], int(link_map["port_map"]["port_z"][5:]))
+            from_sw = link_map["port_map"]["dp_a"]
+            from_port = int(link_map["port_map"]["port_a"][5:])
+            to_sw = link_map["port_map"]["dp_z"]
+            to_port = int(link_map["port_map"]["port_z"][5:])
+
+            return (from_sw, from_port), (to_sw, to_port)
 
         def check_and_insert_link(sw_1, port_1, sw_2, port_2):
-            if src_learned_switches.get(sw_1, {}).get(KEY_MAC_LEARNING_PORT, "") == port_1 and \
-                    dst_learned_switches.get(sw_2, {}).get(KEY_MAC_LEARNING_PORT, "") == port_2:
+            src_port = src_learned_switches.get(sw_1, {}).get(KEY_MAC_LEARNING_PORT, "")
+            dst_port = dst_learned_switches.get(sw_2, {}).get(KEY_MAC_LEARNING_PORT, "")
+
+            if src_port == port_1 and dst_port == port_2:
                 next_hops[sw_2] = sw_1
 
         def get_graph():
@@ -155,7 +161,7 @@ class FaucetStatesCollector:
 
             return src_switches_ports.popitem(), dst_switches_ports.popitem()
 
-        res = {"Path", []}
+        res = {'Path': []}
         next_hops = {}
 
         if src_mac not in self.system_states.get(KEY_LEARNED_MACS, {}) or \
@@ -178,12 +184,12 @@ class FaucetStatesCollector:
 
         while next_hop['switch'] in next_hops:
             next_hop['egress'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
-            res["Path"].append(copy.copy(next_hop))
+            res['Path'].append(copy.copy(next_hop))
             next_hop['switch'] = next_hops[next_hop['switch']]
             next_hop['ingress'] = src_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
 
         next_hop['egress'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
-        res["Path"].append(copy.copy(next_hop))
+        res['Path'].append(copy.copy(next_hop))
 
         return res
 
