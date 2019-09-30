@@ -178,7 +178,7 @@ class FaucetStatesCollector:
             next_hop['egress'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
             path.append(copy.copy(next_hop))
             next_hop['switch'] = next_hops[next_hop['switch']]
-            next_hop['ingress'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
+            next_hop['ingress'] = src_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
 
         next_hop['egress'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
         path.append(copy.copy(next_hop))
