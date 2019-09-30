@@ -102,13 +102,14 @@ class FaucetStatesCollector:
 
         # filling learned macs
         switch_learned_mac_map = switch_map.setdefault("learned_macs", {})
-        system_learned_mac_states = self.learned_macs
         for mac in switch_states.get(KEY_LEARNED_MACS, set()):
             mac_map = switch_learned_mac_map.setdefault(mac, {})
-            mac_states = system_learned_mac_states.get(mac, {})
-            mac_map["port"] = mac_states.get(KEY_MAC_LEARNING_PORT, "")
-            mac_map["timestamp"] = mac_states.get(KEY_MAC_LEARNING_TS, "")
+            mac_states = self.learned_macs.get(mac, {})
             mac_map["ip_address"] = mac_states.get(KEY_MAC_LEARNING_IP, "")
+
+            learned_switch = mac_states.get(KEY_MAC_LEARNING_SWITCH, {}).get(switch_name, {})
+            mac_map["port"] = learned_switch.get(KEY_MAC_LEARNING_PORT, "")
+            mac_map["timestamp"] = learned_switch.get(KEY_MAC_LEARNING_TS, "")
 
         return switch_map
 
