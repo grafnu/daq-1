@@ -24,7 +24,7 @@ RESULT fail security.tls.v3
 RESULT fail security.x509
 RESULT pass security.tls.v3
 RESULT pass security.x509
-RESULT skip security.firmware Could not retrieve a firmware version with nmap. Bacnet port could be closed or filtered
+RESULT skip security.firmware Could not retrieve a firmware version with nmap. Check bacnet port.
 RESULT fail security.firmware version found: ?\xFF\xFF\x19,>u\x08\x00no Firmware version does not match
 RESULT pass security.firmware version found: ?\xFF\xFF\x19,>u\x08\x00no
 dhcp requests 2 1
