@@ -2,7 +2,6 @@
 
 import logging
 import sys
-
 import configurator
 import faucet_event_client
 import http_server
@@ -14,8 +13,6 @@ LOGGER = logging.getLogger('forch')
 class Forchestrator:
     """Main class encompassing faucet orchestrator components for dynamically
     controlling faucet ACLs at runtime"""
-
-    _TOPOLOGY_FILE = 'inst/dp_graph.json'
 
     def __init__(self, config):
         self._config = config
@@ -32,37 +29,39 @@ class Forchestrator:
     def main_loop(self):
         """Main event processing loop"""
         LOGGER.info('Entering main event loop...')
-        while self._handle_faucet_events():
-            pass
+        try:
+            while self._handle_faucet_events():
+                pass
+        except KeyboardInterrupt:
+            LOGGER.info('Keyboard interrupt. Exiting.')
+            self._faucet_events.disconnect()
+        except Exception as e:
+            LOGGER.error("Exception: %s", e)
+            raise
 
     def _handle_faucet_events(self):
         while self._faucet_events:
             event = self._faucet_events.next_event()
             if not event:
                 return True
-
             timestamp = event.get("time")
-
             (name, dpid, port, active) = self._faucet_events.as_port_state(event)
             if dpid and port:
-                LOGGER.info('Port state %s %s %s', name, port, active)
+                LOGGER.debug('Port state %s %s %s', name, port, active)
                 self._collector.process_port_state(timestamp, name, port, active)
-
             (name, dpid, port, target_mac, src_ip) = self._faucet_events.as_port_learn(event)
             if dpid and port:
-                LOGGER.info('Port learn %s %s %s', name, port, target_mac)
+                LOGGER.debug('Port learn %s %s %s', name, port, target_mac)
                 self._collector.process_port_learn(timestamp, name, port, target_mac, src_ip)
-
             (name, dpid, restart_type) = self._faucet_events.as_config_change(event)
             if dpid is not None:
-                LOGGER.info('DP restart %s %s', name, restart_type)
+                LOGGER.debug('DP restart %s %s', name, restart_type)
                 self._collector.process_config_change(timestamp, name, restart_type, dpid)
 
             (stack_root, graph) = self._faucet_events.as_stack_topo_change(event)
             if stack_root is not None:
-                LOGGER.info('stack topology change root:%s', stack_root)
+                LOGGER.debug('stack topology change root:%s', stack_root)
                 self._collector.process_stack_topo_change(timestamp, stack_root, graph)
-
         return False
 
     def get_overview(self, path, params):
@@ -103,3 +102,5 @@ if __name__ == '__main__':
     HTTP.map_request('', HTTP.static_file(''))
     HTTP.start_server()
     FORCH.main_loop()
+    LOGGER.warning('Exiting program')
+    HTTP.stop_server()
