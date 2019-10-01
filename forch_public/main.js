@@ -79,7 +79,7 @@ function populate_table() {
     document.getElementById('switch_table').innerHTML = 'No switches to be found!';
     return;
   }
-  
+
   console.log('switch_names', switch_names)
   for (const switch_name of switch_names) {
     fetch_data(`switch_${switch_name}`, `switch?switch_name=${switch_name}`);
