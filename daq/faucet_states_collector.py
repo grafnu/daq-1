@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 import logging
 from threading import Lock
+import copy
 
 LOGGER = logging.getLogger('forch')
 
@@ -25,11 +26,13 @@ def dump_states(func):
 
 
 KEY_SWITCH = "dpids"
+KEY_DP_ID = "dp_id"
 KEY_PORTS = "ports"
 KEY_PORT_STATUS_COUNT = "change_count"
 KEY_PORT_STATUS_TS = "timestamp"
 KEY_PORT_STATUS_UP = "status_up"
 KEY_LEARNED_MACS = "learned_macs"
+KEY_MAC_LEARNING_SWITCH = "switches"
 KEY_MAC_LEARNING_PORT = "port"
 KEY_MAC_LEARNING_IP = "ip_address"
 KEY_MAC_LEARNING_TS = "timestamp"
@@ -51,10 +54,11 @@ TOPO_API_ROOT = "active_root"
 class FaucetStatesCollector:
     """Processing faucet events and store states in the map"""
     def __init__(self):
-        self.system_states = {KEY_SWITCH: {}, TOPOLOGY_ENTRY: {}}
+        self.system_states = {KEY_SWITCH: {}, TOPOLOGY_ENTRY: {}, KEY_LEARNED_MACS: {}}
         self.switch_states = self.system_states[KEY_SWITCH]
         self.topo_state = self.system_states[TOPOLOGY_ENTRY]
         self.lock = Lock()
+        self.learned_macs = self.system_states[KEY_LEARNED_MACS]
 
     def get_system(self):
         """get the system states"""
@@ -76,17 +80,27 @@ class FaucetStatesCollector:
             switch_data[switch_name] = self.get_switch(switch_name)
         return switch_data
 
+    def get_switch_map(self):
+        switch_map = {}
+        topo_obj = self.topo_state
+        with self.lock:
+            for switch in topo_obj.get(TOPOLOGY_GRAPH, {}).get("nodes", []):
+                id = switch.get("id")
+                if id:
+                    switch_map[id] = {}
+                    switch_map[id]["status"] = None
+        return switch_map
+
     def get_switch(self, switch_name):
         """get switches state"""
         switch_map = {}
-
-        # filling switch attributes
-        attributes_map = switch_map.setdefault("attributes", {})
-        attributes_map["name"] = switch_name
-        attributes_map["dp_id"] = None
-        attributes_map["description"] = None
-
         with self.lock:
+            # filling switch attributes
+            attributes_map = switch_map.setdefault("attributes", {})
+            attributes_map["name"] = switch_name
+            attributes_map["dp_id"] = self.switch_states.get(str(switch_name), {}).get(KEY_DP_ID, "")
+            attributes_map["description"] = None
+
             # filling switch dynamics
             switch_states = self.switch_states.get(str(switch_name), {})
             switch_map["config_change_count"] = switch_states.get(KEY_CONFIG_CHANGE_COUNT, "")
@@ -113,25 +127,13 @@ class FaucetStatesCollector:
 
             # filling learned macs
             switch_learned_mac_map = switch_map.setdefault("learned_macs", {})
-            system_learned_mac_states = self.system_states.get(KEY_LEARNED_MACS, {})
             for mac in switch_states.get(KEY_LEARNED_MACS, set()):
                 mac_map = switch_learned_mac_map.setdefault(mac, {})
-                mac_states = system_learned_mac_states.get(mac, {})
-                mac_map["port"] = mac_states.get(KEY_MAC_LEARNING_PORT, "")
-                mac_map["timestamp"] = mac_states.get(KEY_MAC_LEARNING_TS, "")
+                mac_states = self.learned_macs.get(mac, {})
                 mac_map["ip_address"] = mac_states.get(KEY_MAC_LEARNING_IP, "")
-
-        return switch_map
-
-    def get_switch_map(self):
-        switch_map = {}
-        topo_obj = self.topo_state
-        with self.lock:
-            for switch in topo_obj.get(TOPOLOGY_GRAPH, {}).get("nodes", []):
-                id = switch.get("id")
-                if id:
-                    switch_map[id] = {}
-                    switch_map[id]["status"] = None
+                learned_switch = mac_states.get(KEY_MAC_LEARNING_SWITCH, {}).get(switch_name, {})
+                mac_map["port"] = learned_switch.get(KEY_MAC_LEARNING_PORT, "")
+                mac_map["timestamp"] = learned_switch.get(KEY_MAC_LEARNING_TS, "")
 
         return switch_map
 
@@ -151,6 +153,35 @@ class FaucetStatesCollector:
                 topo_map[link["key"]] = link_obj
         return topo_map
 
+    def get_active_host_route(self, src_mac, dst_mac):
+        """Given two MAC addresses in the core network, find the active route between them"""
+        res = {'path': []}
+
+        if src_mac not in self.learned_macs or dst_mac not in self.learned_macs:
+            return res
+
+        src_learned_switches = self.learned_macs[src_mac].get(KEY_MAC_LEARNING_SWITCH, {})
+        dst_learned_switches = self.learned_macs[dst_mac].get(KEY_MAC_LEARNING_SWITCH, {})
+
+        next_hops = self.get_graph(src_mac, dst_mac)
+
+        if not next_hops:
+            return res
+
+        src_switch, src_port = self.get_access_switch(src_mac)
+
+        next_hop = {'switch': src_switch, 'ingress': src_port, 'egress': None}
+
+        while next_hop['switch'] in next_hops:
+            next_hop['egress'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
+            res['path'].append(copy.copy(next_hop))
+            next_hop['switch'] = next_hops[next_hop['switch']]
+            next_hop['ingress'] = src_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
+
+        next_hop['egress'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
+        res['path'].append(copy.copy(next_hop))
+
+        return res
 
     @dump_states
     def process_port_state(self, timestamp, name, port, status):
@@ -172,13 +203,14 @@ class FaucetStatesCollector:
         """process port learn event"""
         with self.lock:
             # update global mac table
-            global_mac_table = self.system_states\
-                .setdefault(KEY_LEARNED_MACS, {})\
-                .setdefault(mac, {})
+            global_mac_table = self.learned_macs.setdefault(mac, {})
 
             global_mac_table[KEY_MAC_LEARNING_IP] = src_ip
-            global_mac_table[KEY_MAC_LEARNING_PORT] = port
-            global_mac_table[KEY_MAC_LEARNING_TS] = datetime.fromtimestamp(timestamp).isoformat()
+
+            global_mac_switch_table = global_mac_table.setdefault(KEY_MAC_LEARNING_SWITCH, {})
+            learning_switch = global_mac_switch_table.setdefault(name, {})
+            learning_switch[KEY_MAC_LEARNING_PORT] = port
+            learning_switch[KEY_MAC_LEARNING_TS] = datetime.fromtimestamp(timestamp).isoformat()
 
             # update per switch mac table
             self.switch_states\
@@ -195,7 +227,9 @@ class FaucetStatesCollector:
                 return
 
             dp_state = self.switch_states.setdefault(dp_name, {})
+            dp_state = self.switch_states.setdefault(dp_name, {})
 
+            dp_state[KEY_DP_ID] = dp_id
             dp_state[KEY_CONFIG_CHANGE_TYPE] = restart_type
             dp_state[KEY_CONFIG_CHANGE_TS] = datetime.fromtimestamp(timestamp).isoformat()
             dp_state[KEY_CONFIG_CHANGE_COUNT] = dp_state.setdefault(KEY_CONFIG_CHANGE_COUNT, 0) + 1
@@ -208,3 +242,59 @@ class FaucetStatesCollector:
             topo_state[TOPOLOGY_ROOT] = stack_root
             topo_state[TOPOLOGY_GRAPH] = graph
             topo_state[TOPOLOGY_CHANGE_COUNT] = topo_state.setdefault(TOPOLOGY_CHANGE_COUNT, 0) + 1
+
+    @staticmethod
+    def get_endpoints_from_link(link_map):
+        """Get the the pair of switch and port for a link"""
+        from_sw = link_map["port_map"]["dp_a"]
+        from_port = int(link_map["port_map"]["port_a"][5:])
+        to_sw = link_map["port_map"]["dp_z"]
+        to_port = int(link_map["port_map"]["port_z"][5:])
+
+        return from_sw, from_port, to_sw, to_port
+
+    # pylint: disable=too-many-arguments
+    def add_link(self, src_mac, dst_mac, sw_1, port_1, sw_2, port_2, graph):
+        """Insert link into graph if link is used by the src and dst"""
+        src_learned_switches = self.learned_macs[src_mac][KEY_MAC_LEARNING_SWITCH]
+        dst_learned_switches = self.learned_macs[dst_mac][KEY_MAC_LEARNING_SWITCH]
+        src_learned_port = src_learned_switches.get(sw_1, {}).get(KEY_MAC_LEARNING_PORT, "")
+        dst_learned_port = dst_learned_switches.get(sw_2, {}).get(KEY_MAC_LEARNING_PORT, "")
+
+        if src_learned_port == port_1 and dst_learned_port == port_2:
+            graph[sw_2] = sw_1
+
+    def get_access_switch(self, mac):
+        """Get access switch and port for a given MAC"""
+        access_switch_port = {}
+        learned_switches = self.learned_macs.get(mac, {}).get(KEY_MAC_LEARNING_SWITCH)
+
+        for switch, port_map in learned_switches.items():
+            access_switch_port[switch] = port_map[KEY_MAC_LEARNING_PORT]
+
+        if not access_switch_port:
+            return None
+
+        for link_map in self.topo_state.get(TOPOLOGY_GRAPH).get("links", []):
+            if not link_map:
+                continue
+
+            sw_1, port_1, sw_2, port_2 = FaucetStatesCollector.get_endpoints_from_link(link_map)
+            if access_switch_port.get(sw_1, "") == port_1:
+                access_switch_port.pop(sw_1)
+            if access_switch_port.get(sw_2, "") == port_2:
+                access_switch_port.pop(sw_2)
+
+        return access_switch_port.popitem()
+
+    def get_graph(self, src_mac, dst_mac):
+        """Get a graph consists of links only used by src and dst MAC"""
+        graph = {}
+        for link_map in self.topo_state.get(TOPOLOGY_GRAPH, {}).get("links", []):
+            if not link_map:
+                continue
+            sw_1, p_1, sw_2, p_2 = FaucetStatesCollector.get_endpoints_from_link(link_map)
+            self.add_link(src_mac, dst_mac, sw_1, p_1, sw_2, p_2, graph)
+            self.add_link(src_mac, dst_mac, sw_2, p_2, sw_1, p_1, graph)
+
+        return graph
