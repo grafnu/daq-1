@@ -43,12 +43,12 @@ TOPOLOGY_ENTRY = "topology"
 TOPOLOGY_ROOT = "stack_root"
 TOPOLOGY_GRAPH = "graph_obj"
 TOPOLOGY_CHANGE_COUNT = "change_count"
-TOPO_API_HEALTH = "is_healthy"
-TOPO_API_NOT_HEALTH = "is_wounded"
-TOPO_API_DP_MAP = "switch_map"
-TOPO_API_LINK_MAP = "physical_stack_links"
-TOPO_API_LACP = "lacp_lag_status"
-TOPO_API_ROOT = "active_root"
+TOPOLOGY_HEALTH = "is_healthy"
+TOPOLOGY_NOT_HEALTH = "is_wounded"
+TOPOLOGY_DP_MAP = "switch_map"
+TOPOLOGY_LINK_MAP = "physical_stack_links"
+TOPOLOGY_LACP = "lacp_lag_status"
+TOPOLOGY_ROOT = "active_root"
 
 
 class FaucetStatesCollector:
@@ -67,10 +67,10 @@ class FaucetStatesCollector:
     def get_topology(self):
         """get the topology state"""
         dplane_map = {}
-        dplane_map[TOPO_API_DP_MAP] = self.get_switch_map()
-        dplane_map[TOPO_API_LINK_MAP] = self.get_stack_topo()
-        dplane_map[TOPO_API_LACP] = None
-        dplane_map[TOPO_API_ROOT] = None
+        dplane_map[TOPOLOGY_DP_MAP] = self.get_switch_map()
+        dplane_map[TOPOLOGY_LINK_MAP] = self.get_stack_topo()
+        dplane_map[TOPOLOGY_LACP] = None
+        dplane_map[TOPOLOGY_ROOT] = None
         return dplane_map
 
     def get_switches(self):
@@ -86,56 +86,60 @@ class FaucetStatesCollector:
         topo_obj = self.topo_state
         with self.lock:
             for switch in topo_obj.get(TOPOLOGY_GRAPH, {}).get("nodes", []):
-                _id = switch.get("id")
-                if _id:
-                    switch_map[_id] = {}
-                    switch_map[_id]["status"] = None
+                switch_id = switch.get("id")
+                if switch_id:
+                    switch_map[switch_id] = {}
+                    switch_map[switch_id]["status"] = None
         return switch_map
 
     def get_switch(self, switch_name):
+        """lock protect get_switch_raw"""
+        with self.lock:
+            switches = self.get_switch_raw(switch_name)
+        return switches
+
+    def get_switch_raw(self, switch_name):
         """get switches state"""
         switch_map = {}
-        with self.lock:
-            # filling switch attributes
-            attributes_map = switch_map.setdefault("attributes", {})
-            attributes_map["name"] = switch_name
-            attributes_map["dp_id"] = \
-                    self.switch_states.get(str(switch_name), {}).get(KEY_DP_ID, "")
-            attributes_map["description"] = None
+        # filling switch attributes
+        switch_states = self.switch_states.get(str(switch_name), {})
+        attributes_map = switch_map.setdefault("attributes", {})
+        attributes_map["name"] = switch_name
+        attributes_map["dp_id"] = switch_states.get(KEY_DP_ID, "")
+        attributes_map["description"] = None
 
-            # filling switch dynamics
-            switch_states = self.switch_states.get(str(switch_name), {})
-            switch_map["config_change_count"] = switch_states.get(KEY_CONFIG_CHANGE_COUNT, "")
-            switch_map["config_change_type"] = switch_states.get(KEY_CONFIG_CHANGE_TYPE, "")
-            switch_map["config_change_timestamp"] = switch_states.get(KEY_CONFIG_CHANGE_TS, "")
+        # filling switch dynamics
+        switch_map["config_change_count"] = switch_states.get(KEY_CONFIG_CHANGE_COUNT, "")
+        switch_map["config_change_type"] = switch_states.get(KEY_CONFIG_CHANGE_TYPE, "")
+        switch_map["config_change_timestamp"] = switch_states.get(KEY_CONFIG_CHANGE_TS, "")
 
-            switch_port_map = switch_map.setdefault("ports", {})
+        switch_port_map = switch_map.setdefault("ports", {})
 
-            # filling port information
-            for port_id, port_states in switch_states.get(KEY_PORTS, {}).items():
-                port_map = switch_port_map.setdefault(port_id, {})
-                # port attributes
-                switch_port_attributes_map = port_map.setdefault("attributes", {})
-                switch_port_attributes_map["description"] = None
-                switch_port_attributes_map["stack_peer_switch"] = None
-                switch_port_attributes_map["stack_peer_port"] = None
+        # filling port information
+        for port_id, port_states in switch_states.get(KEY_PORTS, {}).items():
+            port_map = switch_port_map.setdefault(port_id, {})
+            # port attributes
+            switch_port_attributes_map = port_map.setdefault("attributes", {})
+            switch_port_attributes_map["description"] = None
+            switch_port_attributes_map["stack_peer_switch"] = None
+            switch_port_attributes_map["stack_peer_port"] = None
 
-                # port dynamics
-                port_map["status_up"] = port_states.get(KEY_PORT_STATUS_UP, "")
-                port_map["port_type"] = None
-                port_map["status_timestamp"] = port_states.get(KEY_PORT_STATUS_TS, "")
-                port_map["status_count"] = port_states.get(KEY_PORT_STATUS_COUNT, "")
-                port_map["packet_count"] = None
+            # port dynamics
+            port_map["status_up"] = port_states.get(KEY_PORT_STATUS_UP, "")
+            port_map["port_type"] = None
+            port_map["status_timestamp"] = port_states.get(KEY_PORT_STATUS_TS, "")
+            port_map["status_count"] = port_states.get(KEY_PORT_STATUS_COUNT, "")
+            port_map["packet_count"] = None
 
-            # filling learned macs
-            switch_learned_mac_map = switch_map.setdefault("learned_macs", {})
-            for mac in switch_states.get(KEY_LEARNED_MACS, set()):
-                mac_map = switch_learned_mac_map.setdefault(mac, {})
-                mac_states = self.learned_macs.get(mac, {})
-                mac_map["ip_address"] = mac_states.get(KEY_MAC_LEARNING_IP, "")
-                learned_switch = mac_states.get(KEY_MAC_LEARNING_SWITCH, {}).get(switch_name, {})
-                mac_map["port"] = learned_switch.get(KEY_MAC_LEARNING_PORT, "")
-                mac_map["timestamp"] = learned_switch.get(KEY_MAC_LEARNING_TS, "")
+        # filling learned macs
+        switch_learned_mac_map = switch_map.setdefault("learned_macs", {})
+        for mac in switch_states.get(KEY_LEARNED_MACS, set()):
+            mac_map = switch_learned_mac_map.setdefault(mac, {})
+            mac_states = self.learned_macs.get(mac, {})
+            mac_map["ip_address"] = mac_states.get(KEY_MAC_LEARNING_IP, "")
+            learned_switch = mac_states.get(KEY_MAC_LEARNING_SWITCH, {}).get(switch_name, {})
+            mac_map["port"] = learned_switch.get(KEY_MAC_LEARNING_PORT, "")
+            mac_map["timestamp"] = learned_switch.get(KEY_MAC_LEARNING_TS, "")
 
         return switch_map
 
