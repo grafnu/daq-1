@@ -1,10 +1,10 @@
 """Processing faucet events"""
 
-import json
+import copy
 from datetime import datetime
+import json
 import logging
 from threading import Lock
-import copy
 
 LOGGER = logging.getLogger('forch')
 

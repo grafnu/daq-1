@@ -10,8 +10,12 @@ echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
 out_dir=out/daq-test_stack
 rm -rf $out_dir
 
+t1sw1p28_pcap=$out_dir/t1sw1-eth28.pcap
+t1sw2p28_pcap=$out_dir/t1sw2-eth28.pcap
+t2sw1p1_pcap=$out_dir/t2sw1-eth1.pcap
 t2sw1p47_pcap=$out_dir/t2sw1-eth47.pcap
 t2sw1p48_pcap=$out_dir/t2sw1-eth48.pcap
+t2sw2p1_pcap=$out_dir/t2sw2-eth1.pcap
 nodes_dir=$out_dir/nodes
 
 mkdir -p $out_dir $nodes_dir
@@ -46,24 +50,38 @@ function test_pair {
     docker exec $host $cmd | fgrep time= | fgrep -v DUP | wc -l >> $out_file 2>/dev/null &
 }
 
-function test_stack {
-    mode=$1
-    echo Testing stack mode $mode | tee -a $TEST_RESULTS
-    bin/setup_stack $mode || exit 1
+# Compare two numbers and output { -1, 0, 1 }
+function comp {
+    echo $((($1 - $2 > 0) - ($1 - $2 < 0)))
+}
 
-    echo Capturing pcap to $t2sw1p47_pcap for $cap_length seconds...
+function test_stack {
+    echo Starting stack test... | tee -a $TEST_RESULTS
+
+    echo Restarting faucet to force cold start...
+    docker restart daq-faucet-1
+
+    ip link  | fgrep t1sw | fgrep M-DOWN | sed -E 's/.*:(.*):.*/\1/' | tee -a $TEST_RESULTS
+
+    echo Waiting for network stability...
+    sleep 15
+
+    echo Capturing pcaps for $cap_length seconds...
+    timeout $cap_length tcpdump -Q out -eni t1sw1-eth28 -w $t1sw1p28_pcap &
+    timeout $cap_length tcpdump -Q out -eni t1sw2-eth28 -w $t1sw2p28_pcap &
+    timeout $cap_length tcpdump -Q out -eni faux-1 -w $t2sw1p1_pcap &
     timeout $cap_length tcpdump -eni t2sw1-eth47 -w $t2sw1p47_pcap &
     timeout $cap_length tcpdump -eni t2sw1-eth48 -w $t2sw1p48_pcap &
+    timeout $cap_length tcpdump -Q out -eni faux-2 -w $t2sw2p1_pcap &
     sleep 5
 
-    echo Executing 2nd warm-up
-    docker exec daq-faux-1 ping -c 3 192.168.0.2 &
-    docker exec daq-faux-1 ping -c 3 192.168.0.3 &
-    docker exec daq-faux-2 ping -c 3 192.168.0.1 &
-    docker exec daq-faux-2 ping -c 3 192.168.0.3 &
-    docker exec daq-faux-3 ping -c 3 192.168.0.1 &
-    docker exec daq-faux-3 ping -c 3 192.168.0.2 &
-    sleep 3
+    echo Simple tests...
+    docker exec daq-faux-1 sh -c "arp -d 192.168.0.2; ping -c 1 192.168.0.2"
+    docker exec daq-faux-1 sh -c "arp -d 192.168.0.3; ping -c 1 192.168.0.3"
+    docker exec daq-faux-2 sh -c "arp -d 192.168.0.1; ping -c 1 192.168.0.1"
+    docker exec daq-faux-2 sh -c "arp -d 192.168.0.3; ping -c 1 192.168.0.3"
+    docker exec daq-faux-3 sh -c "arp -d 192.168.0.1; ping -c 1 192.168.0.1"
+    docker exec daq-faux-3 sh -c "arp -d 192.168.0.2; ping -c 1 192.168.0.2"
 
     test_pair 1 2
     test_pair 1 3
@@ -85,7 +103,7 @@ function test_stack {
     bcount47=$(tcpdump -en -r $t2sw1p47_pcap | wc -l) 2>/dev/null
     bcount48=$(tcpdump -en -r $t2sw1p48_pcap | wc -l) 2>/dev/null
     bcount_total=$((bcount47 + bcount48))
-    echo pcap $mode count is $bcount47 $bcount48 $bcount_total
+    echo pcap count is $bcount47 $bcount48 $bcount_total
     echo pcap sane $((bcount_total > 100)) $((bcount_total < 220)) | tee -a $TEST_RESULTS
     echo pcap t2sw1p47
     tcpdump -en -c 20 -r $t2sw1p47_pcap
@@ -93,15 +111,22 @@ function test_stack {
     tcpdump -en -c 20 -r $t2sw1p48_pcap
     echo pcap end
 
+    bcount1e=$(tcpdump -en -r $t1sw1p28_pcap ether broadcast| wc -l) 2>/dev/null
+    bcount2e=$(tcpdump -en -r $t1sw2p28_pcap ether broadcast| wc -l) 2>/dev/null
+    bcount1h=$(tcpdump -en -r $t2sw1p1_pcap ether broadcast | wc -l) 2>/dev/null
+    bcount2h=$(tcpdump -en -r $t2sw2p1_pcap ether broadcast | wc -l) 2>/dev/null
+    echo pcap bcast $(comp $bcount1e 4) $(comp $bcount2e 0) \
+         $(comp $bcount1h 4) $(comp $bcount2h 4) | tee -a $TEST_RESULTS
+
     telnet47=$(tcpdump -en -r $t2sw1p47_pcap vlan and port 23 | wc -l) 2>/dev/null
     https47=$(tcpdump -en -r $t2sw1p47_pcap vlan and port 443 | wc -l) 2>/dev/null
     telnet48=$(tcpdump -en -r $t2sw1p48_pcap vlan and port 23 | wc -l) 2>/dev/null
     https48=$(tcpdump -en -r $t2sw1p48_pcap vlan and port 443 | wc -l) 2>/dev/null
-    echo $mode telnet $((telnet47 + telnet48)) https $((https47 + https48)) | tee -a $TEST_RESULTS
+    echo telnet $((telnet47 + telnet48)) https $((https47 + https48)) | tee -a $TEST_RESULTS
 
     cat $nodes_dir/* | tee -a $TEST_RESULTS
 
-    echo Done with stack test $mode. | tee -a $TEST_RESULTS
+    echo Done with stack test. | tee -a $TEST_RESULTS
 }
 
 function test_dot1x {
@@ -118,14 +143,22 @@ function test_dot1x {
 }
 
 echo Stacking Tests >> $TEST_RESULTS
+bin/net_clean
+bin/setup_stack local || exit 1
+test_stack
+ip link set t1sw1-eth9 down
+test_stack
+ip link set t1sw2-eth10 down
+test_stack
+ip link set t1sw1-eth12 down
+test_stack
+ip link set t1sw1-eth10 down
+ip link set t1sw2-eth10 up
+ip link set t1sw1-eth12 up
+test_stack
+
+#echo Dot1x setup >> $TEST_RESULTS
 #bin/net_clean
-#test_stack nobond
-
-bin/net_clean
-test_stack bond
-
-echo Dot1x setup >> $TEST_RESULTS
-bin/net_clean
-test_dot1x
+#test_dot1x
 
 echo Done with cleanup. Goodby.
