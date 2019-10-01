@@ -114,8 +114,8 @@ class FaucetStatesCollector:
         return switch_map
 
     def get_active_host_route(self, src_mac, dst_mac):
-        """give two MAC addresses in the core network, find the active route between them"""
-        res = {'Path': []}
+        """Given two MAC addresses in the core network, find the active route between them"""
+        res = {'path': []}
 
         if src_mac not in self.learned_macs or dst_mac not in self.learned_macs:
             return res
@@ -134,12 +134,12 @@ class FaucetStatesCollector:
 
         while next_hop['switch'] in next_hops:
             next_hop['egress'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
-            res['Path'].append(copy.copy(next_hop))
+            res['path'].append(copy.copy(next_hop))
             next_hop['switch'] = next_hops[next_hop['switch']]
             next_hop['ingress'] = src_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
 
         next_hop['egress'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
-        res['Path'].append(copy.copy(next_hop))
+        res['path'].append(copy.copy(next_hop))
 
         return res
 
