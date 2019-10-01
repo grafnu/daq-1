@@ -117,7 +117,7 @@ function test_stack {
     bcount2h=$(tcpdump -en -r $t2sw2p1_pcap ether broadcast | wc -l) 2>/dev/null
     echo pcap bcast $(comp $bcount1e 4) $(comp $bcount2e 0) \
          $(comp $bcount1h 4) $(comp $bcount2h 4) | tee -a $TEST_RESULTS
-    
+
     telnet47=$(tcpdump -en -r $t2sw1p47_pcap vlan and port 23 | wc -l) 2>/dev/null
     https47=$(tcpdump -en -r $t2sw1p47_pcap vlan and port 443 | wc -l) 2>/dev/null
     telnet48=$(tcpdump -en -r $t2sw1p48_pcap vlan and port 23 | wc -l) 2>/dev/null
