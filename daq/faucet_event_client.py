@@ -156,7 +156,6 @@ class FaucetEventClient():
         event = {}
         event['dp_name'] = name
         event['dp_id'] = dpid
-        event['dp_name'] = name
         event['PORT_CHANGE'] = port_change
         event['debounced'] = debounced
         event['time'] = time.time()
