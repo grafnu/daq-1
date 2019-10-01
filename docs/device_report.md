@@ -121,6 +121,7 @@ MAC Address: 9A:02:57:1E:8F:01 (Unknown)
 Firmware test complete
 --------------------
 RESULT skip security.firmware Could not retrieve a firmware version with nmap. Check bacnet port.
+
 ```
 
 ## Module switch
