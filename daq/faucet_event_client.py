@@ -71,19 +71,19 @@ class FaucetEventClient():
                 return False
 
     def _filter_faucet_event(self, event):
-        (dpid, port, active) = self.as_port_state(event)
+        (name, dpid, port, active) = self.as_port_state(event)
         if dpid and port:
             if not event.get('debounced'):
-                self._debounce_port_event(dpid, port, active)
+                self._debounce_port_event(name, dpid, port, active)
             elif self._process_state_update(dpid, port, active):
                 return event
             return None
 
-        (dpid, status) = self.as_ports_status(event)
+        (name, dpid, status) = self.as_ports_status(event)
         if dpid:
             for port in status:
                 # Prepend events so they functionally replace the current one in the queue.
-                self._prepend_event(self._make_port_state(dpid, port, status[port]))
+                self._prepend_event(self._make_port_state(name, dpid, port, status[port]))
             return None
         return event
 
@@ -95,26 +95,26 @@ class FaucetEventClient():
         self.previous_state[state_key] = active
         return True
 
-    def _debounce_port_event(self, dpid, port, active):
+    def _debounce_port_event(self, name, dpid, port, active):
         if not self._port_debounce_sec:
-            self._handle_debounce(dpid, port, active)
+            self._handle_debounce(name, dpid, port, active)
             return
         state_key = '%s-%d' % (dpid, port)
         if state_key in self._port_timers:
             LOGGER.debug('Port cancel %s', state_key)
             self._port_timers[state_key].cancel()
         if active:
-            self._handle_debounce(dpid, port, active)
+            self._handle_debounce(name, dpid, port, active)
             return
         LOGGER.debug('Port timer %s = %s', state_key, active)
         timer = threading.Timer(self._port_debounce_sec,
-                                lambda: self._handle_debounce(dpid, port, active))
+                                lambda: self._handle_debounce(name, dpid, port, active))
         timer.start()
         self._port_timers[state_key] = timer
 
-    def _handle_debounce(self, dpid, port, active):
+    def _handle_debounce(self, name, dpid, port, active):
         LOGGER.debug('Port handle %s-%s as %s', dpid, port, active)
-        self._append_event(self._make_port_state(dpid, port, active, debounced=True))
+        self._append_event(self._make_port_state(name, dpid, port, active, debounced=True))
 
     def _prepend_event(self, event):
         with self._buffer_lock:
@@ -147,48 +147,54 @@ class FaucetEventClient():
                 return event
         return None
 
-    def _make_port_state(self, dpid, port, status, debounced=False):
+    # pylint: disable=too-many-arguments
+    def _make_port_state(self, name, dpid, port, status, debounced=False):
         port_change = {}
         port_change['port_no'] = port
         port_change['status'] = status
         port_change['reason'] = 'MODIFY'
         event = {}
+        event['dp_name'] = name
         event['dp_id'] = dpid
         event['PORT_CHANGE'] = port_change
         event['debounced'] = debounced
+        event['time'] = time.time()
         return event
 
     def as_config_change(self, event):
         """Convert the event to dp change info, if applicable"""
         if not event or 'CONFIG_CHANGE' not in event:
-            return (None, None)
-        return (event['dp_id'], event['CONFIG_CHANGE'].get('restart_type'))
+            return (None, None, None)
+        restart_type = event['CONFIG_CHANGE'].get('restart_type')
+        return (event['dp_name'], event['dp_id'], restart_type)
 
     def as_ports_status(self, event):
         """Convert the event to port status info, if applicable"""
         if not event or 'PORTS_STATUS' not in event:
-            return (None, None)
-        return (event['dp_id'], event['PORTS_STATUS'])
+            return (None, None, None)
+        return (event['dp_name'], event['dp_id'], event['PORTS_STATUS'])
 
     def as_port_state(self, event):
         """Convert event to a port state info, if applicable"""
         if not event or 'PORT_CHANGE' not in event:
-            return (None, None, None)
+            return (None, None, None, None)
+        name = event['dp_name']
         dpid = event['dp_id']
         port_no = int(event['PORT_CHANGE']['port_no'])
         reason = event['PORT_CHANGE']['reason']
         port_active = event['PORT_CHANGE']['status'] and reason != 'DELETE'
-        return (dpid, port_no, port_active)
+        return (name, dpid, port_no, port_active)
 
     def as_port_learn(self, event):
         """Convert to port learning info, if applicable"""
         if not event or 'L2_LEARN' not in event:
-            return (None, None, None, None)
+            return (None, None, None, None, None)
+        name = event['dp_name']
         dpid = event['dp_id']
         port_no = int(event['L2_LEARN']['port_no'])
         eth_src = event['L2_LEARN']['eth_src']
         src_ip = event['L2_LEARN']['l3_src_ip']
-        return (dpid, port_no, eth_src, src_ip)
+        return (name, dpid, port_no, eth_src, src_ip)
 
     def as_stack_topo_change(self, event):
         """Convert to port learning info, if applicable"""
