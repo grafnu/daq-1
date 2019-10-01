@@ -84,6 +84,10 @@ class Forchestrator:
         """Get the network topology overview"""
         return self._collector.get_topology()
 
+    def get_active_host_route(self, path, params):
+        """Get active host route"""
+        return self._collector.get_active_host_route(params['src'], params['dst'])
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
@@ -95,6 +99,7 @@ if __name__ == '__main__':
     HTTP.map_request('topology', FORCH.get_topology)
     HTTP.map_request('switches', FORCH.get_switches)
     HTTP.map_request('switch', FORCH.get_switch)
+    HTTP.map_request('host_route', FORCH.get_active_host_route)
     HTTP.map_request('', HTTP.static_file(''))
     HTTP.start_server()
     FORCH.main_loop()
