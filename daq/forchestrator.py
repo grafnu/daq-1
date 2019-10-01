@@ -36,7 +36,7 @@ class Forchestrator:
             LOGGER.info('Keyboard interrupt. Exiting.')
             self._faucet_events.disconnect()
         except Exception as e:
-            LOGGER.error("Exception:", str(e))
+            LOGGER.error("Exception: %s" % str((e)))
             raise
 
     def _handle_faucet_events(self):
@@ -104,4 +104,3 @@ if __name__ == '__main__':
     FORCH.main_loop()
     LOGGER.warning('Exiting program')
     HTTP.stop_server()
-

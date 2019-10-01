@@ -62,6 +62,7 @@ class HttpServer():
         thread.start()
 
     def stop_server(self):
+        """Stop and clean up server"""
         LOGGER.info("Stopping server.")
         self._server.server_close()
         self._server.shutdown()

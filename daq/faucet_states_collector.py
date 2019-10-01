@@ -81,14 +81,15 @@ class FaucetStatesCollector:
         return switch_data
 
     def get_switch_map(self):
+        """returns switch map for topology overview"""
         switch_map = {}
         topo_obj = self.topo_state
         with self.lock:
             for switch in topo_obj.get(TOPOLOGY_GRAPH, {}).get("nodes", []):
-                id = switch.get("id")
-                if id:
-                    switch_map[id] = {}
-                    switch_map[id]["status"] = None
+                _id = switch.get("id")
+                if _id:
+                    switch_map[_id] = {}
+                    switch_map[_id]["status"] = None
         return switch_map
 
     def get_switch(self, switch_name):
@@ -138,6 +139,7 @@ class FaucetStatesCollector:
         return switch_map
 
     def get_stack_topo(self):
+        """Returns formatted topology object"""
         topo_map = {}
         topo_obj = self.topo_state
         with self.lock:
