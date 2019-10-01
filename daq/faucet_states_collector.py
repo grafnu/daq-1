@@ -3,8 +3,11 @@
 import json
 
 from datetime import datetime
+import logging
+from threading import Lock
 import copy
 
+LOGGER = logging.getLogger('forch')
 
 def dump_states(func):
     """Decorator to dump the current states after the states map is modified"""
@@ -16,8 +19,8 @@ def dump_states(func):
 
     def wrapped(self, *args, **kwargs):
         res = func(self, *args, **kwargs)
-        _output = json.dumps(self.system_states, default=set_default)
-        #print(_output)
+        with self.lock:
+            LOGGER.debug(json.dumps(self.system_states, default=set_default))
         return res
 
     return wrapped
@@ -41,15 +44,21 @@ TOPOLOGY_ENTRY = "topology"
 TOPOLOGY_ROOT = "stack_root"
 TOPOLOGY_GRAPH = "graph_obj"
 TOPOLOGY_CHANGE_COUNT = "change_count"
+TOPOLOGY_HEALTH = "is_healthy"
+TOPOLOGY_NOT_HEALTH = "is_wounded"
+TOPOLOGY_DP_MAP = "switch_map"
+TOPOLOGY_LINK_MAP = "physical_stack_links"
+TOPOLOGY_LACP = "lacp_lag_status"
+TOPOLOGY_ROOT = "active_root"
 
 
 class FaucetStatesCollector:
     """Processing faucet events and store states in the map"""
-
     def __init__(self):
         self.system_states = {KEY_SWITCH: {}, TOPOLOGY_ENTRY: {}, KEY_LEARNED_MACS: {}}
         self.switch_states = self.system_states[KEY_SWITCH]
         self.topo_state = self.system_states[TOPOLOGY_ENTRY]
+        self.lock = Lock()
         self.learned_macs = self.system_states[KEY_LEARNED_MACS]
 
     def get_system(self):
@@ -58,7 +67,12 @@ class FaucetStatesCollector:
 
     def get_topology(self):
         """get the topology state"""
-        return self.topo_state
+        dplane_map = {}
+        dplane_map[TOPOLOGY_DP_MAP] = self.get_switch_map()
+        dplane_map[TOPOLOGY_LINK_MAP] = self.get_stack_topo()
+        dplane_map[TOPOLOGY_LACP] = None
+        dplane_map[TOPOLOGY_ROOT] = None
+        return dplane_map
 
     def get_switches(self):
         """get a set of all switches"""
@@ -67,18 +81,35 @@ class FaucetStatesCollector:
             switch_data[switch_name] = self.get_switch(switch_name)
         return switch_data
 
+    def get_switch_map(self):
+        """returns switch map for topology overview"""
+        switch_map = {}
+        topo_obj = self.topo_state
+        with self.lock:
+            for switch in topo_obj.get(TOPOLOGY_GRAPH, {}).get("nodes", []):
+                switch_id = switch.get("id")
+                if switch_id:
+                    switch_map[switch_id] = {}
+                    switch_map[switch_id]["status"] = None
+        return switch_map
+
     def get_switch(self, switch_name):
+        """lock protect get_switch_raw"""
+        with self.lock:
+            switches = self.get_switch_raw(switch_name)
+        return switches
+
+    def get_switch_raw(self, switch_name):
         """get switches state"""
         switch_map = {}
-
         # filling switch attributes
+        switch_states = self.switch_states.get(str(switch_name), {})
         attributes_map = switch_map.setdefault("attributes", {})
         attributes_map["name"] = switch_name
-        attributes_map["dp_id"] = self.switch_states.get(str(switch_name), {}).get(KEY_DP_ID, "")
+        attributes_map["dp_id"] = switch_states.get(KEY_DP_ID, "")
         attributes_map["description"] = None
 
         # filling switch dynamics
-        switch_states = self.switch_states.get(str(switch_name), {})
         switch_map["config_change_count"] = switch_states.get(KEY_CONFIG_CHANGE_COUNT, "")
         switch_map["config_change_type"] = switch_states.get(KEY_CONFIG_CHANGE_TYPE, "")
         switch_map["config_change_timestamp"] = switch_states.get(KEY_CONFIG_CHANGE_TS, "")
@@ -107,12 +138,28 @@ class FaucetStatesCollector:
             mac_map = switch_learned_mac_map.setdefault(mac, {})
             mac_states = self.learned_macs.get(mac, {})
             mac_map["ip_address"] = mac_states.get(KEY_MAC_LEARNING_IP, "")
-
             learned_switch = mac_states.get(KEY_MAC_LEARNING_SWITCH, {}).get(switch_name, {})
             mac_map["port"] = learned_switch.get(KEY_MAC_LEARNING_PORT, "")
             mac_map["timestamp"] = learned_switch.get(KEY_MAC_LEARNING_TS, "")
 
         return switch_map
+
+    def get_stack_topo(self):
+        """Returns formatted topology object"""
+        topo_map = {}
+        topo_obj = self.topo_state
+        with self.lock:
+            for link in topo_obj.get(TOPOLOGY_GRAPH, {}).get("links", []):
+                link_obj = {}
+                port_map = link.get("port_map")
+                if port_map:
+                    link_obj["switch_a"] = port_map["dp_a"]
+                    link_obj["port_a"] = port_map["port_a"]
+                    link_obj["switch_b"] = port_map["dp_z"]
+                    link_obj["port_b"] = port_map["port_z"]
+                    link_obj["status"] = None
+                topo_map[link["key"]] = link_obj
+        return topo_map
 
     def get_active_host_route(self, src_mac, dst_mac):
         """Given two MAC addresses in the core network, find the active route between them"""
@@ -147,59 +194,62 @@ class FaucetStatesCollector:
     @dump_states
     def process_port_state(self, timestamp, name, port, status):
         """process port state event"""
-        port_table = self.switch_states\
-            .setdefault(name, {})\
-            .setdefault(KEY_PORTS, {})\
-            .setdefault(port, {})
+        with self.lock:
+            port_table = self.switch_states\
+                .setdefault(name, {})\
+                .setdefault(KEY_PORTS, {})\
+                .setdefault(port, {})
 
-        port_table[KEY_PORT_STATUS_UP] = status
-        port_table[KEY_PORT_STATUS_TS] = datetime.fromtimestamp(timestamp).isoformat()
+            port_table[KEY_PORT_STATUS_UP] = status
+            port_table[KEY_PORT_STATUS_TS] = datetime.fromtimestamp(timestamp).isoformat()
 
-        port_table[KEY_PORT_STATUS_COUNT] = port_table.setdefault(KEY_PORT_STATUS_COUNT, 0) + 1
+            port_table[KEY_PORT_STATUS_COUNT] = port_table.setdefault(KEY_PORT_STATUS_COUNT, 0) + 1
 
     @dump_states
     # pylint: disable=too-many-arguments
     def process_port_learn(self, timestamp, name, port, mac, src_ip):
         """process port learn event"""
-        # update global mac table
-        global_mac_table = self.learned_macs.setdefault(mac, {})
+        with self.lock:
+            # update global mac table
+            global_mac_table = self.learned_macs.setdefault(mac, {})
 
-        global_mac_table[KEY_MAC_LEARNING_IP] = src_ip
+            global_mac_table[KEY_MAC_LEARNING_IP] = src_ip
 
-        global_mac_switch_table = global_mac_table.setdefault(KEY_MAC_LEARNING_SWITCH, {})
-        learning_switch = global_mac_switch_table.setdefault(name, {})
-        learning_switch[KEY_MAC_LEARNING_PORT] = port
-        learning_switch[KEY_MAC_LEARNING_TS] = datetime.fromtimestamp(timestamp).isoformat()
+            global_mac_switch_table = global_mac_table.setdefault(KEY_MAC_LEARNING_SWITCH, {})
+            learning_switch = global_mac_switch_table.setdefault(name, {})
+            learning_switch[KEY_MAC_LEARNING_PORT] = port
+            learning_switch[KEY_MAC_LEARNING_TS] = datetime.fromtimestamp(timestamp).isoformat()
 
-        # update per switch mac table
-        self.switch_states\
-            .setdefault(name, {})\
-            .setdefault(KEY_LEARNED_MACS, set())\
-            .add(mac)
+            # update per switch mac table
+            self.switch_states\
+                .setdefault(name, {})\
+                .setdefault(KEY_LEARNED_MACS, set())\
+                .add(mac)
 
     @dump_states
     def process_config_change(self, timestamp, dp_name, restart_type, dp_id):
         """process config change event"""
+        with self.lock:
+            # No dp_id (or 0) indicates that this is system-wide, not for a given switch.
+            if not dp_id:
+                return
 
-        # No dp_id (or 0) indicates that this is system-wide, not for a given switch.
-        if not dp_id:
-            return
+            dp_state = self.switch_states.setdefault(dp_name, {})
+            dp_state = self.switch_states.setdefault(dp_name, {})
 
-        dp_state = self.switch_states.setdefault(dp_name, {})
-
-        dp_state[KEY_DP_ID] = dp_id
-        dp_state[KEY_CONFIG_CHANGE_TYPE] = restart_type
-        dp_state[KEY_CONFIG_CHANGE_TS] = datetime.fromtimestamp(timestamp).isoformat()
-        dp_state[KEY_CONFIG_CHANGE_COUNT] = dp_state.setdefault(KEY_CONFIG_CHANGE_COUNT, 0) + 1
+            dp_state[KEY_DP_ID] = dp_id
+            dp_state[KEY_CONFIG_CHANGE_TYPE] = restart_type
+            dp_state[KEY_CONFIG_CHANGE_TS] = datetime.fromtimestamp(timestamp).isoformat()
+            dp_state[KEY_CONFIG_CHANGE_COUNT] = dp_state.setdefault(KEY_CONFIG_CHANGE_COUNT, 0) + 1
 
     @dump_states
     def process_stack_topo_change(self, timestamp, stack_root, graph):
         """Process stack topology change event"""
         topo_state = self.topo_state
-
-        topo_state[TOPOLOGY_ROOT] = stack_root
-        topo_state[TOPOLOGY_GRAPH] = graph
-        topo_state[TOPOLOGY_CHANGE_COUNT] = topo_state.setdefault(TOPOLOGY_CHANGE_COUNT, 0) + 1
+        with self.lock:
+            topo_state[TOPOLOGY_ROOT] = stack_root
+            topo_state[TOPOLOGY_GRAPH] = graph
+            topo_state[TOPOLOGY_CHANGE_COUNT] = topo_state.setdefault(TOPOLOGY_CHANGE_COUNT, 0) + 1
 
     @staticmethod
     def get_endpoints_from_link(link_map):
