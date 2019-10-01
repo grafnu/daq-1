@@ -99,7 +99,8 @@ class FaucetStatesCollector:
             # filling switch attributes
             attributes_map = switch_map.setdefault("attributes", {})
             attributes_map["name"] = switch_name
-            attributes_map["dp_id"] = self.switch_states.get(str(switch_name), {}).get(KEY_DP_ID, "")
+            attributes_map["dp_id"] = \
+                    self.switch_states.get(str(switch_name), {}).get(KEY_DP_ID, "")
             attributes_map["description"] = None
 
             # filling switch dynamics
