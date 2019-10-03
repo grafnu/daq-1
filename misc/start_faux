@@ -89,6 +89,25 @@ elif [ -n "${options[bacnetfail]}" ]; then
          FauxDeviceEngine.EntryPoint $local_ip $broadcast_ip "Faux-Device-Fail.json"  &
 fi
 
+if [ -n "${options[ntp_client]}" ]; then
+    echo Starting ntp client.
+    java -jar NTPClient/build/libs/NTPClient-1.0-SNAPSHOT-all.jar "time.google.com" "123" "3" &
+fi
+
+cip_port=41794
+multicast_group="224.1.1.1"
+duration_seconds=360
+
+if [ -n "${options[broadcast_client]}" ]; then
+    echo Starting broatcast client.
+    python TransportClient/client.py $broadcast_ip $cip_port broadcast $duration_seconds &
+fi
+
+if [ -n "${options[multicast_client]}" ]; then
+    echo Starting multicast client.
+    python TransportClient/client.py $multicast_group $cip_port multicast $duration_seconds &
+fi
+
 if [ -n "${options[discover]}" ]; then
     echo Starting bacnet discover loop.
     bin/bacnet_discover loop &
@@ -129,6 +148,16 @@ if [ -f $conf_file ]; then
 else
     echo Runtime config $conf_file not found.
 fi
+
+cat <<EOF >> variables.debug
+bac0_port= $bac0_port
+multicast_group= $multicast_group
+duration_seconds= $duration_seconds
+local_ip= $local_ip
+broadcast_ip= $broadcast_ip
+intf_name= $intf_name
+conf_file= $conf_file
+EOF
 
 echo Blocking for all eternety.
 tail -f /dev/null
