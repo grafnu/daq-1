@@ -60,7 +60,7 @@ class Forchestrator:
                 self._collector.process_dp_config_change(timestamp, name, restart_type, dpid)
             if dps_config:
                 LOGGER.debug('Config change. New config: %s', dps_config)
-                self._collector.process_config_change(timestamp, dps_config)
+                self._collector.process_dataplane_config_change(timestamp, dps_config)
 
             (stack_root, graph) = self._faucet_events.as_stack_topo_change(event)
             if stack_root is not None:
