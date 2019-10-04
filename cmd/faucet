@@ -18,7 +18,8 @@ cd $ROOT
 source misc/config_base.sh
 
 if [ "$1" == "local" ]; then
-    docker_volumes="-v $ROOT/faucet/faucet:/usr/lib/python3.6/site-packages/faucet"
+    docker_volumes+=" -v $ROOT/faucet/faucet:/usr/lib/python3.6/site-packages/faucet"
+    docker_volumes+=" -v $ROOT/faucet/faucet:/usr/lib/python3.7/site-packages/faucet"
     shift
 fi
 
