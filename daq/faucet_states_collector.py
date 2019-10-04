@@ -49,12 +49,12 @@ TOPOLOGY_DP_MAP = "switch_map"
 TOPOLOGY_LINK_MAP = "physical_stack_links"
 TOPOLOGY_LACP = "lacp_lag_status"
 TOPOLOGY_ROOT = "active_root"
-
+RAW_CONFIG = "raw_config"
 
 class FaucetStatesCollector:
     """Processing faucet events and store states in the map"""
     def __init__(self):
-        self.system_states = {KEY_SWITCH: {}, TOPOLOGY_ENTRY: {}, KEY_LEARNED_MACS: {}}
+        self.system_states = {KEY_SWITCH: {}, TOPOLOGY_ENTRY: {}, KEY_LEARNED_MACS: {}, RAW_CONFIG: {}}
         self.switch_states = self.system_states[KEY_SWITCH]
         self.topo_state = self.system_states[TOPOLOGY_ENTRY]
         self.lock = Lock()
@@ -226,7 +226,7 @@ class FaucetStatesCollector:
                 .add(mac)
 
     @dump_states
-    def process_config_change(self, timestamp, dp_name, restart_type, dp_id):
+    def process_config_change(self, timestamp, dp_name, restart_type, dp_id, dps_config):
         """process config change event"""
         with self.lock:
             # No dp_id (or 0) indicates that this is system-wide, not for a given switch.
@@ -239,6 +239,7 @@ class FaucetStatesCollector:
             dp_state[KEY_DP_ID] = dp_id
             dp_state[KEY_CONFIG_CHANGE_TYPE] = restart_type
             dp_state[KEY_CONFIG_CHANGE_TS] = datetime.fromtimestamp(timestamp).isoformat()
+            self.system_states[RAW_CONFIG] = dps_config
             dp_state[KEY_CONFIG_CHANGE_COUNT] = dp_state.setdefault(KEY_CONFIG_CHANGE_COUNT, 0) + 1
 
     @dump_states

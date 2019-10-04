@@ -45,6 +45,7 @@ class Forchestrator:
             if not event:
                 return True
             timestamp = event.get("time")
+            LOGGER.debug("Event: %r", event)
             (name, dpid, port, active) = self._faucet_events.as_port_state(event)
             if dpid and port:
                 LOGGER.debug('Port state %s %s %s', name, port, active)
@@ -53,11 +54,12 @@ class Forchestrator:
             if dpid and port:
                 LOGGER.debug('Port learn %s %s %s', name, port, target_mac)
                 self._collector.process_port_learn(timestamp, name, port, target_mac, src_ip)
-            (name, dpid, restart_type) = self._faucet_events.as_config_change(event)
+            (name, dpid, restart_type, dps_config) = self._faucet_events.as_config_change(event)
             if dpid is not None:
                 LOGGER.debug('DP restart %s %s', name, restart_type)
-                self._collector.process_config_change(timestamp, name, restart_type, dpid)
-
+                if dps_config:
+                    LOGGER.debug('Config change. New config: %s', dps_config)
+                self._collector.process_config_change(timestamp, name, restart_type, dpid, dps_config)
             (stack_root, graph) = self._faucet_events.as_stack_topo_change(event)
             if stack_root is not None:
                 LOGGER.debug('stack topology change root:%s', stack_root)
