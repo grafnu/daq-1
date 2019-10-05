@@ -142,9 +142,17 @@ function test_dot1x {
     #docker exec daq-faux-1 ping -q -c 10 192.168.12.2 2>&1 | awk -F, '/packet loss/{print $1,$2;}' | tee -a $TEST_RESULTS
 }
 
-echo Stacking Tests >> $TEST_RESULTS
+echo Base Stack Setup >> $TEST_RESULTS
 bin/net_clean
 bin/setup_stack local || exit 1
+test_mark=`date`
+echo $test_mark > faucet/faucet/.test_mark
+echo target_mark=`docker exec daq-faucet-1 cat /usr/lib/python3.7/site-packages/faucet/.test_mark`
+if [ "$test_mark" == "$target_mark" ]; then
+    echo Target and test marks match >> $TEST_RESULTS
+fi
+
+echo Stacking Tests >> $TEST_RESULTS
 test_stack
 ip link set t1sw1-eth9 down
 test_stack
