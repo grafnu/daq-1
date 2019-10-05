@@ -164,12 +164,15 @@ class FaucetStatesCollector:
                 topo_map[link["key"]] = link_obj
         return topo_map
 
-    def get_active_host_route(self, src_mac, dst_mac):
-        """Given two MAC addresses in the core network, find the active route between them"""
-        res = {'path': []}
+    def get_active_host_path(self, src_mac, dst_mac):
+        """Given two MAC addresses in the core network, find the active path between them"""
+        res = {'src_ip': None, 'dst_ip': None, 'path': []}
 
         if src_mac not in self.learned_macs or dst_mac not in self.learned_macs:
             return res
+
+        res['src_ip'] = self.learned_macs[src_mac].get(KEY_MAC_LEARNING_IP, None)
+        res['dst_ip'] = self.learned_macs[dst_mac].get(KEY_MAC_LEARNING_IP, None)
 
         src_learned_switches = self.learned_macs[src_mac].get(KEY_MAC_LEARNING_SWITCH, {})
         dst_learned_switches = self.learned_macs[dst_mac].get(KEY_MAC_LEARNING_SWITCH, {})
