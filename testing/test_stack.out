@@ -1,5 +1,7 @@
 Running testing/test_stack.sh
 Generator tests
+Base Stack Setup
+__main__
 Stacking Tests
 Testing stack mode bond
 (UNKNOWN) [192.168.0.2] 23 (?) : Connection timed out
