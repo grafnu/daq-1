@@ -145,12 +145,8 @@ function test_dot1x {
 echo Base Stack Setup >> $TEST_RESULTS
 bin/net_clean
 bin/setup_stack local || exit 1
-test_mark=`date`
-echo $test_mark > faucet/faucet/.test_mark
-echo target_mark=`docker exec daq-faucet-1 cat /usr/lib/python3.7/site-packages/faucet/.test_mark`
-if [ "$test_mark" == "$target_mark" ]; then
-    echo Target and test marks match >> $TEST_RESULTS
-fi
+cp misc/python_test.py faucet/faucet/
+docker exec daq-faucet-1 python -m faucet.python_test 2>&1 | tee -a $TEST_RESULTS
 
 echo Stacking Tests >> $TEST_RESULTS
 test_stack
