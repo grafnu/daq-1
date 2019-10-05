@@ -3,6 +3,7 @@ import psutil
 
 
 class LocalStatesCollector:
+    """Storing local system states"""
     def __init__(self):
         self._states = {'processes': []}
         self._process_states = self._states['processes']
