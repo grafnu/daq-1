@@ -6,6 +6,7 @@ import configurator
 import faucet_event_client
 import http_server
 from faucet_states_collector import FaucetStatesCollector
+from local_states_collector import LocalStatesCollector
 
 LOGGER = logging.getLogger('forch')
 
@@ -19,6 +20,7 @@ class Forchestrator:
         self._faucet_events = None
         self._server = None
         self._collector = FaucetStatesCollector()
+        self._local_collector = LocalStatesCollector()
 
     def initialize(self):
         """Initialize forchestrator instance"""
@@ -91,6 +93,10 @@ class Forchestrator:
         """Get active host path"""
         return self._collector.get_active_host_path(params['src'], params['dst'])
 
+    def get_process_state(self, path, params):
+        """Get certain processes state on the controller machine"""
+        return self._local_collector.get_process_state()
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
@@ -103,6 +109,7 @@ if __name__ == '__main__':
     HTTP.map_request('switches', FORCH.get_switches)
     HTTP.map_request('switch', FORCH.get_switch)
     HTTP.map_request('host_path', FORCH.get_active_host_path)
+    HTTP.map_request('process_state', FORCH.get_process_state)
     HTTP.map_request('', HTTP.static_file(''))
     HTTP.start_server()
     FORCH.main_loop()
