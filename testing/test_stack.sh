@@ -145,8 +145,11 @@ function test_dot1x {
 echo Base Stack Setup >> $TEST_RESULTS
 bin/net_clean
 bin/setup_stack local || exit 1
-cp misc/python_test.py faucet/faucet/
+
+# Test that the 'local' mode of faucet is working properly.
+echo 'print("supercalifragilisticexpialidocious")' > faucet/faucet/python_test.py
 docker exec daq-faucet-1 python -m faucet.python_test 2>&1 | tee -a $TEST_RESULTS
+rm faucet/faucet/python_test.py
 
 echo Stacking Tests >> $TEST_RESULTS
 test_stack
