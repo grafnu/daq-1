@@ -57,9 +57,11 @@ directory.
       * `startup.pcap`: Packet capture from startup (pre-DHCP).
       * `monitor.pcap`: Packet capture from monitoring (post-DHCP, pre-test).
     * Individual test modules are sorted in the `nodes/` subdirectory:
-      * In <code>module-name<em>XX</em>/</code> (same port number):
+      * In <code><em>moduleXX</em>/</code> (module name and port number),
+      e.g. `bacext02`:
         * `activate.log`: Test module activation log (docker container)
-        * `tmp/`: Test module directory, volume mapped into the test container:
+        * `tmp/`: Test module runtime directory, volume mapped into `/tmp`
+        in the test module container:
           * `module_config.json`: File supplied _to_ the test module about
           configuraiton information (test options, etc...)
           * `report.txt`: Test results _from_ the test module, generated at
