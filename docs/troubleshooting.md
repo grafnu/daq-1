@@ -5,7 +5,7 @@
 * Join the
 [daq-users@googlegroups.com](https://groups.google.com/forum/#!forum/daq-users)
 mailing list, and use it as the primary source of troubleshooting.
-  * If there is propritary or contractual information involved, you can always
+  * If there is proprietary or contractual information involved, you can always
   email somebody directly, but will likely result in a slower response time.
 * The `inst/cmdrun.log` file contains a copy of the console output from DAQ.
   * This file should be attached to communications about resolving DAQ issues.
@@ -23,7 +23,7 @@ before tackling anything to do with external switches or physical devices.
 a summary of all test results.
   * Generally found in <code>inst/reports/report_<em>XXXXX</em>.md</code> where
   <code><em>XXXXX</em></code> is some complicated unique string (e.g. MAC
-  address and timestamo).
+  address and timestamp).
   * If this file is not present, then something is wrong with the base setup,
   please follow the previous troubleshooting steps.
   * The determination of _PASS_ vs. _FAIL_ is one of policy, not a technical
@@ -66,6 +66,6 @@ directory.
         * `tmp/`: Test module runtime directory, volume mapped into `/tmp`
         in the test module container:
           * `module_config.json`: File supplied _to_ the test module about
-          configuraiton information (test options, etc...)
+          configuration information (test options, etc...)
           * `report.txt`: Test results _from_ the test module, generated at
           run time and contain all the relevant test results and diagnostics.
