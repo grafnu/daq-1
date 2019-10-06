@@ -37,7 +37,10 @@ a summary of all test results.
 For a specific test (e.g. _bacnet compliance_) here's the general sequence and
 structure of data. There is no one-size-fits-all diagnostics for tests, since
 each module has its own code and requirements; however, there is a common
-structure for where log and diagnostic information is located.
+structure for where log and diagnostic information is located. In addition to
+the common `cmdrun.log` file, the test-specific `activate.log`,
+`module_config.json`, and `report.txt` are the most helpul for
+diagnostics and troubleshooting.
 
 * Each test result (e.g. _protocol.bacnet.version_) is supplied by a _module_.
   * There is no obvious mapping from _test_ to _module_, so there might be
