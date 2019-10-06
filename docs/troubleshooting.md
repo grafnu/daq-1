@@ -31,6 +31,10 @@ a summary of all test results.
   you need to contact whomever is responsible for policy, not DAQ-proper.
   * The reports are _optionally_ available trough the _optionally_ configured
   GCP instance, but that's only relevant after the basics are working.
+* Capturing a complete zip of the `inst/` directory should encompass all the
+state neesary to diagnose/debug problems, so simply captuing that and sending
+it along would be sufficient in most cases. Be wary of file size, as `inst/`
+can collect cruft over time and occasionally need to be cleaned.
 
 ## Test-Specific
 
