@@ -2,22 +2,66 @@
 
 ## Overall System
 
-* inst/cmdrun.log
-  * unless you're dealing with basic startup errors, no need to include system.conf
-* [daq-users@googlegroups.com](https://groups.google.com/forum/#!forum/daq-users)
-* [test lab setup](test_lab.md) (physical switch)
-* Generated report.md file
+* Join the
+[daq-users@googlegroups.com](https://groups.google.com/forum/#!forum/daq-users)
+mailing list, and use it as the primary source of troubleshooting.
+  * If there is propritary or contractual information involved, you can always
+  email somebody directly, but will likely result in a slower response time.
+* The `inst/cmdrun.log` file contains a copy of the console output from DAQ.
+  * This file should be attached to communications about resolving DAQ issues.
+  * It's not necessary to include the assocaited `system.conf` file, since the
+  contents of that are already included.
+* Make sure everything is running properly using the internal simulation setup
+before tackling anything to do with external switches or physical devices.
+  * See [test lab setup](test_lab.md) setup for tips & tricks in dealing with
+  external/physical switches.
+  * `misc/system_base.conf` is likely the best place to start, as the simplest
+  base configuration.
+  * `misc/system_all.conf` is the next step, as it includes all the validated
+  built-in tests with DAQ.
+* The final output of DAQ is the generated "`report.md`" file, that includes
+a summary of all test results.
+  * Generally found in <code>inst/reports/report_<em>XXXXX</em>.md</code> where
+  <code><em>XXXXX</em></code> is some complicated unique string (e.g. MAC
+  address and timestamo).
+  * If this file is not present, then something is wrong with the base setup,
+  please follow the previous troubleshooting steps.
+  * The determination of _PASS_ vs. _FAIL_ is one of policy, not a technical
+  consideration. If the question is "Is it OK if this tests fails or not?" then
+  you need to contact whomever is responsible for policy, not DAQ-proper.
+  * The reports are _optionally_ available trough the _optionally_ configured
+  GCP instance, but that's only relevant after the basics are working.
 
 ## Test-Specific
 
-* Make sure it is run as expected in the cmdrun.log file.
-* inst/run-port-??/
-  * nodes
-    * module-name??/
-      * activate.log
-      * tmp/
-        * report.txt
-        * module_config.json
-  * scans/
-    * startup.pcap
-    * monitor.pcap
+For a specific test (e.g. _bacnet compliance_) here's the general sequence and
+structure of data. There is no one-size-fits-all diagnostics for tests, since
+each module has its own code and requirements; however, there is a common
+structure for where log and diagnostic information is located.
+
+* Each test result (e.g. _protocol.bacnet.version_) is supplied by a _module_.
+  * There is no obvious mapping from _test_ to _module_, so there might be
+  sleithing involved.
+* Make sure the test's _module_ is properly configured/run in the `cmdrun.log`
+file.
+  * E.g. for the _bacext_ module, there will be things like `Target port 3 test
+  bacext running`
+* Individual test results/diagnostics can be found in a dedicated test run
+directory.
+  * While troubleshooting, generally advised to use the `-s` option to
+  `cmd/run`. Each new
+  test run wipes out the previous set of results.
+  * Results are organized by switch port, found in
+  <code>inst/run-port-<em>XX</em>/</code>, where <code><em>XX</em></code> is
+  the switch port (physical or virtual) for the device.
+  * Within that directory, the <code>scans/</code> subdirectory:
+    * `startup.pcap`: Packet capture from startup (pre-DHCP).
+    * `monitor.pcap`: Packet capture from monitoring (post-DHCP, pre-test).
+  * Individual test modules are sorted in the `nodes/` subdirectory:
+    * In <code>module-name<em>XX</em>/</code> (same port number):
+      * `activate.log`: Test module activation log (docker container)
+      * `tmp/`: Test module directory, volume mapped into the test container:
+        * `module_config.json`: File supplied _to_ the test module about
+        configuraiton information (test options, etc...)
+        * `report.txt`: Test results _from_ the test module, generated at
+        run time and contain all the relevant test results and diagnostics.
