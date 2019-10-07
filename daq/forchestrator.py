@@ -6,7 +6,7 @@ import configurator
 import faucet_event_client
 import http_server
 from faucet_states_collector import FaucetStatesCollector
-from local_states_collector import LocalStatesCollector
+from local_state_collector import LocalStateCollector
 
 LOGGER = logging.getLogger('forch')
 
@@ -19,8 +19,8 @@ class Forchestrator:
         self._config = config
         self._faucet_events = None
         self._server = None
-        self._collector = FaucetStatesCollector()
-        self._local_collector = LocalStatesCollector()
+        self._collector = FaucetStatesCollector() # TODO change to _faucet_collector
+        self._local_collector = LocalStateCollector()
 
     def initialize(self):
         """Initialize forchestrator instance"""

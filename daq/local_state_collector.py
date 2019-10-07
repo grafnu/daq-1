@@ -2,23 +2,23 @@ from datetime import datetime
 import psutil
 
 
-class LocalStatesCollector:
+class LocalStateCollector:
     """Storing local system states"""
     def __init__(self):
-        self._states = {'processes': []}
-        self._process_states = self._states['processes']
+        self._state = {'processes': []}
+        self._process_state = self._state['processes']
 
     def get_process_state(self):
         """Get the information of processes in proc_set"""
 
         target_procs = {'ryu-manager', 'keepalived', 'forch', 'dunsel_watcher', 'python'}
         procs = [p for p in psutil.process_iter() if p.name() in target_procs]
-        self._process_states = []
+        self._process_state = []
 
         # fill up process info
         for proc in procs:
             proc_map = {}
-            self._process_states.append(proc_map)
+            self._process_state.append(proc_map)
 
             proc_map['name'] = proc.name()
             proc_map['cmd_line'] = proc.cmdline()
@@ -34,4 +34,4 @@ class LocalStatesCollector:
             proc_map['memory_info_mb']['rss'] = proc.memory_info().rss / 1e6
             proc_map['memory_info_mb']['vms'] = proc.memory_info().vms / 1e6
 
-        return self._process_states
+        return self._process_state
