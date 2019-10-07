@@ -151,8 +151,34 @@ class FaucetStatesCollector:
         """Returns formatted topology object"""
         topo_map = {}
         topo_obj = self.topo_state
+        config_obj = self.system_states.get(FAUCET_CONFIG, {}).get(DPS_CFG, {})
         with self.lock:
-            for link in topo_obj.get(TOPOLOGY_GRAPH, {}).get("links", []):
+            for dp, dp_obj in config_obj.items():
+                for iface, iface_obj in dp_obj.get("interfaces", {}).items():
+                    LOGGER.info("iface: %s iface_obj %s", iface, json.dumps(iface_obj))
+                    dp_s = iface_obj.get("stack",{}).get("dp")
+                    port_s = str(iface_obj.get("stack",{}).get("port"))
+                    if dp_s and port_s:
+                        if dp+":"+str(iface) < dp_s+":"+port_s:
+                            dp_a = dp
+                            dp_b = dp_s
+                            port_a = str(iface)
+                            port_b = port_s
+                        else:
+                            dp_a = dp_s
+                            dp_b = dp
+                            port_a = port_s
+                            port_b = str(iface)
+                        link_obj = {}
+                        link_obj["switch_a"] = dp_a
+                        link_obj["port_a"] = port_a
+                        link_obj["switch_b"] = dp_b
+                        link_obj["port_b"] = port_b
+                        link_obj["status"] = None
+                        key = dp_a+":"+port_a+"-"+dp_b+":"+port_b
+                        topo_map[key] = link_obj
+
+            """for link in topo_obj.get(TOPOLOGY_GRAPH, {}).get("links", []):
                 link_obj = {}
                 port_map = link.get("port_map")
                 if port_map:
@@ -161,7 +187,7 @@ class FaucetStatesCollector:
                     link_obj["switch_b"] = port_map["dp_z"]
                     link_obj["port_b"] = port_map["port_z"]
                     link_obj["status"] = None
-                topo_map[link["key"]] = link_obj
+                topo_map[link["key"]] = link_obj"""
         return topo_map
 
     def get_active_host_route(self, src_mac, dst_mac):
