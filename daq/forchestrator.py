@@ -6,6 +6,7 @@ import configurator
 import faucet_event_client
 import http_server
 from faucet_states_collector import FaucetStatesCollector
+from local_state_collector import LocalStateCollector
 
 LOGGER = logging.getLogger('forch')
 
@@ -18,7 +19,8 @@ class Forchestrator:
         self._config = config
         self._faucet_events = None
         self._server = None
-        self._collector = FaucetStatesCollector()
+        self._collector = FaucetStatesCollector() # TODO change to _faucet_collector
+        self._local_collector = LocalStateCollector()
 
     def initialize(self):
         """Initialize forchestrator instance"""
@@ -87,9 +89,13 @@ class Forchestrator:
         """Get the network topology overview"""
         return self._collector.get_topology()
 
-    def get_active_host_route(self, path, params):
-        """Get active host route"""
-        return self._collector.get_active_host_route(params['src'], params['dst'])
+    def get_active_host_path(self, path, params):
+        """Get active host path"""
+        return self._collector.get_active_host_path(params['src'], params['dst'])
+
+    def get_process_state(self, path, params):
+        """Get certain processes state on the controller machine"""
+        return self._local_collector.get_process_state()
 
 
 if __name__ == '__main__':
@@ -102,7 +108,8 @@ if __name__ == '__main__':
     HTTP.map_request('topology', FORCH.get_topology)
     HTTP.map_request('switches', FORCH.get_switches)
     HTTP.map_request('switch', FORCH.get_switch)
-    HTTP.map_request('host_route', FORCH.get_active_host_route)
+    HTTP.map_request('host_path', FORCH.get_active_host_path)
+    HTTP.map_request('process_state', FORCH.get_process_state)
     HTTP.map_request('', HTTP.static_file(''))
     HTTP.start_server()
     FORCH.main_loop()
