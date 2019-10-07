@@ -1,5 +1,6 @@
 """Processing faucet events"""
 
+import collections
 import copy
 from datetime import datetime
 import json
@@ -54,7 +55,7 @@ DPS_CFG_CHANGE_COUNT = "config_change_count"
 DPS_CFG_CHANGE_TS = "config_change_timestamp"
 FAUCET_CONFIG = "faucet_config"
 
-class FaucetStatesCollector: # TODO change to FaucetStateCollector
+class FaucetStateCollector:
     """Processing faucet events and store states in the map"""
     def __init__(self):
         self.system_states = \
@@ -123,27 +124,41 @@ class FaucetStatesCollector: # TODO change to FaucetStateCollector
         for port_id, port_states in switch_states.get(KEY_PORTS, {}).items():
             port_map = switch_port_map.setdefault(port_id, {})
             # port attributes
+            port_attr = self.get_port_attributes(switch_name, port_id)
             switch_port_attributes_map = port_map.setdefault("attributes", {})
-            switch_port_attributes_map["description"] = None
-            switch_port_attributes_map["stack_peer_switch"] = None
-            switch_port_attributes_map["stack_peer_port"] = None
+            switch_port_attributes_map["description"] = port_attr.get('description', None)
+            switch_port_attributes_map["port_type"] = port_attr.get('type', None)
+            switch_port_attributes_map["stack_peer_switch"] = port_attr.get('peer_switch', None)
+            switch_port_attributes_map["stack_peer_port"] = port_attr.get('peer_port', None)
 
             # port dynamics
             port_map["status_up"] = port_states.get(KEY_PORT_STATUS_UP, "")
-            port_map["port_type"] = None
             port_map["status_timestamp"] = port_states.get(KEY_PORT_STATUS_TS, "")
             port_map["status_count"] = port_states.get(KEY_PORT_STATUS_COUNT, "")
             port_map["packet_count"] = None
 
         # filling learned macs
-        switch_learned_mac_map = switch_map.setdefault("learned_macs", {})
         for mac in switch_states.get(KEY_LEARNED_MACS, set()):
-            mac_map = switch_learned_mac_map.setdefault(mac, {})
             mac_states = self.learned_macs.get(mac, {})
-            mac_map["ip_address"] = mac_states.get(KEY_MAC_LEARNING_IP, "")
             learned_switch = mac_states.get(KEY_MAC_LEARNING_SWITCH, {}).get(switch_name, {})
-            mac_map["port"] = learned_switch.get(KEY_MAC_LEARNING_PORT, "")
-            mac_map["timestamp"] = learned_switch.get(KEY_MAC_LEARNING_TS, "")
+            learned_port = learned_switch.get(KEY_MAC_LEARNING_PORT, None)
+            if not learned_port:
+                continue
+
+            port_attr = self.get_port_attributes(switch_name, learned_port)
+            if not port_attr:
+                continue
+
+            switch_learned_mac_map = None
+            if port_attr['type'] == 'access':
+                switch_learned_mac_map = switch_map.setdefault('access_port_mac', {})
+            else:
+                switch_learned_mac_map = switch_map.setdefault('stacking_port_mac', {})
+
+            mac_map = switch_learned_mac_map.setdefault(mac, {})
+            mac_map["ip_address"] = mac_states.get(KEY_MAC_LEARNING_IP, None)
+            mac_map["port"] = learned_port
+            mac_map["timestamp"] = learned_switch.get(KEY_MAC_LEARNING_TS, None)
 
         return switch_map
 
@@ -302,7 +317,7 @@ class FaucetStatesCollector: # TODO change to FaucetStateCollector
             if not link_map:
                 continue
 
-            sw_1, port_1, sw_2, port_2 = FaucetStatesCollector.get_endpoints_from_link(link_map)
+            sw_1, port_1, sw_2, port_2 = FaucetStateCollector.get_endpoints_from_link(link_map)
             if access_switch_port.get(sw_1, "") == port_1:
                 access_switch_port.pop(sw_1)
             if access_switch_port.get(sw_2, "") == port_2:
@@ -316,8 +331,38 @@ class FaucetStatesCollector: # TODO change to FaucetStateCollector
         for link_map in self.topo_state.get(TOPOLOGY_GRAPH, {}).get("links", []):
             if not link_map:
                 continue
-            sw_1, p_1, sw_2, p_2 = FaucetStatesCollector.get_endpoints_from_link(link_map)
+            sw_1, p_1, sw_2, p_2 = FaucetStateCollector.get_endpoints_from_link(link_map)
             self.add_link(src_mac, dst_mac, sw_1, p_1, sw_2, p_2, graph)
             self.add_link(src_mac, dst_mac, sw_2, p_2, sw_1, p_1, graph)
 
         return graph
+
+    def get_port_attributes(self, switch, port):
+        """Get the attributes of a port: description, type, peer_switch, peer_port"""
+        ret_attr = {}
+        cfg_switch = self.system_states.get(FAUCET_CONFIG, {}).get(DPS_CFG, {}).get(switch, None)
+        if not cfg_switch:
+            return ret_attr
+
+        port = str(port)
+        if port in cfg_switch.get('interfaces', {}):
+            port_map = cfg_switch['interfaces'][port]
+            ret_attr['description'] = port_map.get('description', None)
+            if 'stack' in port_map:
+                ret_attr['type'] = 'stack'
+                ret_attr['peer_switch'] = port_map['stack']['dp']
+                ret_attr['peer_port'] = port_map['stack']['port']
+            elif 'lacp' in port_map:
+                ret_attr['type'] = 'egress'
+
+            return ret_attr
+
+        for port_range, port_map in cfg_switch.get('interface_ranges', {}).items():
+            start_port = int(port_range.split('-')[0])
+            end_port = int(port_range.split('-')[1])
+            if start_port <= int(port) <= end_port:
+                ret_attr['description'] = port_map.get('description', None)
+                ret_attr['type'] = 'access'
+                return ret_attr
+
+        return ret_attr
