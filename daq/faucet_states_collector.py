@@ -54,7 +54,7 @@ DPS_CFG_CHANGE_COUNT = "config_change_count"
 DPS_CFG_CHANGE_TS = "config_change_timestamp"
 FAUCET_CONFIG = "faucet_config"
 
-class FaucetStatesCollector: # TODO change to FaucetStatesCollector
+class FaucetStatesCollector: # TODO change to FaucetStateCollector
     """Processing faucet events and store states in the map"""
     def __init__(self):
         self.system_states = \
