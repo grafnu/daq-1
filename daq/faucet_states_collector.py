@@ -150,9 +150,10 @@ class FaucetStatesCollector:
     def get_stack_topo(self):
         """Returns formatted topology object"""
         topo_map = {}
-        topo_obj = self.topo_state
-        config_obj = self.system_states.get(FAUCET_CONFIG, {}).get(DPS_CFG, {})
         with self.lock:
+            topo_obj = self.topo_state
+            config_obj = self.system_states.get(FAUCET_CONFIG, {}).get(DPS_CFG, {})
+            links = topo_obj.get(TOPOLOGY_GRAPH, {}).get("links", [])
             for dp, dp_obj in config_obj.items():
                 for iface, iface_obj in dp_obj.get("interfaces", {}).items():
                     LOGGER.info("iface: %s iface_obj %s", iface, json.dumps(iface_obj))
@@ -174,11 +175,17 @@ class FaucetStatesCollector:
                         link_obj["port_a"] = port_a
                         link_obj["switch_b"] = dp_b
                         link_obj["port_b"] = port_b
-                        link_obj["status"] = None
                         key = dp_a+":"+port_a+"-"+dp_b+":"+port_b
+                        link_obj["status"] = "DOWN"
+                        for link in links:
+                            if link["key"] == key:
+                                link_obj["status"] = "UP"
                         topo_map[key] = link_obj
 
             """for link in topo_obj.get(TOPOLOGY_GRAPH, {}).get("links", []):
+                key = link.get("key")
+                if key in topo_map:
+                    topo_map.get(key).get("status") = "UP"
                 link_obj = {}
                 port_map = link.get("port_map")
                 if port_map:
