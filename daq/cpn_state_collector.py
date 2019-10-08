@@ -28,6 +28,7 @@ class CPNStateCollector:
                     self._nodes_state.setdefault(node, {})[KEY_ATTRIBUTES] = copy.copy(attr_map)
 
     def get_cpn_state(self):
+        """Get CPN state"""
         ret_map = {}
 
         for cpn_node, node_state in self._nodes_state.items():
