@@ -6,5 +6,9 @@ else
     SOCK=inst/faucet/daq-faucet-$1/faucet_event.sock
 fi
 
+if [ ! -z "$2" ]; then
+    CPN_FILE="$2"
+fi
+
 echo Using event socket $SOCK
-sudo FAUCET_EVENT_SOCK=$SOCK venv/bin/python daq/forchestrator.py
+sudo FAUCET_EVENT_SOCK=$SOCK CPN_YAML_FILE=$CPN_FILE venv/bin/python daq/forchestrator.py
