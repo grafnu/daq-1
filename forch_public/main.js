@@ -101,5 +101,7 @@ function initialize() {
   load_viewer();
   fetch_data('overview', 'overview');
   fetch_data('topology', 'topology');
+  fetch_data('host_path', 'host_path');
+  fetch_data('process_state', 'process_state');
   fetch_data('switches', 'switches', populate_table);
 }
