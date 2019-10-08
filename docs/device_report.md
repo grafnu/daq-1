@@ -215,9 +215,28 @@ RESULT skip protocol.bacnet.pic Bacnet device not found.
 ## Module tls
 
 ```
+--------------------
+Collecting TLS cert from target address %% 10.20.96.164
 IOException unable to connect to server.
+
+--------------------
+security.tls.v3
+--------------------
+Verify the device supports TLS 1.2 or above (as a client)
+--------------------
+See log above
+--------------------
 RESULT skip security.tls.v3
+
+--------------------
+security.x509
+--------------------
+Verify the devices supports RFC 2459 - Internet X.509 Public Key Infrastructure Certificate and CRL Profile
+--------------------
+See log above
+--------------------
 RESULT skip security.x509
+
 ```
 
 ## Module udmi

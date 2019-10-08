@@ -3,9 +3,11 @@ FROM daq/aardvark:latest
 # Do this alone first so it can be re-used by other build files.
 RUN $AG update && $AG install openjdk-8-jre
 
-RUN $AG update && $AG install openjdk-8-jdk git
+RUN $AG update && $AG install openjdk-8-jdk git jq
 
-COPY subset/security/ . 
+COPY subset/switches/module_manifest.json .
+COPY subset/helpers/reporting_utils .
+COPY subset/security/ .
 
 RUN cd tlstest && ./gradlew build
 
