@@ -9,16 +9,13 @@ cpn_nodes:
         role: dist
         vendor: NoviSwitch
         model: NS-2128
-        serial_num: FCW2247AHVB
     nz-kiwi-t2sw1:
         cpn_ip: 127.0.0.1
         role: dist
         vendor: Cisco
         model: C9300-48P
-        serial_num: FCW2247AHVB
     nz-kiwi-t2sw1:
         cpn_ip: 127.0.0.1
         role: dist
         vendor: Cisco
         model: C9300-48P
-        serial_num: FCW2247AHVB
