@@ -11,4 +11,4 @@ if [ ! -z "$2" ]; then
 fi
 
 echo Using event socket $SOCK
-sudo FAUCET_EVENT_SOCK=$SOCK CPN_YAML_FILE=$CPN_FILE venv/bin/python daq/forchestrator.py
+sudo FAUCET_EVENT_SOCK=$SOCK CPN_CONFIG_FILE=$CPN_FILE venv/bin/python daq/forchestrator.py
