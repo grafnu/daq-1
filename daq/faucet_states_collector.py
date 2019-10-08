@@ -160,21 +160,21 @@ class FaucetStatesCollector:
                     port_s = str(iface_obj.get("stack", {}).get("port"))
                     if dp_s and port_s:
                         link_obj = {}
-                        if dp+":"+str(iface) < dp_s+":"+port_s:
+                        if dp+":"+iface < dp_s+":"+port_s:
                             link_obj["switch_a"] = dp
-                            link_obj["port_a"] = str(iface)
+                            link_obj["port_a"] = iface
                             link_obj["switch_b"] = dp_s
                             link_obj["port_b"] = port_s
-                            key = dp+":"+str(iface)+"-"+dp_s+":"+port_s
+                            key = dp+":"+iface+"-"+dp_s+":"+port_s
                         else:
                             link_obj["switch_b"] = dp
-                            link_obj["port_b"] = str(iface)
+                            link_obj["port_b"] = iface
                             link_obj["switch_a"] = dp_s
                             link_obj["port_a"] = port_s
-                            key = dp_s+":"+port_s+"-"+dp+":"+str(iface)
+                            key = dp_s+":"+port_s+"-"+dp+":"+iface
                         topo_map[key] = link_obj
                         link_obj["status"] = "DOWN"
-                        if (path_to_root.get(dp) == iface or
+                        if (path_to_root.get(dp) == int(iface) or
                                 path_to_root.get(dp_s) == int(port_s)):
                             link_obj["status"] = "ACTIVE"
                             continue
