@@ -19,9 +19,7 @@ class CPNStateCollector:
         self._nodes_state = self._cpn_state.setdefault(KEY_NODES, {})
 
         cpn_file_name = os.getenv('CPN_CONFIG_FILE')
-        if not cpn_file_name:
-            LOGGER.warning("CPN Config file is not specified")
-        else:
+        if cpn_file_name:
             LOGGER.info(f"Loading CPN config file: {cpn_file_name}")
             try:
                 with open(cpn_file_name) as cpn_file:
@@ -32,6 +30,8 @@ class CPNStateCollector:
                         self._nodes_state.setdefault(node, {})[KEY_ATTRIBUTES] = copy.copy(attr_map)
             except OSError as e:
                 LOGGER.warning(e)
+        else:
+            LOGGER.warning("CPN Config file is not specified")
 
     def get_cpn_state(self):
         """Get CPN state"""
