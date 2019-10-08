@@ -42,6 +42,7 @@ KEY_CONFIG_CHANGE_TS = "config_change_timestamp"
 TOPOLOGY_ENTRY = "topology"
 TOPOLOGY_ROOT = "stack_root"
 TOPOLOGY_GRAPH = "graph_obj"
+ROOT_PATH = "path_to_root"
 TOPOLOGY_CHANGE_COUNT = "change_count"
 TOPOLOGY_HEALTH = "is_healthy"
 TOPOLOGY_NOT_HEALTH = "is_wounded"
@@ -154,9 +155,9 @@ class FaucetStatesCollector:
             topo_obj = self.topo_state
             config_obj = self.system_states.get(FAUCET_CONFIG, {}).get(DPS_CFG, {})
             links = topo_obj.get(TOPOLOGY_GRAPH, {}).get("links", [])
+            path_to_root = topo_obj.get(ROOT_PATH, {})
             for dp, dp_obj in config_obj.items():
                 for iface, iface_obj in dp_obj.get("interfaces", {}).items():
-                    LOGGER.info("iface: %s iface_obj %s", iface, json.dumps(iface_obj))
                     dp_s = iface_obj.get("stack",{}).get("dp")
                     port_s = str(iface_obj.get("stack",{}).get("port"))
                     if dp_s and port_s:
@@ -179,7 +180,10 @@ class FaucetStatesCollector:
                         link_obj["status"] = "DOWN"
                         for link in links:
                             if link["key"] == key:
-                                link_obj["status"] = "UP"
+                                if path_to_root.get(dp_a) == int(port_a) or path_to_root.get(dp_b) == int(port_b):
+                                    link_obj["status"] = "ACTIVE"
+                                else:
+                                    link_obj["status"] = "UP"
                         topo_map[key] = link_obj
 
             """for link in topo_obj.get(TOPOLOGY_GRAPH, {}).get("links", []):
@@ -288,12 +292,13 @@ class FaucetStatesCollector:
             cfg_state[DPS_CFG_CHANGE_COUNT] = cfg_state.setdefault(DPS_CFG_CHANGE_COUNT, 0) + 1
 
     @dump_states
-    def process_stack_topo_change(self, timestamp, stack_root, graph):
+    def process_stack_topo_change(self, timestamp, stack_root, graph, path_to_root):
         """Process stack topology change event"""
         topo_state = self.topo_state
         with self.lock:
             topo_state[TOPOLOGY_ROOT] = stack_root
             topo_state[TOPOLOGY_GRAPH] = graph
+            topo_state[ROOT_PATH] = path_to_root
             topo_state[TOPOLOGY_CHANGE_COUNT] = topo_state.setdefault(TOPOLOGY_CHANGE_COUNT, 0) + 1
 
     @staticmethod
