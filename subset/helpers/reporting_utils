@@ -61,15 +61,15 @@ function write_out_monolog() {
 
     mapfile -t _TEST_ARR < <(jq -r 'keys[]' $_MANIFEST)
 
-    echo $_______REPORT_DIVIDER >> $_REPORT
-    cat $_MONO_LOG >> $_REPORT
-    echo >> $_REPORT
+    echo $_______REPORT_DIVIDER | tee -a $_REPORT
+    cat $_MONO_LOG | tee -a $_REPORT
+    echo | tee -a $_REPORT
 
     for test_name in "${_TEST_ARR[@]}";
         do
-            test_desc="$(jq --arg tn "$test_name" -r '.[$tn].desc' $MANIFEST)"
+            test_desc="$(jq --arg tn "$test_name" -r '.[$tn].desc' $_MANIFEST)"
 
-            write_out_result $REPORT \
+            write_out_result $_REPORT \
                             "$test_name" \
                             "$test_desc" \
                             "See log above" \

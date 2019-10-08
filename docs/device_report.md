@@ -84,10 +84,31 @@ Overall device result FAIL
 ## Module ping
 
 ```
+--------------------
 Baseline ping test report
 %% 61 packets captured.
-RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.92.164
+LOCAL_IP not configured, assuming no network switch
+
+Done with basic connectivity tests
+
+--------------------
+base.switch.ping
+--------------------
+Attempt to ping the OpenFlow compatible switch configured in system.conf
+--------------------
+See log above
+--------------------
+RESULT skip base.switch.ping No local IP has been set, check ext_loip in system.conf
+
+--------------------
+base.target.ping
+--------------------
+Attempt to ping the Device Under Test
+--------------------
+See log above
+--------------------
+RESULT pass base.target.ping target reached %% 10.20.70.164
+
 ```
 
 ## Module nmap
