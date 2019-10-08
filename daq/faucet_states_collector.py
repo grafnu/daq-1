@@ -151,39 +151,36 @@ class FaucetStatesCollector:
         """Returns formatted topology object"""
         topo_map = {}
         with self.lock:
-            topo_obj = self.topo_state
             config_obj = self.system_states.get(FAUCET_CONFIG, {}).get(DPS_CFG, {})
-            links = topo_obj.get(TOPOLOGY_GRAPH, {}).get("links", [])
-            path_to_root = topo_obj.get(ROOT_PATH, {})
+            links = self.topo_state.get(TOPOLOGY_GRAPH, {}).get("links", [])
+            path_to_root = self.topo_state.get(ROOT_PATH, {})
             for dp, dp_obj in config_obj.items():
                 for iface, iface_obj in dp_obj.get("interfaces", {}).items():
-                    dp_s = iface_obj.get("stack",{}).get("dp")
-                    port_s = str(iface_obj.get("stack",{}).get("port"))
+                    dp_s = iface_obj.get("stack", {}).get("dp")
+                    port_s = str(iface_obj.get("stack", {}).get("port"))
                     if dp_s and port_s:
-                        if dp+":"+str(iface) < dp_s+":"+port_s:
-                            dp_a = dp
-                            dp_b = dp_s
-                            port_a = str(iface)
-                            port_b = port_s
-                        else:
-                            dp_a = dp_s
-                            dp_b = dp
-                            port_a = port_s
-                            port_b = str(iface)
                         link_obj = {}
-                        link_obj["switch_a"] = dp_a
-                        link_obj["port_a"] = port_a
-                        link_obj["switch_b"] = dp_b
-                        link_obj["port_b"] = port_b
-                        key = dp_a+":"+port_a+"-"+dp_b+":"+port_b
+                        if dp+":"+str(iface) < dp_s+":"+port_s:
+                            link_obj["switch_a"] = dp
+                            link_obj["port_a"] = str(iface)
+                            link_obj["switch_b"] = dp_s
+                            link_obj["port_b"] = port_s
+                            key = dp+":"+str(iface)+"-"+dp_s+":"+port_s
+                        else:
+                            link_obj["switch_b"] = dp
+                            link_obj["port_b"] = str(iface)
+                            link_obj["switch_a"] = dp_s
+                            link_obj["port_a"] = port_s
+                            key = dp_s+":"+port_s+"-"+dp+":"+str(iface)
+                        topo_map[key] = link_obj
                         link_obj["status"] = "DOWN"
+                        if (path_to_root.get(dp) == iface or
+                                path_to_root.get(dp_s) == int(port_s)):
+                            link_obj["status"] = "ACTIVE"
+                            continue
                         for link in links:
                             if link["key"] == key:
-                                if path_to_root.get(dp_a) == int(port_a) or path_to_root.get(dp_b) == int(port_b):
-                                    link_obj["status"] = "ACTIVE"
-                                else:
-                                    link_obj["status"] = "UP"
-                        topo_map[key] = link_obj
+                                link_obj["status"] = "UP"
 
             """for link in topo_obj.get(TOPOLOGY_GRAPH, {}).get("links", []):
                 key = link.get("key")
