@@ -4,7 +4,7 @@ import copy
 from datetime import datetime
 import json
 import logging
-from threading import Lock
+from threading import RLock
 
 LOGGER = logging.getLogger('forch')
 
@@ -40,7 +40,6 @@ KEY_CONFIG_CHANGE_COUNT = "config_change_count"
 KEY_CONFIG_CHANGE_TYPE = "config_change_type"
 KEY_CONFIG_CHANGE_TS = "config_change_timestamp"
 TOPOLOGY_ENTRY = "topology"
-TOPOLOGY_ROOT = "stack_root"
 TOPOLOGY_GRAPH = "graph_obj"
 ROOT_PATH = "path_to_root"
 TOPOLOGY_CHANGE_COUNT = "change_count"
@@ -62,7 +61,7 @@ class FaucetStatesCollector:
                 {KEY_SWITCH: {}, TOPOLOGY_ENTRY: {}, KEY_LEARNED_MACS: {}, FAUCET_CONFIG: {}}
         self.switch_states = self.system_states[KEY_SWITCH]
         self.topo_state = self.system_states[TOPOLOGY_ENTRY]
-        self.lock = Lock()
+        self.lock = RLock()
         self.learned_macs = self.system_states[KEY_LEARNED_MACS]
 
     def get_system(self):
@@ -201,10 +200,52 @@ class FaucetStatesCollector:
                 topo_map[link["key"]] = link_obj"""
         return topo_map
 
-    def get_active_host_route(self, src_mac, dst_mac):
+    def get_active_egress_route(self, src_mac):
+        """Given a MAC address return active route to egress."""
+        res = {'path': []}
+        if src_mac not in self.learned_macs:
+            return res
+        src_switch, src_port = self.get_access_switch(src_mac)
+        LOGGER.info("src_switch: %s src_port: %s", src_switch, src_port)
+        with self.lock:
+            link_list = self.topo_state.get(TOPOLOGY_GRAPH).get('links', [])
+            path_to_root = self.topo_state.get(ROOT_PATH, {})
+            hop = {'switch': src_switch, 'ingress': src_port, 'egress': None}
+            while hop:
+                LOGGER.info("hop: %s", json.dumps(hop))
+                next_hop = {}
+                egress_port = path_to_root[hop['switch']]
+                LOGGER.info("egress port: %s", egress_port)
+                #LOGGER.info("link_list: %s", link_list)
+                if egress_port:
+                    hop['egress'] = egress_port
+                    for link_map in link_list:
+                        if not link_map:
+                            continue
+                        sw_1, port_1, sw_2, port_2 = FaucetStatesCollector.get_endpoints_from_link(link_map)
+                        LOGGER.info("port_1: %s port_2: %s  egress_port: %s %s %s %s", port_1, port_2, egress_port, type(port_1), type(port_2), type(egress_port))
+                        if hop['switch'] == sw_1 and egress_port == port_1:
+                            next_hop['switch'] = sw_2
+                            next_hop['ingress'] = port_2
+                            break
+                        elif hop['switch'] == sw_2 and egress_port == port_2:
+                            next_hop['switch'] = sw_1
+                            next_hop['ingress'] = port_1
+                            break
+                    res['path'].append(hop)
+                elif hop['switch'] == self.topo_state.get(TOPOLOGY_ROOT):
+                    res['path'].append(hop)
+                    break
+                hop = next_hop
+                LOGGER.info(" nexthop: %s", json.dumps(hop))
+        return res
+
+    def get_active_host_route(self, src_mac, dst_mac=None):
         """Given two MAC addresses in the core network, find the active route between them"""
         res = {'path': []}
 
+        if not dst_mac:
+            return self.get_active_egress_route(src_mac)
         if src_mac not in self.learned_macs or dst_mac not in self.learned_macs:
             return res
 
@@ -332,6 +373,8 @@ class FaucetStatesCollector:
 
         if not access_switch_port:
             return None
+
+        LOGGER.info("Access switch port: %s", json.dumps(access_switch_port))
 
         for link_map in self.topo_state.get(TOPOLOGY_GRAPH).get("links", []):
             if not link_map:

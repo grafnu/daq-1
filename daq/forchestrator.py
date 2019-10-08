@@ -89,7 +89,7 @@ class Forchestrator:
 
     def get_active_host_route(self, path, params):
         """Get active host route"""
-        return self._collector.get_active_host_route(params['src'], params['dst'])
+        return self._collector.get_active_host_route(params.get('src', None), params.get('dst', None))
 
 
 if __name__ == '__main__':
