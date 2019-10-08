@@ -64,13 +64,13 @@ Overall device result FAIL
 |pass|base.target.ping|Connectivity|Required|target|
 |skip|cloud.udmi.pointset|Other|Other|No device id|
 |fail|connection.mac_oui|Other|Other||
-|skip|connection.port_duplex|Other|Other|No local IP|
-|skip|connection.port_link|Other|Other|No local IP|
-|skip|connection.port_speed|Other|Other|No local IP|
+|skip|connection.port_duplex|Other|Other|No local IP has been set, check ext_loip in system.conf|
+|skip|connection.port_link|Other|Other|No local IP has been set, check ext_loip in system.conf|
+|skip|connection.port_speed|Other|Other|No local IP has been set, check ext_loip in system.conf|
 |fail|network.brute|Security|Required||
-|skip|poe.negotiation|Other|Other|No local IP|
-|skip|poe.power|Other|Other|No local IP|
-|skip|poe.support|Other|Other|No local IP|
+|skip|poe.negotiation|Other|Other|No local IP has been set, check ext_loip in system.conf|
+|skip|poe.power|Other|Other|No local IP has been set, check ext_loip in system.conf|
+|skip|poe.support|Other|Other|No local IP has been set, check ext_loip in system.conf|
 |skip|protocol.bacnet.pic|Other|Other|Bacnet device not found.|
 |skip|protocol.bacnet.version|Other|Other|Bacnet device not found.|
 |skip|security.firmware|Other|Other|Could not retrieve a firmware version with nmap. Check bacnet port.|
@@ -129,56 +129,56 @@ RESULT skip security.firmware Could not retrieve a firmware version with nmap. C
 --------------------
 connection.port_link
 --------------------
-description
+Connect the device to the network switch. Check the device and the switch for the green connection light & no errors
 --------------------
 LOCAL_IP not configured, assuming no network switch.
 --------------------
-RESULT skip connection.port_link No local IP
+RESULT skip connection.port_link No local IP has been set, check ext_loip in system.conf
 
 --------------------
 connection.port_speed
 --------------------
-description
+Verify the device auto-negotiates connection speed
 --------------------
 LOCAL_IP not configured, assuming no network switch.
 --------------------
-RESULT skip connection.port_speed No local IP
+RESULT skip connection.port_speed No local IP has been set, check ext_loip in system.conf
 
 --------------------
 connection.port_duplex
 --------------------
-description
+Verify the device supports full duplex
 --------------------
 LOCAL_IP not configured, assuming no network switch.
 --------------------
-RESULT skip connection.port_duplex No local IP
+RESULT skip connection.port_duplex No local IP has been set, check ext_loip in system.conf
 
 --------------------
 poe.power
 --------------------
-description
+Verify that the device draws less than the maximum power allocated by the port. This is 15.4W for 802.3af and 30W for 802.3at
 --------------------
 LOCAL_IP not configured, assuming no network switch.
 --------------------
-RESULT skip poe.power No local IP
+RESULT skip poe.power No local IP has been set, check ext_loip in system.conf
 
 --------------------
 poe.negotiation
 --------------------
-description
+Verify the device autonegotiates power requirements
 --------------------
 LOCAL_IP not configured, assuming no network switch.
 --------------------
-RESULT skip poe.negotiation No local IP
+RESULT skip poe.negotiation No local IP has been set, check ext_loip in system.conf
 
 --------------------
 poe.support
 --------------------
-description
+Verify if the device supports PoE
 --------------------
 LOCAL_IP not configured, assuming no network switch.
 --------------------
-RESULT skip poe.support No local IP
+RESULT skip poe.support No local IP has been set, check ext_loip in system.conf
 
 ```
 

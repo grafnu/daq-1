@@ -19,6 +19,7 @@ faucet/
 mininet/
 local/
 local_xxx
+local.old
 firebase/.firebaserc
 firebase/.firebase
 firebase/functions/package-lock.json
