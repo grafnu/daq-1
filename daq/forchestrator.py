@@ -5,7 +5,8 @@ import sys
 import configurator
 import faucet_event_client
 import http_server
-from faucet_states_collector import FaucetStatesCollector
+from faucet_state_collector import FaucetStateCollector
+from local_state_collector import LocalStateCollector
 
 LOGGER = logging.getLogger('forch')
 
@@ -18,7 +19,8 @@ class Forchestrator:
         self._config = config
         self._faucet_events = None
         self._server = None
-        self._collector = FaucetStatesCollector()
+        self._faucet_collector = FaucetStateCollector()
+        self._local_collector = LocalStateCollector()
 
     def initialize(self):
         """Initialize forchestrator instance"""
@@ -49,23 +51,23 @@ class Forchestrator:
             (name, dpid, port, active) = self._faucet_events.as_port_state(event)
             if dpid and port:
                 LOGGER.debug('Port state %s %s %s', name, port, active)
-                self._collector.process_port_state(timestamp, name, port, active)
+                self._faucet_collector.process_port_state(timestamp, name, port, active)
             (name, dpid, port, target_mac, src_ip) = self._faucet_events.as_port_learn(event)
             if dpid and port:
                 LOGGER.debug('Port learn %s %s %s', name, port, target_mac)
-                self._collector.process_port_learn(timestamp, name, port, target_mac, src_ip)
+                self._faucet_collector.process_port_learn(timestamp, name, port, target_mac, src_ip)
             (name, dpid, restart_type, dps_config) = self._faucet_events.as_config_change(event)
             if dpid is not None:
                 LOGGER.debug('DP restart %s %s', name, restart_type)
-                self._collector.process_dp_config_change(timestamp, name, restart_type, dpid)
+                self._faucet_collector.process_dp_config_change(timestamp, name, restart_type, dpid)
             if dps_config:
                 LOGGER.debug('Config change. New config: %s', dps_config)
-                self._collector.process_dataplane_config_change(timestamp, dps_config)
+                self._faucet_collector.process_dataplane_config_change(timestamp, dps_config)
 
             (stack_root, graph, path_to_root) = self._faucet_events.as_stack_topo_change(event)
             if stack_root is not None:
                 LOGGER.debug('stack topology change root:%s', stack_root)
-                self._collector.process_stack_topo_change(timestamp, stack_root, graph, path_to_root)
+                self._faucet_collector.process_stack_topo_change(timestamp, stack_root, graph, path_to_root)
         return False
 
     def get_overview(self, path, params):
@@ -77,19 +79,23 @@ class Forchestrator:
 
     def get_switch(self, path, params):
         """Get the state of the switches"""
-        return self._collector.get_switch(params['switch_name'])
+        return self._faucet_collector.get_switch(params['switch_name'])
 
     def get_switches(self, path, params):
         """Get the state of the switches"""
-        return self._collector.get_switches()
+        return self._faucet_collector.get_switches()
 
     def get_topology(self, path, params):
         """Get the network topology overview"""
-        return self._collector.get_topology()
+        return self._faucet_collector.get_topology()
 
-    def get_active_host_route(self, path, params):
-        """Get active host route"""
-        return self._collector.get_active_host_route(params.get('src', None), params.get('dst', None))
+    def get_active_host_path(self, path, params):
+        """Get active host path"""
+        return self._faucet_collector.get_active_host_path(params.get('src', None), params.get('dst', None))
+
+    def get_process_state(self, path, params):
+        """Get certain processes state on the controller machine"""
+        return self._local_collector.get_process_state()
 
 
 if __name__ == '__main__':
@@ -102,7 +108,8 @@ if __name__ == '__main__':
     HTTP.map_request('topology', FORCH.get_topology)
     HTTP.map_request('switches', FORCH.get_switches)
     HTTP.map_request('switch', FORCH.get_switch)
-    HTTP.map_request('host_route', FORCH.get_active_host_route)
+    HTTP.map_request('host_path', FORCH.get_active_host_path)
+    HTTP.map_request('process_state', FORCH.get_process_state)
     HTTP.map_request('', HTTP.static_file(''))
     HTTP.start_server()
     FORCH.main_loop()
