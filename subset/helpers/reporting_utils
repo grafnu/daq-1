@@ -17,3 +17,15 @@ $RESULT_AND_SUMMARY
 
 END
 }
+
+function check_for_fails_in() {
+    local arr=("$@")
+    local result="false"
+    for log in "${arr[@]}";
+        do
+            if grep -q 'RESULT fail' <<< $log; then
+                result="true"
+            fi
+        done
+    echo $result
+}

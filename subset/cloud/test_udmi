@@ -75,3 +75,5 @@ write_out_result $REPORT \
                  "$TEST_DESCRIPTION" \
                  "See activate.log for more details" \
                  "$RESULT_AND_SUMMARY"
+
+[ "$result" == pass ]

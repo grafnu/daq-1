@@ -7,9 +7,9 @@ Lint checks
 cmd/inbuild exit code 0
 Extended tests
 RESULT skip protocol.bacnet.version Bacnet device not found.
-RESULT skip protocol.bacnet.pic Bacnet device not found... Pics check cannot be performed.
+RESULT skip protocol.bacnet.pic Bacnet device not found.
 RESULT info protocol.bacnet.version Protocol version: 1
-RESULT fail protocol.bacnet.pic
+RESULT fail protocol.bacnet.pic The device does not match the PICS
 RESULT info protocol.bacnet.version Protocol version: 1
 RESULT pass protocol.bacnet.pic
 RESULT fail network.brute
@@ -29,8 +29,8 @@ RESULT fail security.firmware version found: ?\xFF\xFF\x19,>u\x08\x00no Firmware
 RESULT pass security.firmware version found: ?\xFF\xFF\x19,>u\x08\x00no
 dhcp requests 2 1
 01: ['01:brute:1']
-02: ['02:discover:1', '02:nmap:1']
-03: []
+02: ['02:bacext:1', '02:discover:1', '02:nmap:1']
+03: ['03:udmi:1']
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
