@@ -4,8 +4,8 @@ source testing/test_preamble.sh
 
 # Runs lint checks and some similar things
 echo Lint checks | tee -a $TEST_RESULTS
-cmd/inbuild skip
-echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
+bin/check_style
+echo check_style exit code $? | tee -a $TEST_RESULTS
 
 out_dir=out/daq-test_stack
 rm -rf $out_dir

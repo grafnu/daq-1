@@ -1,6 +1,6 @@
 Running testing/test_stack.sh
 Lint checks
-cmd/inbuild exit code 0
+check_style exit code 0
 Generator tests
 Base Stack Setup
 supercalifragilisticexpialidocious
