@@ -92,7 +92,9 @@ class Forchestrator:
 
     def get_active_host_path(self, path, params):
         """Get active host path"""
-        return self._faucet_collector.get_active_host_path(params.get('src', None), params.get('dst', None))
+        src = params.get('src', None)
+        dst = params.get('dst', None)
+        return self._faucet_collector.get_active_host_path(src, dst)
 
     def get_cpn_state(self, path, params):
         """Get CPN state"""

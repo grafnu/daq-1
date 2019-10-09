@@ -223,7 +223,8 @@ class FaucetStateCollector:
                     for link_map in link_list:
                         if not link_map:
                             continue
-                        sw_1, port_1, sw_2, port_2 = FaucetStateCollector.get_endpoints_from_link(link_map)
+                        sw_1, port_1, sw_2, port_2 = \
+                                FaucetStateCollector.get_endpoints_from_link(link_map)
                         if hop['switch'] == sw_1 and egress_port == port_1:
                             next_hop['switch'] = sw_2
                             next_hop['ingress'] = port_2
@@ -366,7 +367,6 @@ class FaucetStateCollector:
 
     def get_access_switch(self, mac):
         """Get access switch and port for a given MAC"""
-        access_switch_port = {}
         learned_switches = self.learned_macs.get(mac, {}).get(KEY_MAC_LEARNING_SWITCH)
 
         for switch, port_map in learned_switches.items():

@@ -20,7 +20,7 @@ class CPNStateCollector:
 
         cpn_file_name = os.getenv('CPN_CONFIG_FILE')
         if cpn_file_name:
-            LOGGER.info(f"Loading CPN config file: {cpn_file_name}")
+            LOGGER.info("Loading CPN config file: %s", cpn_file_name)
             try:
                 with open(cpn_file_name) as cpn_file:
                     cpn_data = yaml.safe_load(cpn_file)
