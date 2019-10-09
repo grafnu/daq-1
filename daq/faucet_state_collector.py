@@ -167,50 +167,41 @@ class FaucetStateCollector:
         topo_map = {}
         with self.lock:
             config_obj = self.system_states.get(FAUCET_CONFIG, {}).get(DPS_CFG, {})
-            links = self.topo_state.get(TOPOLOGY_GRAPH, {}).get("links", [])
             path_to_root = self.topo_state.get(ROOT_PATH, {})
-            for dp, dp_obj in config_obj.items():
-                for iface, iface_obj in dp_obj.get("interfaces", {}).items():
-                    dp_s = iface_obj.get("stack", {}).get("dp")
-                    port_s = str(iface_obj.get("stack", {}).get("port"))
-                    if dp_s and port_s:
+            for start_dp, dp_obj in config_obj.items():
+                for start_port, iface_obj in dp_obj.get("interfaces", {}).items():
+                    peer_dp = iface_obj.get("stack", {}).get("dp")
+                    peer_port = str(iface_obj.get("stack", {}).get("port"))
+                    if peer_dp and peer_port:
                         link_obj = {}
-                        if dp+":"+iface < dp_s+":"+port_s:
-                            link_obj["switch_a"] = dp
-                            link_obj["port_a"] = iface
-                            link_obj["switch_b"] = dp_s
-                            link_obj["port_b"] = port_s
-                            key = dp+":"+iface+"-"+dp_s+":"+port_s
-                        else:
-                            link_obj["switch_b"] = dp
-                            link_obj["port_b"] = iface
-                            link_obj["switch_a"] = dp_s
-                            link_obj["port_a"] = port_s
-                            key = dp_s+":"+port_s+"-"+dp+":"+iface
-                        topo_map[key] = link_obj
-                        link_obj["status"] = "DOWN"
-                        if (path_to_root.get(dp) == int(iface) or
-                                path_to_root.get(dp_s) == int(port_s)):
-                            link_obj["status"] = "ACTIVE"
+                        subkey1 = start_dp+":"+start_port
+                        subkey2 = peer_dp+":"+peer_port
+                        key_order = subkey1 < subkey2
+                        key = subkey1+subkey2 if key_order else subkey2+subkey1
+                        link_obj["switch_a"] = start_dp if key_order else peer_dp
+                        link_obj["switch_b"] = peer_dp if key_order else dp
+                        link_obj["port_a"] = start_port if key_order else peer_port
+                        link_obj["port_b"] = peer_port if key_order else start_port
+                        if key in topo_map:
                             continue
-                        for link in links:
-                            if link["key"] == key:
-                                link_obj["status"] = "UP"
+                        topo_map[key] = link_obj
+                        if (path_to_root.get(start_dp) == int(start_port) or
+                                path_to_root.get(peer_dp) == int(peer_port)):
+                            link_obj["status"] = "ACTIVE"
+                        elif self.is_link_up(key):
+                            link_obj["status"] = "UP"
+                        else:
+                            link_obj["status"] = "DOWN"
 
-            """for link in topo_obj.get(TOPOLOGY_GRAPH, {}).get("links", []):
-                key = link.get("key")
-                if key in topo_map:
-                    topo_map.get(key).get("status") = "UP"
-                link_obj = {}
-                port_map = link.get("port_map")
-                if port_map:
-                    link_obj["switch_a"] = port_map["dp_a"]
-                    link_obj["port_a"] = port_map["port_a"]
-                    link_obj["switch_b"] = port_map["dp_z"]
-                    link_obj["port_b"] = port_map["port_z"]
-                    link_obj["status"] = None
-                topo_map[link["key"]] = link_obj"""
         return topo_map
+
+    def is_link_up(key):
+        with self.lock:
+            links = self.topo_state.get(TOPOLOGY_GRAPH, {}).get("links", [])
+            for link in links:
+                if link["key"] == key:
+                    return True
+        return False
 
     def get_active_egress_path(self, src_mac):
         """Given a MAC address return active route to egress."""
