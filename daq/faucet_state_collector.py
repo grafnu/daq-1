@@ -176,29 +176,30 @@ class FaucetStateCollector:
                         link_obj = {}
                         subkey1 = start_dp+":"+start_port
                         subkey2 = peer_dp+":"+peer_port
-                        key_order = subkey1 < subkey2
-                        key = subkey1+subkey2 if key_order else subkey2+subkey1
-                        link_obj["switch_a"] = start_dp if key_order else peer_dp
-                        link_obj["switch_b"] = peer_dp if key_order else dp
-                        link_obj["port_a"] = start_port if key_order else peer_port
-                        link_obj["port_b"] = peer_port if key_order else start_port
+                        keep_order = subkey1 < subkey2
+                        key = subkey1+"-"+subkey2 if keep_order else subkey2+"-"+subkey1
+                        link_obj["switch_a"] = start_dp if keep_order else peer_dp
+                        link_obj["switch_b"] = peer_dp if keep_order else start_dp
+                        link_obj["port_a"] = start_port if keep_order else peer_port
+                        link_obj["port_b"] = peer_port if keep_order else start_port
                         if key in topo_map:
                             continue
                         topo_map[key] = link_obj
                         if (path_to_root.get(start_dp) == int(start_port) or
                                 path_to_root.get(peer_dp) == int(peer_port)):
                             link_obj["status"] = "ACTIVE"
-                        elif self.is_link_up(key):
+                        elif self._is_link_up(key):
                             link_obj["status"] = "UP"
                         else:
                             link_obj["status"] = "DOWN"
 
         return topo_map
 
-    def is_link_up(key):
+    def _is_link_up(self, key):
         with self.lock:
             links = self.topo_state.get(TOPOLOGY_GRAPH, {}).get("links", [])
             for link in links:
+                LOGGER.info("link: %s", link)
                 if link["key"] == key:
                     return True
         return False
@@ -373,10 +374,8 @@ class FaucetStateCollector:
             port = port_map[KEY_MAC_LEARNING_PORT]
             port_attr = self.get_port_attributes(switch, port)
             if port_attr['type'] == 'access':
-                access_switch_port[switch] = port
-        if not access_switch_port:
-            return None, None
-        return access_switch_port.popitem()
+                return switch, port
+        return None, None
 
     def get_graph(self, src_mac, dst_mac):
         """Get a graph consists of links only used by src and dst MAC"""
