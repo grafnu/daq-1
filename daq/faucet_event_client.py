@@ -200,10 +200,11 @@ class FaucetEventClient():
     def as_stack_topo_change(self, event):
         """Convert to port learning info, if applicable"""
         if not event or 'STACK_TOPO_CHANGE' not in event:
-            return (None, None)
+            return (None, None, None)
         root = event['STACK_TOPO_CHANGE']['stack_root']
         graph = event['STACK_TOPO_CHANGE']['graph']
-        return (root, graph)
+        path_to_root = event['STACK_TOPO_CHANGE']['path_to_root']
+        return (root, graph, path_to_root)
 
     def close(self):
         """Close the faucet event socket"""

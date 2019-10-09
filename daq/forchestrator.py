@@ -64,10 +64,10 @@ class Forchestrator:
                 LOGGER.debug('Config change. New config: %s', dps_config)
                 self._faucet_collector.process_dataplane_config_change(timestamp, dps_config)
 
-            (stack_root, graph) = self._faucet_events.as_stack_topo_change(event)
+            (stack_root, graph, path_to_root) = self._faucet_events.as_stack_topo_change(event)
             if stack_root is not None:
                 LOGGER.debug('stack topology change root:%s', stack_root)
-                self._faucet_collector.process_stack_topo_change(timestamp, stack_root, graph)
+                self._faucet_collector.process_stack_topo_change(timestamp, stack_root, graph, path_to_root)
         return False
 
     def get_overview(self, path, params):
@@ -91,7 +91,7 @@ class Forchestrator:
 
     def get_active_host_path(self, path, params):
         """Get active host path"""
-        return self._faucet_collector.get_active_host_path(params['src'], params['dst'])
+        return self._faucet_collector.get_active_host_path(params.get('src', None), params.get('dst', None))
 
     def get_process_state(self, path, params):
         """Get certain processes state on the controller machine"""
