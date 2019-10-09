@@ -14,7 +14,7 @@ echo Using CPN config file $CPN_FILE
 if [ -f venv/bin/python ]; then
     PYTHON=venv/bin/python
 else
-    PYTHON=python
+    PYTHON=python3
 fi
 
 sudo FAUCET_EVENT_SOCK=$SOCK CPN_CONFIG_FILE=$CPN_FILE $PYTHON daq/forchestrator.py
