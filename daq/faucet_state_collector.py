@@ -137,6 +137,7 @@ class FaucetStateCollector:
             port_map["packet_count"] = None
 
         self._fill_learned_macs(switch_name, switch_map)
+        self._fill_path_to_root(switch_name, switch_map)
 
         return switch_map
 
@@ -164,6 +165,10 @@ class FaucetStateCollector:
             mac_map["ip_address"] = mac_states.get(KEY_MAC_LEARNING_IP, None)
             mac_map["port"] = learned_port
             mac_map["timestamp"] = learned_switch.get(KEY_MAC_LEARNING_TS, None)
+
+    def _fill_path_to_root(self, switch_name, switch_map):
+        """populate path to root for switch_state"""
+        switch_map["root_path"] = self.get_switch_egress_path(switch_name)
 
     def get_stack_topo(self):
         """Returns formatted topology object"""
@@ -215,6 +220,11 @@ class FaucetStateCollector:
         src_switch, src_port = self.get_access_switch(src_mac)
         if not src_switch or not src_port:
             return res
+        return self.get_switch_egress_path(src_switch, src_port)
+
+    def get_switch_egress_path(self, src_switch, src_port=None):
+        """"Returns path to egress from given switch. Appends ingress port to first hop if given"""
+        res = {'path': []}
         with self.lock:
             link_list = self.topo_state.get(TOPOLOGY_GRAPH).get('links', [])
             path_to_root = self.topo_state.get(ROOT_PATH, {})
