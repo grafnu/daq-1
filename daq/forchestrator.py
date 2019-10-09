@@ -65,11 +65,10 @@ class Forchestrator:
             if dps_config:
                 LOGGER.debug('Config change. New config: %s', dps_config)
                 self._faucet_collector.process_dataplane_config_change(timestamp, dps_config)
-
-            (stack_root, graph, path_to_root) = self._faucet_events.as_stack_topo_change(event)
+            (stack_root, graph, path) = self._faucet_events.as_stack_topo_change(event)
             if stack_root is not None:
                 LOGGER.debug('stack topology change root:%s', stack_root)
-                self._faucet_collector.process_stack_topo_change(timestamp, stack_root, graph, path_to_root)
+                self._faucet_collector.process_stack_topo_change(timestamp, stack_root, graph, path)
         return False
 
     def get_overview(self, path, params):
@@ -93,7 +92,9 @@ class Forchestrator:
 
     def get_active_host_path(self, path, params):
         """Get active host path"""
-        return self._faucet_collector.get_active_host_path(params.get('src', None), params.get('dst', None))
+        src = params.get('src', None)
+        dst = params.get('dst', None)
+        return self._faucet_collector.get_active_host_path(src, dst)
 
     def get_cpn_state(self, path, params):
         """Get CPN state"""
