@@ -11,7 +11,7 @@ fi
 echo Using event socket $SOCK
 echo Using CPN config file $CPN_FILE
 
-if [ -d venv ]; then
+if [ -f venv/bin/python ]; then
     PYTHON=venv/bin/python
 else
     PYTHON=python
