@@ -215,6 +215,11 @@ class FaucetStateCollector:
         src_switch, src_port = self.get_access_switch(src_mac)
         if not src_switch or not src_port:
             return res
+        return self.get_switch_egress_path(src_switch, src_port)
+
+    def get_switch_egress_path(self, src_switch, src_port=None):
+        """"Returns path to egress from given switch. Appends ingress port to first hop if given"""
+        res = {'path': []}
         with self.lock:
             link_list = self.topo_state.get(TOPOLOGY_GRAPH).get('links', [])
             path_to_root = self.topo_state.get(ROOT_PATH, {})
