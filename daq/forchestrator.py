@@ -5,6 +5,7 @@ import sys
 import configurator
 import faucet_event_client
 import http_server
+from cpn_state_collector import CPNStateCollector
 from faucet_state_collector import FaucetStateCollector
 from local_state_collector import LocalStateCollector
 
@@ -21,6 +22,7 @@ class Forchestrator:
         self._server = None
         self._faucet_collector = FaucetStateCollector()
         self._local_collector = LocalStateCollector()
+        self._cpn_collector = CPNStateCollector()
 
     def initialize(self):
         """Initialize forchestrator instance"""
@@ -63,7 +65,6 @@ class Forchestrator:
             if dps_config:
                 LOGGER.debug('Config change. New config: %s', dps_config)
                 self._faucet_collector.process_dataplane_config_change(timestamp, dps_config)
-
             (stack_root, graph, path) = self._faucet_events.as_stack_topo_change(event)
             if stack_root is not None:
                 LOGGER.debug('stack topology change root:%s', stack_root)
@@ -93,6 +94,10 @@ class Forchestrator:
         """Get active host path"""
         return self._faucet_collector.get_active_host_path(params.get('src', None), params.get('dst', None))
 
+    def get_cpn_state(self, path, params):
+        """Get CPN state"""
+        return self._cpn_collector.get_cpn_state()
+
     def get_process_state(self, path, params):
         """Get certain processes state on the controller machine"""
         return self._local_collector.get_process_state()
@@ -109,6 +114,7 @@ if __name__ == '__main__':
     HTTP.map_request('switches', FORCH.get_switches)
     HTTP.map_request('switch', FORCH.get_switch)
     HTTP.map_request('host_path', FORCH.get_active_host_path)
+    HTTP.map_request('cpn_state', FORCH.get_cpn_state)
     HTTP.map_request('process_state', FORCH.get_process_state)
     HTTP.map_request('', HTTP.static_file(''))
     HTTP.start_server()

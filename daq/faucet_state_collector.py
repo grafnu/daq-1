@@ -199,7 +199,6 @@ class FaucetStateCollector:
         with self.lock:
             links = self.topo_state.get(TOPOLOGY_GRAPH, {}).get("links", [])
             for link in links:
-                LOGGER.info("link: %s", link)
                 if link["key"] == key:
                     return True
         return False
