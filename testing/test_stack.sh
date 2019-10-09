@@ -153,11 +153,10 @@ rm faucet/faucet/python_test.py
 
 echo Forch Tests | tee -a $TEST_RESULTS
 cmd/forch 1 &
-forch_pid=$!
 sleep 2
 curl http://localhost:9019/overview > $out_dir/forch_overview.json
 jq .hello $out_dir/forch_overview.json | tee -a $TEST_RESULTS
-kill $forch_pid
+sudo kill `ps ax | fgrep forch | awk '{print $1}'`
 
 echo Stacking Tests | tee -a $TEST_RESULTS
 test_stack
