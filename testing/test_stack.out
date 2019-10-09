@@ -5,6 +5,8 @@ Generator tests
 Base Stack Setup
 supercalifragilisticexpialidocious
 Stacking Tests
+Forch Tests
+"world"
 Starting stack test...
 (UNKNOWN) [192.168.0.2] 23 (?) : Connection timed out
 (UNKNOWN) [192.168.0.2] 443 (?) : Connection refused
