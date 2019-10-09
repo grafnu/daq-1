@@ -1,6 +1,5 @@
 """Processing faucet events"""
 
-import collections
 import copy
 from datetime import datetime
 import json
@@ -196,6 +195,7 @@ class FaucetStateCollector:
         return topo_map
 
     def _is_link_up(self, key):
+        """iterates through links in graph obj and returns if link with key is in graph"""
         with self.lock:
             links = self.topo_state.get(TOPOLOGY_GRAPH, {}).get("links", [])
             for link in links:
@@ -229,7 +229,7 @@ class FaucetStateCollector:
                             next_hop['switch'] = sw_2
                             next_hop['ingress'] = port_2
                             break
-                        elif hop['switch'] == sw_2 and egress_port == port_2:
+                        if hop['switch'] == sw_2 and egress_port == port_2:
                             next_hop['switch'] = sw_1
                             next_hop['ingress'] = port_1
                             break
