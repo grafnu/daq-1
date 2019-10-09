@@ -212,29 +212,27 @@ class FaucetStateCollector:
                 topo_map[link["key"]] = link_obj"""
         return topo_map
 
-    def get_active_egress_route(self, src_mac):
+    def get_active_egress_path(self, src_mac):
         """Given a MAC address return active route to egress."""
         res = {'path': []}
         if src_mac not in self.learned_macs:
             return res
         src_switch, src_port = self.get_access_switch(src_mac)
-        LOGGER.info("src_switch: %s src_port: %s", src_switch, src_port)
+        if not src_switch or not src_port:
+            return res
         with self.lock:
             link_list = self.topo_state.get(TOPOLOGY_GRAPH).get('links', [])
             path_to_root = self.topo_state.get(ROOT_PATH, {})
             hop = {'switch': src_switch, 'ingress': src_port, 'egress': None}
             while hop:
-                LOGGER.info("hop: %s", json.dumps(hop))
                 next_hop = {}
                 egress_port = path_to_root[hop['switch']]
-                LOGGER.info("egress port: %s", egress_port)
                 if egress_port:
                     hop['egress'] = egress_port
                     for link_map in link_list:
                         if not link_map:
                             continue
-                        sw_1, port_1, sw_2, port_2 = FaucetStatesCollector.get_endpoints_from_link(link_map)
-                        LOGGER.info("port_1: %s port_2: %s  egress_port: %s %s %s %s", port_1, port_2, egress_port, type(port_1), type(port_2), type(egress_port))
+                        sw_1, port_1, sw_2, port_2 = FaucetStateCollector.get_endpoints_from_link(link_map)
                         if hop['switch'] == sw_1 and egress_port == port_1:
                             next_hop['switch'] = sw_2
                             next_hop['ingress'] = port_2
@@ -248,15 +246,13 @@ class FaucetStateCollector:
                     res['path'].append(hop)
                     break
                 hop = next_hop
-                LOGGER.info(" nexthop: %s", json.dumps(hop))
         return res
 
     def get_active_host_path(self, src_mac, dst_mac=None):
         """Given two MAC addresses in the core network, find the active path between them"""
         res = {'src_ip': None, 'dst_ip': None, 'path': []}
-
         if not dst_mac:
-            return self.get_active_egress_route(src_mac)
+            return self.get_active_egress_path(src_mac)
         if src_mac not in self.learned_macs or dst_mac not in self.learned_macs:
             return res
 
@@ -383,23 +379,12 @@ class FaucetStateCollector:
         learned_switches = self.learned_macs.get(mac, {}).get(KEY_MAC_LEARNING_SWITCH)
 
         for switch, port_map in learned_switches.items():
-            access_switch_port[switch] = port_map[KEY_MAC_LEARNING_PORT]
-
+            port = port_map[KEY_MAC_LEARNING_PORT]
+            port_attr = self.get_port_attributes(switch, port)
+            if port_attr['type'] == 'access':
+                access_switch_port[switch] = port
         if not access_switch_port:
-            return None
-
-        LOGGER.info("Access switch port: %s", json.dumps(access_switch_port))
-
-        for link_map in self.topo_state.get(TOPOLOGY_GRAPH).get("links", []):
-            if not link_map:
-                continue
-
-            sw_1, port_1, sw_2, port_2 = FaucetStateCollector.get_endpoints_from_link(link_map)
-            if access_switch_port.get(sw_1, "") == port_1:
-                access_switch_port.pop(sw_1)
-            if access_switch_port.get(sw_2, "") == port_2:
-                access_switch_port.pop(sw_2)
-
+            return None, None
         return access_switch_port.popitem()
 
     def get_graph(self, src_mac, dst_mac):
