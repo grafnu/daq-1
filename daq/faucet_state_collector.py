@@ -136,7 +136,13 @@ class FaucetStateCollector:
             port_map["status_count"] = port_states.get(KEY_PORT_STATUS_COUNT, "")
             port_map["packet_count"] = None
 
-        # filling learned macs
+        self._fill_learned_macs(switch_name, switch_map)
+
+        return switch_map
+
+    def _fill_learned_macs(self, switch_name, switch_map):
+        """fills learned macs"""
+        switch_states = self.switch_states.get(str(switch_name), {})
         for mac in switch_states.get(KEY_LEARNED_MACS, set()):
             mac_states = self.learned_macs.get(mac, {})
             learned_switch = mac_states.get(KEY_MAC_LEARNING_SWITCH, {}).get(switch_name, {})
@@ -158,8 +164,6 @@ class FaucetStateCollector:
             mac_map["ip_address"] = mac_states.get(KEY_MAC_LEARNING_IP, None)
             mac_map["port"] = learned_port
             mac_map["timestamp"] = learned_switch.get(KEY_MAC_LEARNING_TS, None)
-
-        return switch_map
 
     def get_stack_topo(self):
         """Returns formatted topology object"""
