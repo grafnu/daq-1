@@ -1,3 +1,5 @@
+"""Collecting the states of the local system"""
+
 from datetime import datetime
 import psutil
 
