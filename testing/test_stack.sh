@@ -153,8 +153,9 @@ rm faucet/faucet/python_test.py
 
 echo Forch Tests | tee -a $TEST_RESULTS
 cmd/forch 1 &
-sleep 2
+sleep 5
 curl http://localhost:9019/overview > $out_dir/forch_overview.json
+cat $out_dir/forch_overview.json
 jq .hello $out_dir/forch_overview.json | tee -a $TEST_RESULTS
 sudo kill `ps ax | fgrep forch | awk '{print $1}'`
 
