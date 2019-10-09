@@ -11,4 +11,10 @@ fi
 echo Using event socket $SOCK
 echo Using CPN config file $CPN_FILE
 
-sudo FAUCET_EVENT_SOCK=$SOCK CPN_CONFIG_FILE=$CPN_FILE venv/bin/python daq/forchestrator.py
+if [ -d venv ]; then
+    PYTHON=venv/bin/python
+else
+    PYTHON=python
+fi
+
+sudo FAUCET_EVENT_SOCK=$SOCK CPN_CONFIG_FILE=$CPN_FILE $PYTHON daq/forchestrator.py
