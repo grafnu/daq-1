@@ -15,7 +15,7 @@ cpn_nodes:
         vendor: Cisco
         model: C9300-48P
     nz-kiwi-t2sw1:
-        cpn_ip: 127.0.0.1
+        cpn_ip: 240.0.0.1
         role: dist
         vendor: Cisco
         model: C9300-48P
