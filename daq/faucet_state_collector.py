@@ -337,7 +337,8 @@ class FaucetStateCollector:
                 egress_table[EGRESS_STATUS] = name if status else "DOWN"
                 egress_table[EGRESS_PORT] = port if status else None
                 egress_table[EGRESS_TS] = datetime.fromtimestamp(timestamp).isoformat()
-                egress_table[EGRESS_CHANGE_COUNT] = egress_table.setdefault(EGRESS_CHANGE_COUNT, 0) + 1
+                egress_table[EGRESS_CHANGE_COUNT] =\
+                        egress_table.setdefault(EGRESS_CHANGE_COUNT, 0) + 1
 
     @dump_states
     # pylint: disable=too-many-arguments
