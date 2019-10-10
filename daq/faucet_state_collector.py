@@ -53,6 +53,11 @@ DPS_CFG = "dps_config"
 DPS_CFG_CHANGE_COUNT = "config_change_count"
 DPS_CFG_CHANGE_TS = "config_change_timestamp"
 FAUCET_CONFIG = "faucet_config"
+EGRESS_STATE = "egress_state"
+EGRESS_STATUS = "is_active"
+EGRESS_PORT = "port"
+EGRESS_TS = "timestamp"
+EGRESS_CHANGE_COUNT = "change_count"
 
 class FaucetStateCollector:
     """Processing faucet events and store states in the map"""
@@ -212,6 +217,11 @@ class FaucetStateCollector:
                     return True
         return False
 
+    def _is_port_up(self, switch, port):
+        """Check if port is up"""
+        with self.lock:
+            return self.switch_states.get(str(switch_name), {}).get(KEY_PORTS, {}).get(port, {}).get('status_up', False)
+
     def get_active_egress_path(self, src_mac):
         """Given a MAC address return active route to egress."""
         res = {'path': []}
@@ -301,6 +311,19 @@ class FaucetStateCollector:
             port_table[KEY_PORT_STATUS_TS] = datetime.fromtimestamp(timestamp).isoformat()
 
             port_table[KEY_PORT_STATUS_COUNT] = port_table.setdefault(KEY_PORT_STATUS_COUNT, 0) + 1
+
+    @dump_states
+    def process_lag_state(self, timestamp, name, port, status):
+        """process lag change event"""
+        topo_state = self.topo_state
+        with self.lock:
+            egress_table = topo_state.setdefault(EGRESS_STATE, {})
+            egress_obj = {}
+            egress_obj[EGRESS_STATUS] = status
+            egress_obj[EGRESS_PORT] = port
+            egress_obj[EGRESS_TS] = datetime.fromtimestamp(timestamp).isoformat()
+            egress_obj[EGRESS_CHANGE_COUNT] = egress_obj.setdefault(EGRESS_CHANGE_COUNT, 0) + 1
+            egress_table[name] = egress_obj
 
     @dump_states
     # pylint: disable=too-many-arguments
