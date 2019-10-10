@@ -89,12 +89,6 @@ class Forchestrator:
         return 'http://google.com'
 
     def get_overview(self, path, params):
-        try:
-            return self.get_overview_raw(path, params)
-        except Exception as e:
-            LOGGER.error('Exception', e)
-
-    def get_overview_raw(self, path, params):
         """Get an overview of the system"""
         # TODO: These are all placeholder values, so need to be replaced.
         overview= {
