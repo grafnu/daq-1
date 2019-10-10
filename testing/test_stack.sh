@@ -157,6 +157,18 @@ sleep 5
 curl http://localhost:9019/overview > $out_dir/forch_overview.json
 cat $out_dir/forch_overview.json
 jq .hello $out_dir/forch_overview.json | tee -a $TEST_RESULTS
+
+sleep 20
+curl http://localhost:9019/cpn_state > $out_dir/forch_cpn_state.json
+cat $out_dir/forch_cpn_state.json
+for sw in nz-kiwi-t1sw1 nz-kiwi-t1sw2 nz-kiwi-t2sw1 nz-kiwi-t2sw2; do
+    cat $out_dir/forch_cpn_state.json | jq ".\"$sw\".attributes.cpn_ip" | tee -a $TEST_RESULTS
+    cat $out_dir/forch_cpn_state.json | jq ".\"$sw\".attributes.role" | tee -a $TEST_RESULTS
+    cat $out_dir/forch_cpn_state.json | jq ".\"$sw\".attributes.vendor" | tee -a $TEST_RESULTS
+    cat $out_dir/forch_cpn_state.json | jq ".\"$sw\".attributes.model" | tee -a $TEST_RESULTS
+    cat $out_dir/forch_cpn_state.json | jq ".\"$sw\".status" | tee -a $TEST_RESULTS
+done
+
 sudo kill `ps ax | fgrep forch | awk '{print $1}'`
 
 echo Stacking Tests | tee -a $TEST_RESULTS

@@ -3,6 +3,7 @@
 import asyncio
 import logging
 import threading
+import time
 from asyncio.subprocess import PIPE
 from collections import namedtuple
 
@@ -46,11 +47,10 @@ class PingManager:
 
     def _periodic_ping_hosts(self, handler):
         """Periodically ping hosts"""
-        ticker = threading.Event()
-        while not ticker.wait(self._interval):
-            task = self._loop.create_task(self._ping_hosts())
-            task.add_done_callback(handler)
-            self._loop.run_until_complete(task)
+        task = self._loop.create_task(self._ping_hosts())
+        task.add_done_callback(handler)
+        self._loop.run_until_complete(task)
+        threading.Timer(self._interval, self._periodic_ping_hosts, (handler,)).start()
 
     def start_loop(self, handler):
         """Start ping loop"""
