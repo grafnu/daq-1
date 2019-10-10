@@ -101,10 +101,6 @@ class Forchestrator:
         """Get CPN state"""
         return self._cpn_collector.get_cpn_state()
 
-    def get_cpn_state(self, path, params):
-        """Get CPN state"""
-        return self._cpn_collector.get_cpn_state()
-
     def get_process_state(self, path, params):
         """Get certain processes state on the controller machine"""
         return self._local_collector.get_process_state()

@@ -1,14 +1,13 @@
 """Collecting the state of CPN components"""
 
 import copy
+from datetime import datetime
 import logging
 import os
 import os.path
 import re
 import threading
 import yaml
-
-from datetime import datetime
 
 import ping_manager
 
@@ -32,7 +31,7 @@ class CPNStateCollector:
 
         cpn_file_name = os.getenv('CPN_CONFIG_FILE')
         if cpn_file_name:
-            LOGGER.info(f"Loading CPN config file: {cpn_file_name}")
+            LOGGER.info("Loading CPN config file: %s", cpn_file_name)
             try:
                 with open(cpn_file_name) as cpn_file:
                     cpn_data = yaml.safe_load(cpn_file)
@@ -43,7 +42,7 @@ class CPNStateCollector:
                         node_state_map[KEY_CPN_ATTRIBUTES] = copy.copy(attr_map)
                         self._hosts_ip[node] = attr_map['cpn_ip']
 
-                    self._ping_manager = ping_manager.PingManager(self._hosts_ip, interval=5, count=5)
+                    self._ping_manager = ping_manager.PingManager(self._hosts_ip)
 
             except OSError as e:
                 LOGGER.warning(e)
@@ -91,7 +90,7 @@ class CPNStateCollector:
     @staticmethod
     def _get_node_status(ping_result):
         """Get node status from ping stdout"""
-        loss = int(re.search('\d+(?=% packet loss)', ping_result['stdout']).group())
+        loss = int(re.search(r'\d+(?=% packet loss)', ping_result['stdout']).group())
         if loss == 0:
             return 'healty'
         if loss == 100:
