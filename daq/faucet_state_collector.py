@@ -76,8 +76,8 @@ class FaucetStateCollector:
     def get_topology(self):
         """get the topology state"""
         dplane_map = {}
-        dplane_map[TOPOLOGY_DP_MAP] = self.get_switch_map()
-        dplane_map[TOPOLOGY_LINK_MAP] = self.get_stack_topo()
+        dplane_map[TOPOLOGY_DP_MAP] = self.__get_switch_map()
+        dplane_map[TOPOLOGY_LINK_MAP] = self.__get_stack_topo()
         dplane_map[EGRESS_STATE] = self.__get_egress_state()
         dplane_map[TOPOLOGY_LACP] = None
         dplane_map[TOPOLOGY_ROOT] = None
@@ -109,7 +109,7 @@ class FaucetStateCollector:
                 egress_state[egress_dp] = egress_dp_state
         return egress_state
 
-    def get_switch_map(self):
+    def __get_switch_map(self):
         """returns switch map for topology overview"""
         switch_map = {}
         topo_obj = self.topo_state
@@ -195,7 +195,7 @@ class FaucetStateCollector:
         """populate path to root for switch_state"""
         switch_map["root_path"] = self.get_switch_egress_path(switch_name)
 
-    def get_stack_topo(self):
+    def __get_stack_topo(self):
         """Returns formatted topology object"""
         topo_map = {}
         with self.lock:
