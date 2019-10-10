@@ -6,12 +6,12 @@ import json
 import logging
 from threading import RLock
 
-LOGGER = logging.getLogger('forch')
+LOGGER = logging.getLogger('fstate')
 
 def dump_states(func):
     """Decorator to dump the current states after the states map is modified"""
 
-    def set_default(obj):
+    def _set_default(obj):
         if isinstance(obj, set):
             return list(obj)
         return obj
@@ -19,7 +19,7 @@ def dump_states(func):
     def wrapped(self, *args, **kwargs):
         res = func(self, *args, **kwargs)
         with self.lock:
-            LOGGER.debug(json.dumps(self.system_states, default=set_default))
+            LOGGER.debug(json.dumps(self.system_states, default=_set_default))
         return res
 
     return wrapped
@@ -156,10 +156,15 @@ class FaucetStateCollector:
                 continue
 
             switch_learned_mac_map = None
-            if port_attr['type'] == 'access':
-                switch_learned_mac_map = switch_map.setdefault('access_port_mac', {})
+            port_type = port_attr['type']
+            if port_type == 'access':
+                switch_learned_mac_map = switch_map.setdefault('access_port_macs', {})
+            elif port_type == 'stack':
+                switch_learned_mac_map = switch_map.setdefault('stacking_port_macs', {})
+            elif port_type == 'egress':
+                switch_learned_mac_map = switch_map.setdefault('egress_port_macs', {})
             else:
-                switch_learned_mac_map = switch_map.setdefault('stacking_port_mac', {})
+                raise Exception('Unknown port type %s' % port_type)
 
             mac_map = switch_learned_mac_map.setdefault(mac, {})
             mac_map["ip_address"] = mac_states.get(KEY_MAC_LEARNING_IP, None)
@@ -168,7 +173,7 @@ class FaucetStateCollector:
 
     def _fill_path_to_root(self, switch_name, switch_map):
         """populate path to root for switch_state"""
-        switch_map["root_path"] = self.get_switch_egress_path(switch_name)
+        switch_map["root_path"] = self.get_switch_egress_path(switch_name)['path']
 
     def get_stack_topo(self):
         """Returns formatted topology object"""
@@ -228,12 +233,14 @@ class FaucetStateCollector:
         with self.lock:
             link_list = self.topo_state.get(TOPOLOGY_GRAPH).get('links', [])
             path_to_root = self.topo_state.get(ROOT_PATH, {})
-            hop = {'switch': src_switch, 'ingress': src_port, 'egress': None}
+            hop = {'switch': src_switch}
+            if src_port:
+                hop['in'] = src_port
             while hop:
                 next_hop = {}
                 egress_port = path_to_root[hop['switch']]
                 if egress_port:
-                    hop['egress'] = egress_port
+                    hop['out'] = egress_port
                     for link_map in link_list:
                         if not link_map:
                             continue
@@ -241,11 +248,11 @@ class FaucetStateCollector:
                                 FaucetStateCollector.get_endpoints_from_link(link_map)
                         if hop['switch'] == sw_1 and egress_port == port_1:
                             next_hop['switch'] = sw_2
-                            next_hop['ingress'] = port_2
+                            next_hop['in'] = port_2
                             break
                         if hop['switch'] == sw_2 and egress_port == port_2:
                             next_hop['switch'] = sw_1
-                            next_hop['ingress'] = port_1
+                            next_hop['in'] = port_1
                             break
                     res['path'].append(hop)
                 elif hop['switch'] == self.topo_state.get(TOPOLOGY_ROOT):
@@ -275,15 +282,15 @@ class FaucetStateCollector:
 
         src_switch, src_port = self.get_access_switch(src_mac)
 
-        next_hop = {'switch': src_switch, 'ingress': src_port, 'egress': None}
+        next_hop = {'switch': src_switch, 'in': src_port, 'out': None}
 
         while next_hop['switch'] in next_hops:
-            next_hop['egress'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
+            next_hop['out'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
             res['path'].append(copy.copy(next_hop))
             next_hop['switch'] = next_hops[next_hop['switch']]
-            next_hop['ingress'] = src_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
+            next_hop['in'] = src_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
 
-        next_hop['egress'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
+        next_hop['out'] = dst_learned_switches[next_hop['switch']][KEY_MAC_LEARNING_PORT]
         res['path'].append(copy.copy(next_hop))
 
         return res
@@ -417,7 +424,7 @@ class FaucetStateCollector:
                 ret_attr['type'] = 'stack'
                 ret_attr['peer_switch'] = port_map['stack']['dp']
                 ret_attr['peer_port'] = port_map['stack']['port']
-            elif 'lacp' in port_map:
+            elif 'loop_protect_external' in port_map:
                 ret_attr['type'] = 'egress'
 
             return ret_attr
