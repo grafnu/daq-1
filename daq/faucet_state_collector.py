@@ -47,7 +47,6 @@ TOPOLOGY_HEALTH = "is_healthy"
 TOPOLOGY_NOT_HEALTH = "is_wounded"
 TOPOLOGY_DP_MAP = "switch_map"
 TOPOLOGY_LINK_MAP = "physical_stack_links"
-TOPOLOGY_LACP = "lacp_lag_status"
 TOPOLOGY_ROOT = "active_root"
 DPS_CFG = "dps_config"
 DPS_CFG_CHANGE_COUNT = "config_change_count"
@@ -57,7 +56,8 @@ EGRESS_STATE = "egress_state"
 EGRESS_STATUS = "is_active"
 EGRESS_PORT = "port"
 EGRESS_TS = "timestamp"
-EGRESS_CHANGE_COUNT = "change_count"
+EGRESS_LAST_CHG = "egress_state_last_change"
+EGRESS_CHANGE_COUNT = "egress_state_change_count"
 
 class FaucetStateCollector:
     """Processing faucet events and store states in the map"""
@@ -78,9 +78,8 @@ class FaucetStateCollector:
         dplane_map = {}
         dplane_map[TOPOLOGY_DP_MAP] = self.__get_switch_map()
         dplane_map[TOPOLOGY_LINK_MAP] = self.__get_stack_topo()
-        dplane_map[EGRESS_STATE] = self.__get_egress_state()
-        dplane_map[TOPOLOGY_LACP] = None
-        dplane_map[TOPOLOGY_ROOT] = None
+        dplane_map[EGRESS_STATE], dplane_map[EGRESS_LAST_CHG], \
+                dplane_map[EGRESS_CHANGE_COUNT] = self.__get_egress_state()
         return dplane_map
 
     def get_switches(self):
@@ -92,21 +91,10 @@ class FaucetStateCollector:
 
     def __get_egress_state(self):
         """Return egress state obj"""
-        egress_state = {}
         with self.lock:
-            for egress_dp, egress_obj in self.topo_state.get(EGRESS_STATE, {}).items():
-                egress_dp_state = {}
-                if egress_obj[EGRESS_STATUS]:
-                    status = "ACTIVE"
-                elif self.__is_port_up(egress_dp, egress_obj[EGRESS_PORT]):
-                    status = "PASSIVE"
-                else:
-                    status = "DOWN"
-                egress_dp_state["status"] = status
-                egress_dp_state[EGRESS_TS] = egress_obj[EGRESS_TS]
-                egress_dp_state[EGRESS_CHANGE_COUNT] = egress_obj[EGRESS_CHANGE_COUNT]
-                egress_state[egress_dp] = egress_dp_state
-        return egress_state
+            egress_obj = self.topo_state.get(EGRESS_STATE, {})
+            return egress_obj.get(EGRESS_STATUS), \
+                    egress_obj.get(EGRESS_TS), egress_obj.get(EGRESS_CHANGE_COUNT)
 
     def __get_switch_map(self):
         """returns switch map for topology overview"""
@@ -345,12 +333,11 @@ class FaucetStateCollector:
         topo_state = self.topo_state
         with self.lock:
             egress_table = topo_state.setdefault(EGRESS_STATE, {})
-            egress_obj = {}
-            egress_obj[EGRESS_STATUS] = status
-            egress_obj[EGRESS_PORT] = port
-            egress_obj[EGRESS_TS] = datetime.fromtimestamp(timestamp).isoformat()
-            egress_obj[EGRESS_CHANGE_COUNT] = egress_obj.setdefault(EGRESS_CHANGE_COUNT, 0) + 1
-            egress_table[name] = egress_obj
+            if status or name == egress_table.get(EGRESS_STATUS):
+                egress_table[EGRESS_STATUS] = name if status else "DOWN"
+                egress_table[EGRESS_PORT] = port if status else None
+                egress_table[EGRESS_TS] = datetime.fromtimestamp(timestamp).isoformat()
+                egress_table[EGRESS_CHANGE_COUNT] = egress_table.setdefault(EGRESS_CHANGE_COUNT, 0) + 1
 
     @dump_states
     # pylint: disable=too-many-arguments
