@@ -76,10 +76,10 @@ class FaucetStateCollector:
     def get_topology(self):
         """get the topology state"""
         dplane_map = {}
-        dplane_map[TOPOLOGY_DP_MAP] = self.__get_switch_map()
-        dplane_map[TOPOLOGY_LINK_MAP] = self.__get_stack_topo()
+        dplane_map[TOPOLOGY_DP_MAP] = self._get_switch_map()
+        dplane_map[TOPOLOGY_LINK_MAP] = self._get_stack_topo()
         dplane_map[EGRESS_STATE], dplane_map[EGRESS_LAST_CHG], \
-                dplane_map[EGRESS_CHANGE_COUNT] = self.__get_egress_state()
+                dplane_map[EGRESS_CHANGE_COUNT] = self._get_egress_state()
         return dplane_map
 
     def get_switches(self):
@@ -89,14 +89,14 @@ class FaucetStateCollector:
             switch_data[switch_name] = self.get_switch(switch_name)
         return switch_data
 
-    def __get_egress_state(self):
+    def _get_egress_state(self):
         """Return egress state obj"""
         with self.lock:
             egress_obj = self.topo_state.get(EGRESS_STATE, {})
             return egress_obj.get(EGRESS_STATUS), \
                     egress_obj.get(EGRESS_TS), egress_obj.get(EGRESS_CHANGE_COUNT)
 
-    def __get_switch_map(self):
+    def _get_switch_map(self):
         """returns switch map for topology overview"""
         switch_map = {}
         topo_obj = self.topo_state
@@ -187,7 +187,7 @@ class FaucetStateCollector:
         """populate path to root for switch_state"""
         switch_map["root_path"] = self.get_switch_egress_path(switch_name)['path']
 
-    def __get_stack_topo(self):
+    def _get_stack_topo(self):
         """Returns formatted topology object"""
         topo_map = {}
         with self.lock:
