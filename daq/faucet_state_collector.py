@@ -95,7 +95,6 @@ class FaucetStateCollector:
         egress_state = {}
         with self.lock:
             for egress_dp, egress_obj in self.topo_state.get(EGRESS_STATE, {}).items():
-                LOGGER.info("dp:%s obj:%s", egress_dp, egress_obj)
                 egress_dp_state = {}
                 if egress_obj[EGRESS_STATUS]:
                     status = "ACTIVE"
