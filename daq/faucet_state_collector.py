@@ -438,3 +438,12 @@ class FaucetStateCollector:
                 return ret_attr
 
         return ret_attr
+
+    def get_controller_state(self):
+        return {
+            'controller_state': 'up',
+            'controller_state_change_count': 2,
+            'controller_state_last_change': None,
+            'controller_state_last_update': "Tuesday",
+            'controller_state_description': "hunky-dory"
+        }

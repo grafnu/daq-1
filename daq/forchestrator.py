@@ -85,13 +85,26 @@ class Forchestrator:
                 self._faucet_collector.process_stack_topo_change(timestamp, stack_root, graph, path)
         return False
 
+    def _get_peer_controller_url(self):
+        return 'http://google.com'
+
     def get_overview(self, path, params):
+        try:
+            return self.get_overview_raw(path, params)
+        except Exception as e:
+            LOGGER.error('Exception', e)
+
+    def get_overview_raw(self, path, params):
         """Get an overview of the system"""
-        return {
-            'hello': 'world',
-            'site_name': self._oconfig['site']['name'],
-            'params': params
+        # TODO: These are all placeholder values, so need to be replaced.
+        overview= {
+            'peer_controller_url': self._get_peer_controller_url(),
+            'processes': self._local_collector.get_process_overview(),
+            'dataplane': self._faucet_collector.get_topology(),
+            'site_name': self._oconfig['site']['name']
         }
+        overview.update(self._faucet_collector.get_controller_state())
+        return overview
 
     def get_switch(self, path, params):
         """Get the state of the switches"""
