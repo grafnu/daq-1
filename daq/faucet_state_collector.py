@@ -78,6 +78,7 @@ class FaucetStateCollector:
         dplane_map = {}
         dplane_map[TOPOLOGY_DP_MAP] = self.get_switch_map()
         dplane_map[TOPOLOGY_LINK_MAP] = self.get_stack_topo()
+        dplane_map[EGRESS_STATE] = self.__get_egress_state()
         dplane_map[TOPOLOGY_LACP] = None
         dplane_map[TOPOLOGY_ROOT] = None
         return dplane_map
@@ -88,6 +89,25 @@ class FaucetStateCollector:
         for switch_name in self.switch_states:
             switch_data[switch_name] = self.get_switch(switch_name)
         return switch_data
+
+    def __get_egress_state(self):
+        """Return egress state obj"""
+        egress_state = {}
+        with self.lock:
+            for egress_dp, egress_obj in self.topo_state.get(EGRESS_STATE, {}).items():
+                LOGGER.info("dp:%s obj:%s", egress_dp, egress_obj)
+                egress_dp_state = {}
+                if egress_obj[EGRESS_STATUS]:
+                    status = "ACTIVE"
+                elif self.__is_port_up(egress_dp, egress_obj[EGRESS_PORT]):
+                    status = "PASSIVE"
+                else:
+                    status = "DOWN"
+                egress_dp_state["status"] = status
+                egress_dp_state[EGRESS_TS] = egress_obj[EGRESS_TS]
+                egress_dp_state[EGRESS_CHANGE_COUNT] = egress_obj[EGRESS_CHANGE_COUNT]
+                egress_state[egress_dp] = egress_dp_state
+        return egress_state
 
     def get_switch_map(self):
         """returns switch map for topology overview"""
@@ -201,14 +221,14 @@ class FaucetStateCollector:
                         if (path_to_root.get(start_dp) == int(start_port) or
                                 path_to_root.get(peer_dp) == int(peer_port)):
                             link_obj["status"] = "ACTIVE"
-                        elif self._is_link_up(key):
+                        elif self.__is_link_up(key):
                             link_obj["status"] = "UP"
                         else:
                             link_obj["status"] = "DOWN"
 
         return topo_map
 
-    def _is_link_up(self, key):
+    def __is_link_up(self, key):
         """iterates through links in graph obj and returns if link with key is in graph"""
         with self.lock:
             links = self.topo_state.get(TOPOLOGY_GRAPH, {}).get("links", [])
@@ -217,10 +237,11 @@ class FaucetStateCollector:
                     return True
         return False
 
-    def _is_port_up(self, switch, port):
+    def __is_port_up(self, switch, port):
         """Check if port is up"""
         with self.lock:
-            return self.switch_states.get(str(switch_name), {}).get(KEY_PORTS, {}).get(port, {}).get('status_up', False)
+            return self.switch_states.get(str(switch), {})\
+                    .get(KEY_PORTS, {}).get(port, {}).get('status_up', False)
 
     def get_active_egress_path(self, src_mac):
         """Given a MAC address return active route to egress."""
