@@ -43,6 +43,7 @@ class Forchestrator:
             LOGGER.error("Exception: %s", e)
             raise
 
+    # TODO: This should likely be moved into the faucet_state_collector.
     def _handle_faucet_events(self):
         while self._faucet_events:
             event = self._faucet_events.next_event()
