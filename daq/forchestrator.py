@@ -1,10 +1,14 @@
 """Orchestrator component for controlling a Faucet SDN"""
 
 import logging
+import os
 import sys
+import yaml
+
 import configurator
 import faucet_event_client
 import http_server
+
 from cpn_state_collector import CPNStateCollector
 from faucet_state_collector import FaucetStateCollector
 from local_state_collector import LocalStateCollector
@@ -16,9 +20,12 @@ class Forchestrator:
     """Main class encompassing faucet orchestrator components for dynamically
     controlling faucet ACLs at runtime"""
 
-    def __init__(self, config):
-        self._config = config
+    _FCONFIG_DEFAULT = 'forch.yaml'
+
+    def __init__(self, dconfig):
+        self._dconfig = dconfig
         self._faucet_events = None
+        self._oconfig = None
         self._server = None
         self._faucet_collector = FaucetStateCollector()
         self._local_collector = LocalStateCollector()
@@ -26,8 +33,14 @@ class Forchestrator:
 
     def initialize(self):
         """Initialize forchestrator instance"""
+        config_root = os.getenv('FORCH_CONFIG_DIR', '.')
+        config_file = self._dconfig.get('forch_config', self._FCONFIG_DEFAULT)
+        config_path = os.path.join(config_root, config_file)
+        LOGGER.info('Reading config file %s', os.path.abspath(config_path))
+        with open(config_path, 'r') as stream:
+            self._oconfig = yaml.safe_load(stream)
         LOGGER.info('Attaching event channel...')
-        self._faucet_events = faucet_event_client.FaucetEventClient(self._config)
+        self._faucet_events = faucet_event_client.FaucetEventClient(self._dconfig)
         self._faucet_events.connect()
 
     def main_loop(self):
@@ -76,6 +89,7 @@ class Forchestrator:
         """Get an overview of the system"""
         return {
             'hello': 'world',
+            'site_name': self._oconfig['site']['name'],
             'params': params
         }
 

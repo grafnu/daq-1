@@ -29,7 +29,8 @@ class CPNStateCollector:
         self._hosts_ip = {}
         self._lock = threading.Lock()
 
-        cpn_file_name = os.getenv('CPN_CONFIG_FILE')
+        cpn_dir_name = os.getenv('FORCH_CONFIG_DIR')
+        cpn_file_name = os.path.join(cpn_dir_name, 'cpn.yaml')
         if cpn_file_name:
             LOGGER.info("Loading CPN config file: %s", cpn_file_name)
             try:
