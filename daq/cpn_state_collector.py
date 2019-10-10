@@ -28,6 +28,7 @@ class CPNStateCollector:
         self._nodes_state = self._cpn_state.setdefault(KEY_NODES, {})
         self._hosts_ip = {}
         self._lock = threading.Lock()
+        self._ping_manager = None
 
         cpn_dir_name = os.getenv('FORCH_CONFIG_DIR')
         cpn_file_name = os.path.join(cpn_dir_name, 'cpn.yaml')
