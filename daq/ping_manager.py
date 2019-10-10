@@ -3,7 +3,6 @@
 import asyncio
 import logging
 import threading
-import time
 from asyncio.subprocess import PIPE
 from collections import namedtuple
 
