@@ -157,6 +157,7 @@ sleep 5
 curl http://localhost:9019/overview > $out_dir/forch_overview.json
 cat $out_dir/forch_overview.json
 jq .hello $out_dir/forch_overview.json | tee -a $TEST_RESULTS
+jq .site_name $out_dir/forch_overview.json | tee -a $TEST_RESULTS
 sudo kill `ps ax | fgrep forch | awk '{print $1}'`
 
 echo Stacking Tests | tee -a $TEST_RESULTS

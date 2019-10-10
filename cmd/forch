@@ -1,15 +1,14 @@
 #!/bin/bash -e
 
+FSOCK=faucet_event.sock
+
 if [ -z "$1" ]; then
-    SOCK=inst/faucet_event.sock
-    CPN_FILE=inst/cpn.yaml
+    FDIR=inst/
 else
-    SOCK=inst/faucet/daq-faucet-$1/faucet_event.sock
-    CPN_FILE=inst/faucet/daq-faucet-$1/cpn.yaml
+    FDIR=inst/faucet/daq-faucet-$1/
 fi
 
-echo Using event socket $SOCK
-echo Using CPN config file $CPN_FILE
+echo Using instance dir $FDIR
 
 if [ -f venv/bin/python ]; then
     PYTHON=venv/bin/python
@@ -17,4 +16,6 @@ else
     PYTHON=python3
 fi
 
-sudo FAUCET_EVENT_SOCK=$SOCK CPN_CONFIG_FILE=$CPN_FILE $PYTHON daq/forchestrator.py
+sudo \
+    FAUCET_EVENT_SOCK=$FDIR/$FSOCK FORCH_CONFIG_DIR=$FDIR FORCH_RUN_DIR=$FDIR \
+    $PYTHON daq/forchestrator.py
