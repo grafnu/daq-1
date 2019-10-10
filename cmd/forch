@@ -2,9 +2,19 @@
 
 if [ -z "$1" ]; then
     SOCK=inst/faucet_event.sock
+    CPN_FILE=inst/cpn.yaml
 else
     SOCK=inst/faucet/daq-faucet-$1/faucet_event.sock
+    CPN_FILE=inst/faucet/daq-faucet-$1/cpn.yaml
 fi
 
 echo Using event socket $SOCK
-sudo FAUCET_EVENT_SOCK=$SOCK venv/bin/python daq/forchestrator.py
+echo Using CPN config file $CPN_FILE
+
+if [ -f venv/bin/python ]; then
+    PYTHON=venv/bin/python
+else
+    PYTHON=python3
+fi
+
+sudo FAUCET_EVENT_SOCK=$SOCK CPN_CONFIG_FILE=$CPN_FILE $PYTHON daq/forchestrator.py
