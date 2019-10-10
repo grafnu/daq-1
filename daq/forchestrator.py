@@ -83,6 +83,10 @@ class Forchestrator:
             if stack_root is not None:
                 LOGGER.debug('stack topology change root:%s', stack_root)
                 self._faucet_collector.process_stack_topo_change(timestamp, stack_root, graph, path)
+            (name, port, active) = self._faucet_events.as_lag_status(event)
+            if name and port:
+                LOGGER.debug('LAG state %s %s %s', name, port, active)
+                self._faucet_collector.process_lag_state(timestamp, name, port, active)
         return False
 
     def get_overview(self, path, params):
