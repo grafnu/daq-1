@@ -213,14 +213,14 @@ class FaucetStateCollector:
                         if (path_to_root.get(start_dp) == int(start_port) or
                                 path_to_root.get(peer_dp) == int(peer_port)):
                             link_obj["status"] = "ACTIVE"
-                        elif self.__is_link_up(key):
+                        elif self._is_link_up(key):
                             link_obj["status"] = "UP"
                         else:
                             link_obj["status"] = "DOWN"
 
         return topo_map
 
-    def __is_link_up(self, key):
+    def _is_link_up(self, key):
         """iterates through links in graph obj and returns if link with key is in graph"""
         with self.lock:
             links = self.topo_state.get(TOPOLOGY_GRAPH, {}).get("links", [])
@@ -229,7 +229,7 @@ class FaucetStateCollector:
                     return True
         return False
 
-    def __is_port_up(self, switch, port):
+    def _is_port_up(self, switch, port):
         """Check if port is up"""
         with self.lock:
             return self.switch_states.get(str(switch), {})\
