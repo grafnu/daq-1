@@ -78,8 +78,7 @@ class FaucetStateCollector:
         dplane_map = {}
         dplane_map[TOPOLOGY_DP_MAP] = self._get_switch_map()
         dplane_map[TOPOLOGY_LINK_MAP] = self._get_stack_topo()
-        dplane_map[EGRESS_STATE], dplane_map[EGRESS_LAST_CHG], \
-                dplane_map[EGRESS_CHANGE_COUNT] = self._get_egress_state()
+        self._fill_egress_state(dplane_map)
         return dplane_map
 
     def get_switches(self):
@@ -89,12 +88,13 @@ class FaucetStateCollector:
             switch_data[switch_name] = self.get_switch(switch_name)
         return switch_data
 
-    def _get_egress_state(self):
+    def _fill_egress_state(self, dplane_map):
         """Return egress state obj"""
         with self.lock:
             egress_obj = self.topo_state.get(EGRESS_STATE, {})
-            return egress_obj.get(EGRESS_STATUS), \
-                    egress_obj.get(EGRESS_TS), egress_obj.get(EGRESS_CHANGE_COUNT)
+            dplane_map[EGRESS_STATUS] = egress_obj.get(EGRESS_STATUS)
+            dplane_map[EGRESS_LAST_CHG] = egress_obj.get(EGRESS_TS)
+            dplane_map[EGRESS_CHANGE_COUNT] = egress_obj.get(EGRESS_CHANGE_COUNT)
 
     def _get_switch_map(self):
         """returns switch map for topology overview"""
@@ -337,8 +337,7 @@ class FaucetStateCollector:
                 egress_table[EGRESS_STATUS] = name if status else "DOWN"
                 egress_table[EGRESS_PORT] = port if status else None
                 egress_table[EGRESS_TS] = datetime.fromtimestamp(timestamp).isoformat()
-                egress_table[EGRESS_CHANGE_COUNT] =\
-                        egress_table.setdefault(EGRESS_CHANGE_COUNT, 0) + 1
+                egress_table[EGRESS_CHANGE_COUNT] = egress_table.get(EGRESS_CHANGE_COUNT, 0) + 1
 
     @dump_states
     # pylint: disable=too-many-arguments
