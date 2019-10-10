@@ -4,8 +4,8 @@ source testing/test_preamble.sh
 
 # Runs lint checks and some similar things
 echo Lint checks | tee -a $TEST_RESULTS
-cmd/inbuild skip
-echo cmd/inbuild exit code $? | tee -a $TEST_RESULTS
+bin/check_style
+echo check_style exit code $? | tee -a $TEST_RESULTS
 
 out_dir=out/daq-test_stack
 rm -rf $out_dir
@@ -142,7 +142,7 @@ function test_dot1x {
     #docker exec daq-faux-1 ping -q -c 10 192.168.12.2 2>&1 | awk -F, '/packet loss/{print $1,$2;}' | tee -a $TEST_RESULTS
 }
 
-echo Base Stack Setup >> $TEST_RESULTS
+echo Base Stack Setup | tee -a $TEST_RESULTS
 bin/net_clean
 bin/setup_stack local || exit 1
 
@@ -151,7 +151,15 @@ echo 'print("supercalifragilisticexpialidocious")' > faucet/faucet/python_test.p
 docker exec daq-faucet-1 python -m faucet.python_test 2>&1 | tee -a $TEST_RESULTS
 rm faucet/faucet/python_test.py
 
-echo Stacking Tests >> $TEST_RESULTS
+echo Forch Tests | tee -a $TEST_RESULTS
+cmd/forch 1 &
+sleep 5
+curl http://localhost:9019/overview > $out_dir/forch_overview.json
+cat $out_dir/forch_overview.json
+jq .hello $out_dir/forch_overview.json | tee -a $TEST_RESULTS
+sudo kill `ps ax | fgrep forch | awk '{print $1}'`
+
+echo Stacking Tests | tee -a $TEST_RESULTS
 test_stack
 ip link set t1sw1-eth9 down
 test_stack
