@@ -1,12 +1,14 @@
 """Manages ping task"""
 
 import asyncio
+import logging
 import threading
 from asyncio.subprocess import PIPE
 from collections import namedtuple
 
 
 PingResult = namedtuple('PingResult', ['host_name', 'proc_code', 'stdout', 'stderr'])
+LOGGER = logging.getLogger('Ping')
 
 
 class PingManager:
@@ -18,9 +20,9 @@ class PingManager:
         self._loop = asyncio.new_event_loop()
         asyncio.get_child_watcher().attach_loop(self._loop)
 
-    async def _ping_host(self, host_name, ip):
+    async def _ping_host(self, host_name, host_ip):
         """Ping a single host"""
-        cmd = f"ping -c {self._count} {ip}"
+        cmd = f"ping -c {self._count} {host_ip}"
 
         proc = await asyncio.create_subprocess_shell(cmd, stdout=PIPE, stderr=PIPE)
         proc_code = await proc.wait()
@@ -31,7 +33,8 @@ class PingManager:
     async def _ping_hosts(self):
         """Ping hosts and return ping result of the hosts"""
         ret_map = {}
-        ping_results = await asyncio.gather(*(self._ping_host(h, ip) for h, ip in self._hosts.items()))
+        ping_results = await asyncio.gather(
+            *(self._ping_host(host_name, host_ip) for host_name, host_ip in self._hosts.items()))
 
         for ping_result in ping_results:
             host_map = ret_map.setdefault(ping_result.host_name, {})
@@ -45,10 +48,12 @@ class PingManager:
         """Periodically ping hosts"""
         ticker = threading.Event()
         while not ticker.wait(self._interval):
-            ret_map = self._loop.run_until_complete(self._ping_hosts())
-            handler(ret_map)
+            task = self._loop.create_task(self._ping_hosts())
+            task.add_done_callback(handler)
+            self._loop.run_until_complete(task)
 
     def start_loop(self, handler):
         """Start ping loop"""
-        t = threading.Thread(target=self._periodic_ping_hosts, args=(handler,))
-        t.start()
+        thread = threading.Thread(target=self._periodic_ping_hosts, args=(handler,))
+        thread.start()
+

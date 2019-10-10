@@ -69,8 +69,9 @@ class CPNStateCollector:
 
         return ret_map
 
-    def _handle_ping_result(self, ping_res_map):
+    def _handle_ping_result(self, ping_res_future):
         """Handle ping result for hosts"""
+        ping_res_map = ping_res_future.result()
         with self._lock:
             for host_name, res_map in ping_res_map.items():
                 if host_name not in self._nodes_state:
