@@ -334,7 +334,7 @@ class FaucetStateCollector:
         with self.lock:
             egress_table = topo_state.setdefault(EGRESS_STATE, {})
             if status or name == egress_table.get(EGRESS_STATUS):
-                egress_table[EGRESS_STATUS] = name if status else "DOWN"
+                egress_table[EGRESS_STATE] = name if status else "DOWN"
                 egress_table[EGRESS_PORT] = port if status else None
                 egress_table[EGRESS_TS] = datetime.fromtimestamp(timestamp).isoformat()
                 egress_table[EGRESS_CHANGE_COUNT] = egress_table.get(EGRESS_CHANGE_COUNT, 0) + 1
