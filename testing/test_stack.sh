@@ -153,7 +153,10 @@ rm faucet/faucet/python_test.py
 
 echo Forch Tests | tee -a $TEST_RESULTS
 cmd/forch 1 &
-sleep 10
+
+# Need to wait long enough for polling mechanisms to kick in.
+sleep 20
+
 for api in system_state dataplane_state switch_state cpn_state process_state; do
     curl http://localhost:9019/$api > $out_dir/$api.json
 done
