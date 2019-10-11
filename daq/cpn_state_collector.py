@@ -92,7 +92,8 @@ class CPNStateCollector:
     @staticmethod
     def _get_node_status(ping_result):
         """Get node status from ping stdout"""
-        loss = int(re.search(r'\d+(?=% packet loss)', ping_result['stdout']).group())
+        result = re.search(r'\d+(?=% packet loss)', ping_result['stdout'])
+        loss = int(result.group()) if result else 100
         if loss == 0:
             return 'healty'
         if loss == 100:

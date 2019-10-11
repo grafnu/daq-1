@@ -107,6 +107,7 @@ function initialize() {
   load_viewer();
   fetch_data('overview', 'overview');
   fetch_data('topology', 'topology');
+  fetch_data('cpn_state', 'cpn_state');
   fetch_data('host_path', 'host_path');
   fetch_data('host_path_01', 'host_path?src=9a:02:57:1e:8f:01');
   fetch_path('9a:02:57:1e:8f:01', '9a:02:57:1e:8f:02')
