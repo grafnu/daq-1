@@ -132,6 +132,10 @@ class FaucetStateCollector:
         switch_map["config_change_type"] = switch_states.get(KEY_CONFIG_CHANGE_TYPE, "")
         switch_map["config_change_timestamp"] = switch_states.get(KEY_CONFIG_CHANGE_TS, "")
 
+        switch_map[SW_STATE] = switch_states.get(SW_STATE, "")
+        switch_map[SW_STATE_CH_TS] = switch_states.get(SW_STATE_CH_TS, "")
+        switch_map[SW_STATE_CH_COUNT] = switch_states.get(SW_STATE_CH_COUNT, "")
+
         switch_port_map = switch_map.setdefault("ports", {})
 
         # filling port information
@@ -386,9 +390,11 @@ class FaucetStateCollector:
                 return
             dp_state = self.switch_states.setdefault(dp_name, {})
             #using "CONNECTED" as placeholder until we figure out distinction b/w HEALTHY and DAMAGED
-            dp_state[SW_STATE] = "CONNECTED" if connected else "DOWN"
-            dp_state[SW_STATE_CH_TS] = datetime.fromtimestamp(timestamp).isoformat()
-            dp_state[SW_STATE_CH_COUNT] = dp_state.setdefault(SW_STATE_CH_COUNT, 0) + 1
+            state = "CONNECTED" if connected else "DOWN"
+            if dp_state.get(SW_STATE,"") != state:
+                dp_state[SW_STATE] = state
+                dp_state[SW_STATE_CH_TS] = datetime.fromtimestamp(timestamp).isoformat()
+                dp_state[SW_STATE_CH_COUNT] = dp_state.setdefault(SW_STATE_CH_COUNT, 0) + 1
 
     @dump_states
     def process_dataplane_config_change(self, timestamp, dps_config):
