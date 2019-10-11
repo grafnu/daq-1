@@ -263,7 +263,7 @@ class FaucetStateCollector:
                 hop['in'] = src_port
             while hop:
                 next_hop = {}
-                egress_port = path_to_root[hop['switch']]
+                egress_port = path_to_root.get(hop['switch'])
                 if egress_port:
                     hop['out'] = egress_port
                     for link_map in link_list:
