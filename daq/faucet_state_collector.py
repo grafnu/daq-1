@@ -279,7 +279,7 @@ class FaucetStateCollector:
                 hop = next_hop
         return res
 
-    def get_active_host_path(self, src_mac, dst_mac=None):
+    def get_host_path(self, src_mac, dst_mac=None):
         """Given two MAC addresses in the core network, find the active path between them"""
         res = {'src_ip': None, 'dst_ip': None, 'path': []}
         if not dst_mac:
