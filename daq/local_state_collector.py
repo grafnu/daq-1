@@ -2,6 +2,7 @@
 
 from datetime import datetime
 import psutil
+import re
 
 
 class LocalStateCollector:
@@ -10,18 +11,21 @@ class LocalStateCollector:
     def __init__(self):
         self._state = {'processes': {}}
         self._process_state = self._state['processes']
+        self._target_procs = {'faucet':     ('ryu-manager', r'faucet\.faucet'),
+                              'gauge':      ('ryu-manager', r'faucet\.gauge'),
+                              'keepalived': ('keepalived', r'keepalived'),
+                              'forch':      ('python', r'forchestrator\.py'),
+                              'bosun':      ('dunsel_watcher', r'bosun')}
 
     def get_process_state(self, extended=True):
         """Get the information of processes in proc_set"""
-
-        target_procs = {'ryu-manager', 'keepalived', 'forch', 'dunsel_watcher', 'python'}
-        procs = [p for p in psutil.process_iter() if p.name() in target_procs]
         self._process_state = {}
+        procs = self._get_target_processes()
 
         # fill up process info
-        for proc in procs:
+        for proc_name, proc in procs.items():
             proc_map = {}
-            self._process_state[proc.name()] = proc_map
+            self._process_state[proc_name] = proc_map
 
             proc_map['cmd_line'] = proc.cmdline()
             proc_map['create_time'] = datetime.fromtimestamp(proc.create_time()).isoformat()
@@ -37,6 +41,17 @@ class LocalStateCollector:
             proc_map['memory_info_mb']['vms'] = proc.memory_info().vms / 1e6
 
         return self._process_state
+
+    def _get_target_processes(self):
+        """Get target processes"""
+        procs = {}
+        for proc in psutil.process_iter():
+            for target_name, (target_cmd, target_regex) in self._target_procs.items():
+                if proc.name() == target_cmd:
+                    cmd_line_str = ''.join(proc.cmdline())
+                    if re.search(target_regex, cmd_line_str):
+                        procs[target_name] = proc
+                        break
 
     def get_process_overview(self):
         """Get process overview (limited details)"""
