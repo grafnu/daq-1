@@ -89,13 +89,20 @@ class Forchestrator:
                 self._faucet_collector.process_lag_state(timestamp, name, port, active)
         return False
 
+    def _get_peer_controller_url(self):
+        return 'http://google.com'
+
     def get_overview(self, path, params):
         """Get an overview of the system"""
-        return {
-            'hello': 'world',
-            'site_name': self._oconfig['site']['name'],
-            'params': params
+        # TODO: These are all placeholder values, so need to be replaced.
+        overview = {
+            'peer_controller_url': self._get_peer_controller_url(),
+            'processes': self._local_collector.get_process_overview(),
+            'dataplane': self._faucet_collector.get_topology(),
+            'site_name': self._oconfig['site']['name']
         }
+        overview.update(self._faucet_collector.get_controller_state())
+        return overview
 
     def get_switch(self, path, params):
         """Get the state of the switches"""
@@ -109,11 +116,11 @@ class Forchestrator:
         """Get the network topology overview"""
         return self._faucet_collector.get_topology()
 
-    def get_active_host_path(self, path, params):
+    def get_host_path(self, path, params):
         """Get active host path"""
         src = params.get('src', None)
         dst = params.get('dst', None)
-        return self._faucet_collector.get_active_host_path(src, dst)
+        return self._faucet_collector.get_host_path(src, dst)
 
     def get_cpn_state(self, path, params):
         """Get CPN state"""
@@ -134,7 +141,7 @@ if __name__ == '__main__':
     HTTP.map_request('topology', FORCH.get_topology)
     HTTP.map_request('switches', FORCH.get_switches)
     HTTP.map_request('switch', FORCH.get_switch)
-    HTTP.map_request('host_path', FORCH.get_active_host_path)
+    HTTP.map_request('host_path', FORCH.get_host_path)
     HTTP.map_request('cpn_state', FORCH.get_cpn_state)
     HTTP.map_request('process_state', FORCH.get_process_state)
     HTTP.map_request('', HTTP.static_file(''))
