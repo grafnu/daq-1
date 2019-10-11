@@ -39,4 +39,5 @@ class LocalStateCollector:
         return self._process_state
 
     def get_process_overview(self):
+        """Get process overview (limited details)"""
         return self.get_process_state(extended=False)
