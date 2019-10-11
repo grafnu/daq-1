@@ -37,6 +37,9 @@ KEY_MAC_LEARNING_PORT = "port"
 KEY_MAC_LEARNING_IP = "ip_address"
 KEY_MAC_LEARNING_TS = "timestamp"
 KEY_CONFIG_CHANGE_COUNT = "config_change_count"
+SW_STATE = "switch_state"
+SW_STATE_CH_TS = "switch_state_last_change"
+SW_STATE_CH_COUNT = "switch_state_change_count"
 KEY_CONFIG_CHANGE_TYPE = "config_change_type"
 KEY_CONFIG_CHANGE_TS = "config_change_timestamp"
 TOPOLOGY_ENTRY = "topology"
@@ -369,12 +372,23 @@ class FaucetStateCollector:
                 return
 
             dp_state = self.switch_states.setdefault(dp_name, {})
-            dp_state = self.switch_states.setdefault(dp_name, {})
 
             dp_state[KEY_DP_ID] = dp_id
             dp_state[KEY_CONFIG_CHANGE_TYPE] = restart_type
             dp_state[KEY_CONFIG_CHANGE_TS] = datetime.fromtimestamp(timestamp).isoformat()
             dp_state[KEY_CONFIG_CHANGE_COUNT] = dp_state.setdefault(KEY_CONFIG_CHANGE_COUNT, 0) + 1
+
+    @dump_states
+    def process_dp_change(self, timestamp, dp_name, connected):
+        """process dp_change to get dp status"""
+        with self.lock:
+            if not dp_name:
+                return
+            dp_state = self.switch_states.setdefault(dp_name, {})
+            #using "CONNECTED" as placeholder until we figure out distinction b/w HEALTHY and DAMAGED
+            dp_state[SW_STATE] = "CONNECTED" if connected else "DOWN"
+            dp_state[SW_STATE_CH_TS] = datetime.fromtimestamp(timestamp).isoformat()
+            dp_state[SW_STATE_CH_COUNT] = dp_state.setdefault(SW_STATE_CH_COUNT, 0) + 1
 
     @dump_states
     def process_dataplane_config_change(self, timestamp, dps_config):

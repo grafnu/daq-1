@@ -87,6 +87,10 @@ class Forchestrator:
             if name and port:
                 LOGGER.debug('LAG state %s %s %s', name, port, active)
                 self._faucet_collector.process_lag_state(timestamp, name, port, active)
+            (name, connected) = self._faucet_events.as_dp_change(event)
+            if name:
+                LOGGER.debug('DP %s connected %r', name, connected)
+                self._faucet_collector.process_dp_change(timestamp, name, connected)
         return False
 
     def _get_peer_controller_url(self):
