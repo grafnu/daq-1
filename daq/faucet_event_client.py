@@ -175,6 +175,14 @@ class FaucetEventClient():
             return (None, None, None)
         return (event['dp_name'], event['dp_id'], event['PORTS_STATUS'])
 
+    def as_lag_status(self, event):
+        """Convert event to lag status, if applicable"""
+        if not event or 'LAG_CHANGE' not in event:
+            return (None, None, None)
+        port = event['LAG_CHANGE']['port_no']
+        status = event['LAG_CHANGE']['status']
+        return (event['dp_name'], port, status)
+
     def as_port_state(self, event):
         """Convert event to a port state info, if applicable"""
         if not event or 'PORT_CHANGE' not in event:
