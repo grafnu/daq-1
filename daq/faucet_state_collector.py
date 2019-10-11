@@ -88,8 +88,7 @@ class FaucetStateCollector:
         return {
             'switches_state': 'monkey',
             'switches_state_change_count': 1,
-            'switches_state_last_change': 1,
-            'switches_state': 'monkey',
+            'switches_state_last_change': "2019-10-11T15:23:21.382479",
             'switches': switch_data
         }
 
