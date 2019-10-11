@@ -94,7 +94,7 @@ function populate_table() {
 function fetch_path(eth_src, eth_dst) {
   src = eth_src.slice(-2)
   dst = eth_dst.slice(-2)
-  fetch_data(`path_${src}_${dst}`, `host_path?src=${eth_src}&dst=${eth_dst}`)
+  fetch_data(`host_path_${src}_${dst}`, `host_path?src=${eth_src}&dst=${eth_dst}`)
 }
 
 function initialize() {
@@ -106,9 +106,9 @@ function initialize() {
   fetch_data('cpn_state', 'cpn_state');
   fetch_data('process_state', 'process_state');
   fetch_data('host_path', 'host_path');
-  fetch_data('host_path_01', 'host_path?src=9a:02:57:1e:8f:01');
+  fetch_data('host_path_01_egress', 'host_path?src=9a:02:57:1e:8f:01');
   fetch_path('9a:02:57:1e:8f:01', '9a:02:57:1e:8f:02')
   fetch_path('9a:02:57:1e:8f:02', '9a:02:57:1e:8f:03')
   fetch_path('9a:02:57:1e:8f:03', '9a:02:57:1e:8f:01')
-  fetch_path('9a:02:57:1e:8f:04', '9a:02:57:1e:8f:05')
+  fetch_path('9a:02:57:1e:8f:02', '9a:02:57:1e:8f:05')
 }

@@ -164,12 +164,12 @@ jq .processes.forch.cpu_times_s.user $api_result | tee -a $TEST_RESULTS
 jq .controller_state_change_count $api_result | tee -a $TEST_RESULTS
 
 api_result=$out_dir/cpn_state.json
-for sw in nz-kiwi-t1sw1 nz-kiwi-t1sw2 nz-kiwi-t2sw1 nz-kiwi-t2sw2; do
-    jq ".\"$sw\".attributes.cpn_ip" $api_result | tee -a $TEST_RESULTS
-    jq ".\"$sw\".attributes.role" $api_result | tee -a $TEST_RESULTS
-    jq ".\"$sw\".attributes.vendor" $api_result | tee -a $TEST_RESULTS
-    jq ".\"$sw\".attributes.model" $api_result | tee -a $TEST_RESULTS
-    jq ".\"$sw\".status" $api_result | tee -a $TEST_RESULTS
+for node in nz-kiwi-t1sw1 nz-kiwi-t1sw2 nz-kiwi-t2sw1 nz-kiwi-t2sw2; do
+    jq ".cpn_nodes.\"$node\".attributes.cpn_ip" $api_result | tee -a $TEST_RESULTS
+    jq ".cpn_nodes.\"$node\".attributes.role" $api_result | tee -a $TEST_RESULTS
+    jq ".cpn_nodes.\"$node\".attributes.vendor" $api_result | tee -a $TEST_RESULTS
+    jq ".cpn_nodes.\"$node\".attributes.model" $api_result | tee -a $TEST_RESULTS
+    jq ".cpn_nodes.\"$node\".status" $api_result | tee -a $TEST_RESULTS
 done
 
 sudo kill `ps ax | fgrep forch | awk '{print $1}'`
