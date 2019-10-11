@@ -1,8 +1,9 @@
 """Collecting the states of the local system"""
 
 from datetime import datetime
-import psutil
 import re
+
+import psutil
 
 
 class LocalStateCollector:
@@ -52,6 +53,7 @@ class LocalStateCollector:
                     if re.search(target_regex, cmd_line_str):
                         procs[target_name] = proc
                         break
+        return procs
 
     def get_process_overview(self):
         """Get process overview (limited details)"""
