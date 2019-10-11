@@ -155,9 +155,9 @@ echo Forch Tests | tee -a $TEST_RESULTS
 cmd/forch 1 &
 sleep 5
 curl http://localhost:9019/overview > $out_dir/forch_overview.json
-cat $out_dir/forch_overview.json
-jq .hello $out_dir/forch_overview.json | tee -a $TEST_RESULTS
 jq .site_name $out_dir/forch_overview.json | tee -a $TEST_RESULTS
+jq .processes.forch.cpu_times_s.user $out_dir/forch_overview.json | tee -a $TEST_RESULTS
+jq .controller_state_change_count $out_dir/forch_overview.json | tee -a $TEST_RESULTS
 
 sleep 20
 curl http://localhost:9019/cpn_state > $out_dir/forch_cpn_state.json
