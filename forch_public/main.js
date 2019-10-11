@@ -80,11 +80,6 @@ function populate_table() {
     return;
   }
 
-  console.log('switch_names', switch_names)
-  for (const switch_name of switch_names) {
-    fetch_data(`switch_${switch_name}`, `switch?switch_name=${switch_name}`);
-  }
-
   t1_switches = find_t1_switches(switch_names);
   console.log('t1_switches', t1_switches);
   render_t1_switches(t1_switches[0], t1_switches[1]);
@@ -105,15 +100,15 @@ function fetch_path(eth_src, eth_dst) {
 function initialize() {
   console.log('initializing viewer');
   load_viewer();
-  fetch_data('overview', 'overview');
-  fetch_data('topology', 'topology');
+  fetch_data('system_state', 'system_state');
+  fetch_data('dataplane_state', 'dataplane_state');
+  fetch_data('switch_state', 'switch_state', populate_table);
   fetch_data('cpn_state', 'cpn_state');
+  fetch_data('process_state', 'process_state');
   fetch_data('host_path', 'host_path');
   fetch_data('host_path_01', 'host_path?src=9a:02:57:1e:8f:01');
   fetch_path('9a:02:57:1e:8f:01', '9a:02:57:1e:8f:02')
   fetch_path('9a:02:57:1e:8f:02', '9a:02:57:1e:8f:03')
   fetch_path('9a:02:57:1e:8f:03', '9a:02:57:1e:8f:01')
   fetch_path('9a:02:57:1e:8f:04', '9a:02:57:1e:8f:05')
-  fetch_data('process_state', 'process_state');
-  fetch_data('switches', 'switches', populate_table);
 }
