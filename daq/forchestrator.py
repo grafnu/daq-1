@@ -95,7 +95,7 @@ class Forchestrator:
     def get_overview(self, path, params):
         """Get an overview of the system"""
         # TODO: These are all placeholder values, so need to be replaced.
-        overview= {
+        overview = {
             'peer_controller_url': self._get_peer_controller_url(),
             'processes': self._local_collector.get_process_overview(),
             'dataplane': self._faucet_collector.get_topology(),
