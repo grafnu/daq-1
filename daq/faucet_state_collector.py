@@ -391,12 +391,12 @@ class FaucetStateCollector:
             if not dp_name:
                 return
             dp_state = self.switch_states.setdefault(dp_name, {})
-            #using "CONNECTED" as placeholder until we figure out distinction b/w HEALTHY and DAMAGED
+            #TODO: figure out distinction b/w HEALTHY and DAMAGED to replace placeholder "CONNECTED"
             state = "CONNECTED" if connected else "DOWN"
             if dp_state.get(SW_STATE,"") != state:
                 dp_state[SW_STATE] = state
                 dp_state[SW_STATE_CH_TS] = datetime.fromtimestamp(timestamp).isoformat()
-                dp_state[SW_STATE_CH_COUNT] = dp_state.setdefault(SW_STATE_CH_COUNT, 0) + 1
+                dp_state[SW_STATE_CH_COUNT] = dp_state.get(SW_STATE_CH_COUNT, 0) + 1
 
     @dump_states
     def process_dataplane_config_change(self, timestamp, dps_config):
