@@ -214,6 +214,14 @@ class FaucetEventClient():
         path_to_root = event['STACK_TOPO_CHANGE']['path_to_root']
         return (root, graph, path_to_root)
 
+    def as_dp_change(self, event):
+        """Convert to dp status"""
+        if not event or 'DP_CHANGE' not in event:
+            return (None, None)
+        name = event['dp_name']
+        connected = (event['DP_CHANGE']['reason'] == 'cold_start')
+        return (name, connected)
+
     def close(self):
         """Close the faucet event socket"""
         self.sock.close()

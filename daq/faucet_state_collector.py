@@ -37,6 +37,9 @@ KEY_MAC_LEARNING_PORT = "port"
 KEY_MAC_LEARNING_IP = "ip_address"
 KEY_MAC_LEARNING_TS = "timestamp"
 KEY_CONFIG_CHANGE_COUNT = "config_change_count"
+SW_STATE = "switch_state"
+SW_STATE_CH_TS = "switch_state_last_change"
+SW_STATE_CH_COUNT = "switch_state_change_count"
 KEY_CONFIG_CHANGE_TYPE = "config_change_type"
 KEY_CONFIG_CHANGE_TS = "config_change_timestamp"
 TOPOLOGY_ENTRY = "topology"
@@ -103,13 +106,10 @@ class FaucetStateCollector:
     def _get_switch_map(self):
         """returns switch map for topology overview"""
         switch_map = {}
-        topo_obj = self.topo_state
         with self.lock:
-            for switch in topo_obj.get(TOPOLOGY_GRAPH, {}).get("nodes", []):
-                switch_id = switch.get("id")
-                if switch_id:
-                    switch_map[switch_id] = {}
-                    switch_map[switch_id]["status"] = None
+            for switch, switch_state in self.switch_states.items():
+                switch_map[switch] = {}
+                switch_map[switch]["status"] = switch_state.get(SW_STATE, "")
         return switch_map
 
     def _get_switch(self, switch_name):
@@ -132,6 +132,10 @@ class FaucetStateCollector:
         switch_map["config_change_count"] = switch_states.get(KEY_CONFIG_CHANGE_COUNT, "")
         switch_map["config_change_type"] = switch_states.get(KEY_CONFIG_CHANGE_TYPE, "")
         switch_map["config_change_timestamp"] = switch_states.get(KEY_CONFIG_CHANGE_TS, "")
+
+        switch_map[SW_STATE] = switch_states.get(SW_STATE, "")
+        switch_map[SW_STATE_CH_TS] = switch_states.get(SW_STATE_CH_TS, "")
+        switch_map[SW_STATE_CH_COUNT] = switch_states.get(SW_STATE_CH_COUNT, "")
 
         switch_port_map = switch_map.setdefault("ports", {})
 
@@ -260,7 +264,7 @@ class FaucetStateCollector:
                 hop['in'] = src_port
             while hop:
                 next_hop = {}
-                egress_port = path_to_root[hop['switch']]
+                egress_port = path_to_root.get(hop['switch'])
                 if egress_port:
                     hop['out'] = egress_port
                     for link_map in link_list:
@@ -373,12 +377,25 @@ class FaucetStateCollector:
                 return
 
             dp_state = self.switch_states.setdefault(dp_name, {})
-            dp_state = self.switch_states.setdefault(dp_name, {})
 
             dp_state[KEY_DP_ID] = dp_id
             dp_state[KEY_CONFIG_CHANGE_TYPE] = restart_type
             dp_state[KEY_CONFIG_CHANGE_TS] = datetime.fromtimestamp(timestamp).isoformat()
             dp_state[KEY_CONFIG_CHANGE_COUNT] = dp_state.setdefault(KEY_CONFIG_CHANGE_COUNT, 0) + 1
+
+    @dump_states
+    def process_dp_change(self, timestamp, dp_name, connected):
+        """process dp_change to get dp status"""
+        with self.lock:
+            if not dp_name:
+                return
+            dp_state = self.switch_states.setdefault(dp_name, {})
+            #TODO: figure out distinction b/w HEALTHY and DAMAGED to replace placeholder "CONNECTED"
+            state = "CONNECTED" if connected else "DOWN"
+            if dp_state.get(SW_STATE, "") != state:
+                dp_state[SW_STATE] = state
+                dp_state[SW_STATE_CH_TS] = datetime.fromtimestamp(timestamp).isoformat()
+                dp_state[SW_STATE_CH_COUNT] = dp_state.get(SW_STATE_CH_COUNT, 0) + 1
 
     @dump_states
     def process_dataplane_config_change(self, timestamp, dps_config):
