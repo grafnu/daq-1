@@ -106,7 +106,6 @@ class FaucetStateCollector:
     def _get_switch_map(self):
         """returns switch map for topology overview"""
         switch_map = {}
-        topo_obj = self.topo_state
         with self.lock:
             for switch, switch_state in self.switch_states.items():
                 switch_map[switch] = {}
@@ -393,7 +392,7 @@ class FaucetStateCollector:
             dp_state = self.switch_states.setdefault(dp_name, {})
             #TODO: figure out distinction b/w HEALTHY and DAMAGED to replace placeholder "CONNECTED"
             state = "CONNECTED" if connected else "DOWN"
-            if dp_state.get(SW_STATE,"") != state:
+            if dp_state.get(SW_STATE, "") != state:
                 dp_state[SW_STATE] = state
                 dp_state[SW_STATE_CH_TS] = datetime.fromtimestamp(timestamp).isoformat()
                 dp_state[SW_STATE_CH_COUNT] = dp_state.get(SW_STATE_CH_COUNT, 0) + 1
