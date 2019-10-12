@@ -101,7 +101,7 @@ class CPNStateCollector:
         result = re.search(r'\d+(?=% packet loss)', ping_result['stdout'])
         loss = int(result.group()) if result else 100
         if loss == 0:
-            return 'healty'
+            return 'healthy'
         if loss == 100:
             return 'down'
         return 'flaky'
