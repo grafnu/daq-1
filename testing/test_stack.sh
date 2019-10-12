@@ -156,7 +156,7 @@ cmd/forch 1 &
 sleep 5
 curl http://localhost:9019/overview > $out_dir/forch_overview.json
 jq .site_name $out_dir/forch_overview.json | tee -a $TEST_RESULTS
-jq .processes.forch.cpu_times_s.user $out_dir/forch_overview.json | tee -a $TEST_RESULTS
+jq .processes.forch.status $out_dir/forch_overview.json | tee -a $TEST_RESULTS
 jq .controller_state_change_count $out_dir/forch_overview.json | tee -a $TEST_RESULTS
 
 sleep 20
