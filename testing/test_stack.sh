@@ -163,7 +163,6 @@ done
 
 api_result=$out_dir/system_state.json
 jq .site_name $api_result | tee -a $TEST_RESULTS
-jq .processes.forch.status $api_result | tee -a $TEST_RESULTS
 jq .controller_state_change_count $api_result | tee -a $TEST_RESULTS
 
 api_result=$out_dir/cpn_state.json
@@ -174,6 +173,9 @@ for node in nz-kiwi-t1sw1 nz-kiwi-t1sw2 nz-kiwi-t2sw1 nz-kiwi-t2sw2; do
     jq ".cpn_nodes.\"$node\".attributes.model" $api_result | tee -a $TEST_RESULTS
     jq ".cpn_nodes.\"$node\".status" $api_result | tee -a $TEST_RESULTS
 done
+
+api_result=$out_dir/process_state.json
+jq .forch.status $api_result | tee -a $TEST_RESULTS
 
 sudo kill `ps ax | fgrep forch | awk '{print $1}'`
 
