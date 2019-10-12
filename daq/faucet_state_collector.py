@@ -104,11 +104,9 @@ class FaucetStateCollector:
         switch_map = {}
         topo_obj = self.topo_state
         with self.lock:
-            for switch in topo_obj.get(TOPOLOGY_GRAPH, {}).get("nodes", []):
-                switch_id = switch.get("id")
-                if switch_id:
-                    switch_map[switch_id] = {}
-                    switch_map[switch_id]["status"] = None
+            for switch, switch_state in self.switch_states.items():
+                switch_map[switch] = {}
+                switch_map[switch]["status"] = switch_state.get(SW_STATE, "")
         return switch_map
 
     def get_switch(self, switch_name):
