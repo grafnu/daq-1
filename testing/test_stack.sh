@@ -163,7 +163,7 @@ done
 
 api_result=$out_dir/system_state.json
 jq .site_name $api_result | tee -a $TEST_RESULTS
-jq .processes.forch.status $out_dir/forch_overview.json | tee -a $TEST_RESULTS
+jq .processes.forch.status $api_result| tee -a $TEST_RESULTS
 jq .controller_state_change_count $api_result | tee -a $TEST_RESULTS
 
 api_result=$out_dir/cpn_state.json
