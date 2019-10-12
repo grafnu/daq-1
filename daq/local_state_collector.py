@@ -56,8 +56,7 @@ class LocalStateCollector:
                         LOGGER.error("Duplicate process: %s", str(procs[target_name]))
                         procs[target_name] = None
                         break
-                    else:
-                        procs[target_name] = proc
+                    procs[target_name] = proc
         return procs
 
     def _fill_process_state(self, target_name, proc):
