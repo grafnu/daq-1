@@ -153,21 +153,26 @@ rm faucet/faucet/python_test.py
 
 echo Forch Tests | tee -a $TEST_RESULTS
 cmd/forch 1 &
-sleep 5
-curl http://localhost:9019/overview > $out_dir/forch_overview.json
-jq .site_name $out_dir/forch_overview.json | tee -a $TEST_RESULTS
-jq .processes.forch.cpu_times_s.user $out_dir/forch_overview.json | tee -a $TEST_RESULTS
-jq .controller_state_change_count $out_dir/forch_overview.json | tee -a $TEST_RESULTS
 
+# Need to wait long enough for polling mechanisms to kick in.
 sleep 20
-curl http://localhost:9019/cpn_state > $out_dir/forch_cpn_state.json
-cat $out_dir/forch_cpn_state.json
-for sw in nz-kiwi-t1sw1 nz-kiwi-t1sw2 nz-kiwi-t2sw1 nz-kiwi-t2sw2; do
-    jq ".\"$sw\".attributes.cpn_ip" $out_dir/forch_cpn_state.json | tee -a $TEST_RESULTS
-    jq ".\"$sw\".attributes.role" $out_dir/forch_cpn_state.json | tee -a $TEST_RESULTS
-    jq ".\"$sw\".attributes.vendor" $out_dir/forch_cpn_state.json | tee -a $TEST_RESULTS
-    jq ".\"$sw\".attributes.model" $out_dir/forch_cpn_state.json | tee -a $TEST_RESULTS
-    jq ".\"$sw\".status" $out_dir/forch_cpn_state.json | tee -a $TEST_RESULTS
+
+for api in system_state dataplane_state switch_state cpn_state process_state; do
+    curl http://localhost:9019/$api > $out_dir/$api.json
+done
+
+api_result=$out_dir/system_state.json
+jq .site_name $api_result | tee -a $TEST_RESULTS
+jq .processes.forch.cpu_times_s.user $api_result | tee -a $TEST_RESULTS
+jq .controller_state_change_count $api_result | tee -a $TEST_RESULTS
+
+api_result=$out_dir/cpn_state.json
+for node in nz-kiwi-t1sw1 nz-kiwi-t1sw2 nz-kiwi-t2sw1 nz-kiwi-t2sw2; do
+    jq ".cpn_nodes.\"$node\".attributes.cpn_ip" $api_result | tee -a $TEST_RESULTS
+    jq ".cpn_nodes.\"$node\".attributes.role" $api_result | tee -a $TEST_RESULTS
+    jq ".cpn_nodes.\"$node\".attributes.vendor" $api_result | tee -a $TEST_RESULTS
+    jq ".cpn_nodes.\"$node\".attributes.model" $api_result | tee -a $TEST_RESULTS
+    jq ".cpn_nodes.\"$node\".status" $api_result | tee -a $TEST_RESULTS
 done
 
 sudo kill `ps ax | fgrep forch | awk '{print $1}'`

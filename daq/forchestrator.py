@@ -81,7 +81,7 @@ class Forchestrator:
                 self._faucet_collector.process_dataplane_config_change(timestamp, dps_config)
             (stack_root, graph, path) = self._faucet_events.as_stack_topo_change(event)
             if stack_root is not None:
-                LOGGER.debug('stack topology change root:%s', stack_root)
+                LOGGER.debug('stack dataplane_state change root:%s', stack_root)
                 self._faucet_collector.process_stack_topo_change(timestamp, stack_root, graph, path)
             (name, port, active) = self._faucet_events.as_lag_status(event)
             if name and port:
@@ -96,29 +96,25 @@ class Forchestrator:
     def _get_peer_controller_url(self):
         return 'http://google.com'
 
-    def get_overview(self, path, params):
-        """Get an overview of the system"""
+    def get_system_state(self, path, params):
+        """Get an overview of the system state"""
         # TODO: These are all placeholder values, so need to be replaced.
         overview = {
             'peer_controller_url': self._get_peer_controller_url(),
             'processes': self._local_collector.get_process_overview(),
-            'dataplane': self._faucet_collector.get_topology(),
+            'dataplane': self._faucet_collector.get_dataplane_state(),
             'site_name': self._oconfig['site']['name']
         }
         overview.update(self._faucet_collector.get_controller_state())
         return overview
 
-    def get_switch(self, path, params):
+    def get_switch_state(self, path, params):
         """Get the state of the switches"""
-        return self._faucet_collector.get_switch(params['switch_name'])
+        return self._faucet_collector.get_switch_state()
 
-    def get_switches(self, path, params):
-        """Get the state of the switches"""
-        return self._faucet_collector.get_switches()
-
-    def get_topology(self, path, params):
-        """Get the network topology overview"""
-        return self._faucet_collector.get_topology()
+    def get_dataplane_state(self, path, params):
+        """Get the dataplane state overview"""
+        return self._faucet_collector.get_dataplane_state()
 
     def get_host_path(self, path, params):
         """Get active host path"""
@@ -141,13 +137,12 @@ if __name__ == '__main__':
     FORCH = Forchestrator(CONFIG)
     FORCH.initialize()
     HTTP = http_server.HttpServer(CONFIG)
-    HTTP.map_request('overview', FORCH.get_overview)
-    HTTP.map_request('topology', FORCH.get_topology)
-    HTTP.map_request('switches', FORCH.get_switches)
-    HTTP.map_request('switch', FORCH.get_switch)
-    HTTP.map_request('host_path', FORCH.get_host_path)
+    HTTP.map_request('system_state', FORCH.get_system_state)
+    HTTP.map_request('dataplane_state', FORCH.get_dataplane_state)
+    HTTP.map_request('switch_state', FORCH.get_switch_state)
     HTTP.map_request('cpn_state', FORCH.get_cpn_state)
     HTTP.map_request('process_state', FORCH.get_process_state)
+    HTTP.map_request('host_path', FORCH.get_host_path)
     HTTP.map_request('', HTTP.static_file(''))
     HTTP.start_server()
     FORCH.main_loop()

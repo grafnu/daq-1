@@ -56,11 +56,11 @@ class CPNStateCollector:
 
     def get_cpn_state(self):
         """Get CPN state"""
-        ret_map = {}
+        cpn_nodes = {}
 
         with self._lock:
             for cpn_node, node_state in self._nodes_state.items():
-                ret_node_map = ret_map.setdefault(cpn_node, {})
+                ret_node_map = cpn_nodes.setdefault(cpn_node, {})
                 ret_node_map['attributes'] = copy.copy(node_state.get(KEY_CPN_ATTRIBUTES, {}))
                 ret_node_map['status'] = node_state.get(KEY_CPN_STATUS, None)
                 ping_result = node_state.get(KEY_CPN_PING_RES, {}).get('stdout', None)
@@ -68,7 +68,13 @@ class CPNStateCollector:
                 ret_node_map['status_change_count'] = node_state.get(KEY_CPN_STATUS_COUNT, None)
                 ret_node_map['status_last_updated'] = node_state.get(KEY_CPN_STATUS_TS, None)
 
-        return ret_map
+        return {
+            'cpn_state': 'monkey',
+            'cpn_state_change_count': 1,
+            'cpn_state_last_update': "2019-10-11T15:23:21.382479",
+            'cpn_state_last_changed': "2019-10-11T15:23:21.382479",
+            'cpn_nodes': cpn_nodes
+        }
 
     def _handle_ping_result(self, ping_res_future):
         """Handle ping result for hosts"""
@@ -95,7 +101,7 @@ class CPNStateCollector:
         result = re.search(r'\d+(?=% packet loss)', ping_result['stdout'])
         loss = int(result.group()) if result else 100
         if loss == 0:
-            return 'healty'
+            return 'healthy'
         if loss == 100:
             return 'down'
         return 'flaky'
