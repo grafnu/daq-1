@@ -45,17 +45,16 @@ ROOT_PATH = "path_to_root"
 TOPOLOGY_CHANGE_COUNT = "change_count"
 TOPOLOGY_HEALTH = "is_healthy"
 TOPOLOGY_NOT_HEALTH = "is_wounded"
-TOPOLOGY_DP_MAP = "switch_map"
-TOPOLOGY_LINK_MAP = "physical_stack_links"
+TOPOLOGY_DP_MAP = "switches"
+TOPOLOGY_LINK_MAP = "stack_links"
 TOPOLOGY_ROOT = "active_root"
 DPS_CFG = "dps_config"
 DPS_CFG_CHANGE_COUNT = "config_change_count"
 DPS_CFG_CHANGE_TS = "config_change_timestamp"
 FAUCET_CONFIG = "faucet_config"
-EGRESS_STATE = "egress_state"
-EGRESS_STATUS = "is_active"
 EGRESS_PORT = "port"
 EGRESS_TS = "timestamp"
+EGRESS_STATE = "egress_state"
 EGRESS_LAST_CHG = "egress_state_last_change"
 EGRESS_CHANGE_COUNT = "egress_state_change_count"
 
@@ -73,7 +72,7 @@ class FaucetStateCollector:
         """get the system states"""
         return self.system_states
 
-    def get_topology(self):
+    def get_dataplane_state(self):
         """get the topology state"""
         dplane_map = {}
         dplane_map[TOPOLOGY_DP_MAP] = self._get_switch_map()
@@ -81,18 +80,23 @@ class FaucetStateCollector:
         self._fill_egress_state(dplane_map)
         return dplane_map
 
-    def get_switches(self):
+    def get_switch_state(self):
         """get a set of all switches"""
         switch_data = {}
         for switch_name in self.switch_states:
-            switch_data[switch_name] = self.get_switch(switch_name)
-        return switch_data
+            switch_data[switch_name] = self._get_switch(switch_name)
+        return {
+            'switches_state': 'monkey',
+            'switches_state_change_count': 1,
+            'switches_state_last_change': "2019-10-11T15:23:21.382479",
+            'switches': switch_data
+        }
 
     def _fill_egress_state(self, dplane_map):
         """Return egress state obj"""
         with self.lock:
             egress_obj = self.topo_state.get(EGRESS_STATE, {})
-            dplane_map[EGRESS_STATUS] = egress_obj.get(EGRESS_STATUS)
+            dplane_map[EGRESS_STATE] = egress_obj.get(EGRESS_STATE)
             dplane_map[EGRESS_LAST_CHG] = egress_obj.get(EGRESS_TS)
             dplane_map[EGRESS_CHANGE_COUNT] = egress_obj.get(EGRESS_CHANGE_COUNT)
 
@@ -108,7 +112,7 @@ class FaucetStateCollector:
                     switch_map[switch_id]["status"] = None
         return switch_map
 
-    def get_switch(self, switch_name):
+    def _get_switch(self, switch_name):
         """lock protect get_switch_raw"""
         with self.lock:
             switches = self._get_switch_raw(switch_name)
@@ -333,8 +337,8 @@ class FaucetStateCollector:
         topo_state = self.topo_state
         with self.lock:
             egress_table = topo_state.setdefault(EGRESS_STATE, {})
-            if status or name == egress_table.get(EGRESS_STATUS):
-                egress_table[EGRESS_STATUS] = name if status else "DOWN"
+            if status or name == egress_table.get(EGRESS_STATE):
+                egress_table[EGRESS_STATE] = name if status else "DOWN"
                 egress_table[EGRESS_PORT] = port if status else None
                 egress_table[EGRESS_TS] = datetime.fromtimestamp(timestamp).isoformat()
                 egress_table[EGRESS_CHANGE_COUNT] = egress_table.get(EGRESS_CHANGE_COUNT, 0) + 1
@@ -475,6 +479,6 @@ class FaucetStateCollector:
             'controller_state': 'up',
             'controller_state_change_count': 2,
             'controller_state_last_change': None,
-            'controller_state_last_update': "Tuesday",
+            'controller_state_last_update': "2019-10-11T15:23:21.382479",
             'controller_state_description': "hunky-dory"
         }
