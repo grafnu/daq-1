@@ -175,7 +175,7 @@ for node in nz-kiwi-t1sw1 nz-kiwi-t1sw2 nz-kiwi-t2sw1 nz-kiwi-t2sw2; do
 done
 
 api_result=$out_dir/process_state.json
-jq .forch.status $api_result | tee -a $TEST_RESULTS
+jq .bosun.status $api_result | tee -a $TEST_RESULTS
 
 sudo kill `ps ax | fgrep forch | awk '{print $1}'`
 
