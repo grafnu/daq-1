@@ -2,7 +2,7 @@
 
 ROOT=$(dirname $0)/..
 
-for target in venv faucet mininet build inst; do
+for target in venv faucet mininet build inst forch; do
     dir=$ROOT/$target
     echo Cleaning $dir
     rm -rf $dir || echo Clean failed, retrying with sudo...
