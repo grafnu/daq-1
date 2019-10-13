@@ -44,7 +44,7 @@ KEY_CONFIG_CHANGE_TYPE = "config_change_type"
 KEY_CONFIG_CHANGE_TS = "config_change_timestamp"
 TOPOLOGY_ENTRY = "topology"
 TOPOLOGY_GRAPH = "graph_obj"
-ROOT_PATH = "path_to_root"
+TOPOLOGY_DPS = "dps"
 TOPOLOGY_CHANGE_COUNT = "change_count"
 TOPOLOGY_HEALTH = "is_healthy"
 TOPOLOGY_NOT_HEALTH = "is_wounded"
@@ -200,7 +200,7 @@ class FaucetStateCollector:
         topo_map = {}
         with self.lock:
             config_obj = self.system_states.get(FAUCET_CONFIG, {}).get(DPS_CFG, {})
-            path_to_root = self.topo_state.get(ROOT_PATH, {})
+            dps = self.topo_state.get(TOPOLOGY_DPS, {})
             for start_dp, dp_obj in config_obj.items():
                 for start_port, iface_obj in dp_obj.get("interfaces", {}).items():
                     peer_dp = iface_obj.get("stack", {}).get("dp")
@@ -218,8 +218,8 @@ class FaucetStateCollector:
                         if key in topo_map:
                             continue
                         topo_map[key] = link_obj
-                        if (path_to_root.get(start_dp) == int(start_port) or
-                                path_to_root.get(peer_dp) == int(peer_port)):
+                        if (dps.get(start_dp)['root_hop_port'] == int(start_port) or
+                                dps.get(peer_dp)['root_hop_port'] == int(peer_port)):
                             link_obj["status"] = "ACTIVE"
                         elif self._is_link_up(key):
                             link_obj["status"] = "UP"
@@ -258,13 +258,13 @@ class FaucetStateCollector:
         res = {'path': []}
         with self.lock:
             link_list = self.topo_state.get(TOPOLOGY_GRAPH).get('links', [])
-            path_to_root = self.topo_state.get(ROOT_PATH, {})
+            dps = self.topo_state.get(TOPOLOGY_DPS, {})
             hop = {'switch': src_switch}
             if src_port:
                 hop['in'] = src_port
             while hop:
                 next_hop = {}
-                egress_port = path_to_root.get(hop['switch'])
+                egress_port = dps.get(hop['switch'])['root_hop_port']
                 if egress_port:
                     hop['out'] = egress_port
                     for link_map in link_list:
@@ -407,13 +407,13 @@ class FaucetStateCollector:
             cfg_state[DPS_CFG_CHANGE_COUNT] = cfg_state.setdefault(DPS_CFG_CHANGE_COUNT, 0) + 1
 
     @dump_states
-    def process_stack_topo_change(self, timestamp, stack_root, graph, path_to_root):
+    def process_stack_topo_change(self, timestamp, stack_root, graph, dps):
         """Process stack topology change event"""
         topo_state = self.topo_state
         with self.lock:
             topo_state[TOPOLOGY_ROOT] = stack_root
             topo_state[TOPOLOGY_GRAPH] = graph
-            topo_state[ROOT_PATH] = path_to_root
+            topo_state[TOPOLOGY_DPS] = dps
             topo_state[TOPOLOGY_CHANGE_COUNT] = topo_state.setdefault(TOPOLOGY_CHANGE_COUNT, 0) + 1
 
     @staticmethod
