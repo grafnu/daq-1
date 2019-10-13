@@ -13,6 +13,10 @@ FAUCETR=${DAQ_FAUCET_REPO:-https://github.com/grafnu/faucet}
 FAUCETB=${DAQ_FAUCET_BRANCH}
 FAUCETX=$(cat misc/FAUCET_VERSION)
 FAUCETV=${DAQ_FAUCET_VER:-$FAUCETX}
+FORCHR=${DAQ_FORCH_REPO:-https://github.com/grafnu/forch}
+FORCHB=${DAQ_FORCH_BRANCH}
+FORCHX=$(cat misc/FORCH_VERSION)
+FORCHV=${DAQ_FORCH_VER:-$FORCHX}
 MININET=https://github.com/mininet/mininet
 MININETV=2.3.0d3
 
@@ -151,4 +155,17 @@ else
         echo Forcing faucet version $FAUCETV
         (cd faucet; git reset --hard $FAUCETV)
     fi
+fi
+
+if [ -d forch ]; then
+    echo forch already installed, forch version $(cd forch; git rev-list -n 1 HEAD)
+elif [ -z "$FORCHV" ]; then
+    echo No forch version found, skipping.
+elif [ -z "$FORCHR" ]; then
+    echo No forch repo defined, skipping.
+else
+    echo Cloning $FORCHR...
+    git clone $FORCHR forch
+    echo Forcing forch version $FORCHV
+    (cd forch; git reset --hard $FORCHV)
 fi
