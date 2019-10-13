@@ -211,8 +211,8 @@ class FaucetEventClient():
             return (None, None, None)
         root = event['STACK_TOPO_CHANGE']['stack_root']
         graph = event['STACK_TOPO_CHANGE']['graph']
-        path_to_root = event['STACK_TOPO_CHANGE']['path_to_root']
-        return (root, graph, path_to_root)
+        dps = event['STACK_TOPO_CHANGE']['dps']
+        return (root, graph, dps)
 
     def as_dp_change(self, event):
         """Convert to dp status"""
