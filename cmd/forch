@@ -26,8 +26,11 @@ else
     PYTHON=python3
 fi
 
+PYTHONPATH=forch/
+
 sudo \
     FAUCET_EVENT_SOCK=$FDIR/$FSOCK \
     FORCH_CONFIG_DIR=$FDIR \
     FORCH_RUN_DIR=$FDIR \
-    $PYTHON forch/forchestrator.py
+    PYTHONPATH=$PYTHONPATH \
+    $PYTHON -m forch.forchestrator
