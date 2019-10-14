@@ -26,7 +26,7 @@ else
     PYTHON=python3
 fi
 
-HOSTNAME=$(hostname -a)
+HOSTNAME=`hostname -a`
 PYTHONPATH=forch/
 
 sudo \
