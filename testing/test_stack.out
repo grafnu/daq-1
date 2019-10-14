@@ -6,28 +6,28 @@ Base Stack Setup
 supercalifragilisticexpialidocious
 Forch Tests
 "nz-kiwi"
-0
 2
 "127.0.0.1"
 "dist"
 "NoviSwitch"
 "NS-2128"
-"healty"
+"healthy"
 "127.0.0.1"
 "dist"
 "NoviSwitch"
 "NS-2128"
-"healty"
+"healthy"
 "127.0.0.1"
 "dist"
 "Cisco"
 "C9300-48P"
-"healty"
+"healthy"
 "240.0.0.1"
 "dist"
 "Cisco"
 "C9300-48P"
 "down"
+"error"
 Stacking Tests
 Starting stack test...
 (UNKNOWN) [192.168.0.2] 23 (?) : Connection timed out
