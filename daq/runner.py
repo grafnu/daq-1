@@ -9,7 +9,7 @@ import time
 import traceback
 
 import configurator
-import faucet_event_client
+from forch import faucet_event_client
 import gateway as gateway_manager
 import gcp
 import host as connected_host
@@ -140,7 +140,7 @@ class DAQRunner:
             (name, dpid, port, active) = self.faucet_events.as_port_state(event)
             if dpid and port:
                 self._handle_port_state(name, port, active)
-            (name, dpid, port, target_mac) = self.faucet_events.as_port_learn(event)
+            (name, dpid, port, target_mac, _target_ip) = self.faucet_events.as_port_learn(event)
             if dpid and port:
                 self._handle_port_learn(name, port, target_mac)
             (name, dpid, restart_type) = self.faucet_events.as_config_change(event)
