@@ -168,12 +168,13 @@ function test_forch {
         curl http://localhost:9019/$api > $out_dir/$api.json
         echo forch results from $api
         cat $out_dir/$api.json
+        echo
     done
 
     echo system_state | tee -a $TEST_RESULTS
     api_result=$out_dir/system_state.json
     jq .site_name $api_result | tee -a $TEST_RESULTS
-    jq .controller_state_change_count $api_result | tee -a $TEST_RESULTS
+    jq .state_summary_change_count $api_result | tee -a $TEST_RESULTS
 
     echo dataplane_state | tee -a $TEST_RESULTS
     api_result=$out_dir/dataplane_state.json
@@ -200,7 +201,7 @@ function test_forch {
 
     echo process_state | tee -a $TEST_RESULTS
     api_result=$out_dir/process_state.json
-    jq .bosun.status $api_result | tee -a $TEST_RESULTS
+    jq .bosun.state $api_result | tee -a $TEST_RESULTS
 
     sudo kill `ps ax | fgrep forch | awk '{print $1}'`
 }
