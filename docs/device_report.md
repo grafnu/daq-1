@@ -60,8 +60,8 @@ Overall device result FAIL
 
 |Result|Test|Category|Expectation|Notes|
 |---|---|---|---|---|
-|skip|base.switch.ping|Other|Other||
-|pass|base.target.ping|Connectivity|Required|target|
+|skip|base.switch.ping|Other|Other|No local IP has been set, check ext_loip in system.conf|
+|pass|base.target.ping|Connectivity|Required|target reached|
 |skip|cloud.udmi.pointset|Other|Other|No device id|
 |fail|connection.mac_oui|Other|Other||
 |skip|connection.port_duplex|Other|Other|No local IP has been set, check ext_loip in system.conf|
@@ -114,9 +114,16 @@ RESULT pass base.target.ping target reached %% 10.20.70.164
 ## Module nmap
 
 ```
+--------------------
+security.ports.nmap
+--------------------
+Automatic TCP/UDP port scan using nmap
+--------------------
 Allowing 10000 open tcp snet-sensor-mgmt
 No invalid ports found.
-RESULT pass security.ports.nmap
+--------------------
+RESULT pass security.ports.nmap 
+
 ```
 
 ## Module brute

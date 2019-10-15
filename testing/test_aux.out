@@ -29,7 +29,7 @@ RESULT fail security.firmware version found: ?\xFF\xFF\x19,>u\x08\x00no Firmware
 RESULT pass security.firmware version found: ?\xFF\xFF\x19,>u\x08\x00no
 dhcp requests 2 1
 01: ['01:brute:1']
-02: ['02:bacext:1', '02:discover:1', '02:nmap:1']
+02: ['02:bacext:1', '02:discover:1', '02:nmap:1', '02:tls:1']
 03: ['03:udmi:1']
 ctrl-br.flows
 ctrl-br.ofctl
