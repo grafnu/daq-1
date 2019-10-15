@@ -34,6 +34,7 @@ done
 
 FAUCET=$(realpath $ROOT/faucet)
 MININET=$(realpath $ROOT/mininet)
+FORCH=$(realpath $ROOT/forch)
 
 echo Release version $DAQ_VERSION
 
@@ -41,12 +42,8 @@ if [ "$1" == "-h" ]; then
     skip_autostart=y
 fi
 
-export PYTHONPATH=$FAUCET:$MININET
-
-if [ ! -d $FAUCET ]; then
-    echo Faucet directory $FAUCET not found.
-    false
-fi
+ls -ld $FORCH $FAUCET $MININET
+export PYTHONPATH=$FORCH:$FAUCET:$MININET
 
 mkdir -p $INSTDIR
 rm -f $FAUCET_EVENT_SOCK $FAUCET_LOG $cleanup_file
