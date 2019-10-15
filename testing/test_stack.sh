@@ -110,6 +110,9 @@ function test_stack {
     end_time=$(date +%s)
     echo $desc Waited $((end_time - start_time))s.
 
+    echo pcap dump
+    tcpdump -en -r $t1sw1p6_pcap
+
     bcount6=$(tcpdump -en -r $t1sw1p6_pcap arp | wc -l) 2>/dev/null
     bcount50=$(tcpdump -en -r $t2sw1p50_pcap | wc -l) 2>/dev/null
     bcount52=$(tcpdump -en -r $t2sw1p52_pcap | wc -l) 2>/dev/null
@@ -163,6 +166,8 @@ function test_forch {
 
     for api in system_state dataplane_state switch_state cpn_state process_state; do
         curl http://localhost:9019/$api > $out_dir/$api.json
+        echo forch results from $api
+        cat $out_dir/$api.json
     done
 
     echo system_state | tee -a $TEST_RESULTS
