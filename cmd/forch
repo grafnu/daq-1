@@ -14,6 +14,8 @@ else
     FDIR=inst/faucet/daq-faucet-$1/
 fi
 
+echo Using instance dir $FDIR, local=$local
+
 local_version=$(cd forch; git rev-list -n 1 HEAD)
 target_version=$(cat misc/FORCH_VERSION)
 target_commit=$(cd forch; git rev-parse $target_version)
@@ -23,8 +25,6 @@ if [ $local == n -a "$target_commit" != "$local_version" ]; then
     echo Try 'bin/clean_dev && bin/setup_dev' to reset.
     false
 fi
-
-echo Using instance dir $FDIR
 
 if [ -f venv/bin/python ]; then
     PYTHON=venv/bin/python
