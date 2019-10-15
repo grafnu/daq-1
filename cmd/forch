@@ -1,6 +1,12 @@
 #!/bin/bash -e
 
 FSOCK=faucet_event.sock
+local=n
+
+if [ "$1" == local ]; then
+    local=y
+    shift
+fi
 
 if [ -z "$1" ]; then
     FDIR=inst/
@@ -11,7 +17,7 @@ fi
 local_version=$(cd forch; git rev-list -n 1 HEAD)
 target_version=$(cat misc/FORCH_VERSION)
 target_commit=$(cd forch; git rev-parse $target_version)
-if [ "$target_commit" != "$local_version" ]; then
+if [ $local == n -a "$target_commit" != "$local_version" ]; then
     echo Local forch commit is at: $local_version
     echo Mismatch with misc/FORCH_VERSION: $target_version
     echo Try 'bin/clean_dev && bin/setup_dev' to reset.

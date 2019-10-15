@@ -7,15 +7,18 @@ dps:
     stack:
       priority: 1
     interfaces:
+      6:
+        description: "to t1sw2 port 6"
+        stack: {dp: nz-kiwi-t1sw2, port: 6}
       9:
-        description: "to t2sw1 port 47"
-        stack: {dp: nz-kiwi-t2sw1, port: 47}
+        description: "to t2sw1 port 50"
+        stack: {dp: nz-kiwi-t2sw1, port: 50}
       10:
-        description: "to t2sw2 port 47"
-        stack: {dp: nz-kiwi-t2sw2, port: 47}
-      12:
-        description: "to t1sw2 port 12"
-        stack: {dp: nz-kiwi-t1sw2, port: 12}
+        description: "to t2sw2 port 50"
+        stack: {dp: nz-kiwi-t2sw2, port: 50}
+      11:
+        description: "to t2sw3 port 50"
+        stack: {dp: nz-kiwi-t2sw3, port: 50}
       28:
         description: egress
         lacp: 3
@@ -30,15 +33,18 @@ dps:
     stack:
       priority: 1
     interfaces:
+      6:
+        description: "to t1sw1 port 6"
+        stack: {dp: nz-kiwi-t1sw1, port: 6}
       9:
-        description: "to t2sw1 port 48"
-        stack: {dp: nz-kiwi-t2sw1, port: 48}
+        description: "to t2sw1 port 52"
+        stack: {dp: nz-kiwi-t2sw1, port: 52}
       10:
-        description: "to t2sw2 port 48"
-        stack: {dp: nz-kiwi-t2sw2, port: 48}
-      12:
-        description: "to t1sw1 port 12"
-        stack: {dp: nz-kiwi-t1sw1, port: 12}
+        description: "to t2sw2 port 52"
+        stack: {dp: nz-kiwi-t2sw2, port: 52}
+      11:
+        description: "to t2sw3 port 52"
+        stack: {dp: nz-kiwi-t2sw3, port: 52}
       28:
         description: egress
         lacp: 3
@@ -51,12 +57,12 @@ dps:
     hardware: Generic
     lacp_timeout: 5
     interface_ranges:
-      1-46: {acl_in: uniform_acl, description: IoT Host, native_vlan: 171}
+      1-46: {acl_in: uniform_acl, description: IoT Device, native_vlan: 171}
     interfaces:
-      47:
+      50:
         description: "to t1sw1 port 9"
         stack: {dp: nz-kiwi-t1sw1, port: 9}
-      48:
+      52:
         description: "to t1sw2 port 9"
         stack: {dp: nz-kiwi-t1sw2, port: 9}
     lldp_beacon: {max_per_interval: 5, send_interval: 5}
@@ -68,12 +74,27 @@ dps:
     interface_ranges:
       1-46: {acl_in: uniform_acl, description: IoT Device, native_vlan: 171}
     interfaces:
-      47:
+      50:
         description: "to t1sw1 port 10"
         stack: {dp: nz-kiwi-t1sw1, port: 10}
-      48:
+      52:
         description: "to t1sw2 port 10"
         stack: {dp: nz-kiwi-t1sw2, port: 10}
+    lldp_beacon: {max_per_interval: 5, send_interval: 5}
+  nz-kiwi-t2sw3:
+    dp_id: 1297
+    faucet_dp_mac: 0e:00:00:00:02:03
+    hardware: Allied-Telesis
+    lacp_timeout: 5
+    interface_ranges:
+      1-46: {acl_in: uniform_acl, description: IoT Device, native_vlan: 171}
+    interfaces:
+      50:
+        description: "to t1sw1 port 11"
+        stack: {dp: nz-kiwi-t1sw1, port: 11}
+      52:
+        description: "to t1sw2 port 11"
+        stack: {dp: nz-kiwi-t1sw2, port: 11}
     lldp_beacon: {max_per_interval: 5, send_interval: 5}
 include: [uniform.yaml]
 version: 2
