@@ -158,7 +158,6 @@ function test_dot1x {
 }
 
 function test_forch {
-    echo Forch Tests | tee -a $TEST_RESULTS
     cmd/forch 1 &
 
     # Need to wait long enough for polling mechanisms to kick in.
@@ -215,6 +214,7 @@ echo 'print("supercalifragilisticexpialidocious")' > faucet/faucet/python_test.p
 docker exec daq-faucet-1 python -m faucet.python_test 2>&1 | tee -a $TEST_RESULTS
 rm faucet/faucet/python_test.py
 
+echo Forch Tests | tee -a $TEST_RESULTS
 test_forch
 
 echo Stacking Tests | tee -a $TEST_RESULTS
