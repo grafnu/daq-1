@@ -6,8 +6,9 @@ source misc/config_base.sh
 
 FAUCET=$(realpath $ROOT/faucet)
 MININET=$(realpath $ROOT/mininet)
+FORCH=$(realpath $ROOT/forch)
 
-export PYTHONPATH=$FAUCET:$MININET
+export PYTHONPATH=$FORCH:$FAUCET:$MININET
 source venv/bin/activate
 
 if [ -n "$DAQ_CODECOV" ]; then
