@@ -111,10 +111,7 @@ function test_stack {
     end_time=$(date +%s)
     echo $desc Waited $((end_time - start_time))s.
 
-    echo pcap dump
-    tcpdump -en -r $t1sw1p6_pcap
-
-    bcount6=$(tcpdump -en -r $t1sw1p6_pcap arp | wc -l) 2>/dev/null
+    bcount6=$(tcpdump -en -r $t1sw1p6_pcap | wc -l) 2>/dev/null
     bcount50=$(tcpdump -en -r $t2sw1p50_pcap | wc -l) 2>/dev/null
     bcount52=$(tcpdump -en -r $t2sw1p52_pcap | wc -l) 2>/dev/null
     bcount_total=$((bcount50 + bcount52))
