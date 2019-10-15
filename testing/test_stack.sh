@@ -61,7 +61,6 @@ function test_stack {
     desc=$1
     echo Starting $desc stack test... | tee -a $TEST_RESULTS
 
-
     ip link  | fgrep t1sw | fgrep M-DOWN | sed -E 's/.*:(.*):.*/\1/' | tee -a $TEST_RESULTS
 
     # Some versions of OVS are somewhat unstable, so restart for consistency.
@@ -116,7 +115,7 @@ function test_stack {
     bcount52=$(tcpdump -en -r $t2sw1p52_pcap | wc -l) 2>/dev/null
     bcount_total=$((bcount50 + bcount52))
     echo $desc pcap count is $bcount6 $bcount50 $bcount52 $bcount_total
-    echo pcap sane $((bcount6 == 0)) \
+    echo pcap sane $((bcount6 < 100)) \
          $((bcount_total > 100)) $((bcount_total < 220)) | tee -a $TEST_RESULTS
     echo $desc pcap t2sw1p50
     tcpdump -en -c 20 -r $t2sw1p50_pcap
