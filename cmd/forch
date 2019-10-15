@@ -35,7 +35,7 @@ fi
 HOSTNAME=`hostname -a`
 PYTHONPATH=forch/
 
-sudo \
+echo sudo \
     FAUCET_EVENT_SOCK=$FDIR/$FSOCK \
     FORCH_CONFIG_DIR=$FDIR \
     FORCH_RUN_DIR=$FDIR \
