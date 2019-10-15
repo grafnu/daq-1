@@ -3,6 +3,8 @@ source reporting_utils
 REPORT=/tmp/report.txt
 LOCAL_REPORT=tmp/report.txt
 MANIFEST=./module_manifest.json
+MONO_LOG=/tmp/monolog.switch.txt
+RESULT_LINES=/tmp/results.switch.txt
 
 # Setup for accessing control plane switch. If LOCAL_IP is defined, which
 # is the intended local address for this node on the control plane then
@@ -16,18 +18,14 @@ if [ -n "$LOCAL_IP" ]; then
     POE_ENABLED=`jq -r .modules.switch.poe.enabled /config/device/module_config.json`
     java -jar switches/target/switchtest-0.0.1-jar-with-dependencies.jar $SWITCH_IP $SWITCH_PORT $POE_ENABLED
 
-    # TODO: write a function that:
-    # - Loops through each line of report.txt
-    # - gets the test name from each line
-    # - gets the description from $MANIFEST
-    # - uses write_out_result to generate the required report output
+    grep -v "RESULT" $LOCAL_REPORT | tee -a $MONO_LOG
+    grep "RESULT" $LOCAL_REPORT | tee -a $RESULT_LINES
 
-    write_out_result $REPORT \
-                     "switch" \
-                     "more descriptions to follow..." \
-                     "$(grep -v "RESULT" $LOCAL_REPORT)" \
-                     "$(grep "RESULT" $LOCAL_REPORT)"
-
+    write_out_monolog $REPORT \
+                      $MANIFEST \
+                      $MONO_LOG \
+                      $RESULT_LINES
+ 
 else
 
     SKIP_REASON="LOCAL_IP not configured, assuming no network switch."
