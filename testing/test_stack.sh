@@ -158,14 +158,13 @@ function test_dot1x {
 }
 
 function test_forch {
-    cmd/forch 1 2> forch.out &
+    cmd/forch 1 2>&1 &
 
     # Need to wait long enough for polling mechanisms to kick in.
     sleep 20
 
     netstat -nlpa | fgrep 9019
     ps ax | fgrep forch
-    cat forch.out
 
     for api in system_state dataplane_state switch_state cpn_state process_state; do
         curl http://localhost:9019/$api > $out_dir/$api.json
