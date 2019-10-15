@@ -73,6 +73,7 @@ function test_stack {
     sleep 15
     
     echo $desc Capturing pcaps for $cap_length seconds...
+    rm -f $out_dir/*.pcap
     timeout $cap_length tcpdump -eni t1sw1-eth6 -w $t1sw1p6_pcap &
     timeout $cap_length tcpdump -Q out -eni t1sw1-eth28 -w $t1sw1p28_pcap &
     timeout $cap_length tcpdump -Q out -eni t1sw2-eth28 -w $t1sw2p28_pcap &
