@@ -1,2 +1,18 @@
 site:
   name: nz-kiwi
+processes:
+  faucet:
+    proc_name: ryu-manager
+    regex: faucet\.faucet
+  gauge:
+    proc_name: ryu-manager
+    regex: faucet\.gauge
+  keepalived:
+    proc_name: keepalived
+    regex: keepalived
+  forch:
+    proc_name: python
+    regex: forchestrator
+  bosun:
+    proc_name: dunsel_watcher
+    regex: bosun
