@@ -154,19 +154,35 @@ function test_dot1x {
     #docker exec daq-faux-1 ping -q -c 10 192.168.12.2 2>&1 | awk -F, '/packet loss/{print $1,$2;}' | tee -a $TEST_RESULTS
 }
 
+function fetch_forch {
+    name=$1
+    args=$2
+    sub=$3
+
+    fname=$out_dir/$name$sub.json
+    curl http://localhost:9019/$name$args > $fname
+    echo http://localhost:9019/$name$args > $fname.txt
+    jq . $fname >> $fname.txt
+    echo forch results $name from $api
+    cat $fname
+    echo
+}
+
 function test_forch {
     cmd/forch 1 2>&1 &
 
     # Need to wait long enough for polling mechanisms to kick in.
     sleep 20
 
-    for api in system_state dataplane_state switch_state cpn_state process_state; do
-        curl http://localhost:9019/$api?switch=nz-kiwi-t2sw1 > $out_dir/${api}_raw.json
-        jq . $out_dir/${api}_raw.json > $out_dir/${api}.json
-        echo forch results from $api
-        cat $out_dir/${api}_raw.json
-        echo
-    done
+    fetch_forch system_state
+    fetch_forch dataplane_state
+    fetch_forch switch_state ?switch=nz-kiwi-t2sw1
+    fetch_forch cpn_state
+    fetch_forch process_state
+    fetch_forch list_hosts '' 1
+    fetch_forch list_hosts ?eth_src=9a:02:57:1e:8f:01 2
+    fetch_forch host_path '?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02' 1
+    fetch_forch host_path '?eth_src=9a:02:57:1e:8f:01&to_egress=true' 2
 
     echo system_state | tee -a $TEST_RESULTS
     api_result=$out_dir/system_state.json
@@ -199,6 +215,22 @@ function test_forch {
     echo process_state | tee -a $TEST_RESULTS
     api_result=$out_dir/process_state.json
     jq .bosun.state $api_result | tee -a $TEST_RESULTS
+
+    echo list_hosts | tee -a $TEST_RESULTS
+    api_result=$out_dir/list_hosts1.json
+    jq '.eth_srcs."9a:02:57:1e:8f:01".url' $api_result | tee -a $TEST_RESULTS
+    api_result=$out_dir/list_hosts2.json
+    jq '.eth_dsts."9a:02:57:1e:8f:02".url' $api_result | tee -a $TEST_RESULTS
+
+    echo host_path | tee -a $TEST_RESULTS
+    api_result=$out_dir/host_path1.json
+    jq .dst_ip $api_result | tee -a $TEST_RESULTS
+    jq .path[1].switch $api_result | tee -a $TEST_RESULTS
+    jq .path[1].out $api_result | tee -a $TEST_RESULTS
+    api_result=$out_dir/host_path2.json
+    jq .src_ip $api_result | tee -a $TEST_RESULTS
+    jq .path[2].switch $api_result | tee -a $TEST_RESULTS
+    jq .path[2].egress $api_result | tee -a $TEST_RESULTS
 
     sudo kill `ps ax | fgrep forch | awk '{print $1}'`
 }
