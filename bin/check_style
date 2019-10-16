@@ -7,11 +7,11 @@ PYLINTRC=$ROOT/.pylintrc
 cd $ROOT
 mkdir -p build
 
-export PYTHONPATH=forch:faucet:mininet:venv/lib/python3.5/site-packages/
-
 if [ -d venv ]; then
     source venv/bin/activate
 fi
+
+export PYTHONPATH=forch:faucet:mininet
 
 pylint --version
 
