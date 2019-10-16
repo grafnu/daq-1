@@ -161,9 +161,10 @@ function test_forch {
     sleep 20
 
     for api in system_state dataplane_state switch_state cpn_state process_state; do
-        curl http://localhost:9019/$api?switch=nz-kiwi-t2sw1 > $out_dir/$api.json
+        curl http://localhost:9019/$api?switch=nz-kiwi-t2sw1 > $out_dir/${api}_raw.json
+        jq . $out_dir/${api}_raw.json > $out_dir/${api}.json
         echo forch results from $api
-        cat $out_dir/$api.json
+        cat $out_dir/${api}_raw.json
         echo
     done
 
