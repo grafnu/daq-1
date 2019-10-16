@@ -14,7 +14,7 @@ if [ -d venv ]; then
     source venv/bin/activate
     if [ ! -d $VENV_PYTHON ]; then
         echo Missing python env directory.
-        ls -d venv/lib/
+        ls -d venv
         false
     fi
 fi
