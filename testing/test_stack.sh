@@ -161,7 +161,7 @@ function test_forch {
     sleep 20
 
     for api in system_state dataplane_state switch_state cpn_state process_state; do
-        curl http://localhost:9019/$api > $out_dir/$api.json
+        curl http://localhost:9019/$api?switch=nz-kiwi-t2sw1 > $out_dir/$api.json
         echo forch results from $api
         cat $out_dir/$api.json
         echo
@@ -183,7 +183,7 @@ function test_forch {
     jq '.switches."nz-kiwi-t2sw1".root_path[1].switch' $api_result | tee -a $TEST_RESULTS
     jq '.switches."nz-kiwi-t2sw1".root_path[1].in' $api_result | tee -a $TEST_RESULTS
     jq '.switches."nz-kiwi-t2sw1".root_path[1].out' $api_result | tee -a $TEST_RESULTS
-    jq '.switches."nz-kiwi-t1sw1".attributes.dp_id' $api_result | tee -a $TEST_RESULTS
+    jq '.switches."nz-kiwi-t2sw1".attributes.dp_id' $api_result | tee -a $TEST_RESULTS
 
     echo cpn_state | tee -a $TEST_RESULTS
     api_result=$out_dir/cpn_state.json
