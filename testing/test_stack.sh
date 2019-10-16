@@ -178,8 +178,8 @@ function test_forch {
     echo dataplane_state | tee -a $TEST_RESULTS
     api_result=$out_dir/dataplane_state.json
     jq '.egress_state' $api_result | tee -a $TEST_RESULTS
-    jq '.switches."nz-kiwi-t1sw1".status' $api_result | tee -a $TEST_RESULTS
-    jq '.stack_links."nz-kiwi-t1sw1:6@nz-kiwi-t1sw2:6".status' $api_result | tee -a $TEST_RESULTS
+    jq '.switches."nz-kiwi-t1sw1".state' $api_result | tee -a $TEST_RESULTS
+    jq '.stack_links."nz-kiwi-t1sw1:6@nz-kiwi-t1sw2:6".state' $api_result | tee -a $TEST_RESULTS
 
     echo switch_state | tee -a $TEST_RESULTS
     api_result=$out_dir/switch_state.json
