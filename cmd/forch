@@ -1,6 +1,12 @@
 #!/bin/bash -e
 
 FSOCK=faucet_event.sock
+local=n
+
+if [ "$1" == local ]; then
+    local=y
+    shift
+fi
 
 if [ -z "$1" ]; then
     FDIR=inst/
@@ -8,17 +14,17 @@ else
     FDIR=inst/faucet/daq-faucet-$1/
 fi
 
+echo Using instance dir $FDIR, local=$local
+
 local_version=$(cd forch; git rev-list -n 1 HEAD)
 target_version=$(cat misc/FORCH_VERSION)
 target_commit=$(cd forch; git rev-parse $target_version)
-if [ "$target_commit" != "$local_version" ]; then
+if [ $local == n -a "$target_commit" != "$local_version" ]; then
     echo Local forch commit is at: $local_version
     echo Mismatch with misc/FORCH_VERSION: $target_version
     echo Try 'bin/clean_dev && bin/setup_dev' to reset.
     false
 fi
-
-echo Using instance dir $FDIR
 
 if [ -f venv/bin/python ]; then
     PYTHON=venv/bin/python
@@ -32,5 +38,6 @@ sudo \
     FAUCET_EVENT_SOCK=$FDIR/$FSOCK \
     FORCH_CONFIG_DIR=$FDIR \
     FORCH_RUN_DIR=$FDIR \
+    HOSTNAME=$(hostname) \
     PYTHONPATH=$PYTHONPATH \
     $PYTHON -m forch.forchestrator
