@@ -13,8 +13,8 @@ export PYTHONPATH=forch:faucet:mininet:venv/lib/python3.5/site-packages/
 if [ -d venv ]; then
     source venv/bin/activate
     if [ ! -d $VENV_PYTHON ]; then
-        echo Missing python env directory.
-        ls -d venv
+        echo Missing python venv directory.
+        ls -l venv
         false
     fi
 fi
