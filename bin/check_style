@@ -3,21 +3,15 @@
 ROOT=$(realpath $(dirname $0)/..)
 RESULTS=build/lint_results.txt
 PYLINTRC=$ROOT/.pylintrc
-VENV_PYTHON=venv/lib/python3.6/site-packages/
 
 cd $ROOT
 mkdir -p build
 
-export PYTHONPATH=forch:faucet:mininet:venv/lib/python3.5/site-packages/
-
 if [ -d venv ]; then
     source venv/bin/activate
-    if [ ! -d $VENV_PYTHON ]; then
-        echo Missing python venv directory.
-        ls -l venv
-        false
-    fi
 fi
+
+export PYTHONPATH=forch:faucet:mininet
 
 pylint --version
 
