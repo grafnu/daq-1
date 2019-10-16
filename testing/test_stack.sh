@@ -160,11 +160,8 @@ function test_forch {
     # Need to wait long enough for polling mechanisms to kick in.
     sleep 20
 
-    netstat -nlpa | fgrep 9019
-    ps ax | fgrep forch
-
     for api in system_state dataplane_state switch_state cpn_state process_state; do
-        curl http://localhost:9019/$api > $out_dir/$api.json
+        curl http://localhost:9019/$api?switch=nz-kiwi-t2sw1 > $out_dir/$api.json
         echo forch results from $api
         cat $out_dir/$api.json
         echo
@@ -178,15 +175,15 @@ function test_forch {
     echo dataplane_state | tee -a $TEST_RESULTS
     api_result=$out_dir/dataplane_state.json
     jq '.egress_state' $api_result | tee -a $TEST_RESULTS
-    jq '.switches."nz-kiwi-t1sw1".status' $api_result | tee -a $TEST_RESULTS
-    jq '.stack_links."nz-kiwi-t1sw1:6@nz-kiwi-t1sw2:6".status' $api_result | tee -a $TEST_RESULTS
+    jq '.switches."nz-kiwi-t1sw1".state' $api_result | tee -a $TEST_RESULTS
+    jq '.stack_links."nz-kiwi-t1sw1:6@nz-kiwi-t1sw2:6".state' $api_result | tee -a $TEST_RESULTS
 
     echo switch_state | tee -a $TEST_RESULTS
     api_result=$out_dir/switch_state.json
     jq '.switches."nz-kiwi-t2sw1".root_path[1].switch' $api_result | tee -a $TEST_RESULTS
     jq '.switches."nz-kiwi-t2sw1".root_path[1].in' $api_result | tee -a $TEST_RESULTS
     jq '.switches."nz-kiwi-t2sw1".root_path[1].out' $api_result | tee -a $TEST_RESULTS
-    jq '.switches."nz-kiwi-t1sw1".attributes.dp_id' $api_result | tee -a $TEST_RESULTS
+    jq '.switches."nz-kiwi-t2sw1".attributes.dp_id' $api_result | tee -a $TEST_RESULTS
 
     echo cpn_state | tee -a $TEST_RESULTS
     api_result=$out_dir/cpn_state.json
