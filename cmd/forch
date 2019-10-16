@@ -1,6 +1,5 @@
 #!/bin/bash -e
 
-FSOCK=faucet_event.sock
 local=n
 
 if [ "$1" == local ]; then
@@ -12,6 +11,7 @@ if [ -z "$1" ]; then
     FDIR=inst/
 else
     FDIR=inst/faucet/daq-faucet-$1/
+    shift
 fi
 
 echo Using instance dir $FDIR, local=$local
@@ -26,18 +26,5 @@ if [ $local == n -a "$target_commit" != "$local_version" ]; then
     false
 fi
 
-if [ -f venv/bin/python ]; then
-    PYTHON=venv/bin/python
-else
-    PYTHON=python3
-fi
 
-PYTHONPATH=forch/
-
-sudo \
-    FAUCET_EVENT_SOCK=$FDIR/$FSOCK \
-    FORCH_CONFIG_DIR=$FDIR \
-    FORCH_RUN_DIR=$FDIR \
-    HOSTNAME=$(hostname) \
-    PYTHONPATH=$PYTHONPATH \
-    $PYTHON -m forch.forchestrator
+forch/bin/forch $(realpath $FDIR) $*
