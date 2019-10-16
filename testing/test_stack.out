@@ -11,12 +11,12 @@ system_state
 dataplane_state
 "nz-kiwi-t1sw1"
 "CONNECTED"
-"ACTIVE"
+"active"
 switch_state
 "nz-kiwi-t1sw1"
 9
 null
-177
+2352
 cpn_state
 "127.0.0.1"
 "dist"
