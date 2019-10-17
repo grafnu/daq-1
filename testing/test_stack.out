@@ -31,11 +31,11 @@ cpn_state
 process_state
 "broken"
 list_hosts
-"http://peringknife-glaptop:9019/list_hosts?eth_src=9a:02:57:1e:8f:01"
-"http://peringknife-glaptop:9019/host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+"http://testing:9019/list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://testing:9019/host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 host_path
 "192.168.1.2"
-"nz-kiwi-t1sw2"
+"nz-kiwi-t1sw1"
 10
 "192.168.1.1"
 "nz-kiwi-t1sw1"

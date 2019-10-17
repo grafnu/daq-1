@@ -169,6 +169,7 @@ function fetch_forch {
 }
 
 function test_forch {
+    export HOSTNAME=testing
     cmd/forch 1 2>&1 &
 
     # Need to wait long enough for polling mechanisms to kick in.
@@ -229,8 +230,8 @@ function test_forch {
     jq .path[1].out $api_result | tee -a $TEST_RESULTS
     api_result=$out_dir/host_path2.json
     jq .src_ip $api_result | tee -a $TEST_RESULTS
-    jq .path[2].switch $api_result | tee -a $TEST_RESULTS
-    jq .path[2].egress $api_result | tee -a $TEST_RESULTS
+    jq .path[1].switch $api_result | tee -a $TEST_RESULTS
+    jq .path[1].egress $api_result | tee -a $TEST_RESULTS
 
     sudo kill `ps ax | fgrep forch | awk '{print $1}'`
 }
