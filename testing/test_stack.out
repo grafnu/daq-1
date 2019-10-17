@@ -7,16 +7,16 @@ supercalifragilisticexpialidocious
 Forch Tests
 system_state
 "nz-kiwi"
-3
+5
 dataplane_state
 "nz-kiwi-t1sw1"
 "CONNECTED"
-null
+"active"
 switch_state
 "nz-kiwi-t1sw1"
 9
 null
-177
+2352
 cpn_state
 "127.0.0.1"
 "dist"
@@ -30,6 +30,16 @@ cpn_state
 "down"
 process_state
 "broken"
+list_hosts
+"http://testing:9019/list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://testing:9019/host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+host_path
+"192.168.1.2"
+"nz-kiwi-t1sw1"
+10
+"192.168.1.1"
+"nz-kiwi-t1sw1"
+28
 Stacking Tests
 Starting stack-solid stack test...
 (UNKNOWN) [192.168.1.1] 23 (?) : Connection timed out
