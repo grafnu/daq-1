@@ -146,7 +146,7 @@ Starting stack-broken stack test...
  t2sw3-eth50@t1sw1-eth11
  t2sw2-eth52@t1sw2-eth10
 (UNKNOWN) [192.168.1.1] 23 (?) : Connection timed out
-(UNKNOWN) [192.168.1.1] 443 (?) : Connection timed out
+(UNKNOWN) [192.168.1.1] 443 (?) : Connection refused
 pcap sane 1 0 1
 pcap bcast 1 0 -1 1
 telnet 0 https 0
