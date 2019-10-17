@@ -6,7 +6,6 @@ processes:
   gauge:
     regex: python.*ryu-manager.*faucet\.gauge
   keepalived:
-    proc_name: keepalived
     regex: keepalived
   forch:
     regex: ^python.*forchestrator
