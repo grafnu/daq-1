@@ -9,6 +9,6 @@ processes:
     proc_name: keepalived
     regex: keepalived
   forch:
-    regex: ^[python|venv].*forchestrator
+    regex: ^python.*forchestrator
   bosun:
     regex: ddunsel_watcher.*bosun
