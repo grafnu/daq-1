@@ -10,7 +10,7 @@ system_state
 5
 dataplane_state
 "nz-kiwi-t1sw1"
-"CONNECTED"
+"active"
 "active"
 switch_state
 "nz-kiwi-t1sw1"
