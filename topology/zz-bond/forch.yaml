@@ -8,4 +8,4 @@ processes:
   forch:
     regex: ^python.*forchestrator
   sleep:
-    regex: "sleep 30\.3231"
+    regex: "sleep 30\\.3231"
