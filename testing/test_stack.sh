@@ -166,7 +166,7 @@ function fetch_forch {
     curl http://localhost:9019/$api > $fname
     echo http://localhost:9019/$api > $fname.txt
     jq . $fname >> $fname.txt
-    echo forch results $name from $api
+    echo forch results from $api
     cat $fname
     echo
 }
