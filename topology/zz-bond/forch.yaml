@@ -2,11 +2,10 @@ site:
   name: nz-kiwi
 processes:
   faucet:
-    proc_name: ryu-manager
-    regex: faucet\.faucet
+    regex: python.*ryu-manager.*faucet\.faucet
+  gauge:
+    regex: python.*ryu-manager.*faucet\.gauge
   forch:
-    proc_name: python
-    regex: forchestrator
+    regex: ^python.*forchestrator
   sleep:
-    proc_name: sleep
-    regex: 30\.3231
+    regex: "sleep 30\.3231"
