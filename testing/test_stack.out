@@ -9,7 +9,7 @@ system_state
 5
 dataplane_state
 "nz-kiwi-t1sw1"
-"CONNECTED"
+"active"
 "active"
 switch_state
 "nz-kiwi-t1sw1"
@@ -169,7 +169,7 @@ system_state
 29
 dataplane_state
 "nz-kiwi-t1sw1"
-"CONNECTED"
+"active"
 "down"
 switch_state
 null
@@ -229,7 +229,7 @@ system_state
 35
 dataplane_state
 "nz-kiwi-t1sw1"
-"CONNECTED"
+"active"
 "active"
 switch_state
 "nz-kiwi-t1sw2"
