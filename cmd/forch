@@ -27,4 +27,6 @@ if [ $local == n -a "$target_commit" != "$local_version" ]; then
 fi
 
 
-forch/bin/forch $(realpath $FDIR) $*
+FAUCET_EVENT_SOCK=$(realpath $FDIR)/faucet_event.sock \
+    FORCH_CONFIG_DIR=$(realpath $FDIR) \
+    forch/bin/forch $*
