@@ -250,6 +250,7 @@ if [ -z "$local" ]; then
 else
     echo Restarting Faucet | tee -a $TEST_RESULTS
     docker restart daq-faucet-1
+    docker exec daq-faux-1 ping -c 3 192.168.1.2
 fi
 
 setup_forch
