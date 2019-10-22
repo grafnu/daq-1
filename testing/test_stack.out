@@ -43,8 +43,8 @@ host_path
 28
 Stacking Tests
 Starting stack-solid stack test...
-(UNKNOWN) [192.168.1.1] 23 (?) : Connection timed out
-(UNKNOWN) [192.168.1.1] 443 (?) : Connection refused
+(UNKNOWN) [192.168.1.1] 23 (telnet) : Connection timed out
+(UNKNOWN) [192.168.1.1] 443 (https) : Connection refused
 pcap sane 1 1 1
 pcap bcast 1 0 1 1
 telnet 1 https 2
@@ -63,8 +63,8 @@ daq-faux-3: ping -c 10 192.168.1.2 10
 Done with stack-solid stack test.
 Starting stack-linkd stack test...
  t2sw1-eth50@t1sw1-eth9
-(UNKNOWN) [192.168.1.1] 23 (?) : Connection timed out
-(UNKNOWN) [192.168.1.1] 443 (?) : Connection refused
+(UNKNOWN) [192.168.1.1] 23 (telnet) : Connection timed out
+(UNKNOWN) [192.168.1.1] 443 (https) : Connection refused
 pcap sane 0 1 1
 pcap bcast 1 0 1 1
 telnet 1 https 2
@@ -84,8 +84,8 @@ Done with stack-linkd stack test.
 Starting stack-twod stack test...
  t2sw1-eth50@t1sw1-eth9
  t2sw2-eth52@t1sw2-eth10
-(UNKNOWN) [192.168.1.1] 23 (?) : Connection timed out
-(UNKNOWN) [192.168.1.1] 443 (?) : Connection refused
+(UNKNOWN) [192.168.1.1] 23 (telnet) : Connection timed out
+(UNKNOWN) [192.168.1.1] 443 (https) : Connection refused
 pcap sane 0 1 1
 pcap bcast 1 0 1 1
 telnet 1 https 2
@@ -145,8 +145,8 @@ Starting stack-broken stack test...
  t2sw1-eth50@t1sw1-eth9
  t2sw3-eth50@t1sw1-eth11
  t2sw2-eth52@t1sw2-eth10
-(UNKNOWN) [192.168.1.1] 23 (?) : Connection timed out
-(UNKNOWN) [192.168.1.1] 443 (?) : Connection timed out
+(UNKNOWN) [192.168.1.1] 23 (telnet) : Connection timed out
+(UNKNOWN) [192.168.1.1] 443 (https) : Connection timed out
 pcap sane 1 0 1
 pcap bcast 1 0 -1 1
 telnet 0 https 0
@@ -205,8 +205,8 @@ Starting stack-restored stack test...
  t2sw1-eth50@t1sw1-eth9
  t2sw2-eth50@t1sw1-eth10
  t2sw3-eth50@t1sw1-eth11
-(UNKNOWN) [192.168.1.1] 23 (?) : Connection timed out
-(UNKNOWN) [192.168.1.1] 443 (?) : Connection refused
+(UNKNOWN) [192.168.1.1] 23 (telnet) : Connection timed out
+(UNKNOWN) [192.168.1.1] 443 (https) : Connection refused
 pcap sane 0 1 1
 pcap bcast 1 0 1 1
 telnet 1 https 2
