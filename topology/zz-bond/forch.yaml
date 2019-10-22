@@ -5,9 +5,7 @@ processes:
     regex: python.*ryu-manager.*faucet\.faucet
   gauge:
     regex: python.*ryu-manager.*faucet\.gauge
-  keepalived:
-    regex: keepalived
   forch:
     regex: ^python.*forchestrator
-  bosun:
-    regex: ddunsel_watcher.*bosun
+  sleep:
+    regex: "sleep 30\\.3231"

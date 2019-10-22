@@ -1,10 +1,9 @@
 Running testing/test_stack.sh
 Lint checks
 check_style exit code 0
-Generator tests
 Base Stack Setup
 supercalifragilisticexpialidocious
-Forch Tests
+Running forch-pre tests
 system_state
 "nz-kiwi"
 5
@@ -30,6 +29,8 @@ cpn_state
 "down"
 process_state
 "broken"
+"healthy"
+"sleep 30.3231"
 list_hosts
 "http://testing:9019/list_hosts?eth_src=9a:02:57:1e:8f:01"
 "http://testing:9019/host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
@@ -101,6 +102,44 @@ daq-faux-3: ping -c 10 192.168.1.0 10
 daq-faux-3: ping -c 10 192.168.1.1 10
 daq-faux-3: ping -c 10 192.168.1.2 10
 Done with stack-twod stack test.
+Running forch-twod tests
+system_state
+"nz-kiwi"
+23
+dataplane_state
+"nz-kiwi-t1sw1"
+"active"
+"active"
+switch_state
+"nz-kiwi-t1sw2"
+9
+6
+2352
+cpn_state
+"127.0.0.1"
+"dist"
+"NoviSwitch"
+"NS-2128"
+"healthy"
+"240.0.0.1"
+"access"
+"Cisco"
+"C9300-48P"
+"down"
+process_state
+"broken"
+"healthy"
+"sleep 30.3231"
+list_hosts
+"http://testing:9019/list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://testing:9019/host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+host_path
+"192.168.1.2"
+"nz-kiwi-t1sw2"
+6
+"192.168.1.1"
+"nz-kiwi-t1sw2"
+null
 Starting stack-broken stack test...
  t1sw2-eth6@t1sw1-eth6
  t2sw1-eth50@t1sw1-eth9
@@ -124,6 +163,44 @@ daq-faux-3: ping -c 10 192.168.1.0 0
 daq-faux-3: ping -c 10 192.168.1.1 0
 daq-faux-3: ping -c 10 192.168.1.2 0
 Done with stack-broken stack test.
+Running forch-broke tests
+system_state
+"nz-kiwi"
+29
+dataplane_state
+"nz-kiwi-t1sw1"
+"active"
+"down"
+switch_state
+null
+null
+null
+2352
+cpn_state
+"127.0.0.1"
+"dist"
+"NoviSwitch"
+"NS-2128"
+"healthy"
+"240.0.0.1"
+"access"
+"Cisco"
+"C9300-48P"
+"down"
+process_state
+"broken"
+"healthy"
+"sleep 30.3231"
+list_hosts
+"http://testing:9019/list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://testing:9019/host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+host_path
+"192.168.1.2"
+"nz-kiwi-t1sw2"
+6
+"192.168.1.1"
+null
+null
 Starting stack-restored stack test...
  t2sw1-eth50@t1sw1-eth9
  t2sw2-eth50@t1sw1-eth10
@@ -146,3 +223,41 @@ daq-faux-3: ping -c 10 192.168.1.0 10
 daq-faux-3: ping -c 10 192.168.1.1 10
 daq-faux-3: ping -c 10 192.168.1.2 10
 Done with stack-restored stack test.
+Running forch-post tests
+system_state
+"nz-kiwi"
+35
+dataplane_state
+"nz-kiwi-t1sw1"
+"active"
+"active"
+switch_state
+"nz-kiwi-t1sw2"
+9
+6
+2352
+cpn_state
+"127.0.0.1"
+"dist"
+"NoviSwitch"
+"NS-2128"
+"healthy"
+"240.0.0.1"
+"access"
+"Cisco"
+"C9300-48P"
+"down"
+process_state
+"broken"
+"healthy"
+"sleep 30.3231"
+list_hosts
+"http://testing:9019/list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://testing:9019/host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+host_path
+"192.168.1.2"
+"nz-kiwi-t1sw2"
+10
+"192.168.1.1"
+"nz-kiwi-t1sw2"
+null
