@@ -270,10 +270,12 @@ test_stack stack-linkd
 ip link set t1sw2-eth10 down
 test_stack stack-twod
 test_forch -twod
+ip addr add 240.0.0.1/24 dev lo
 ip link set t1sw1-eth6 down
 ip link set t1sw1-eth11 down
 test_stack stack-broken
 test_forch -broke
+ip addr del 240.0.0.1/24 dev lo
 ip link set t1sw1-eth10 down
 ip link set t1sw2-eth10 up
 ip link set t1sw1-eth6 up
