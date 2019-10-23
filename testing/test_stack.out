@@ -162,7 +162,7 @@ Done with stack-broken stack test.
 Running forch-broke tests
 system_state
 "nz-kiwi"
-29
+30
 dataplane_state
 "nz-kiwi-t1sw1"
 26
@@ -175,11 +175,11 @@ null
 null
 2352
 cpn_state
-2
+3
 "127.0.0.1"
 "healthy"
 "240.0.0.1"
-"down"
+"healthy"
 process_state
 null
 "broken"
@@ -220,7 +220,7 @@ Done with stack-restored stack test.
 Running forch-post tests
 system_state
 "nz-kiwi"
-35
+37
 dataplane_state
 "nz-kiwi-t1sw1"
 32
@@ -233,7 +233,7 @@ switch_state
 6
 2352
 cpn_state
-2
+4
 "127.0.0.1"
 "healthy"
 "240.0.0.1"
