@@ -62,7 +62,7 @@ function test_stack {
 
     rm -f $faucet_log
     echo $desc Waiting for network stability...
-    sleep 15
+    sleep 25
 
     echo $desc Capturing pcaps for $cap_length seconds...
     rm -f $out_dir/*.pcap
@@ -183,7 +183,8 @@ function test_forch {
     sleep 30.3231 &
     fetch_forch system_state
     fetch_forch dataplane_state
-    fetch_forch switch_state ?switch=nz-kiwi-t2sw1
+    fetch_forch switch_state ?switch=nz-kiwi-t2sw1 1
+    fetch_forch switch_state ?switch=nz-kiwi-t1sw2 2
     fetch_forch cpn_state
     fetch_forch process_state
     fetch_forch list_hosts '' 1
@@ -200,16 +201,19 @@ function test_forch {
     api_result=$fout_dir/dataplane_state.json
     jq '.egress_state' $api_result | tee -a $TEST_RESULTS
     jq '.egress_state_change_count' $api_result | tee -a $TEST_RESULTS
-    jq '.switches."nz-kiwi-t1sw1".state' $api_result | tee -a $TEST_RESULTS
-    jq '.stack_links."nz-kiwi-t1sw1:6@nz-kiwi-t1sw2:6".state' $api_result | tee -a $TEST_RESULTS
+    jq '.switches."nz-kiwi-t1sw2".switch_state' $api_result | tee -a $TEST_RESULTS
+    jq '.stack_links."nz-kiwi-t1sw1:6@nz-kiwi-t1sw2:6".link_state' $api_result | tee -a $TEST_RESULTS
 
     echo switch_state | tee -a $TEST_RESULTS
-    api_result=$fout_dir/switch_state.json
+    api_result=$fout_dir/switch_state1.json
     jq '.switches_state_change_count' $api_result | tee -a $TEST_RESULTS
     jq '.switches."nz-kiwi-t2sw1".root_path[1].switch' $api_result | tee -a $TEST_RESULTS
     jq '.switches."nz-kiwi-t2sw1".root_path[1].in' $api_result | tee -a $TEST_RESULTS
     jq '.switches."nz-kiwi-t2sw1".root_path[1].out' $api_result | tee -a $TEST_RESULTS
     jq '.switches."nz-kiwi-t2sw1".attributes.dp_id' $api_result | tee -a $TEST_RESULTS
+    api_result=$fout_dir/switch_state2.json
+    jq '.switches_state_detail' $api_result | tee -a $TEST_RESULTS
+    jq '.switches."nz-kiwi-t1sw2".switch_state' $api_result | tee -a $TEST_RESULTS
 
     echo cpn_state | tee -a $TEST_RESULTS
     api_result=$fout_dir/cpn_state.json
@@ -254,6 +258,7 @@ else
 fi
 
 setup_forch
+controllers=`sudo ovs-vsctl get-controller t1sw2`
 
 # Test that the 'local' mode of faucet is working properly.
 echo 'print("supercalifragilisticexpialidocious")' > faucet/faucet/python_test.py
@@ -266,6 +271,8 @@ test_forch -pre
 echo Stacking Tests | tee -a $TEST_RESULTS
 test_stack stack-solid
 
+echo Bringing switch t2sw3 down...
+sudo ovs-vsctl del-controller t2sw3
 ip link set t1sw1-eth9 down
 test_stack stack-linkd
 
@@ -273,6 +280,8 @@ ip link set t1sw2-eth10 down
 test_stack stack-twod
 test_forch -twod
 
+echo Restoring switch t2sw3 up...
+sudo ovs-vsctl set-controller t2sw3 $controllers
 ip addr add 240.0.0.1/24 dev lo
 ip link set t1sw1-eth6 down
 ip link set t1sw1-eth11 down
