@@ -183,8 +183,8 @@ function test_forch {
     sleep 30.3231 &
     fetch_forch system_state
     fetch_forch dataplane_state
-    fetch_forch switch_state ?switch=nz-kiwi-t2sw1 1
-    fetch_forch switch_state ?switch=nz-kiwi-t1sw2 2
+    fetch_forch switch_state ?switch=nz-kiwi-t2sw1&port=1 1
+    fetch_forch switch_state ?switch=nz-kiwi-t1sw2&port=10 2
     fetch_forch cpn_state
     fetch_forch process_state
     fetch_forch list_hosts '' 1
