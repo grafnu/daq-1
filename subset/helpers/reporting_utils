@@ -51,7 +51,7 @@ function check_for_fails_in() {
 # write_out_monolog
 # For tests that have one long log output,
 # print the log first, then the results. Results
-# are extracted from a module_manifest.json 
+# are extracted from a module_manifest.json
 
 function write_out_monolog() {
     local _REPORT=$1
