@@ -29,8 +29,10 @@ nodes_dir=$out_dir/nodes
 
 mkdir -p $out_dir $nodes_dir
 
+cap_base=10
 ping_count=10
-cap_length=$((ping_count + 20))
+num_pairs=12
+cap_length=$((cap_base + ping_count + num_pairs * 2))
 faucet_log=inst/faucet/daq-faucet-1/faucet.log
 
 function test_pair {
@@ -42,7 +44,7 @@ function test_pair {
     cmd="ping -c $ping_count 192.168.1.$dst"
     echo $host: $cmd
     echo -n $host: $cmd\ > $out_file
-    docker exec $host $cmd | fgrep time= | fgrep -v DUP | wc -l >> $out_file 2>/dev/null &
+    docker exec $host $cmd | fgrep time= | wc -l >> $out_file 2>/dev/null &
 }
 
 # Compare two numbers and output { -1, 0, 1 }
@@ -107,10 +109,11 @@ function test_stack {
     echo $desc pcap count is $bcount6 $bcount50 $bcount52 $bcount_total
     echo pcap sane $((bcount6 < 100)) \
          $((bcount_total > 100)) $((bcount_total < 220)) | tee -a $TEST_RESULTS
-    echo $desc pcap t2sw1p50
-    tcpdump -en -c 20 -r $t2sw1p50_pcap
-    echo $desc pcap t2sw1p52
-    tcpdump -en -c 20 -r $t2sw1p52_pcap
+    for link in t1sw1p28 t1sw2p28 t2sw1p50 t2sw1p52; do
+        eval pcap=\$${link}_pcap
+        echo $desc pcap $link icmp from $pcap
+        tcpdump -en -r $pcap vlan and icmp
+    done
     echo $desc pcap end
 
     bcount1e=$(tcpdump -en -r $t1sw1p28_pcap ether broadcast| wc -l) 2>/dev/null
@@ -279,7 +282,7 @@ ip link set t1sw2-eth10 down
 test_stack stack-twod
 test_forch -twod
 
-echo Restoring switch t2sw3 up...
+echo Bringing switch t2sw3 up...
 sudo ovs-vsctl set-controller t2sw3 $controllers
 ip addr add 240.0.0.1/24 dev lo
 ip link set t1sw1-eth6 down
