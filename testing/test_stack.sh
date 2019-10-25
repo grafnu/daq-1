@@ -267,13 +267,11 @@ echo 'print("supercalifragilisticexpialidocious")' > faucet/faucet/python_test.p
 docker exec daq-faucet-1 python -m faucet.python_test 2>&1 | tee -a $TEST_RESULTS
 rm faucet/faucet/python_test.py
 
-
-test_forch -pre
-
 echo Stacking Tests | tee -a $TEST_RESULTS
 test_stack stack-solid
+test_forch -pre
 
-echo Bringing switch t2sw3 down...
+echo Bring t2sw3 down | tee -a $TEST_RESULTS
 sudo ovs-vsctl del-controller t2sw3
 ip link set t1sw1-eth9 down
 test_stack stack-linkd
@@ -282,7 +280,7 @@ ip link set t1sw2-eth10 down
 test_stack stack-twod
 test_forch -twod
 
-echo Bringing switch t2sw3 up...
+echo Bring t2sw3 up | tee -a $TEST_RESULTS
 sudo ovs-vsctl set-controller t2sw3 $controllers
 ip addr add 240.0.0.1/24 dev lo
 ip link set t1sw1-eth6 down
