@@ -29,8 +29,10 @@ nodes_dir=$out_dir/nodes
 
 mkdir -p $out_dir $nodes_dir
 
+cap_base=10
 ping_count=10
-cap_length=$((ping_count + 20))
+num_pairs=12
+cap_length=$((cap_base + ping_count + num_pairs * 2))
 faucet_log=inst/faucet/daq-faucet-1/faucet.log
 
 function test_pair {
