@@ -165,7 +165,7 @@ function fetch_forch {
     curl http://localhost:9019/$api > $fname
     echo http://localhost:9019/$api > $fname.txt
     jq . $fname >> $fname.txt
-    echo forch results from $api
+    echo forch $name$sub results from $api
     cat $fname
     echo
 }
@@ -182,8 +182,8 @@ function test_forch {
     sleep 30.3231 &
     fetch_forch system_state
     fetch_forch dataplane_state
-    fetch_forch switch_state ?switch=nz-kiwi-t2sw1&port=1 1
-    fetch_forch switch_state ?switch=nz-kiwi-t1sw2&port=10 2
+    fetch_forch switch_state '?switch=nz-kiwi-t2sw1&port=1' 1
+    fetch_forch switch_state '?switch=nz-kiwi-t1sw2&port=10' 2
     fetch_forch cpn_state
     fetch_forch process_state
     fetch_forch list_hosts '' 1
