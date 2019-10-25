@@ -25,6 +25,9 @@ env:
     #- DAQ_TEST=aux
     #- DAQ_TEST=topo
     - DAQ_TEST=stack
+    - DAQ_TEST=stack
+    - DAQ_TEST=stack
+    - DAQ_TEST=stack
 branches:
   except:
   - /^release-\d+\.\d+(\.\d+)?$/
