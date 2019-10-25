@@ -107,14 +107,11 @@ function test_stack {
     echo $desc pcap count is $bcount6 $bcount50 $bcount52 $bcount_total
     echo pcap sane $((bcount6 < 100)) \
          $((bcount_total > 100)) $((bcount_total < 220)) | tee -a $TEST_RESULTS
-    echo $desc pcap t1sw1p28 icmp
-    tcpdump -en -r $t1sw1p28_pcap icmp
-    echo $desc pcap t1sw2p28 icmp
-    tcpdump -en -r $t1sw2p28_pcap icmp
-    echo $desc pcap t2sw1p50 icmp
-    tcpdump -en -r $t2sw1p50_pcap icmp
-    echo $desc pcap t2sw1p52 icmp
-    tcpdump -en -r $t2sw1p52_pcap icmp
+    for link in t1sw1p28 t1sw2p28 t2sw1p50 t2sw1p52; do
+        eval pcap=\$${link}_pcap
+        echo $desc pcap $link icmp from $pcap
+        tcpdump -en -r $pcap vlan and icmp
+    done
     echo $desc pcap end
 
     bcount1e=$(tcpdump -en -r $t1sw1p28_pcap ether broadcast| wc -l) 2>/dev/null
