@@ -32,8 +32,8 @@ null
 "healthy"
 "sleep 30.3231"
 list_hosts
-"http://localhost:9019/list_hosts?eth_src=9a:02:57:1e:8f:01"
-"http://localhost:9019/host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+"http://localhost:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://localhost:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 host_path
 "192.168.1.2"
 "nz-kiwi-t1sw1"
@@ -131,8 +131,8 @@ null
 "healthy"
 "sleep 30.3231"
 list_hosts
-"http://localhost:9019/list_hosts?eth_src=9a:02:57:1e:8f:01"
-"http://localhost:9019/host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+"http://localhost:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://localhost:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 host_path
 "192.168.1.2"
 "nz-kiwi-t1sw2"
@@ -192,8 +192,8 @@ null
 "healthy"
 "sleep 30.3231"
 list_hosts
-"http://localhost:9019/list_hosts?eth_src=9a:02:57:1e:8f:01"
-"http://localhost:9019/host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+"http://localhost:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://localhost:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 host_path
 "192.168.1.2"
 "nz-kiwi-t1sw2"
@@ -252,8 +252,8 @@ null
 "healthy"
 "sleep 30.3231"
 list_hosts
-"http://localhost:9019/list_hosts?eth_src=9a:02:57:1e:8f:01"
-"http://localhost:9019/host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+"http://localhost:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://localhost:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 host_path
 "192.168.1.2"
 "nz-kiwi-t1sw2"
