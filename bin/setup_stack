@@ -153,12 +153,6 @@ if [ -n "$devices" ]; then
         docker exec -ti daq-faux-$fnum ip addr flush faux-eth0
         docker exec -ti daq-faux-$fnum ifconfig faux-eth0 192.168.1.$fnum/16
         add_iface t2sw1 $fnum faux-$fnum
-
-        xnum=$(($fnum + 20))
-        cmd/faux $xnum xdhcp
-        docker exec -ti daq-faux-$xnum ip addr flush faux-eth0
-        docker exec -ti daq-faux-$xnum ifconfig faux-eth0 192.168.1.$xnum/16
-        add_iface t2sw2 $fnum faux-$xnum
     done
 fi
 
