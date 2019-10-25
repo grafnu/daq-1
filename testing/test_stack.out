@@ -26,10 +26,10 @@ Done with stack-solid stack test.
 Running forch-pre tests
 system_state
 "nz-kiwi"
-26
+25
 dataplane_state
-"down"
-9
+"nz-kiwi-t1sw1"
+8
 "active"
 "active"
 switch_state

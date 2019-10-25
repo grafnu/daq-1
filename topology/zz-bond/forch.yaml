@@ -1,5 +1,10 @@
 site:
   name: nz-kiwi
+  controllers:
+    testing:
+      name: none
+    alternate:
+      name: again
 processes:
   faucet:
     regex: python.*ryu-manager.*faucet\.faucet
