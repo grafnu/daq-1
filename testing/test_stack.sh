@@ -42,7 +42,7 @@ function test_pair {
     cmd="ping -c $ping_count 192.168.1.$dst"
     echo $host: $cmd
     echo -n $host: $cmd\ > $out_file
-    docker exec $host $cmd | fgrep time= | fgrep -v DUP | wc -l >> $out_file 2>/dev/null &
+    docker exec $host $cmd & # | fgrep time= | wc -l >> $out_file 2>&1 &
 }
 
 # Compare two numbers and output { -1, 0, 1 }
@@ -279,7 +279,7 @@ ip link set t1sw2-eth10 down
 test_stack stack-twod
 test_forch -twod
 
-echo Restoring switch t2sw3 up...
+echo Bringing switch t2sw3 up...
 sudo ovs-vsctl set-controller t2sw3 $controllers
 ip addr add 240.0.0.1/24 dev lo
 ip link set t1sw1-eth6 down
