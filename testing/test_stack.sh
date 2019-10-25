@@ -62,7 +62,7 @@ function test_stack {
 
     rm -f $faucet_log
     echo $desc Waiting for network stability...
-    sleep 25
+    sleep 30
 
     echo $desc Capturing pcaps for $cap_length seconds...
     rm -f $out_dir/*.pcap
@@ -146,9 +146,8 @@ function test_dot1x {
 
 function setup_forch {
     # Wait for basic Faucet to startup.
-
     sleep 10
-    export HOSTNAME=testing
+
     cmd/forch local 1 2>&1 &
 
     # Need to wait long enough for polling mechanisms to kick in.
