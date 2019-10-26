@@ -111,8 +111,6 @@ function test_stack {
     echo $desc pcap count is $bcount6 $bcount50 $bcount52 $bcount_total
     echo pcap sane $((bcount6 < 100)) \
          $((bcount_total > 100)) $((bcount_total < 220)) | tee -a $TEST_RESULTS
-    done
-    echo $desc pcap end
 
     bcount1e=$(tcpdump -en -r $t1sw1p28_pcap ether broadcast| wc -l) 2>/dev/null
     bcount2e=$(tcpdump -en -r $t1sw2p28_pcap ether broadcast| wc -l) 2>/dev/null
