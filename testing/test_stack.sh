@@ -151,6 +151,7 @@ function setup_forch {
     # Wait for basic Faucet to startup.
     sleep 10
 
+    HOSTNAME=127.0.0.1
     cmd/forch local 1 2>&1 &
 
     # Need to wait long enough for polling mechanisms to kick in.
@@ -198,6 +199,7 @@ function test_forch {
     api_result=$fout_dir/system_state.json
     jq .site_name $api_result | tee -a $TEST_RESULTS
     jq .state_summary_change_count $api_result | tee -a $TEST_RESULTS
+    jq .peer_controller_url $api_result | tee -a $TEST_RESULTS
 
     echo dataplane_state | tee -a $TEST_RESULTS
     api_result=$fout_dir/dataplane_state.json

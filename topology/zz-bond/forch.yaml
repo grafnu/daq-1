@@ -2,9 +2,8 @@ site:
   name: nz-kiwi
   controllers:
     testing:
-      name: none
-    alternate:
-      name: again
+    localhost:
+      port: 9020
 processes:
   faucet:
     regex: python.*ryu-manager.*faucet\.faucet
