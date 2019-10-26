@@ -2,6 +2,8 @@
 
 source testing/test_preamble.sh
 
+export HOSTNAME=127.0.0.1
+
 local=
 if [ "$1" == local ]; then
     local=y
@@ -151,7 +153,6 @@ function setup_forch {
     # Wait for basic Faucet to startup.
     sleep 10
 
-    HOSTNAME=127.0.0.1
     cmd/forch local 1 2>&1 &
 
     # Need to wait long enough for polling mechanisms to kick in.
