@@ -1,7 +1,7 @@
 site:
   name: nz-kiwi
   controllers:
-    testing:
+    127.0.0.1:
     localhost:
       port: 9020
 processes:
