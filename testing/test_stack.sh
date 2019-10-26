@@ -190,9 +190,6 @@ function test_forch {
     fetch_forch host_path '?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02' 1
     fetch_forch host_path '?eth_src=9a:02:57:1e:8f:01&to_egress=true' 2
 
-    echo faucet lag history
-    fgrep LAG inst/faucet/daq-faucet-1/faucet.log | tail -n 10
-
     echo system_state | tee -a $TEST_RESULTS
     api_result=$fout_dir/system_state.json
     jq .site_name $api_result | tee -a $TEST_RESULTS
@@ -261,6 +258,8 @@ fi
 
 setup_forch
 controllers=`sudo ovs-vsctl get-controller t1sw2`
+
+tail -f inst/faucet/daq-faucet-1/faucet.log &
 
 # Test that the 'local' mode of faucet is working properly.
 echo 'print("supercalifragilisticexpialidocious")' > faucet/faucet/python_test.py
