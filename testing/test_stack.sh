@@ -279,9 +279,10 @@ ip link set t1sw1-eth9 down
 test_stack stack-linkd
 
 ip link set t1sw2-eth10 down
-sleep 200.3231 &
-echo sleep start `date`
 test_stack stack-twod
+echo sleep start `date`
+sleep 30.3231 &
+sleep 12
 echo sleep mid `date`
 test_forch -twod
 echo sleep end `date`
@@ -298,9 +299,10 @@ ip addr del 240.0.0.1/24 dev lo
 ip link set t1sw1-eth10 down
 ip link set t1sw2-eth10 up
 ip link set t1sw1-eth6 up
-sleep 200.3231 &
-sleep 200.3231 &
 test_stack stack-restored
+sleep 30.3231 &
+sleep 30.3231 &
+sleep 12
 test_forch -post
 
 echo Killing forch...

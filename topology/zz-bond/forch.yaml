@@ -14,4 +14,4 @@ process:
     forch:
       regex: ^python.*forchestrator
     sleep:
-      regex: "sleep 200\\.3231"
+      regex: "sleep 30\\.3231"
