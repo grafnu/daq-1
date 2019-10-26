@@ -111,10 +111,6 @@ function test_stack {
     echo $desc pcap count is $bcount6 $bcount50 $bcount52 $bcount_total
     echo pcap sane $((bcount6 < 100)) \
          $((bcount_total > 100)) $((bcount_total < 220)) | tee -a $TEST_RESULTS
-    for link in t1sw1p28 t1sw2p28 t2sw1p50 t2sw1p52; do
-        eval pcap=\$${link}_pcap
-        echo $desc pcap $link icmp from $pcap
-        tcpdump -en -r $pcap vlan and icmp
     done
     echo $desc pcap end
 
@@ -195,6 +191,9 @@ function test_forch {
     fetch_forch list_hosts ?eth_src=9a:02:57:1e:8f:01 2
     fetch_forch host_path '?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02' 1
     fetch_forch host_path '?eth_src=9a:02:57:1e:8f:01&to_egress=true' 2
+
+    echo faucet lag history
+    fgrep LAG inst/faucet/daq-faucet-1/faucet.log | tail -n 10
 
     echo system_state | tee -a $TEST_RESULTS
     api_result=$fout_dir/system_state.json
