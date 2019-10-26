@@ -4,12 +4,14 @@ site:
     127.0.0.1:
     localhost:
       port: 9020
-processes:
-  faucet:
-    regex: python.*ryu-manager.*faucet\.faucet
-  gauge:
-    regex: python.*ryu-manager.*faucet\.gauge
-  forch:
-    regex: ^python.*forchestrator
-  sleep:
-    regex: "sleep 30\\.3231"
+process:
+  scan_interval_sec: 10
+  processes:
+    faucet:
+      regex: python.*ryu-manager.*faucet\.faucet
+    gauge:
+      regex: python.*ryu-manager.*faucet\.gauge
+    forch:
+      regex: ^python.*forchestrator
+    sleep:
+      regex: "sleep 100\\.3231"

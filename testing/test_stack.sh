@@ -35,6 +35,7 @@ cap_base=10
 ping_count=10
 num_pairs=12
 cap_length=$((cap_base + ping_count + num_pairs * 2))
+
 faucet_log=inst/faucet/daq-faucet-1/faucet.log
 
 function test_pair {
@@ -178,7 +179,6 @@ function test_forch {
     # Make sure mac addresses are still learned...
     docker exec daq-faux-1 ping -q -c 3 192.168.1.2
 
-    sleep 30.3231 &
     fetch_forch system_state
     fetch_forch dataplane_state
     fetch_forch switch_state '?switch=nz-kiwi-t2sw1&port=1' 1
@@ -267,6 +267,8 @@ echo 'print("supercalifragilisticexpialidocious")' > faucet/faucet/python_test.p
 docker exec daq-faucet-1 python -m faucet.python_test 2>&1 | tee -a $TEST_RESULTS
 rm faucet/faucet/python_test.py
 
+test_forch -pre
+
 echo Stacking Tests | tee -a $TEST_RESULTS
 test_stack stack-solid
 test_forch -pre
@@ -277,6 +279,7 @@ ip link set t1sw1-eth9 down
 test_stack stack-linkd
 
 ip link set t1sw2-eth10 down
+sleep 100.3231 &
 test_stack stack-twod
 test_forch -twod
 
@@ -292,6 +295,8 @@ ip addr del 240.0.0.1/24 dev lo
 ip link set t1sw1-eth10 down
 ip link set t1sw2-eth10 up
 ip link set t1sw1-eth6 up
+sleep 100.3231 &
+sleep 100.3231 &
 test_stack stack-restored
 test_forch -post
 
