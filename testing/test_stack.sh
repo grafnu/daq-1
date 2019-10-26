@@ -267,8 +267,6 @@ echo 'print("supercalifragilisticexpialidocious")' > faucet/faucet/python_test.p
 docker exec daq-faucet-1 python -m faucet.python_test 2>&1 | tee -a $TEST_RESULTS
 rm faucet/faucet/python_test.py
 
-test_forch -pre
-
 echo Stacking Tests | tee -a $TEST_RESULTS
 test_stack stack-solid
 test_forch -pre
@@ -285,6 +283,7 @@ sleep 30.3231 &
 sleep 12
 echo sleep mid `date`
 test_forch -twod
+ps ax | fgrep sleep
 echo sleep end `date`
 
 echo Bring t2sw3 up | tee -a $TEST_RESULTS
