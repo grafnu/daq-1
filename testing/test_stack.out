@@ -27,6 +27,7 @@ Running forch-pre tests
 system_state
 "nz-kiwi"
 25
+"http://localhost:9020"
 dataplane_state
 "nz-kiwi-t1sw1"
 8
@@ -107,6 +108,7 @@ Running forch-twod tests
 system_state
 "nz-kiwi"
 54
+"http://localhost:9020"
 dataplane_state
 "nz-kiwi-t1sw1"
 20
@@ -169,6 +171,7 @@ Running forch-broke tests
 system_state
 "nz-kiwi"
 72
+"http://localhost:9020"
 dataplane_state
 "nz-kiwi-t1sw1"
 26
@@ -229,6 +232,7 @@ Running forch-post tests
 system_state
 "nz-kiwi"
 89
+"http://localhost:9020"
 dataplane_state
 "nz-kiwi-t1sw1"
 32
