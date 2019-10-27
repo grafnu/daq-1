@@ -174,6 +174,8 @@ function test_forch {
     fout_dir=$out_dir/forch$1
     mkdir -p $fout_dir
 
+    echo Tail of faucet.log for $1
+    tail inst/faucet/daq-faucet-1/faucet.log
     echo Running forch$1 tests | tee -a $TEST_RESULTS
 
     # Make sure mac addresses are still learned...
