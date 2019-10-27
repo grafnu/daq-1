@@ -174,12 +174,13 @@ function test_forch {
     fout_dir=$out_dir/forch$1
     mkdir -p $fout_dir
 
-    echo Tail of faucet.log for $1
-    tail inst/faucet/daq-faucet-1/faucet.log
-    echo Running forch$1 tests | tee -a $TEST_RESULTS
-
     # Make sure mac addresses are still learned...
     docker exec daq-faux-1 ping -q -c 3 192.168.1.2
+
+    echo Tail of faucet.log for $1
+    tail -n 20 inst/faucet/daq-faucet-1/faucet.log
+
+    echo Running forch$1 tests | tee -a $TEST_RESULTS
 
     fetch_forch system_state
     fetch_forch dataplane_state
@@ -260,8 +261,6 @@ fi
 
 setup_forch
 controllers=`sudo ovs-vsctl get-controller t1sw2`
-
-tail -f inst/faucet/daq-faucet-1/faucet.log &
 
 # Test that the 'local' mode of faucet is working properly.
 echo 'print("supercalifragilisticexpialidocious")' > faucet/faucet/python_test.py
