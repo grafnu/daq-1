@@ -6,7 +6,7 @@ RUN $AG update && $AG install openjdk-8-jdk git jq
 
 RUN $AG update && $AG install curl
 
-COPY subset/helpers/reporting_utils .
+COPY utils/reporting.sh .
 COPY subset/connection/ .
 
 RUN curl https://svn.nmap.org/nmap/nmap-mac-prefixes | tee mac_oui/src/main/resources/macList.txt

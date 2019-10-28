@@ -327,47 +327,6 @@ RESULT skip security.passwords.ssh Device does not have a valid mac address
 
 ```
 
-## Module password
-
-```
---------------------
-security.passwords.http
---------------------
-Verify all default password have been updated. Ensure new Google provided passwords are set
---------------------
-Redacted Log
---------------------
-RESULT skip security.passwords.http Device does not have a valid mac address
-
---------------------
-security.passwords.https
---------------------
-Verify all default password have been updated. Ensure new Google provided passwords are set
---------------------
-Redacted Log
---------------------
-RESULT skip security.passwords.https Device does not have a valid mac address
-
---------------------
-security.passwords.telnet
---------------------
-Verify all default password have been updated. Ensure new Google provided passwords are set
---------------------
-Redacted Log
---------------------
-RESULT skip security.passwords.telnet Device does not have a valid mac address
-
---------------------
-security.passwords.ssh
---------------------
-Verify all default password have been updated. Ensure new Google provided passwords are set
---------------------
-Redacted Log
---------------------
-RESULT skip security.passwords.ssh Device does not have a valid mac address
-
-```
-
 ## Module udmi
 
 ```
