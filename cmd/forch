@@ -1,9 +1,13 @@
 #!/bin/bash -e
 
 local=n
+force=n
 
 if [ "$1" == local ]; then
     local=y
+    shift
+elif [ "$1" == -f ]; then
+    force=y
     shift
 fi
 
@@ -22,8 +26,13 @@ target_commit=$(cd forch; git rev-parse $target_version)
 if [ $local == n -a "$target_commit" != "$local_version" ]; then
     echo Local forch commit is at: $local_version
     echo Mismatch with misc/FORCH_VERSION: $target_version
-    echo Try 'bin/clean_dev && bin/setup_dev' to reset.
-    false
+    if [ $force == n ]; then
+        echo Try 'bin/clean_dev && bin/setup_dev' to reset.
+        false
+    else
+        echo Force-update of misc/FORCH_VERSION
+        echo $local_version > misc/FORCH_VERSION
+    fi
 fi
 
 

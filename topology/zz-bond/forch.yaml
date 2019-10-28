@@ -1,11 +1,17 @@
 site:
   name: nz-kiwi
-processes:
-  faucet:
-    regex: python.*ryu-manager.*faucet\.faucet
-  gauge:
-    regex: python.*ryu-manager.*faucet\.gauge
-  forch:
-    regex: ^python.*forchestrator
-  sleep:
-    regex: "sleep 30\\.3231"
+  controllers:
+    127.0.0.1:
+    localhost:
+      port: 9020
+process:
+  scan_interval_sec: 10
+  processes:
+    faucet:
+      regex: python.*ryu-manager.*faucet\.faucet
+    gauge:
+      regex: python.*ryu-manager.*faucet\.gauge
+    forch:
+      regex: ^python.*forchestrator
+    sleep:
+      regex: "sleep 30\\.3231"

@@ -2,6 +2,8 @@
 
 source testing/test_preamble.sh
 
+export HOSTNAME=127.0.0.1
+
 local=
 if [ "$1" == local ]; then
     local=y
@@ -29,8 +31,11 @@ nodes_dir=$out_dir/nodes
 
 mkdir -p $out_dir $nodes_dir
 
+cap_base=10
 ping_count=10
-cap_length=$((ping_count + 20))
+num_pairs=12
+cap_length=$((cap_base + ping_count + num_pairs * 2))
+
 faucet_log=inst/faucet/daq-faucet-1/faucet.log
 
 function test_pair {
@@ -42,7 +47,7 @@ function test_pair {
     cmd="ping -c $ping_count 192.168.1.$dst"
     echo $host: $cmd
     echo -n $host: $cmd\ > $out_file
-    docker exec $host $cmd | fgrep time= | fgrep -v DUP | wc -l >> $out_file 2>/dev/null &
+    docker exec $host $cmd | fgrep time= | wc -l >> $out_file 2>/dev/null &
 }
 
 # Compare two numbers and output { -1, 0, 1 }
@@ -62,7 +67,7 @@ function test_stack {
 
     rm -f $faucet_log
     echo $desc Waiting for network stability...
-    sleep 15
+    sleep 30
 
     echo $desc Capturing pcaps for $cap_length seconds...
     rm -f $out_dir/*.pcap
@@ -107,11 +112,6 @@ function test_stack {
     echo $desc pcap count is $bcount6 $bcount50 $bcount52 $bcount_total
     echo pcap sane $((bcount6 < 100)) \
          $((bcount_total > 100)) $((bcount_total < 220)) | tee -a $TEST_RESULTS
-    echo $desc pcap t2sw1p50
-    tcpdump -en -c 20 -r $t2sw1p50_pcap
-    echo $desc pcap t2sw1p52
-    tcpdump -en -c 20 -r $t2sw1p52_pcap
-    echo $desc pcap end
 
     bcount1e=$(tcpdump -en -r $t1sw1p28_pcap ether broadcast| wc -l) 2>/dev/null
     bcount2e=$(tcpdump -en -r $t1sw2p28_pcap ether broadcast| wc -l) 2>/dev/null
@@ -146,9 +146,8 @@ function test_dot1x {
 
 function setup_forch {
     # Wait for basic Faucet to startup.
-
     sleep 10
-    export HOSTNAME=testing
+
     cmd/forch local 1 2>&1 &
 
     # Need to wait long enough for polling mechanisms to kick in.
@@ -166,7 +165,7 @@ function fetch_forch {
     curl http://localhost:9019/$api > $fname
     echo http://localhost:9019/$api > $fname.txt
     jq . $fname >> $fname.txt
-    echo forch results from $api
+    echo forch $name$sub results from $api
     cat $fname
     echo
 }
@@ -175,15 +174,18 @@ function test_forch {
     fout_dir=$out_dir/forch$1
     mkdir -p $fout_dir
 
-    echo Running forch$1 tests | tee -a $TEST_RESULTS
-
     # Make sure mac addresses are still learned...
     docker exec daq-faux-1 ping -q -c 3 192.168.1.2
 
-    sleep 30.3231 &
+    echo Tail of faucet.log for $1
+    tail -n 30 inst/faucet/daq-faucet-1/faucet.log
+
+    echo Running forch$1 tests | tee -a $TEST_RESULTS
+
     fetch_forch system_state
     fetch_forch dataplane_state
-    fetch_forch switch_state ?switch=nz-kiwi-t2sw1
+    fetch_forch switch_state '?switch=nz-kiwi-t2sw1&port=1' 1
+    fetch_forch switch_state '?switch=nz-kiwi-t1sw2&port=10' 2
     fetch_forch cpn_state
     fetch_forch process_state
     fetch_forch list_hosts '' 1
@@ -195,21 +197,25 @@ function test_forch {
     api_result=$fout_dir/system_state.json
     jq .site_name $api_result | tee -a $TEST_RESULTS
     jq .state_summary_change_count $api_result | tee -a $TEST_RESULTS
+    jq .peer_controller_url $api_result | tee -a $TEST_RESULTS
 
     echo dataplane_state | tee -a $TEST_RESULTS
     api_result=$fout_dir/dataplane_state.json
     jq '.egress_state' $api_result | tee -a $TEST_RESULTS
     jq '.egress_state_change_count' $api_result | tee -a $TEST_RESULTS
-    jq '.switches."nz-kiwi-t1sw1".state' $api_result | tee -a $TEST_RESULTS
-    jq '.stack_links."nz-kiwi-t1sw1:6@nz-kiwi-t1sw2:6".state' $api_result | tee -a $TEST_RESULTS
+    jq '.switches."nz-kiwi-t1sw2".switch_state' $api_result | tee -a $TEST_RESULTS
+    jq '.stack_links."nz-kiwi-t1sw1:6@nz-kiwi-t1sw2:6".link_state' $api_result | tee -a $TEST_RESULTS
 
     echo switch_state | tee -a $TEST_RESULTS
-    api_result=$fout_dir/switch_state.json
+    api_result=$fout_dir/switch_state1.json
     jq '.switches_state_change_count' $api_result | tee -a $TEST_RESULTS
     jq '.switches."nz-kiwi-t2sw1".root_path[1].switch' $api_result | tee -a $TEST_RESULTS
     jq '.switches."nz-kiwi-t2sw1".root_path[1].in' $api_result | tee -a $TEST_RESULTS
     jq '.switches."nz-kiwi-t2sw1".root_path[1].out' $api_result | tee -a $TEST_RESULTS
     jq '.switches."nz-kiwi-t2sw1".attributes.dp_id' $api_result | tee -a $TEST_RESULTS
+    api_result=$fout_dir/switch_state2.json
+    jq '.switches_state_detail' $api_result | tee -a $TEST_RESULTS
+    jq '.switches."nz-kiwi-t1sw2".switch_state' $api_result | tee -a $TEST_RESULTS
 
     echo cpn_state | tee -a $TEST_RESULTS
     api_result=$fout_dir/cpn_state.json
@@ -254,25 +260,34 @@ else
 fi
 
 setup_forch
+controllers=`sudo ovs-vsctl get-controller t1sw2`
 
 # Test that the 'local' mode of faucet is working properly.
 echo 'print("supercalifragilisticexpialidocious")' > faucet/faucet/python_test.py
 docker exec daq-faucet-1 python -m faucet.python_test 2>&1 | tee -a $TEST_RESULTS
 rm faucet/faucet/python_test.py
 
-
-test_forch -pre
-
 echo Stacking Tests | tee -a $TEST_RESULTS
 test_stack stack-solid
+test_forch -pre
 
+echo Bring t2sw3 down | tee -a $TEST_RESULTS
+sudo ovs-vsctl del-controller t2sw3
 ip link set t1sw1-eth9 down
 test_stack stack-linkd
 
 ip link set t1sw2-eth10 down
 test_stack stack-twod
+echo sleep start `date`
+sleep 30.3231 &
+sleep 12
+echo sleep mid `date`
 test_forch -twod
+ps ax | fgrep sleep
+echo sleep end `date`
 
+echo Bring t2sw3 up | tee -a $TEST_RESULTS
+sudo ovs-vsctl set-controller t2sw3 $controllers
 ip addr add 240.0.0.1/24 dev lo
 ip link set t1sw1-eth6 down
 ip link set t1sw1-eth11 down
@@ -284,6 +299,9 @@ ip link set t1sw1-eth10 down
 ip link set t1sw2-eth10 up
 ip link set t1sw1-eth6 up
 test_stack stack-restored
+sleep 30.3231 &
+sleep 30.3231 &
+sleep 12
 test_forch -post
 
 echo Killing forch...
