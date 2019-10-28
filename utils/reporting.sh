@@ -45,7 +45,7 @@ function check_for_fails_in() {
                 __result="true"
             fi
         done
-    echo $result
+    echo $__result
 }
 
 # write_out_monolog
