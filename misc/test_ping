@@ -1,5 +1,5 @@
 #!/bin/bash -e
-source reporting_utils
+source reporting.sh
 
 RESULT_LINES=/tmp/result_lines.txt
 MONO_LOG=/tmp/mono-log.txt
