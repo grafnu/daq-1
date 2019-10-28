@@ -178,7 +178,7 @@ function test_forch {
     docker exec daq-faux-1 ping -q -c 3 192.168.1.2
 
     echo Tail of faucet.log for $1
-    tail -n 20 inst/faucet/daq-faucet-1/faucet.log
+    tail -n 30 inst/faucet/daq-faucet-1/faucet.log
 
     echo Running forch$1 tests | tee -a $TEST_RESULTS
 
