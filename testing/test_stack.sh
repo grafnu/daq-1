@@ -2,7 +2,7 @@
 
 source testing/test_preamble.sh
 
-export HOSTNAME=127.0.0.1
+export CONTROLLER_NAME=127.0.0.1
 
 local=
 if [ "$1" == local ]; then

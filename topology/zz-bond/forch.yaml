@@ -9,6 +9,7 @@ process:
   processes:
     faucet:
       regex: python.*ryu-manager.*faucet\.faucet
+      count: 2
     gauge:
       regex: python.*ryu-manager.*faucet\.gauge
     forch:
