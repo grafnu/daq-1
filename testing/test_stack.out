@@ -48,8 +48,8 @@ cpn_state
 "240.0.0.1"
 "down"
 process_state
-null
-"broken"
+1
+"healthy"
 "broken"
 null
 list_hosts
@@ -129,8 +129,8 @@ cpn_state
 "240.0.0.1"
 "down"
 process_state
-null
-"broken"
+2
+"healthy"
 "healthy"
 "sleep 30.3231"
 list_hosts
@@ -192,8 +192,8 @@ cpn_state
 "240.0.0.1"
 "healthy"
 process_state
-null
-"broken"
+3
+"healthy"
 "broken"
 null
 list_hosts
@@ -253,8 +253,8 @@ cpn_state
 "240.0.0.1"
 "down"
 process_state
-null
-"broken"
+3
+"healthy"
 "broken"
 null
 list_hosts
