@@ -2,7 +2,7 @@
 
 source testing/test_preamble.sh
 
-export HOSTNAME=127.0.0.1
+export CONTROLLER_NAME=127.0.0.1
 
 local=
 if [ "$1" == local ]; then
@@ -162,8 +162,8 @@ function fetch_forch {
     api=$name$args
     fname=$fout_dir/$name$sub.json
 
-    curl http://localhost:9019/$api > $fname
-    echo http://localhost:9019/$api > $fname.txt
+    curl http://$CONTROLLER_NAME:9019/$api > $fname
+    echo http://$CONTROLLER_NAME:9019/$api > $fname.txt
     jq . $fname >> $fname.txt
     echo forch $name$sub results from $api
     cat $fname
@@ -196,7 +196,7 @@ function test_forch {
     echo system_state | tee -a $TEST_RESULTS
     api_result=$fout_dir/system_state.json
     jq .site_name $api_result | tee -a $TEST_RESULTS
-    jq .state_summary_change_count $api_result | tee -a $TEST_RESULTS
+    jq .system_state_change_count $api_result | tee -a $TEST_RESULTS
     jq .peer_controller_url $api_result | tee -a $TEST_RESULTS
 
     echo dataplane_state | tee -a $TEST_RESULTS

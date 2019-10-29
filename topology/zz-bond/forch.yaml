@@ -3,12 +3,14 @@ site:
   controllers:
     127.0.0.1:
     localhost:
+      fqdn: localhost.n
       port: 9020
 process:
   scan_interval_sec: 10
   processes:
     faucet:
       regex: python.*ryu-manager.*faucet\.faucet
+      count: 2
     gauge:
       regex: python.*ryu-manager.*faucet\.gauge
     forch:
