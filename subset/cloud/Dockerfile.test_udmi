@@ -12,7 +12,6 @@ RUN validator/bin/build
 
 COPY schemas/udmi/ schemas/udmi/
 
-COPY utils/reporting.sh .
 COPY subset/cloud/test_udmi .
 
 CMD ./test_udmi
