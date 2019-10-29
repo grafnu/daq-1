@@ -3,6 +3,7 @@ site:
   controllers:
     127.0.0.1:
     localhost:
+      fqdn: localhost.n
       port: 9020
 process:
   scan_interval_sec: 10
