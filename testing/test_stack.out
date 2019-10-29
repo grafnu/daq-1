@@ -27,7 +27,7 @@ Running forch-pre tests
 system_state
 "nz-kiwi"
 25
-"http://localhost:9020"
+"http://localhost.n:9020"
 dataplane_state
 "nz-kiwi-t1sw1"
 8
@@ -53,8 +53,8 @@ process_state
 "broken"
 null
 list_hosts
-"http://localhost:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
-"http://localhost:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+"http://localhost.n:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://localhost.n:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 host_path
 "192.168.1.2"
 "nz-kiwi-t1sw1"
@@ -108,7 +108,7 @@ Running forch-twod tests
 system_state
 "nz-kiwi"
 54
-"http://localhost:9020"
+"http://localhost.n:9020"
 dataplane_state
 "nz-kiwi-t1sw1"
 20
@@ -134,8 +134,8 @@ process_state
 "healthy"
 "sleep 30.3231"
 list_hosts
-"http://localhost:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
-"http://localhost:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+"http://localhost.n:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://localhost.n:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 host_path
 "192.168.1.2"
 "nz-kiwi-t1sw2"
@@ -171,7 +171,7 @@ Running forch-broke tests
 system_state
 "nz-kiwi"
 72
-"http://localhost:9020"
+"http://localhost.n:9020"
 dataplane_state
 "nz-kiwi-t1sw1"
 26
@@ -197,8 +197,8 @@ process_state
 "broken"
 null
 list_hosts
-"http://localhost:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
-"http://localhost:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+"http://localhost.n:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://localhost.n:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 host_path
 "192.168.1.2"
 "nz-kiwi-t1sw2"
@@ -232,7 +232,7 @@ Running forch-post tests
 system_state
 "nz-kiwi"
 89
-"http://localhost:9020"
+"http://localhost.n:9020"
 dataplane_state
 "nz-kiwi-t1sw1"
 32
@@ -258,8 +258,8 @@ process_state
 "broken"
 null
 list_hosts
-"http://localhost:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
-"http://localhost:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+"http://localhost.n:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://localhost.n:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 host_path
 "192.168.1.2"
 "nz-kiwi-t1sw2"
