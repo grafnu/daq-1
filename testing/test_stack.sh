@@ -196,7 +196,7 @@ function test_forch {
     echo system_state | tee -a $TEST_RESULTS
     api_result=$fout_dir/system_state.json
     jq .site_name $api_result | tee -a $TEST_RESULTS
-    jq .state_summary_change_count $api_result | tee -a $TEST_RESULTS
+    jq .system_state_change_count $api_result | tee -a $TEST_RESULTS
     jq .peer_controller_url $api_result | tee -a $TEST_RESULTS
 
     echo dataplane_state | tee -a $TEST_RESULTS
