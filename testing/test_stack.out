@@ -53,8 +53,8 @@ process_state
 "broken"
 null
 list_hosts
-"http://localhost.n:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
-"http://localhost.n:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+"http://127.0.0.1:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://127.0.0.1:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 host_path
 "192.168.1.2"
 "nz-kiwi-t1sw1"
@@ -134,8 +134,8 @@ process_state
 "healthy"
 "sleep 30.3231"
 list_hosts
-"http://localhost.n:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
-"http://localhost.n:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+"http://127.0.0.1:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://127.0.0.1:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 host_path
 "192.168.1.2"
 "nz-kiwi-t1sw2"
@@ -197,8 +197,8 @@ process_state
 "broken"
 null
 list_hosts
-"http://localhost.n:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
-"http://localhost.n:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+"http://127.0.0.1:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://127.0.0.1:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 host_path
 "192.168.1.2"
 "nz-kiwi-t1sw2"
@@ -258,8 +258,8 @@ process_state
 "broken"
 null
 list_hosts
-"http://localhost.n:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
-"http://localhost.n:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
+"http://127.0.0.1:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
+"http://127.0.0.1:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 host_path
 "192.168.1.2"
 "nz-kiwi-t1sw2"

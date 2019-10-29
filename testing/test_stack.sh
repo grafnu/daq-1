@@ -162,8 +162,8 @@ function fetch_forch {
     api=$name$args
     fname=$fout_dir/$name$sub.json
 
-    curl http://localhost:9019/$api > $fname
-    echo http://localhost:9019/$api > $fname.txt
+    curl http://$CONTROLLER_NAME:9019/$api > $fname
+    echo http://$CONTROLLER_NAME:9019/$api > $fname.txt
     jq . $fname >> $fname.txt
     echo forch $name$sub results from $api
     cat $fname
