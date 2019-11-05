@@ -1,6 +1,6 @@
 cpn_nodes:
     nz-kiwi-ctl1:
-        cpn_ip: 127.0.0.1
+        cpn_ip: 240.0.0.253
         role: controller
         vendor: Dell
         model: RS300

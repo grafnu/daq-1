@@ -198,6 +198,7 @@ function test_forch {
     jq .site_name $api_result | tee -a $TEST_RESULTS
     jq .system_state_change_count $api_result | tee -a $TEST_RESULTS
     jq .peer_controller_url $api_result | tee -a $TEST_RESULTS
+    jq .system_state $api_result | tee -a $TEST_RESULTS
 
     echo dataplane_state | tee -a $TEST_RESULTS
     api_result=$fout_dir/dataplane_state.json
@@ -273,14 +274,15 @@ test_forch -pre
 
 echo Bring t2sw3 down | tee -a $TEST_RESULTS
 sudo ovs-vsctl del-controller t2sw3
+ip addr add 240.0.0.253/24 dev lo
 ip link set t1sw1-eth9 down
 test_stack stack-linkd
 
 ip link set t1sw2-eth10 down
 test_stack stack-twod
 echo sleep start `date`
-sleep 30.3231 &
-sleep 12
+sleep 50.3231 &
+sleep 32
 echo sleep mid `date`
 test_forch -twod
 ps ax | fgrep sleep
@@ -310,5 +312,7 @@ sudo kill `ps ax | fgrep forch | awk '{print $1}'`
 #echo Dot1x setup >> $TEST_RESULTS
 #bin/net_clean
 #test_dot1x
+
+ip addr del 240.0.0.253/24 dev lo | true
 
 echo Done with cleanup. Goodby.

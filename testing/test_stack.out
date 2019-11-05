@@ -28,6 +28,7 @@ system_state
 "nz-kiwi"
 25
 "http://localhost.n:9020"
+"split"
 dataplane_state
 "nz-kiwi-t1sw1"
 8
@@ -107,8 +108,9 @@ Done with stack-twod stack test.
 Running forch-twod tests
 system_state
 "nz-kiwi"
-54
+55
 "http://localhost.n:9020"
+"broken"
 dataplane_state
 "nz-kiwi-t1sw1"
 20
@@ -123,16 +125,16 @@ switch_state
 "Switches in broken state: nz-kiwi-t2sw3"
 "active"
 cpn_state
-2
+3
 "127.0.0.1"
 "healthy"
 "240.0.0.1"
-"down"
+"healthy"
 process_state
 2
 "healthy"
 "healthy"
-"sleep 30.3231"
+"sleep 50.3231"
 list_hosts
 "http://127.0.0.1:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
 "http://127.0.0.1:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
@@ -172,6 +174,7 @@ system_state
 "nz-kiwi"
 72
 "http://localhost.n:9020"
+"broken"
 dataplane_state
 "nz-kiwi-t1sw1"
 26
@@ -231,8 +234,9 @@ Done with stack-restored stack test.
 Running forch-post tests
 system_state
 "nz-kiwi"
-89
+88
 "http://localhost.n:9020"
+"broken"
 dataplane_state
 "nz-kiwi-t1sw1"
 32
@@ -247,11 +251,11 @@ switch_state
 ""
 "active"
 cpn_state
-4
+3
 "127.0.0.1"
 "healthy"
 "240.0.0.1"
-"down"
+"healthy"
 process_state
 3
 "healthy"
