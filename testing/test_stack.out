@@ -30,7 +30,7 @@ system_state
 "http://localhost.n:9020"
 "split"
 dataplane_state
-"nz-kiwi-t1sw1"
+"up"
 8
 "active"
 "active"
@@ -40,7 +40,7 @@ switch_state
 9
 null
 2352
-""
+null
 "active"
 cpn_state
 2
@@ -108,12 +108,12 @@ Done with stack-twod stack test.
 Running forch-twod tests
 system_state
 "nz-kiwi"
-55
+61
 "http://localhost.n:9020"
 "broken"
 dataplane_state
-"nz-kiwi-t1sw1"
-20
+"up"
+26
 "active"
 "active"
 switch_state
@@ -134,7 +134,7 @@ process_state
 2
 "healthy"
 "healthy"
-"sleep 50.3231"
+null
 list_hosts
 "http://127.0.0.1:9019/?list_hosts?eth_src=9a:02:57:1e:8f:01"
 "http://127.0.0.1:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
@@ -172,12 +172,12 @@ Done with stack-broken stack test.
 Running forch-broke tests
 system_state
 "nz-kiwi"
-72
+80
 "http://localhost.n:9020"
 "broken"
 dataplane_state
-"nz-kiwi-t1sw1"
-26
+"up"
+34
 "active"
 "down"
 switch_state
@@ -186,7 +186,7 @@ null
 null
 null
 2352
-""
+null
 "active"
 cpn_state
 3
@@ -234,12 +234,12 @@ Done with stack-restored stack test.
 Running forch-post tests
 system_state
 "nz-kiwi"
-88
+98
 "http://localhost.n:9020"
 "broken"
 dataplane_state
-"nz-kiwi-t1sw1"
-32
+"up"
+42
 "active"
 "active"
 switch_state
@@ -248,7 +248,7 @@ switch_state
 9
 6
 2352
-""
+null
 "active"
 cpn_state
 3

@@ -35,6 +35,9 @@ if [ $local == n -a "$target_commit" != "$local_version" ]; then
     fi
 fi
 
+if [ -z "$CONTROLLER_NAME" ]; then
+    export CONTROLLER_NAME=127.0.0.1
+fi
 
 FAUCET_EVENT_SOCK=$(realpath $FDIR)/faucet_event.sock \
     FORCH_CONFIG_DIR=$(realpath $FDIR) \

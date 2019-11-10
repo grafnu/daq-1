@@ -145,6 +145,9 @@ function test_dot1x {
 }
 
 function setup_forch {
+    echo Killing any old instances of forch...
+    sudo kill `ps ax | fgrep forch | awk '{print $1}'`
+
     # Wait for basic Faucet to startup.
     sleep 10
 
@@ -202,10 +205,10 @@ function test_forch {
 
     echo dataplane_state | tee -a $TEST_RESULTS
     api_result=$fout_dir/dataplane_state.json
-    jq '.egress_state' $api_result | tee -a $TEST_RESULTS
-    jq '.egress_state_change_count' $api_result | tee -a $TEST_RESULTS
-    jq '.switches."nz-kiwi-t1sw2".switch_state' $api_result | tee -a $TEST_RESULTS
-    jq '.stack_links."nz-kiwi-t1sw1:6@nz-kiwi-t1sw2:6".link_state' $api_result | tee -a $TEST_RESULTS
+    jq '.dataplane_state' $api_result | tee -a $TEST_RESULTS
+    jq '.dataplane_state_change_count' $api_result | tee -a $TEST_RESULTS
+    jq '.switch.switches."nz-kiwi-t1sw2".switch_state' $api_result | tee -a $TEST_RESULTS
+    jq '.stack.links."nz-kiwi-t1sw1:6@nz-kiwi-t1sw2:6".link_state' $api_result | tee -a $TEST_RESULTS
 
     echo switch_state | tee -a $TEST_RESULTS
     api_result=$fout_dir/switch_state1.json
