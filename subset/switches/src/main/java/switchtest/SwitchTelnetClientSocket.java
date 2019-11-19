@@ -30,10 +30,11 @@ import org.apache.commons.net.telnet.SuppressGAOptionHandler;
 import org.apache.commons.net.telnet.TelnetClient;
 import org.apache.commons.net.telnet.TelnetNotificationHandler;
 import org.apache.commons.net.telnet.TerminalTypeOptionHandler;
+import switchtest.allied.AlliedTelesisX230;
 
 public class SwitchTelnetClientSocket implements TelnetNotificationHandler, Runnable {
   TelnetClient telnetClient = null;
-  SwitchInterrogator interrogator;
+  AlliedTelesisX230 interrogator;
 
   String remoteIpAddress = "";
   int remotePort = 23;
@@ -49,7 +50,7 @@ public class SwitchTelnetClientSocket implements TelnetNotificationHandler, Runn
   boolean debug = false;
 
   public SwitchTelnetClientSocket(
-      String remoteIpAddress, int remotePort, SwitchInterrogator interrogator, boolean debug) {
+      String remoteIpAddress, int remotePort, AlliedTelesisX230 interrogator, boolean debug) {
     this.remoteIpAddress = remoteIpAddress;
     this.remotePort = remotePort;
     this.interrogator = interrogator;
