@@ -463,7 +463,7 @@ class ConnectedHost:
         if 'switch_model' in self.config:
             params['switch_model'] = self.config['switch_model']
         else:
-            params['switch_model'] = "AlliedTelesisx230"
+            params['switch_model'] = "ALLIED_TELESIS_X230"
 
         LOGGER.debug('test_host start %s/%s', self.test_name, self._host_name())
         self._set_module_config(test_name, self._loaded_config)
