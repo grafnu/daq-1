@@ -13,6 +13,7 @@ RESULT_LINES=/tmp/results.switch.txt
 if [ -n "$LOCAL_IP" ]; then
     echo Configuring network with local address $LOCAL_IP.
     ip addr add $LOCAL_IP dev `hostname`-eth0
+    echo Switch Test with model $SWITCH_MODEL.
     echo Switch test with port $SWITCH_PORT.
     ping -n -c 10 $SWITCH_IP
     POE_ENABLED=`jq -r .modules.switch.poe.enabled /config/device/module_config.json`
@@ -69,3 +70,4 @@ else
                      "RESULT $RESULT poe.support $SUMMARY"
 
 fi
+

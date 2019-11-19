@@ -459,6 +459,12 @@ class ConnectedHost:
             params['local_ip'] = ext_loip % self.test_port
             params['switch_ip'] = self.config['ext_addr']
             params['switch_port'] = str(self.target_port)
+
+        if 'switch_model' in self.config:
+            params['switch_model'] = self.config['switch_model']
+        else:
+            params['switch_model'] = "AlliedTelesisx230"
+
         LOGGER.debug('test_host start %s/%s', self.test_name, self._host_name())
         self._set_module_config(test_name, self._loaded_config)
         self.record_result(test_name, state=MODE.EXEC)
@@ -601,3 +607,4 @@ class ConnectedHost:
     def _release_config(self):
         self._gcp.release_config(self._DEVICE_PATH % self.target_mac)
         self._gcp.release_config(self._CONTROL_PATH % self.target_port)
+
