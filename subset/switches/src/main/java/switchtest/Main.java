@@ -1,6 +1,7 @@
 package switchtest;
 
 import switchtest.allied.AlliedTelesisX230;
+import switchtest.cisco.Cisco9300;
 
 public class Main {
 
@@ -19,7 +20,7 @@ public class Main {
 
     SupportedSwitchModelsEnum switchModel = null;
     try {
-      SupportedSwitchModelsEnum.valueOf(args[3]);
+      switchModel = SupportedSwitchModelsEnum.valueOf(args[3]);
     } catch (Exception e) {
       System.out.println(
           "Unknown Switch Model: "
@@ -32,7 +33,8 @@ public class Main {
     SwitchInterrogator switchInterrogator = null;
     switch (switchModel) {
       case CISCO_9300:
-        throw new Exception("Unsupported switch option");
+        switchInterrogator = new Cisco9300(ipAddress, interfacePort, supportsPOE);
+        break;
       case ALLIED_TELESIS_X230:
       default:
         switchInterrogator = new AlliedTelesisX230(ipAddress, interfacePort, supportsPOE);

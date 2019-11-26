@@ -32,25 +32,25 @@ import org.apache.commons.net.telnet.TelnetNotificationHandler;
 import org.apache.commons.net.telnet.TerminalTypeOptionHandler;
 import switchtest.allied.AlliedTelesisX230;
 
-public class SwitchTelnetClientSocket implements TelnetNotificationHandler, Runnable {
-  TelnetClient telnetClient = null;
-  AlliedTelesisX230 interrogator;
+public abstract class SwitchTelnetClientSocket implements TelnetNotificationHandler, Runnable {
+  protected TelnetClient telnetClient = null;
+  protected SwitchInterrogator interrogator;
 
-  String remoteIpAddress = "";
-  int remotePort = 23;
+  protected String remoteIpAddress = "";
+  protected int remotePort = 23;
 
-  InputStream inputStream;
-  OutputStream outputStream;
+  protected InputStream inputStream;
+  protected OutputStream outputStream;
 
-  Queue<String> rxQueue = new LinkedList<>();
+  protected Queue<String> rxQueue = new LinkedList<>();
 
-  Thread readerThread;
-  Thread gatherThread;
+  protected Thread readerThread;
+  protected Thread gatherThread;
 
-  boolean debug = false;
+  protected boolean debug = false;
 
   public SwitchTelnetClientSocket(
-      String remoteIpAddress, int remotePort, AlliedTelesisX230 interrogator, boolean debug) {
+      String remoteIpAddress, int remotePort, SwitchInterrogator interrogator, boolean debug) {
     this.remoteIpAddress = remoteIpAddress;
     this.remotePort = remotePort;
     this.interrogator = interrogator;
@@ -59,7 +59,7 @@ public class SwitchTelnetClientSocket implements TelnetNotificationHandler, Runn
     addOptionHandlers();
   }
 
-  private void connectTelnetSocket() {
+  protected void connectTelnetSocket() {
     int attempts = 0;
 
     while (!telnetClient.isConnected() && attempts < 10) {
@@ -79,28 +79,7 @@ public class SwitchTelnetClientSocket implements TelnetNotificationHandler, Runn
     }
   }
 
-  @Override
-  public void run() {
-    connectTelnetSocket();
-
-    Runnable readDataRunnable =
-        () -> {
-          readData();
-        };
-    readerThread = new Thread(readDataRunnable);
-
-    readerThread.start();
-
-    Runnable gatherDataRunnable =
-        () -> {
-          gatherData();
-        };
-    gatherThread = new Thread(gatherDataRunnable);
-
-    gatherThread.start();
-
-    outputStream = telnetClient.getOutputStream();
-  }
+  public abstract void run();
 
   /**
    * * Callback method called when TelnetClient receives an option negotiation command.
@@ -213,7 +192,7 @@ public class SwitchTelnetClientSocket implements TelnetNotificationHandler, Runn
     return bytesString;
   }
 
-  private void readData() {
+  protected void readData() {
     int bytesRead = 0;
 
     inputStream = telnetClient.getInputStream();
@@ -241,154 +220,7 @@ public class SwitchTelnetClientSocket implements TelnetNotificationHandler, Runn
     }
   }
 
-  private void gatherData() {
-    StringBuilder rxData = new StringBuilder();
-    String rxGathered = "";
-
-    boolean parseFlag = false;
-
-    int count = 0;
-    int flush = 0;
-    int rxQueueCount = 0;
-    int rxTempCount = 0;
-    int expectedLength = 1000;
-    int requestFlag = 0;
-
-    while (telnetClient.isConnected()) {
-      try {
-
-        if (rxQueue.isEmpty()) {
-          Thread.sleep(100);
-          rxQueueCount++;
-          if (debug) {
-            System.out.println("rxQueue.isEmpty:" + rxQueueCount);
-            System.out.println("expectedLength:" + expectedLength);
-            System.out.println("requestFlag:" + requestFlag);
-          }
-          if (rxQueueCount > 70) {
-            rxQueueCount = 0;
-            writeData("\n");
-          }
-        } else {
-          rxQueueCount = 0;
-          String rxTemp = rxQueue.poll();
-          if (rxTemp.equals("")) {
-            Thread.sleep(100);
-            rxTempCount++;
-            if (debug) {
-              System.out.println("rxTemp.equals:" + rxTempCount);
-            }
-          } else if (rxTemp.indexOf("--More--") > 0) {
-            Thread.sleep(20);
-            writeData("\n");
-
-            if (debug) {
-              System.out.println("more position:" + rxTemp.indexOf("--More--"));
-              System.out.println("rxTemp.length" + rxTemp.length() + "rxTemp pre:" + rxTemp);
-              // Useful for debugging
-              // char[] tempChar = rxTemp.toCharArray();
-              // for(char temp:tempChar) {
-              //        System.out.println("tempChar:"+(byte)temp);
-              // }
-            }
-
-            rxTemp = rxTemp.substring(0, rxTemp.length() - 9);
-
-            if (debug) {
-              System.out.println("rxTemp.length" + rxTemp.length() + "rxTemp post:" + rxTemp);
-            }
-
-            rxData.append(rxTemp);
-          } else {
-            rxQueueCount = 0;
-            rxTempCount = 0;
-            rxData.append(rxTemp);
-            rxGathered = rxData.toString();
-            System.out.println(
-                java.time.LocalTime.now()
-                    + "rxDataLen:"
-                    + rxGathered.length()
-                    + "rxData:"
-                    + rxGathered);
-
-            int position = -1;
-
-            int charLength = 1;
-            int beginPosition = 0;
-            System.out.println("count is:" + count);
-
-            String[] loginExpected = {":", ":", ">"};
-            int[] loginExpectedLength = {5, 5, 40};
-
-            String hostname = interrogator.getHostname();
-            requestFlag = interrogator.getRequestFlag() - 1;
-
-            boolean[] requestFlagIndexOf = {false, false, false, true, false};
-            String[] requestFlagExpected = {hostname, hostname, hostname, "end", hostname};
-            int[] requestFlagExpectedLength = {600, 600, 50, 1000, 290};
-            int[] requestFlagCharLength = {
-              hostname.length() + 1, hostname.length() + 1, hostname.length() + 1, 3, -1
-            };
-            int[] requestFlagFlush = {0, 0, 0, 15, 0};
-
-            // login & enable process
-            if (count < 3) {
-              position = rxGathered.indexOf(loginExpected[count]);
-              if (position >= 0) {
-                expectedLength = loginExpectedLength[count];
-                if (count == 2) {
-                  interrogator.setUserAuthorised(true);
-                }
-                count++;
-              }
-            } else if ((count % 2) != 0) {
-              position = rxGathered.indexOf(interrogator.getHostname());
-              if (position >= 0) {
-                interrogator.setUserEnabled(true);
-                expectedLength = 2;
-                charLength = interrogator.getHostname().length() + 1;
-                flush = 0;
-                beginPosition = 0;
-                count++;
-              }
-            } else {
-              position =
-                  findPosition(
-                      rxGathered,
-                      requestFlagExpected[requestFlag],
-                      requestFlagIndexOf[requestFlag]);
-              if (position >= 0) {
-                expectedLength = requestFlagExpectedLength[requestFlag];
-                charLength = requestFlagCharLength[requestFlag];
-                flush = requestFlagFlush[requestFlag];
-                if (rxGathered.length() >= expectedLength) {
-                  beginPosition = 4;
-                  count++;
-                }
-              }
-            }
-
-            if (position >= 0 && rxGathered.length() >= expectedLength) {
-              rxGathered = rxGathered.substring(beginPosition, position + charLength);
-              System.out.println(
-                  java.time.LocalTime.now()
-                      + "rxGatheredLen:"
-                      + rxGathered.length()
-                      + "rxGathered:"
-                      + rxGathered);
-              rxData.delete(0, position + charLength + flush);
-
-              interrogator.receiveData(rxGathered);
-            }
-          }
-        }
-      } catch (InterruptedException e) {
-        System.err.println("InterruptedException gatherData:" + e.getMessage());
-      }
-    }
-  }
-
-  private int findPosition(String rxGathered, String value, boolean indexOf) {
+  protected int findPosition(String rxGathered, String value, boolean indexOf) {
     int position = -1;
     if (indexOf) {
       position = rxGathered.indexOf(value);
