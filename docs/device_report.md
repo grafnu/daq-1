@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2019-07-15 22:55:25+00:00 |
-| Test report end date   | 2019-07-15 23:01:50+00:00 |
+| Test report start date | 2019-10-22 09:34:33+00:00 |
+| Test report end date   | 2019-10-22 09:41:18+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -56,7 +56,7 @@ Overall device result FAIL
 |---|---|---|---|---|
 |Required|1|1|0|0|
 |Recommended|1|0|0|0|
-|Other|0|1|13|2|
+|Other|0|1|17|2|
 
 |Result|Test|Category|Expectation|Notes|
 |---|---|---|---|---|
@@ -67,13 +67,17 @@ Overall device result FAIL
 |skip|connection.port_duplex|Other|Other|No local IP has been set, check ext_loip in system.conf|
 |skip|connection.port_link|Other|Other|No local IP has been set, check ext_loip in system.conf|
 |skip|connection.port_speed|Other|Other|No local IP has been set, check ext_loip in system.conf|
-|fail|network.brute|Security|Required||
+|fail|network.brute|Security|Required|Change the default password on the DUT|
 |skip|poe.negotiation|Other|Other|No local IP has been set, check ext_loip in system.conf|
 |skip|poe.power|Other|Other|No local IP has been set, check ext_loip in system.conf|
 |skip|poe.support|Other|Other|No local IP has been set, check ext_loip in system.conf|
 |skip|protocol.bacnet.pic|Other|Other|Bacnet device not found.|
 |skip|protocol.bacnet.version|Other|Other|Bacnet device not found.|
 |skip|security.firmware|Other|Other|Could not retrieve a firmware version with nmap. Check bacnet port.|
+|skip|security.passwords.http|Other|Other|Device does not have a valid mac address|
+|skip|security.passwords.https|Other|Other|Device does not have a valid mac address|
+|skip|security.passwords.ssh|Other|Other|Device does not have a valid mac address|
+|skip|security.passwords.telnet|Other|Other|Device does not have a valid mac address|
 |pass|security.ports.nmap|Security|Recommended||
 |skip|security.tls.v3|Other|Other||
 |skip|security.x509|Other|Other||
@@ -129,10 +133,17 @@ RESULT pass security.ports.nmap
 ## Module brute
 
 ```
+--------------------
+network.brute
+--------------------
+Educational test - not to be included in a production environment!
+--------------------
 Username:manager
 Password:friend
 Login success!
-RESULT fail network.brute
+--------------------
+RESULT fail network.brute Change the default password on the DUT
+
 ```
 
 ## Module discover
@@ -272,6 +283,47 @@ Verify the devices supports RFC 2459 - Internet X.509 Public Key Infrastructure 
 See log above
 --------------------
 RESULT skip security.x509
+
+```
+
+## Module password
+
+```
+--------------------
+security.passwords.http
+--------------------
+Verify all default password have been updated. Ensure new Google provided passwords are set
+--------------------
+Redacted Log
+--------------------
+RESULT skip security.passwords.http Device does not have a valid mac address
+
+--------------------
+security.passwords.https
+--------------------
+Verify all default password have been updated. Ensure new Google provided passwords are set
+--------------------
+Redacted Log
+--------------------
+RESULT skip security.passwords.https Device does not have a valid mac address
+
+--------------------
+security.passwords.telnet
+--------------------
+Verify all default password have been updated. Ensure new Google provided passwords are set
+--------------------
+Redacted Log
+--------------------
+RESULT skip security.passwords.telnet Device does not have a valid mac address
+
+--------------------
+security.passwords.ssh
+--------------------
+Verify all default password have been updated. Ensure new Google provided passwords are set
+--------------------
+Redacted Log
+--------------------
+RESULT skip security.passwords.ssh Device does not have a valid mac address
 
 ```
 

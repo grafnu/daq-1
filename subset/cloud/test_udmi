@@ -1,5 +1,5 @@
 #!/bin/bash -e
-source reporting_utils
+source reporting.sh
 
 REPORT=/tmp/report.txt
 TEST_NAME="cloud.udmi.pointset"

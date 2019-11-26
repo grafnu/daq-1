@@ -1,5 +1,5 @@
 #!/bin/bash -e
-source reporting_utils
+source reporting.sh
 
 JAR=bacnetTests/build/libs/bacnet-1.0-SNAPSHOT-all.jar
 TARGET="Object name = BACnet device"

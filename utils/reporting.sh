@@ -9,11 +9,11 @@ _______REPORT_DIVIDER="--------------------"
 # to the .md report
 
 function write_out_result {
-    REPORT=$1
-    TEST_NAME=$2
-    TEST_DESCRIPTION=$3
-    LOG=$4
-    RESULT_AND_SUMMARY=$5
+    local REPORT=$1
+    local TEST_NAME=$2
+    local TEST_DESCRIPTION=$3
+    local LOG=$4
+    local RESULT_AND_SUMMARY=$5
 
     cat <<END >> $REPORT
 $_______REPORT_DIVIDER
@@ -38,20 +38,20 @@ END
 
 function check_for_fails_in() {
     local arr=("$@")
-    local result="false"
+    local __result="false"
     for log in "${arr[@]}";
         do
             if grep -q 'RESULT fail' <<< $log; then
-                result="true"
+                __result="true"
             fi
         done
-    echo $result
+    echo $__result
 }
 
 # write_out_monolog
 # For tests that have one long log output,
 # print the log first, then the results. Results
-# are extracted from a module_manifest.json 
+# are extracted from a module_manifest.json
 
 function write_out_monolog() {
     local _REPORT=$1
@@ -73,6 +73,6 @@ function write_out_monolog() {
                             "$test_name" \
                             "$test_desc" \
                             "See log above" \
-                            "$(grep "RESULT.*$test_name" $RESULT_LINES)"
+                            "$(grep "RESULT.*$test_name" $_RESULT_LINES)"
         done
 }

@@ -5,14 +5,13 @@
 
 FROM daq/aardvark:latest
 
-RUN $AG update && $AG install openjdk-8-jdk git jq
+RUN $AG update && $AG install openjdk-8-jdk git
 
 COPY validator/ validator/
 RUN validator/bin/build
 
 COPY schemas/udmi/ schemas/udmi/
 
-COPY subset/helpers/reporting_utils .
 COPY subset/cloud/test_udmi .
 
 CMD ./test_udmi
