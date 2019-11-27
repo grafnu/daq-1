@@ -11,7 +11,7 @@ import jinja2
 import pytz
 
 import pypandoc
-from weasyprint import HTML, CSS
+import weasyprint
 
 LOGGER = logging.getLogger('report')
 
@@ -20,8 +20,8 @@ class ReportGenerator:
 
     _NAME_FORMAT = "report_%s_%s.md"
     _NAME_FORMAT_PDF = "report_%s_%s.pdf"
-    _REPORT_CSS_PATH = 'utils/reports.css'
-    _REPORT_TMP_HTML_PATH = 'inst/last_out.html'
+    _REPORT_CSS_PATH = 'misc/device_report.css'
+    _REPORT_TMP_HTML_PATH = 'inst/last_report_out.html'
     _SIMPLE_FORMAT = "device_report.md"
     _SIMPLE_FORMAT_PDF = "device_report.pdf"
     _TEST_SEPARATOR = "\n## %s\n"
@@ -116,29 +116,30 @@ class ReportGenerator:
         self._module_config['clean_mac'] = self._clean_mac
         self._module_config['start_time'] = self._start_time
         self._module_config['end_time'] = datetime.datetime.now(pytz.utc).replace(microsecond=0)
-        self._file = open(self.path, "w")
-        self._append_report_header()
-        self._write_test_summary()
-        self._copy_test_reports()
-        self._writeln(self._TEST_SEPARATOR % self._REPORT_COMPLETE)
-        self._file.close()
-        self._file = None
+        self._write_md_report()
         self._write_pdf_report()
         if self._alt_path and self._alt_path_pdf:
             LOGGER.info('Copying report to %s', self._alt_path)
             shutil.copyfile(self.path, self._alt_path)
             LOGGER.info('Also copying report to %s', self._alt_path_pdf)
             shutil.copyfile(self.path_pdf, self._alt_path_pdf)
-        
+
+    def _write_md_report(self):
+        """Generate the markdown report to be copied into /inst and /local"""
+        self._file = open(self.path, "w")
+        self._append_report_header()
+        self._write_test_summary()
+        self._copy_test_reports()
+        self._writeln(self._TEST_SEPARATOR % self._REPORT_COMPLETE)
+        self._file.close()
+        self._file = None    
 
     def _write_pdf_report(self):
-        """Convert the markdown report to pdf"""
-        """Generates HTML first and then uses CSS to style the rendering""" 
+        """Convert the markdown report to html, then pdf"""
         LOGGER.info('Generating HTML before writing pdf report...')
         output_html = pypandoc.convert_file(self.path, 'html', outputfile=self._REPORT_TMP_HTML_PATH, extra_args=['-V', 'geometry:margin=1.5cm'])
         LOGGER.info('Metamorphosising HTML to PDF...')
-        HTML(self._REPORT_TMP_HTML_PATH).write_pdf(self.path_pdf, stylesheets=[CSS(self._REPORT_CSS_PATH)])
-        LOGGER.info('Done!')
+        weasyprint.HTML(self._REPORT_TMP_HTML_PATH).write_pdf(self.path_pdf, stylesheets=[weasyprint.CSS(self._REPORT_CSS_PATH)])
 
     def _write_table(self, items):
         stripped_items = map(str.strip, items)
