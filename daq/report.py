@@ -136,7 +136,7 @@ class ReportGenerator:
 
     def _write_pdf_report(self):
         """Convert the markdown report to html, then pdf"""
-        LOGGER.info('Generating HTML before writing pdf report...')
+        LOGGER.info('Generating HTML for writing pdf report...')
         output_html = pypandoc.convert_file(self.path, 'html', outputfile=self._REPORT_TMP_HTML_PATH, extra_args=['-V', 'geometry:margin=1.5cm'])
         LOGGER.info('Metamorphosising HTML to PDF...')
         weasyprint.HTML(self._REPORT_TMP_HTML_PATH).write_pdf(self.path_pdf, stylesheets=[weasyprint.CSS(self._REPORT_CSS_PATH)])
