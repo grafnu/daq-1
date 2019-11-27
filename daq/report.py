@@ -18,12 +18,10 @@ LOGGER = logging.getLogger('report')
 class ReportGenerator:
     """Generate a report for device qualification"""
 
-    _NAME_FORMAT = "report_%s_%s.md"
-    _NAME_FORMAT_PDF = "report_%s_%s.pdf"
+    _NAME_FORMAT = "report_%s_%s.%s"
     _REPORT_CSS_PATH = 'misc/device_report.css'
     _REPORT_TMP_HTML_PATH = 'inst/last_report_out.html'
-    _SIMPLE_FORMAT = "device_report.md"
-    _SIMPLE_FORMAT_PDF = "device_report.pdf"
+    _SIMPLE_FORMAT = "device_report.%s"
     _TEST_SEPARATOR = "\n## %s\n"
     _RESULT_REGEX = r'^RESULT (.*?)\s+(.*?)\s+([^%]*)\s*(%%.*)?$'
     _SUMMARY_LINE = "Report summary"
@@ -50,9 +48,9 @@ class ReportGenerator:
         self._clean_mac = target_mac.replace(':', '')
         report_when = datetime.datetime.now(pytz.utc).replace(microsecond=0)
         report_filename = self._NAME_FORMAT % (self._clean_mac,
-                                               report_when.isoformat().replace(':', ''))
-        report_filename_pdf = self._NAME_FORMAT_PDF % (self._clean_mac,
-                                               report_when.isoformat().replace(':', ''))
+                                               report_when.isoformat().replace(':', ''), 'md')
+        report_filename_pdf = self._NAME_FORMAT % (self._clean_mac,
+                                               report_when.isoformat().replace(':', ''), 'pdf')
         self._start_time = report_when
         self._filename = report_filename
         report_base = os.path.join(tmp_base, 'reports')
@@ -69,8 +67,8 @@ class ReportGenerator:
         out_base = config.get('site_path', tmp_base)
         out_path = os.path.join(out_base, 'mac_addrs', self._clean_mac)
         if os.path.isdir(out_path):
-            self._alt_path = os.path.join(out_path, self._SIMPLE_FORMAT)
-            self._alt_path_pdf = os.path.join(out_path, self._SIMPLE_FORMAT_PDF)
+            self._alt_path = os.path.join(out_path, self._SIMPLE_FORMAT % 'md')
+            self._alt_path_pdf = os.path.join(out_path, self._SIMPLE_FORMAT % 'pdf')
         else:
             LOGGER.info('Device report path %s not found', out_path)
             self._alt_path = None
