@@ -30,7 +30,6 @@ import org.apache.commons.net.telnet.SuppressGAOptionHandler;
 import org.apache.commons.net.telnet.TelnetClient;
 import org.apache.commons.net.telnet.TelnetNotificationHandler;
 import org.apache.commons.net.telnet.TerminalTypeOptionHandler;
-import switchtest.allied.AlliedTelesisX230;
 
 public abstract class SwitchTelnetClientSocket implements TelnetNotificationHandler, Runnable {
   protected TelnetClient telnetClient = null;
@@ -79,7 +78,30 @@ public abstract class SwitchTelnetClientSocket implements TelnetNotificationHand
     }
   }
 
-  public abstract void run();
+  @Override
+  public void run() {
+    connectTelnetSocket();
+
+    Runnable readDataRunnable =
+        () -> {
+          readData();
+        };
+    readerThread = new Thread(readDataRunnable);
+
+    readerThread.start();
+
+    Runnable gatherDataRunnable =
+        () -> {
+          gatherData();
+        };
+    gatherThread = new Thread(gatherDataRunnable);
+
+    gatherThread.start();
+
+    outputStream = telnetClient.getOutputStream();
+  }
+
+  protected abstract void gatherData();
 
   /**
    * * Callback method called when TelnetClient receives an option negotiation command.
@@ -218,16 +240,6 @@ public abstract class SwitchTelnetClientSocket implements TelnetNotificationHand
         System.err.println("Exception while reading socket:" + e.getMessage());
       }
     }
-  }
-
-  protected int findPosition(String rxGathered, String value, boolean indexOf) {
-    int position = -1;
-    if (indexOf) {
-      position = rxGathered.indexOf(value);
-    } else {
-      position = rxGathered.lastIndexOf(value);
-    }
-    return position;
   }
 
   public void writeData(String data) {

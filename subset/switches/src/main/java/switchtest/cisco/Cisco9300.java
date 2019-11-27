@@ -27,24 +27,52 @@ public class Cisco9300 extends SwitchInterrogator {
   // Cisco Terminal Prompt ends with # when enabled
   private String consolePromptEndingEnabled = "#";
 
+  private StringBuilder rxData = new StringBuilder();
+
   public Cisco9300(String remoteIpAddress, int interfacePort, boolean deviceConfigPoeEnabled) {
     super(remoteIpAddress, interfacePort, deviceConfigPoeEnabled);
+    telnetClientSocket =
+        new CiscoSwitchTelnetClientSocket(remoteIpAddress, remotePort, this, debug);
     // TODO: enabled the user to input their own username and password
     this.username = "admin";
     this.password = "password";
     // Adjust commands to active switch configuration
     command[0] = command[0].replace("*", interfacePort + "");
     command[1] = command[1].replace("*", interfacePort + "");
-    command[2] = command[2].replace("*", interfacePort + "");
   }
 
-  @Override
-  public void run() {
-    System.out.println("Interrogator new connection...");
-    telnetClientSocket =
-        new CiscoSwitchTelnetClientSocket(remoteIpAddress, remotePort, this, debug);
-    telnetClientSocketThread = new Thread(telnetClientSocket);
-    telnetClientSocketThread.start();
+  public void receiveData(String data) {
+    if (debug) {
+      System.out.println(
+          java.time.LocalTime.now() + "receiveDataLen:" + data.length() + "receiveData:" + data);
+    }
+    if (data != null) {
+      if (!data.isEmpty()) {
+        if (data.indexOf("--More--") > 0) {
+          handleMore(data);
+          return;
+        } else {
+          rxData.append(data);
+        }
+      }
+      if (parseData(rxData.toString())) {
+        // If we have processed the current buffers data we will clear the buffer
+        rxData = new StringBuilder();
+      }
+    }
+  }
+
+  /**
+   * If the message --More-- is present in the current data packet, this indicates the message is
+   * incomplete. To complete the message, we need to tell the console to continue the response and
+   * strip the --More-- entry from the data packet as it is not actually part of the response.
+   *
+   * @param consoleData Current unprocessed data packet
+   */
+  public void handleMore(String consoleData) {
+    consoleData = consoleData.substring(0, consoleData.length() - "--More--".length());
+    telnetClientSocket.writeData("\n");
+    rxData.append(consoleData);
   }
 
   /**
@@ -55,14 +83,9 @@ public class Cisco9300 extends SwitchInterrogator {
    * @return true if the data was an expected value and appropriately processed and return false if
    *     the data is not-expected.
    */
-  public boolean processConsoleMessage(String consoleData) {
+  public boolean parseData(String consoleData) {
     consoleData = consoleData.trim();
-    System.out.println("Processing Message: " + consoleData);
-    System.out.println("UserAuthed: " + getUserAuthorised());
-    System.out.println("UserEnabled: " + getUserEnabled());
-    System.out.println("CommandPending: " + commandPending);
-    System.out.println("CommandIndex: " + commandIndex);
-    System.out.println("CommandLength: " + command.length);
+    ;
     if (!getUserAuthorised()) {
       return handleLoginMessage(consoleData);
     } else if (!getUserEnabled()) {
@@ -73,13 +96,11 @@ public class Cisco9300 extends SwitchInterrogator {
         // Command has been sent and awaiting a response
         return handleCommandResponse(consoleData);
       } else if (command.length > commandIndex) {
-        System.out.println("Sending Next Command");
         sendNextCommand();
         return true;
       } else {
         generateTestResults();
         writeReport();
-        System.out.println("Closing Connection");
         telnetClientSocket.disposeConnection();
       }
     }
@@ -142,37 +163,82 @@ public class Cisco9300 extends SwitchInterrogator {
 
   public String validatePowerTests() {
     String testResults = "";
-    double maxPower = Double.parseDouble(power_map.get("max"));
-    double currentPower = Double.parseDouble(power_map.get("power"));
-    boolean powerAuto = "auto".equals(power_map.get("admin"));
-    boolean poeOn = "on".equals(power_map.get("oper"));
-    boolean poeOff = "off".equals(power_map.get("oper"));
-    boolean poeFault = "fault".equals(power_map.get("oper"));
-    boolean poeDeny = "power-deny".equals(power_map.get("oper"));
-
-    if (maxPower >= currentPower && poeOn) {
-      testResults += "RESULT pass poe.power\n";
-    } else if (poeOff) {
-      testResults += "RESULT fail poe.power No poE is applied\n";
-    } else if (poeFault) {
-      testResults +=
-          "RESULT fail poe.power A powered device is detected, but no PoE is available, or the maximum wattage exceeds the detected powered-device maximum.\n";
+    double maxPower = 0;
+    double currentPower = 0;
+    boolean powerAuto = false;
+    boolean poeDisabled = false;
+    boolean poeOn = false;
+    boolean poeOff = false;
+    boolean poeFault = false;
+    boolean poeDeny = false;
+    try {
+      // Generate test data from mapped results
+      maxPower = Double.parseDouble(power_map.get("max"));
+      currentPower = Double.parseDouble(power_map.get("power"));
+      powerAuto = "auto".equals(power_map.get("admin"));
+      poeDisabled = "off".equals(power_map.get("admin"));
+      poeOn = "on".equals(power_map.get("oper"));
+      poeOff = "off".equals(power_map.get("oper"));
+      poeFault = "fault".equals(power_map.get("oper"));
+      poeDeny = "power-deny".equals(power_map.get("oper"));
+    } catch (Exception e) {
+      // ToDo: Make these failures specific to the data resolve errors instead of all or nothing
+      testResults += "RESULT fail poe.power Could not detect any current being drawn\n";
+      testResults += "RESULT fail poe.negotiation Could not detect any current being drawn\n";
+      testResults += "RESULT fail poe.support Could not detect any current being drawn\n";
     }
+
+    if (!deviceConfigPoeEnabled) {
+      testResults += "RESULT skip poe.power This test is disabled\n";
+      testResults += "RESULT skip poe.negotiation This test is disabled\n";
+      testResults += "RESULT skip poe.support This test is disabled\n";
+
+    } else if (poeDisabled) {
+      testResults += "RESULT skip poe.power The switch does not support PoE\n";
+      testResults += "RESULT skip poe.negotiation The switch does not support PoE\n";
+      testResults += "RESULT skip poe.support The switch does not support PoE\n";
+    } else {
+
+      // Determine PoE power test result
+      if (maxPower >= currentPower && poeOn) {
+        testResults += "RESULT pass poe.power\n";
+      } else if (poeOff) {
+        testResults += "RESULT fail poe.power No poE is applied\n";
+      } else if (poeFault) {
+        testResults +=
+            "RESULT fail poe.power Device detection or a powered device is in a faulty state\n";
+      } else if (poeDeny) {
+        testResults +=
+            "RESULT fail poe.power A powered device is detected, but no PoE is available, or the maximum wattage exceeds the detected powered-device maximum.\n";
+      }
+
+      // Determine PoE auto negotiation result
+      if (powerAuto) {
+        testResults += "RESULT pass poe.negotiation\n";
+      } else {
+        testResults += "RESULT fail poe.negotiation Incorrect privilege for negotiation\n";
+      }
+
+      // Determine PoE support result
+      if (poeOn) {
+        testResults += "RESULT pass poe.support\n";
+      } else {
+        testResults +=
+            "RESULT fail poe.support The switch does not support PoE or it is disabled\n";
+      }
+    }
+
     return testResults;
   }
 
   public boolean handleCommandResponse(String consoleData) {
-    System.out.println("Handling Command Response");
     if (consoleData == null) return false;
     if (consoleData.endsWith(getHostname() + consolePromptEndingEnabled)) {
-      System.out.println("Raw Response: " + consoleData);
       // Strip trailing command prompt
       String response =
           consoleData.substring(0, consoleData.length() - (getHostname() + "#").length());
-      System.out.println("Response1:\n" + response);
       // Strip leading command that was sent
       response = response.substring(command[commandIndex].length()).trim();
-      System.out.println("Response2:\n" + response);
       processCommandResponse(response);
       promptReady = true;
       commandPending = false;
@@ -187,34 +253,20 @@ public class Cisco9300 extends SwitchInterrogator {
       case 0: // show interface status
         processInterfaceStatus(response);
         break;
-      case 1: // show interface config
-        break;
-      case 2: // show power status
+      case 1: // show power status
         processPowerStatus(response);
-        break;
-      case 3: // show run
     }
   }
 
-  public HashMap<String, String> processInterfaceStatus(String response) {
-    System.out.println("Processing Interface Status...");
+  public void processInterfaceStatus(String response) {
     interface_map = mapSimpleTable(response, show_interface_expected, interface_expected);
-    for (Map.Entry entry : interface_map.entrySet()) {
-      System.out.println(entry.getKey() + ":" + entry.getValue());
-    }
-    return interface_map;
   }
 
-  public HashMap<String, String> processPowerStatus(String response) {
+  public void processPowerStatus(String response) {
     // Pre-process raw data to be map ready
-    System.out.println("Processing Power Status...");
     String[] lines = response.split("\n");
     response = lines[0] + " \n" + lines[3];
     power_map = mapSimpleTable(response, show_power_expected, power_expected);
-    for (Map.Entry entry : power_map.entrySet()) {
-      System.out.println(entry.getKey() + ":" + entry.getValue());
-    }
-    return power_map;
   }
 
   /**
@@ -286,10 +338,7 @@ public class Cisco9300 extends SwitchInterrogator {
 
   public String[] commands() {
     return new String[] {
-      "show interface gigabitethernet1/0/* status",
-      "show interface gigabitethernet1/0/* config",
-      "show power inline gigabitethernet1/0/*",
-      "show run"
+      "show interface gigabitethernet1/0/* status", "show power inline gigabitethernet1/0/*"
     };
   }
 

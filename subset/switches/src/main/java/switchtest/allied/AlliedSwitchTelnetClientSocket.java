@@ -26,30 +26,7 @@ public class AlliedSwitchTelnetClientSocket extends SwitchTelnetClientSocket {
     super(remoteIpAddress, remotePort, interrogator, debug);
   }
 
-  @Override
-  public void run() {
-    connectTelnetSocket();
-
-    Runnable readDataRunnable =
-        () -> {
-          readData();
-        };
-    readerThread = new Thread(readDataRunnable);
-
-    readerThread.start();
-
-    Runnable gatherDataRunnable =
-        () -> {
-          gatherData();
-        };
-    gatherThread = new Thread(gatherDataRunnable);
-
-    gatherThread.start();
-
-    outputStream = telnetClient.getOutputStream();
-  }
-
-  private void gatherData() {
+  protected void gatherData() {
     StringBuilder rxData = new StringBuilder();
     String rxGathered = "";
 
@@ -198,5 +175,15 @@ public class AlliedSwitchTelnetClientSocket extends SwitchTelnetClientSocket {
         System.err.println("InterruptedException gatherData:" + e.getMessage());
       }
     }
+  }
+
+  protected int findPosition(String rxGathered, String value, boolean indexOf) {
+    int position = -1;
+    if (indexOf) {
+      position = rxGathered.indexOf(value);
+    } else {
+      position = rxGathered.lastIndexOf(value);
+    }
+    return position;
   }
 }
