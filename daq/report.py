@@ -50,7 +50,7 @@ class ReportGenerator:
         report_filename = self._NAME_FORMAT % (self._clean_mac,
                                                report_when.isoformat().replace(':', ''), 'md')
         report_filename_pdf = self._NAME_FORMAT % (self._clean_mac,
-                                               report_when.isoformat().replace(':', ''), 'pdf')
+                                                   report_when.isoformat().replace(':', ''), 'pdf')
         self._start_time = report_when
         self._filename = report_filename
         report_base = os.path.join(tmp_base, 'reports')
@@ -130,14 +130,17 @@ class ReportGenerator:
         self._copy_test_reports()
         self._writeln(self._TEST_SEPARATOR % self._REPORT_COMPLETE)
         self._file.close()
-        self._file = None    
+        self._file = None
 
     def _write_pdf_report(self):
         """Convert the markdown report to html, then pdf"""
         LOGGER.info('Generating HTML for writing pdf report...')
-        output_html = pypandoc.convert_file(self.path, 'html', outputfile=self._REPORT_TMP_HTML_PATH, extra_args=['-V', 'geometry:margin=1.5cm'])
+        pypandoc.convert_file(self.path, 'html',
+                              outputfile=self._REPORT_TMP_HTML_PATH,
+                              extra_args=['-V', 'geometry:margin=1.5cm'])
         LOGGER.info('Metamorphosising HTML to PDF...')
-        weasyprint.HTML(self._REPORT_TMP_HTML_PATH).write_pdf(self.path_pdf, stylesheets=[weasyprint.CSS(self._REPORT_CSS_PATH)])
+        weasyprint.HTML(self._REPORT_TMP_HTML_PATH) \
+            .write_pdf(self.path_pdf, stylesheets=[weasyprint.CSS(self._REPORT_CSS_PATH)])
 
     def _write_table(self, items):
         stripped_items = map(str.strip, items)
