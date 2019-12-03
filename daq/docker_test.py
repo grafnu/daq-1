@@ -44,10 +44,8 @@ class DockerTest():
         if 'local_ip' in params:
             env_vars += ["LOCAL_IP=" + params['local_ip'],
                          "SWITCH_PORT=" + params['switch_port'],
-                         "SWITCH_IP=" + params['switch_ip']]
-
-        if 'switch_model' in params:
-            env_vars += ["SWITCH_MODEL=" + params['switch_model']]
+                         "SWITCH_IP=" + params['switch_ip'],
+                         "SWITCH_MODEL=" + params['switch_model']]
 
         vol_maps = [params['scan_base'] + ":/scans"]
 
@@ -124,4 +122,3 @@ class DockerTest():
             LOGGER.info("Target port %d test %s passed %ss",
                         self.target_port, self.test_name, delay)
         self.callback(return_code=return_code, exception=exception)
-

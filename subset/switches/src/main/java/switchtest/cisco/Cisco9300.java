@@ -278,9 +278,12 @@ public class Cisco9300 extends SwitchInterrogator {
       poeDeny = "power-deny".equals(power_map.get("oper"));
     } catch (Exception e) {
       // ToDo: Make these failures specific to the data resolve errors instead of all or nothing
+      System.out.println("Power Tests Failed: " + e.getMessage());
+      e.printStackTrace();
       testResults += "RESULT fail poe.power Could not detect any current being drawn\n";
       testResults += "RESULT fail poe.negotiation Could not detect any current being drawn\n";
       testResults += "RESULT fail poe.support Could not detect any current being drawn\n";
+      return testResults;
     }
 
     if (!deviceConfigPoeEnabled) {

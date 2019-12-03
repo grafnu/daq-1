@@ -22,12 +22,8 @@ public class Main {
     try {
       switchModel = SupportedSwitchModelsEnum.valueOf(args[3]);
     } catch (Exception e) {
-      System.out.println(
-          "Unknown Switch Model: "
-              + args[3]
-              + "\nDefaulting to "
-              + SupportedSwitchModelsEnum.ALLIED_TELESIS_X230);
-      switchModel = SupportedSwitchModelsEnum.ALLIED_TELESIS_X230;
+      System.out.println("Unknown Switch Model: " + args[3]);
+      throw e;
     }
 
     SwitchInterrogator switchInterrogator = null;
@@ -36,7 +32,6 @@ public class Main {
         switchInterrogator = new Cisco9300(ipAddress, interfacePort, supportsPOE);
         break;
       case ALLIED_TELESIS_X230:
-      default:
         switchInterrogator = new AlliedTelesisX230(ipAddress, interfacePort, supportsPOE);
     }
     Thread switchInterrogatorThread = new Thread(switchInterrogator);
