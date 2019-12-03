@@ -18,16 +18,18 @@ package switchtest.cisco;
 import switchtest.SwitchInterrogator;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class Cisco9300 extends SwitchInterrogator {
 
-  private int commandIndex = 0;
-  private boolean commandPending = false;
-  // Cisco Terminal Prompt ends with # when enabled
-  private String consolePromptEndingEnabled = "#";
+  int commandIndex = 0;
+  boolean commandPending = false;
+  boolean promptReady = false;
+  StringBuilder rxData = new StringBuilder();
 
-  private StringBuilder rxData = new StringBuilder();
+  /** Cisco Terminal Prompt ends with # when enabled */
+  String consolePromptEndingEnabled = "#";
+
+  String consolePromptEndingLogin = ">";
 
   public Cisco9300(String remoteIpAddress, int interfacePort, boolean deviceConfigPoeEnabled) {
     super(remoteIpAddress, interfacePort, deviceConfigPoeEnabled);
@@ -36,11 +38,125 @@ public class Cisco9300 extends SwitchInterrogator {
     // TODO: enabled the user to input their own username and password
     this.username = "admin";
     this.password = "password";
-    // Adjust commands to active switch configuration
-    command[0] = command[0].replace("*", interfacePort + "");
-    command[1] = command[1].replace("*", interfacePort + "");
   }
 
+  /** Generic Cisco Switch command to retrieve the Status of an interface. */
+  private String showIfaceStatusCommand() {
+    return "show interface gigabitethernet1/0/" + interfacePort + " status";
+  }
+
+  /**
+   * Generic Cisco Switch command to retrieve the Power Status of an interface. Replace asterisk
+   * with actual port number for complete message
+   */
+  private String showIfacePowerStatusCommand() {
+    return "show power inline gigabitethernet1/0/" + interfacePort;
+  }
+
+  /**
+   * Builds an array of currently supported commands to send to the Cisco Switch for the port
+   * specified.
+   *
+   * @return String array of commands to be submitted to the switch
+   */
+  public String[] commands() {
+    return new String[] {showIfaceStatusCommand(), showIfacePowerStatusCommand()};
+  }
+
+  /** Run all current tests in order and create and store the results */
+  public void generateTestResults() {
+    login_report += "\n";
+    login_report += validateLinkTest();
+    login_report += validateSpeedTests();
+    login_report += validateDuplexTests();
+    login_report += validatePowerTests();
+  }
+
+  public boolean handleCommandResponse(String consoleData) {
+    if (consoleData == null) return false;
+    if (consoleData.endsWith(getHostname() + consolePromptEndingEnabled)) {
+      // Strip trailing command prompt
+      String response =
+          consoleData.substring(0, consoleData.length() - (getHostname() + "#").length());
+      // Strip leading command that was sent
+      response = response.substring(command[commandIndex].length()).trim();
+      processCommandResponse(response);
+      promptReady = true;
+      commandPending = false;
+      ++commandIndex;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Handles the process when using the enter command. Enable is a required step before commands can
+   * be sent to the switch.
+   *
+   * @param consoleData Raw console data received the the telnet connection.
+   * @return True if the data provided was understood and processed. False if the data is not an
+   *     expected result or the enable process failed.
+   */
+  public boolean handleEnableMessage(String consoleData) {
+    if (consoleData == null) return false;
+    if (consoleData.indexOf("Password:") >= 0) {
+      telnetClientSocket.writeData(password + "\n");
+      return true;
+    } else if (consoleData.endsWith(consolePromptEndingEnabled)) {
+      setUserEnabled(true);
+      return true;
+    } else if (consoleData.indexOf("% Bad passwords:") >= 0) {
+      setUserEnabled(false);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Handles the process when logging into the switch.
+   *
+   * @param consoleData Raw console data received the the telnet connection.
+   * @return True if the data provided was understood and processed. False if the data is not an
+   *     expected result or if the login failed.
+   */
+  public boolean handleLoginMessage(String consoleData) {
+    if (consoleData == null) return false;
+    if (consoleData.indexOf("Username:") >= 0) {
+      telnetClientSocket.writeData(username + "\n");
+      return true;
+    } else if (consoleData.indexOf("Password:") >= 0) {
+      telnetClientSocket.writeData(password + "\n");
+      return true;
+    } else if (consoleData.endsWith(consolePromptEndingLogin)) {
+      setUserAuthorised(true);
+      setHostname(consoleData.split(">")[0]);
+      telnetClientSocket.writeData("enable\n");
+      return true;
+    } else if (consoleData.indexOf("% Bad passwords:") >= 0) {
+      setUserAuthorised(false);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * If the message --More-- is present in the current data packet, this indicates the message is
+   * incomplete. To complete the message, we need to tell the console to continue the response and
+   * strip the --More-- entry from the data packet as it is not actually part of the response.
+   *
+   * @param consoleData Current unprocessed data packet
+   */
+  public void handleMore(String consoleData) {
+    consoleData = consoleData.substring(0, consoleData.length() - "--More--".length());
+    telnetClientSocket.writeData("\n");
+    rxData.append(consoleData);
+  }
+
+  /**
+   * Receive the raw data packet from the telnet connection and process accordingly.
+   *
+   * @param data Most recent data read from the telnet socket buffer
+   */
   public void receiveData(String data) {
     if (debug) {
       System.out.println(
@@ -60,19 +176,6 @@ public class Cisco9300 extends SwitchInterrogator {
         rxData = new StringBuilder();
       }
     }
-  }
-
-  /**
-   * If the message --More-- is present in the current data packet, this indicates the message is
-   * incomplete. To complete the message, we need to tell the console to continue the response and
-   * strip the --More-- entry from the data packet as it is not actually part of the response.
-   *
-   * @param consoleData Current unprocessed data packet
-   */
-  public void handleMore(String consoleData) {
-    consoleData = consoleData.substring(0, consoleData.length() - "--More--".length());
-    telnetClientSocket.writeData("\n");
-    rxData.append(consoleData);
   }
 
   /**
@@ -105,14 +208,6 @@ public class Cisco9300 extends SwitchInterrogator {
       }
     }
     return false;
-  }
-
-  public void generateTestResults() {
-    login_report += "\n";
-    login_report += validateLinkTest();
-    login_report += validateSpeedTests();
-    login_report += validateDuplexTests();
-    login_report += validatePowerTests();
   }
 
   public String validateLinkTest() {
@@ -231,23 +326,6 @@ public class Cisco9300 extends SwitchInterrogator {
     return testResults;
   }
 
-  public boolean handleCommandResponse(String consoleData) {
-    if (consoleData == null) return false;
-    if (consoleData.endsWith(getHostname() + consolePromptEndingEnabled)) {
-      // Strip trailing command prompt
-      String response =
-          consoleData.substring(0, consoleData.length() - (getHostname() + "#").length());
-      // Strip leading command that was sent
-      response = response.substring(command[commandIndex].length()).trim();
-      processCommandResponse(response);
-      promptReady = true;
-      commandPending = false;
-      ++commandIndex;
-      return true;
-    }
-    return false;
-  }
-
   private void processCommandResponse(String response) {
     switch (commandIndex) {
       case 0: // show interface status
@@ -296,70 +374,12 @@ public class Cisco9300 extends SwitchInterrogator {
 
   public void sendNextCommand() {
     telnetClientSocket.writeData(command[commandIndex] + "\n");
-    System.out.println("Command Sent: " + command[commandIndex]);
     commandPending = true;
     promptReady = false;
   }
 
-  public boolean handleLoginMessage(String consoleData) {
-    if (consoleData == null) return false;
-    if (consoleData.indexOf("Username:") >= 0) {
-      telnetClientSocket.writeData(username + "\n");
-      return true;
-    } else if (consoleData.indexOf("Password:") >= 0) {
-      telnetClientSocket.writeData(password + "\n");
-      return true;
-    } else if (consoleData.endsWith(">")) {
-      setUserAuthorised(true);
-      device_hostname = consoleData.split(">")[0];
-      telnetClientSocket.writeData("enable\n");
-      return true;
-    } else if (consoleData.indexOf("% Bad passwords:") >= 0) {
-      setUserAuthorised(false);
-      return true;
-    }
-    return false;
-  }
-
-  public boolean handleEnableMessage(String consoleData) {
-    if (consoleData == null) return false;
-    if (consoleData.indexOf("Password:") >= 0) {
-      telnetClientSocket.writeData(password + "\n");
-      return true;
-    } else if (consoleData.endsWith("#")) {
-      setUserEnabled(true);
-      return true;
-    } else if (consoleData.indexOf("% Bad passwords:") >= 0) {
-      setUserEnabled(false);
-      return true;
-    }
-    return false;
-  }
-
-  public String[] commands() {
-    return new String[] {
-      "show interface gigabitethernet1/0/* status", "show power inline gigabitethernet1/0/*"
-    };
-  }
-
-  public String[] commandToggle() {
-    return new String[] {};
-  }
-
-  public String[] expected() {
-    return new String[] {"login:", "Password:"};
-  }
-
   public String[] interfaceExpected() {
     return new String[] {"interface", "name", "status", "vlan", "duplex", "speed", "type"};
-  }
-
-  public String[] loginExpected() {
-    return new String[] {":", ">", ">"};
-  }
-
-  public String[] platformExpected() {
-    return new String[] {};
   }
 
   public String[] powerExpected() {
@@ -368,6 +388,27 @@ public class Cisco9300 extends SwitchInterrogator {
 
   public String[] showInterfaceExpected() {
     return new String[] {"Port", "Name", "Status", "Vlan", "Duplex", "Speed", "Type"};
+  }
+
+  public String[] showPowerExpected() {
+    return new String[] {"Interface", "Admin", "Oper", "Power", "Device", "Class", "Max"};
+  }
+
+  // Unused methods implemented for compiling only
+  public String[] commandToggle() {
+    return new String[] {};
+  }
+
+  public String[] expected() {
+    return new String[] {};
+  }
+
+  public String[] loginExpected() {
+    return new String[] {};
+  }
+
+  public String[] platformExpected() {
+    return new String[] {};
   }
 
   public String[] showInterfacePortExpected() {
@@ -382,15 +423,11 @@ public class Cisco9300 extends SwitchInterrogator {
     return new String[] {};
   }
 
-  public String[] showPowerExpected() {
-    return new String[] {"Interface", "Admin", "Oper", "Power", "Device", "Class", "Max"};
-  }
-
   public String[] stackExpected() {
     return new String[] {};
   }
 
   public String[] showStackExpected() {
-    return new String[1];
+    return new String[] {};
   }
 }

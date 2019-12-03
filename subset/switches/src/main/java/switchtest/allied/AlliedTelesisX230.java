@@ -21,15 +21,59 @@ import java.util.HashMap;
 
 public class AlliedTelesisX230 extends SwitchInterrogator {
 
+  protected int interfacePos = 1;
+  protected int platformPos = 2;
+  protected int powerinlinePos = 3;
+
+  protected int shortPacketLength = 20;
+  protected int requestFlag = 0;
+  protected int number_switch_ports = 1; // 48
+  protected boolean extendedTests = false;
+
+  protected int[] show_platform_pointers;
+  protected String[] show_platform_data;
+  protected int[] show_platform_port_pointers;
+  protected int[] show_interface_pointers;
+  protected String[] show_interface_data;
+  protected int[] show_interface_port_pointers;
+  protected int[] show_power_pointers;
+  protected String[] show_power_data;
+  protected int[] show_stack_pointers;
+  protected String[] show_stack_data;
+
   public AlliedTelesisX230(
       String remoteIpAddress, int interfacePort, boolean deviceConfigPoeEnabled) {
     super(remoteIpAddress, interfacePort, deviceConfigPoeEnabled);
     telnetClientSocket =
         new AlliedSwitchTelnetClientSocket(remoteIpAddress, remotePort, this, debug);
+    // TODO: enabled the user to input their own username and password
+    this.username = "manager";
+    this.password = "friend";
     // Adjust commands to active switch configuration
     command[interfacePos] = command[interfacePos] + interfacePort;
     command[platformPos] = command[platformPos] + interfacePort;
     command[powerinlinePos] = command[powerinlinePos] + interfacePort;
+
+    // Initialize data arrays based on switch specific command sets
+    show_platform_pointers = new int[show_platform_expected.length];
+    show_platform_data = new String[show_platform_expected.length / 2];
+    show_platform_port_pointers = new int[show_platform_port_expected.length];
+
+    show_interface_pointers = new int[show_interface_expected.length];
+    show_interface_data = new String[show_interface_expected.length - 1];
+
+    show_interface_data = new String[show_interface_expected.length / 2];
+    show_interface_port_pointers = new int[show_interface_port_expected.length];
+
+    show_power_pointers = new int[show_power_expected.length];
+    show_power_data = new String[show_power_expected.length - 1];
+
+    show_stack_pointers = new int[show_stack_expected.length];
+    show_stack_data = new String[show_stack_expected.length - 1];
+  }
+
+  public int getRequestFlag() {
+    return requestFlag - 1;
   }
 
   public void receiveData(String data) {
@@ -69,7 +113,7 @@ public class AlliedTelesisX230 extends SwitchInterrogator {
           if (data.indexOf(expected[0]) >= 0) {
             // username request
             String[] data_array = data.split(" ");
-            device_hostname = data_array[0];
+            setHostname(data_array[0]);
             telnetClientSocket.writeData(username + "\n");
           } else if (data.indexOf(expected[1]) >= 0) {
             // password request
@@ -85,7 +129,7 @@ public class AlliedTelesisX230 extends SwitchInterrogator {
             }
           } else {
             // running configuration requests
-            if (data.indexOf(device_hostname) >= 0 && data.length() < shortPacketLength) {
+            if (data.indexOf(getHostname()) >= 0 && data.length() < shortPacketLength) {
               int requestFinish = powerinlinePos;
               if (extendedTests) {
                 requestFinish = command.length;

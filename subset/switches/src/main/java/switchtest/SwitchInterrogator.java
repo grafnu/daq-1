@@ -23,7 +23,28 @@ import java.util.HashMap;
 
 public abstract class SwitchInterrogator implements Runnable {
 
-  public boolean promptReady = false;
+  // Define Common Variables Required for All Switch Interrogators
+  protected SwitchTelnetClientSocket telnetClientSocket;
+  protected Thread telnetClientSocketThread;
+
+  protected String remoteIpAddress;
+  protected int interfacePort = 12;
+  protected boolean deviceConfigPoeEnabled = false;
+  protected int remotePort = 23;
+
+  protected boolean switchSupportsPoe = false;
+  private boolean userAuthorised = false;
+  private boolean userEnabled = false;
+
+  private String device_hostname = "";
+  protected String reportFilename = "tmp/report.txt";
+  protected String login_report = "";
+
+  protected boolean debug = true;
+
+  // TODO: enabled the user to input their own username and password
+  protected String username = "admin";
+  protected String password = "password";
 
   public SwitchInterrogator(
       String remoteIpAddress, int interfacePort, boolean deviceConfigPoeEnabled) {
@@ -45,59 +66,7 @@ public abstract class SwitchInterrogator implements Runnable {
     this.show_power_expected = showPowerExpected();
     this.stack_expected = stackExpected();
     this.show_stack_expected = showStackExpected();
-
-    // Initialize data arrays based on switch specific command sets
-    show_platform_pointers = new int[show_platform_expected.length];
-    show_platform_data = new String[show_platform_expected.length / 2];
-    show_platform_port_pointers = new int[show_platform_port_expected.length];
-
-    show_interface_pointers = new int[show_interface_expected.length];
-    show_interface_data = new String[show_interface_expected.length - 1];
-
-    show_interface_data = new String[show_interface_expected.length / 2];
-    show_interface_port_pointers = new int[show_interface_port_expected.length];
-
-    show_power_pointers = new int[show_power_expected.length];
-    show_power_data = new String[show_power_expected.length - 1];
-
-    show_stack_pointers = new int[show_stack_expected.length];
-    show_stack_data = new String[show_stack_expected.length - 1];
   }
-
-  protected SwitchTelnetClientSocket telnetClientSocket;
-  protected Thread telnetClientSocketThread;
-
-  // TODO: enabled the user to input their own username and password
-  protected String username = "manager";
-  protected String password = "friend";
-
-  protected String remoteIpAddress;
-  protected int remotePort = 23;
-  protected int interfacePort = 12;
-
-  protected String reportFilename = "tmp/report.txt";
-
-  protected int interfacePos = 1;
-  protected int platformPos = 2;
-  protected int powerinlinePos = 3;
-
-  protected boolean deviceConfigPoeEnabled = false;
-
-  protected boolean debug = true;
-  protected boolean switchSupportsPoe = false;
-
-  private boolean userAuthorised = false;
-  private boolean userEnabled = false;
-
-  protected String device_hostname = "";
-
-  protected int shortPacketLength = 20;
-
-  protected int requestFlag = 0;
-
-  protected String login_report = "";
-  protected boolean extendedTests = false;
-  protected int number_switch_ports = 1; // 48
 
   protected String[] command;
   protected String[] commandToggle;
@@ -113,17 +82,6 @@ public abstract class SwitchInterrogator implements Runnable {
   protected String[] show_platform_port_expected;
   protected String[] stack_expected;
   protected String[] show_stack_expected;
-
-  protected int[] show_platform_pointers;
-  protected String[] show_platform_data;
-  protected int[] show_platform_port_pointers;
-  protected int[] show_interface_pointers;
-  protected String[] show_interface_data;
-  protected int[] show_interface_port_pointers;
-  protected int[] show_power_pointers;
-  protected String[] show_power_data;
-  protected int[] show_stack_pointers;
-  protected String[] show_stack_data;
 
   protected abstract String[] commands();
 
@@ -161,8 +119,8 @@ public abstract class SwitchInterrogator implements Runnable {
 
   protected HashMap<String, String> stack_map = new HashMap<String, String>();
 
-  public int getRequestFlag() {
-    return requestFlag - 1;
+  public void setHostname(String device_hostname) {
+    this.device_hostname = device_hostname;
   }
 
   public String getHostname() {
@@ -185,13 +143,13 @@ public abstract class SwitchInterrogator implements Runnable {
     this.userEnabled = userEnabled;
   }
 
+  public abstract void receiveData(String data);
+
   @Override
   public void run() {
     telnetClientSocketThread = new Thread(telnetClientSocket);
     telnetClientSocketThread.start();
   }
-
-  public abstract void receiveData(String data);
 
   protected void writeReport() {
     try {

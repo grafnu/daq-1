@@ -106,7 +106,7 @@ public class AlliedSwitchTelnetClientSocket extends SwitchTelnetClientSocket {
             int[] loginExpectedLength = {5, 5, 40};
 
             String hostname = interrogator.getHostname();
-            requestFlag = interrogator.getRequestFlag() - 1;
+            requestFlag = ((AlliedTelesisX230) interrogator).getRequestFlag() - 1;
 
             boolean[] requestFlagIndexOf = {false, false, false, true, false};
             String[] requestFlagExpected = {hostname, hostname, hostname, "end", hostname};
