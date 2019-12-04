@@ -55,15 +55,13 @@ public class AlliedTelesisX230 extends SwitchInterrogator {
     command[powerinlinePos] = command[powerinlinePos] + interfacePort;
 
     // Initialize data arrays based on switch specific command sets
+    show_interface_pointers = new int[show_interface_expected.length];
+    show_interface_data = new String[show_interface_expected.length / 2];
+    show_interface_port_pointers = new int[show_interface_port_expected.length];
+
     show_platform_pointers = new int[show_platform_expected.length];
     show_platform_data = new String[show_platform_expected.length / 2];
     show_platform_port_pointers = new int[show_platform_port_expected.length];
-
-    show_interface_pointers = new int[show_interface_expected.length];
-    show_interface_data = new String[show_interface_expected.length - 1];
-
-    show_interface_data = new String[show_interface_expected.length / 2];
-    show_interface_port_pointers = new int[show_interface_port_expected.length];
 
     show_power_pointers = new int[show_power_expected.length];
     show_power_data = new String[show_power_expected.length - 1];
