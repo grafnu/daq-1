@@ -33,4 +33,3 @@ fi
 
 result_lines=( "$(cat $RESULT_LINES)" )
 
-[ $(check_for_fails_in "${result_lines[@]}") == false ]
