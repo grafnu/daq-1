@@ -273,7 +273,7 @@ Verify the device supports TLS 1.2 (as a client)
 --------------------
 See log above
 --------------------
-RESULT skip security.tls.v1.2
+RESULT skip security.tls.v1_2
 
 --------------------
 security.tls.v1.3
@@ -282,7 +282,7 @@ Verify the device supports TLS 1.3 (as a client)
 --------------------
 See log above
 --------------------
-RESULT skip security.tls.v1.3
+RESULT skip security.tls.v1_3
 
 --------------------
 security.x509

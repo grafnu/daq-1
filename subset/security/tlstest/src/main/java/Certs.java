@@ -105,14 +105,14 @@ public class Certs {
 
   private void passTls(boolean status, String tlsVersion) {
     if (status) {
-      certificateReport += "RESULT pass security.tls.v" + tlsVersion + "\n";
+      certificateReport += "RESULT pass security.tls.v" + tlsVersion.replace(".","_") + "\n";
     } else {
-      certificateReport += "RESULT fail security.tls.v" + tlsVersion + "\n";
+      certificateReport += "RESULT fail security.tls.v" + tlsVersion.replace(".","_") + "\n";
     }
   }
 
   private void skipTls(String tlsVersion) {
-    certificateReport += "RESULT skip security.tls.v" + tlsVersion + "\n";
+    certificateReport += "RESULT skip security.tls.v" + tlsVersion.replace(".","_") + "\n";
   }
 
   private void skipTlsX509() {
