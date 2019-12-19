@@ -264,16 +264,25 @@ RESULT skip protocol.bacnet.pic Bacnet device not found.
 ```
 --------------------
 Collecting TLS cert from target address %% 10.20.96.164
-IOException unable to connect to server.
+SSLHandshakeException: Unable to complete handshake
 
 --------------------
-security.tls.v3
+security.tls.v1.2
 --------------------
-Verify the device supports TLS 1.2 or above (as a client)
+Verify the device supports TLS 1.2 (as a client)
 --------------------
 See log above
 --------------------
-RESULT skip security.tls.v3
+RESULT skip security.tls.v1_2
+
+--------------------
+security.tls.v1.3
+--------------------
+Verify the device supports TLS 1.3 (as a client)
+--------------------
+See log above
+--------------------
+RESULT skip security.tls.v1_3
 
 --------------------
 security.x509
