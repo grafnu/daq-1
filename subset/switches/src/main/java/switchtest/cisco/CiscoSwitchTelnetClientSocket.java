@@ -32,9 +32,6 @@ public class CiscoSwitchTelnetClientSocket extends SwitchTelnetClientSocket {
    */
   protected void gatherData() {
     int rxQueueCount = 0;
-
-    int expectedLength = 1000;
-
     while (telnetClient.isConnected()) {
       try {
         if (rxQueue.isEmpty()) {
@@ -42,7 +39,6 @@ public class CiscoSwitchTelnetClientSocket extends SwitchTelnetClientSocket {
           rxQueueCount++;
           if (debug) {
             System.out.println("rxQueue.isEmpty:" + rxQueueCount);
-            System.out.println("expectedLength:" + expectedLength);
           }
           if (rxQueueCount > 70) {
             rxQueueCount = 0;

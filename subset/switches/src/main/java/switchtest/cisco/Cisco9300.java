@@ -79,7 +79,7 @@ public class Cisco9300 extends SwitchInterrogator {
       String response =
           consoleData.substring(0, consoleData.length() - (getHostname() + "#").length());
       // Strip leading command that was sent
-      response = response.substring(command[commandIndex].length()).trim();
+      response = response.substring(command[commandIndex].length());
       processCommandResponse(response);
       promptReady = true;
       commandPending = false;
@@ -188,19 +188,22 @@ public class Cisco9300 extends SwitchInterrogator {
    */
   public boolean parseData(String consoleData) {
     consoleData = consoleData.trim();
-    ;
     if (!getUserAuthorised()) {
       return handleLoginMessage(consoleData);
     } else if (!getUserEnabled()) {
       return handleEnableMessage(consoleData);
     } else {
       // Logged in and enabled
-      if (commandPending) {
-        // Command has been sent and awaiting a response
-        return handleCommandResponse(consoleData);
+      if (commandPending) { // Command has been sent and awaiting a response
+        if (handleCommandResponse(consoleData)) {
+          telnetClientSocket.writeData("\n");
+          return true;
+        }
       } else if (command.length > commandIndex) {
-        sendNextCommand();
-        return true;
+        if (consoleData.endsWith(getHostname() + consolePromptEndingEnabled)) {
+          sendNextCommand();
+          return true;
+        }
       } else {
         generateTestResults();
         writeReport();
@@ -330,6 +333,8 @@ public class Cisco9300 extends SwitchInterrogator {
   }
 
   private void processCommandResponse(String response) {
+    response = response.trim();
+    System.out.println("\nProcessing Command Response:\n" + response);
     switch (commandIndex) {
       case 0: // show interface status
         processInterfaceStatus(response);
@@ -339,19 +344,25 @@ public class Cisco9300 extends SwitchInterrogator {
     }
   }
 
-  public void processInterfaceStatus(String response) {
+  public HashMap<String, String> processInterfaceStatus(String response) {
     interface_map = mapSimpleTable(response, show_interface_expected, interface_expected);
+    return interface_map;
   }
 
-  public void processPowerStatus(String response) {
+  public HashMap<String, String> processPowerStatus(String response) {
     // Pre-process raw data to be map ready
+    response.replaceAll("-", "");
     String[] lines = response.split("\n");
-    response = lines[0] + " \n" + lines[3];
+    response = lines[0] + " \n" + lines[lines.length - 1];
     power_map = mapSimpleTable(response, show_power_expected, power_expected);
+    return power_map;
   }
 
   /**
    * Map a simple table containing a header and 1 row of data to a hashmap
+   *
+   * <p>his method will also attempt ot correct for mis-aligned tabular data as well as empty
+   * columns values.
    *
    * @param rawPacket Raw table response from a switch command
    * @param colNames Array containing the names of the columns in the response
@@ -365,14 +376,53 @@ public class Cisco9300 extends SwitchInterrogator {
     if (lines.length > 0) {
       String header = lines[0].trim();
       String values = lines[1].trim();
+      int lastSectionEnd = 0;
       for (int i = 0; i < colNames.length; ++i) {
-        int startIx = header.indexOf(colNames[i]);
-        int endIx = (i + 1) < colNames.length ? header.indexOf(colNames[i + 1]) : values.length();
-        String curVal = values.substring(startIx, endIx).trim();
-        colMap.put(mapNames[i], curVal);
+        int secStart = lastSectionEnd;
+        int secEnd;
+        if ((i + 1) >= colNames.length) {
+          // Resolving last column
+          secEnd = values.length();
+        } else {
+          // Tabular data is not always reported in perfectly alignment, we need to calculate the
+          // correct values based off of the sections in between white spaces
+          int firstWhiteSpace =
+              getFirstWhiteSpace(values.substring(lastSectionEnd)) + lastSectionEnd;
+          int lastWhiteSpace =
+              getIndexOfNonWhitespaceAfterWhitespace(values.substring(firstWhiteSpace))
+                  + firstWhiteSpace;
+          int nextHeaderStart = header.indexOf(colNames[i + 1]);
+          secEnd = Math.min(lastWhiteSpace, nextHeaderStart);
+        }
+        lastSectionEnd = secEnd;
+        String sectionRaw = values.substring(secStart, secEnd).trim();
+        colMap.put(mapNames[i], sectionRaw);
       }
     }
     return colMap;
+  }
+
+  public static int getFirstWhiteSpace(String string) {
+    char[] characters = string.toCharArray();
+    for (int i = 0; i < string.length(); i++) {
+      if (Character.isWhitespace(characters[i])) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  public static int getIndexOfNonWhitespaceAfterWhitespace(String string) {
+    char[] characters = string.toCharArray();
+    boolean lastWhitespace = false;
+    for (int i = 0; i < string.length(); i++) {
+      if (Character.isWhitespace(characters[i])) {
+        lastWhitespace = true;
+      } else if (lastWhitespace) {
+        return i;
+      }
+    }
+    return -1;
   }
 
   public void sendNextCommand() {
