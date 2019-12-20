@@ -97,7 +97,7 @@ public class Cisco9300 extends SwitchInterrogator {
    * @return True if the data provided was understood and processed. False if the data is not an
    *     expected result or the enable process failed.
    */
-  public boolean handleEnableMessage(String consoleData) {
+  public boolean handleEnableMessage(String consoleData) throws Exception {
     if (consoleData == null) return false;
     if (consoleData.indexOf("Password:") >= 0) {
       telnetClientSocket.writeData(password + "\n");
@@ -105,9 +105,9 @@ public class Cisco9300 extends SwitchInterrogator {
     } else if (consoleData.endsWith(consolePromptEndingEnabled)) {
       setUserEnabled(true);
       return true;
-    } else if (consoleData.indexOf("% Bad passwords:") >= 0) {
-      setUserEnabled(false);
-      return true;
+    } else if (consoleData.indexOf("% Bad passwords") >= 0) {
+      telnetClientSocket.disposeConnection();
+      throw new Exception("Could not Enable the User, Bad Password");
     }
     return false;
   }
@@ -119,7 +119,7 @@ public class Cisco9300 extends SwitchInterrogator {
    * @return True if the data provided was understood and processed. False if the data is not an
    *     expected result or if the login failed.
    */
-  public boolean handleLoginMessage(String consoleData) {
+  public boolean handleLoginMessage(String consoleData) throws Exception {
     if (consoleData == null) return false;
     if (consoleData.indexOf("Username:") >= 0) {
       telnetClientSocket.writeData(username + "\n");
@@ -132,9 +132,12 @@ public class Cisco9300 extends SwitchInterrogator {
       setHostname(consoleData.split(">")[0]);
       telnetClientSocket.writeData("enable\n");
       return true;
-    } else if (consoleData.indexOf("% Bad passwords:") >= 0) {
-      setUserAuthorised(false);
-      return true;
+    } else if (consoleData.indexOf("% Login invalid") >= 0) {
+      telnetClientSocket.disposeConnection();
+      throw new Exception("Failked to Login, Login Invalid");
+    } else if (consoleData.indexOf("% Bad passwords") >= 0) {
+      telnetClientSocket.disposeConnection();
+      throw new Exception("Failed to Login, Bad Password");
     }
     return false;
   }
@@ -171,9 +174,14 @@ public class Cisco9300 extends SwitchInterrogator {
           rxData.append(data);
         }
       }
-      if (parseData(rxData.toString())) {
-        // If we have processed the current buffers data we will clear the buffer
-        rxData = new StringBuilder();
+      try {
+        if (parseData(rxData.toString())) {
+          // If we have processed the current buffers data we will clear the buffer
+          rxData = new StringBuilder();
+        }
+      } catch (Exception e) {
+        telnetClientSocket.disposeConnection();
+        e.printStackTrace();
       }
     }
   }
@@ -186,7 +194,7 @@ public class Cisco9300 extends SwitchInterrogator {
    * @return true if the data was an expected value and appropriately processed and return false if
    *     the data is not-expected.
    */
-  public boolean parseData(String consoleData) {
+  public boolean parseData(String consoleData) throws Exception {
     consoleData = consoleData.trim();
     if (!getUserAuthorised()) {
       return handleLoginMessage(consoleData);
