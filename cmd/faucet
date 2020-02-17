@@ -50,7 +50,7 @@ echo Creating $IMAGE instance $CONTAINER on port $ext_ofpt in $INSTDIR
 mkdir -p $INSTDIR
 
 if docker container inspect $CONTAINER --format '{{ .Name }}' > /dev/null 2>&1; then
-    echo -n "Clensing old container "
+    echo -n "Cleansing old container "
     docker rm -f $CONTAINER
 fi
 

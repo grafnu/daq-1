@@ -13,6 +13,12 @@ import pypandoc
 import weasyprint
 
 import logger
+import logging
+#print(dir(logging.getLogger('weasyprint')))
+#logging.getLogger('weasyprint').setLevel(10)
+wplogger = logging.getLogger("weasyprint")
+if not wplogger.handlers:
+    wplogger.addHandler(logging.NullHandler())
 
 LOGGER = logger.get_logger('report')
 
