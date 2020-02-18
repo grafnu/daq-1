@@ -138,8 +138,8 @@ echo done with docker logs
 # This won't necessarily work in 2020, for example...
 function redact {
     sed -e 's/\s*%%.*//' \
-        -e 's/2019-.*T.*Z/XXX/' \
-        -e 's/2019-.*00:00/XXX/' \
+        -e 's/2020-.*T.*Z/XXX/' \
+        -e 's/2020-.*00:00/XXX/' \
         -e 's/DAQ version.*//'
 }
 
