@@ -12,9 +12,9 @@ RESULT info protocol.bacnet.version Protocol version: 1
 RESULT fail protocol.bacnet.pic
 RESULT info protocol.bacnet.version Protocol version: 1
 RESULT pass protocol.bacnet.pic
-RESULT fail network.brute
-RESULT pass network.brute
 RESULT skip network.brute
+RESULT pass network.brute
+RESULT fail network.brute
 RESULT fail connection.mac_oui
 RESULT fail connection.mac_oui
 RESULT pass connection.mac_oui
@@ -27,10 +27,40 @@ RESULT pass security.x509
 RESULT skip security.firmware Could not retrieve a firmware version with nmap.
 RESULT fail security.firmware version found: ?\xFF\xFF\x19,>u\x08\x00no Firmware version does not match
 RESULT pass security.firmware version found: ?\xFF\xFF\x19,>u\x08\x00no
-dhcp requests 2 1
-01: ['01:brute:1']
+RESULT pass connection.dhcp_long ARP packets received.
+RESULT pass connection.min_send ARP packets received. Packets received.
+RESULT info communication.type.broadcast Broadcast packets received. 
+RESULT fail protocol.app_min_send 
+RESULT fail network.ntp.support 
+RESULT pass connection.dhcp_long ARP packets received.
+RESULT pass connection.min_send ARP packets received. Packets received.
+RESULT info communication.type.broadcast Broadcast packets received. 
+RESULT fail protocol.app_min_send 
+RESULT fail network.ntp.support 
+RESULT pass connection.dhcp_long ARP packets received.
+RESULT fail connection.min_send ARP packets received. 
+RESULT info communication.type.broadcast Unicast packets received.
+RESULT fail protocol.app_min_send 
+RESULT fail network.ntp.support 
+RESULT pass connection.dhcp_long ARP packets received.
+RESULT fail connection.min_send ARP packets received. 
+RESULT info communication.type.broadcast Unicast packets received.
+RESULT fail protocol.app_min_send 
+RESULT fail network.ntp.support 
+RESULT pass connection.dhcp_long ARP packets received.
+RESULT pass connection.min_send ARP packets received. Packets received.
+RESULT info communication.type.broadcast Broadcast packets received. Unicast packets received.
+RESULT fail protocol.app_min_send 
+RESULT pass network.ntp.support NTP packets received.
+RESULT pass connection.dhcp_long ARP packets received.
+RESULT pass connection.min_send ARP packets received. Packets received.
+RESULT info communication.type.broadcast Broadcast packets received. Unicast packets received.
+RESULT fail protocol.app_min_send 
+RESULT pass network.ntp.support NTP packets received.
+dhcp requests 2 2
+01: []
 02: ['02:discover:1', '02:nmap:1']
-03: []
+03: ['03:brute:1']
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
@@ -51,6 +81,9 @@ port-01 module_config modules
     "enabled": true
   },
   "macoui": {
+    "enabled": true
+  },
+  "network": {
     "enabled": true
   },
   "nmap": {
@@ -92,6 +125,9 @@ port-02 module_config modules
   "macoui": {
     "enabled": true
   },
+  "network": {
+    "enabled": true
+  },
   "nmap": {
     "enabled": true
   },
@@ -127,5 +163,16 @@ port-02 module_config modules
     `'''       `\__   /\
                 ')
 Redacted docs diff
-No report diff
+14,15c14,15
+< | Test report start date | 2020-02-18 12:35:41+00:00 |
+< | Test report end date   | 2020-02-18 12:47:00+00:00 |
+---
+> | Test report start date | 2020-02-18 12:52:33+00:00 |
+> | Test report end date   | 2020-02-18 13:03:59+00:00 |
+ M docs/device_report.md
+ M misc/start_faux
+ M subset/network/TransportClient/client.py
+ M subset/network/network_tests.py
+ M subset/network/test_network
+ M testing/test_aux.sh
 Done with tests
