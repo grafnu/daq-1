@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2020-02-18 16:25:08+00:00 |
-| Test report end date   | 2020-02-18 16:37:15+00:00 |
+| Test report start date | 2019-07-15 22:55:25+00:00 |
+| Test report end date   | 2019-07-15 23:01:50+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -52,30 +52,25 @@ Overall device result FAIL
 |Other|1/2|
 |Connectivity|n/a|
 
-|Expectation|pass|fail|skip|info|gone|
-|---|---|---|---|---|---|
-|Required|1|0|1|0|0|
-|Recommended|1|0|0|0|0|
-|Other|8|9|13|4|2|
+|Expectation|pass|fail|skip|gone|
+|---|---|---|---|---|
+|Required|1|1|0|0|
+|Recommended|1|0|0|0|
+|Other|0|1|13|2|
 
 |Result|Test|Category|Expectation|Notes|
 |---|---|---|---|---|
 |skip|base.switch.ping|Other|Other||
 |pass|base.target.ping|Connectivity|Required|target|
 |skip|cloud.udmi.pointset|Other|Other|No device id.|
-|info|communication.type.broadcast|Other|Other|Broadcast packets received.|
-|pass|connection.dhcp_long|Other|Other|ARP packets received.|
 |fail|connection.mac_oui|Other|Other||
-|pass|connection.min_send|Other|Other|ARP packets received. Packets received.|
 |skip|connection.port_duplex|Other|Other||
 |skip|connection.port_link|Other|Other||
 |skip|connection.port_speed|Other|Other||
-|skip|network.brute|Security|Required||
-|fail|network.ntp.support|Other|Other||
+|fail|network.brute|Security|Required||
 |skip|poe.negotiation|Other|Other||
 |skip|poe.power|Other|Other||
 |skip|poe.support|Other|Other||
-|fail|protocol.app_min_send|Other|Other||
 |skip|protocol.bacnet.pic|Other|Other|Bacnet device not found... Pics check cannot be performed.|
 |skip|protocol.bacnet.version|Other|Other|Bacnet device not found.|
 |skip|security.firmware|Other|Other|Could not retrieve a firmware version with nmap.|
@@ -90,14 +85,15 @@ Overall device result FAIL
 
 ```
 Baseline ping test report
-%% 87 packets captured.
+%% 61 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.44.164
+RESULT pass base.target.ping target %% 10.20.92.164
 ```
 
 ## Module nmap
 
 ```
+Allowing 10000 open tcp snet-sensor-mgmt
 No invalid ports found.
 RESULT pass security.ports.nmap
 ```
@@ -105,8 +101,10 @@ RESULT pass security.ports.nmap
 ## Module brute
 
 ```
-Target port 10000 not open.
-RESULT skip network.brute
+Username:manager
+Password:friend
+Login success!
+RESULT fail network.brute
 ```
 
 ## Module discover
@@ -123,115 +121,6 @@ MAC Address: 9A:02:57:1E:8F:01 (Unknown)
 Firmware test complete
 --------------------
 RESULT skip security.firmware Could not retrieve a firmware version with nmap.
-```
-
-## Module network
-
-```
---------------------
-connection.dhcp_long
---------------------
-Device sends ARP request on DHCP lease expiry.
---------------------
-%% 16:27:08.669361 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 16:27:08.669420 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 16:27:08.669474 ARP, Reply 10.0.0.1 is-at 76:61:b5:b3:35:82 (oui Unknown), length 28
-%% 16:27:08.669775 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 16:30:39.100402 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 16:30:39.100640 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 16:30:39.100679 ARP, Reply 10.0.0.1 is-at 76:61:b5:b3:35:82 (oui Unknown), length 28
-%% 16:30:39.100917 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 
-%% packets_count=9
-RESULT pass connection.dhcp_long ARP packets received.
-
---------------------
-connection.min_send
---------------------
-Device sends data at a frequency of less than 5 minutes.
---------------------
-%% 16:26:39.406377 IP 10.20.44.164.33688 > 10.255.255.255.41794: UDP, length 32
-%% 16:26:59.455426 IP 10.20.44.164.35645 > 10.255.255.255.41794: UDP, length 32
-%% 16:27:03.416702 IP 10.20.44.164.68 > 10.0.0.1.67: BOOTP/DHCP, Request from 9a:02:57:1e:8f:01, length 300
-%% 16:27:08.669420 ARP, Request who-has 10.0.0.1 tell 10.20.44.164, length 28
-%% 16:27:08.669775 ARP, Reply 10.20.44.164 is-at 9a:02:57:1e:8f:01, length 28
-%% 16:27:19.474430 IP 10.20.44.164.58020 > 10.255.255.255.41794: UDP, length 32
-%% 16:27:39.495813 IP 10.20.44.164.60839 > 10.255.255.255.41794: UDP, length 32
-%% 16:27:59.514030 IP 10.20.44.164.57966 > 10.255.255.255.41794: UDP, length 32
-%% 16:28:19.534428 IP 10.20.44.164.48980 > 10.255.255.255.41794: UDP, length 32
-%% packets_count=9
-RESULT pass connection.min_send ARP packets received. Packets received.
-
---------------------
-communication.type.broadcast
---------------------
-Device sends unicast or broadcast packets.
---------------------
-RESULT info communication.type.broadcast Broadcast packets received. 
---------------------
-protocol.app_min_send
---------------------
-Device sends application packets at a frequency of less than 5 minutes.
---------------------
-RESULT fail protocol.app_min_send 
---------------------
-network.ntp.support
---------------------
-Device sends NTP request packets.
---------------------
-RESULT fail network.ntp.support 
---------------------
-connection.dhcp_long
---------------------
-Device sends ARP request on DHCP lease expiry.
---------------------
-%% 16:27:08.669361 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 16:27:08.669420 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 16:27:08.669474 ARP, Reply 10.0.0.1 is-at 76:61:b5:b3:35:82 (oui Unknown), length 28
-%% 16:27:08.669775 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 16:30:39.100402 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 16:30:39.100640 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 16:30:39.100679 ARP, Reply 10.0.0.1 is-at 76:61:b5:b3:35:82 (oui Unknown), length 28
-%% 16:30:39.100917 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 
-%% packets_count=9
-RESULT pass connection.dhcp_long ARP packets received.
-
---------------------
-connection.min_send
---------------------
-Device sends data at a frequency of less than 5 minutes.
---------------------
-%% 16:26:39.406377 IP 10.20.44.164.33688 > 10.255.255.255.41794: UDP, length 32
-%% 16:26:59.455426 IP 10.20.44.164.35645 > 10.255.255.255.41794: UDP, length 32
-%% 16:27:03.416702 IP 10.20.44.164.68 > 10.0.0.1.67: BOOTP/DHCP, Request from 9a:02:57:1e:8f:01, length 300
-%% 16:27:08.669420 ARP, Request who-has 10.0.0.1 tell 10.20.44.164, length 28
-%% 16:27:08.669775 ARP, Reply 10.20.44.164 is-at 9a:02:57:1e:8f:01, length 28
-%% 16:27:19.474430 IP 10.20.44.164.58020 > 10.255.255.255.41794: UDP, length 32
-%% 16:27:39.495813 IP 10.20.44.164.60839 > 10.255.255.255.41794: UDP, length 32
-%% 16:27:59.514030 IP 10.20.44.164.57966 > 10.255.255.255.41794: UDP, length 32
-%% 16:28:19.534428 IP 10.20.44.164.48980 > 10.255.255.255.41794: UDP, length 32
-%% packets_count=9
-RESULT pass connection.min_send ARP packets received. Packets received.
-
---------------------
-communication.type.broadcast
---------------------
-Device sends unicast or broadcast packets.
---------------------
-RESULT info communication.type.broadcast Broadcast packets received. 
---------------------
-protocol.app_min_send
---------------------
-Device sends application packets at a frequency of less than 5 minutes.
---------------------
-RESULT fail protocol.app_min_send 
---------------------
-network.ntp.support
---------------------
-Device sends NTP request packets.
---------------------
-RESULT fail network.ntp.support 
 ```
 
 ## Module switch
@@ -272,115 +161,6 @@ RESULT skip security.x509
 
 ```
 RESULT skip cloud.udmi.pointset No device id.
-```
-
-## Module network
-
-```
---------------------
-connection.dhcp_long
---------------------
-Device sends ARP request on DHCP lease expiry.
---------------------
-%% 16:27:08.669361 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 16:27:08.669420 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 16:27:08.669474 ARP, Reply 10.0.0.1 is-at 76:61:b5:b3:35:82 (oui Unknown), length 28
-%% 16:27:08.669775 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 16:30:39.100402 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 16:30:39.100640 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 16:30:39.100679 ARP, Reply 10.0.0.1 is-at 76:61:b5:b3:35:82 (oui Unknown), length 28
-%% 16:30:39.100917 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 
-%% packets_count=9
-RESULT pass connection.dhcp_long ARP packets received.
-
---------------------
-connection.min_send
---------------------
-Device sends data at a frequency of less than 5 minutes.
---------------------
-%% 16:26:39.406377 IP 10.20.44.164.33688 > 10.255.255.255.41794: UDP, length 32
-%% 16:26:59.455426 IP 10.20.44.164.35645 > 10.255.255.255.41794: UDP, length 32
-%% 16:27:03.416702 IP 10.20.44.164.68 > 10.0.0.1.67: BOOTP/DHCP, Request from 9a:02:57:1e:8f:01, length 300
-%% 16:27:08.669420 ARP, Request who-has 10.0.0.1 tell 10.20.44.164, length 28
-%% 16:27:08.669775 ARP, Reply 10.20.44.164 is-at 9a:02:57:1e:8f:01, length 28
-%% 16:27:19.474430 IP 10.20.44.164.58020 > 10.255.255.255.41794: UDP, length 32
-%% 16:27:39.495813 IP 10.20.44.164.60839 > 10.255.255.255.41794: UDP, length 32
-%% 16:27:59.514030 IP 10.20.44.164.57966 > 10.255.255.255.41794: UDP, length 32
-%% 16:28:19.534428 IP 10.20.44.164.48980 > 10.255.255.255.41794: UDP, length 32
-%% packets_count=9
-RESULT pass connection.min_send ARP packets received. Packets received.
-
---------------------
-communication.type.broadcast
---------------------
-Device sends unicast or broadcast packets.
---------------------
-RESULT info communication.type.broadcast Broadcast packets received. 
---------------------
-protocol.app_min_send
---------------------
-Device sends application packets at a frequency of less than 5 minutes.
---------------------
-RESULT fail protocol.app_min_send 
---------------------
-network.ntp.support
---------------------
-Device sends NTP request packets.
---------------------
-RESULT fail network.ntp.support 
---------------------
-connection.dhcp_long
---------------------
-Device sends ARP request on DHCP lease expiry.
---------------------
-%% 16:27:08.669361 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 16:27:08.669420 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 16:27:08.669474 ARP, Reply 10.0.0.1 is-at 76:61:b5:b3:35:82 (oui Unknown), length 28
-%% 16:27:08.669775 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 16:30:39.100402 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 16:30:39.100640 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 16:30:39.100679 ARP, Reply 10.0.0.1 is-at 76:61:b5:b3:35:82 (oui Unknown), length 28
-%% 16:30:39.100917 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 
-%% packets_count=9
-RESULT pass connection.dhcp_long ARP packets received.
-
---------------------
-connection.min_send
---------------------
-Device sends data at a frequency of less than 5 minutes.
---------------------
-%% 16:26:39.406377 IP 10.20.44.164.33688 > 10.255.255.255.41794: UDP, length 32
-%% 16:26:59.455426 IP 10.20.44.164.35645 > 10.255.255.255.41794: UDP, length 32
-%% 16:27:03.416702 IP 10.20.44.164.68 > 10.0.0.1.67: BOOTP/DHCP, Request from 9a:02:57:1e:8f:01, length 300
-%% 16:27:08.669420 ARP, Request who-has 10.0.0.1 tell 10.20.44.164, length 28
-%% 16:27:08.669775 ARP, Reply 10.20.44.164 is-at 9a:02:57:1e:8f:01, length 28
-%% 16:27:19.474430 IP 10.20.44.164.58020 > 10.255.255.255.41794: UDP, length 32
-%% 16:27:39.495813 IP 10.20.44.164.60839 > 10.255.255.255.41794: UDP, length 32
-%% 16:27:59.514030 IP 10.20.44.164.57966 > 10.255.255.255.41794: UDP, length 32
-%% 16:28:19.534428 IP 10.20.44.164.48980 > 10.255.255.255.41794: UDP, length 32
-%% packets_count=9
-RESULT pass connection.min_send ARP packets received. Packets received.
-
---------------------
-communication.type.broadcast
---------------------
-Device sends unicast or broadcast packets.
---------------------
-RESULT info communication.type.broadcast Broadcast packets received. 
---------------------
-protocol.app_min_send
---------------------
-Device sends application packets at a frequency of less than 5 minutes.
---------------------
-RESULT fail protocol.app_min_send 
---------------------
-network.ntp.support
---------------------
-Device sends NTP request packets.
---------------------
-RESULT fail network.ntp.support 
 ```
 
 ## Report complete
