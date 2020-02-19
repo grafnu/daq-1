@@ -6,7 +6,43 @@ Validator exit code 0
 Lint checks
 check_style exit code 0
 Extended tests
-dhcp requests 0 0
+RESULT skip protocol.bacnet.version Bacnet device not found.
+RESULT skip protocol.bacnet.pic Bacnet device not found... Pics check cannot be performed.
+RESULT info protocol.bacnet.version Protocol version: 1
+RESULT fail protocol.bacnet.pic
+RESULT info protocol.bacnet.version Protocol version: 1
+RESULT pass protocol.bacnet.pic
+RESULT skip network.brute
+RESULT pass network.brute
+RESULT fail network.brute
+RESULT fail connection.mac_oui
+RESULT fail connection.mac_oui
+RESULT pass connection.mac_oui
+RESULT skip security.tls.v3
+RESULT skip security.x509
+RESULT fail security.tls.v3
+RESULT fail security.x509
+RESULT pass security.tls.v3
+RESULT pass security.x509
+RESULT skip security.firmware Could not retrieve a firmware version with nmap.
+RESULT fail security.firmware version found: ?\xFF\xFF\x19,>u\x08\x00no Firmware version does not match
+RESULT pass security.firmware version found: ?\xFF\xFF\x19,>u\x08\x00no
+RESULT pass connection.dhcp_long ARP packets received.
+RESULT pass connection.min_send ARP packets received. Packets received.
+RESULT info communication.type.broadcast Broadcast packets received. 
+RESULT fail protocol.app_min_send 
+RESULT fail network.ntp.support 
+RESULT pass connection.dhcp_long ARP packets received.
+RESULT fail connection.min_send ARP packets received. 
+RESULT info communication.type.broadcast Unicast packets received.
+RESULT fail protocol.app_min_send 
+RESULT fail network.ntp.support 
+RESULT pass connection.dhcp_long ARP packets received.
+RESULT pass connection.min_send ARP packets received. Packets received.
+RESULT info communication.type.broadcast Broadcast packets received. Unicast packets received.
+RESULT fail protocol.app_min_send 
+RESULT pass network.ntp.support NTP packets received.
+dhcp requests 2 3
 01: []
 02: ['02:discover:1', '02:nmap:1']
 03: ['03:brute:1']
@@ -19,402 +55,98 @@ pri.ofctl
 sec.flows
 sec.ofctl
 port-01 module_config modules
+{
+  "bacext": {
+    "enabled": true
+  },
+  "brute": {
+    "enabled": true
+  },
+  "discover": {
+    "enabled": true
+  },
+  "macoui": {
+    "enabled": true
+  },
+  "network": {
+    "enabled": true
+  },
+  "nmap": {
+    "enabled": true
+  },
+  "pass": {
+    "enabled": true
+  },
+  "switch": {
+    "enabled": true,
+    "poe": {
+      "enabled": true
+    }
+  },
+  "tls": {
+    "enabled": true
+  },
+  "typeconf": {
+    "enabled": false
+  },
+  "udmi": {
+    "enabled": true
+  }
+}
 port-02 module_config modules
+{
+  "bacext": {
+    "enabled": true
+  },
+  "brute": {
+    "enabled": true
+  },
+  "discover": {
+    "enabled": true
+  },
+  "foobar": {
+    "enabled": false
+  },
+  "macoui": {
+    "enabled": true
+  },
+  "network": {
+    "enabled": true
+  },
+  "nmap": {
+    "enabled": true
+  },
+  "pass": {
+    "enabled": true
+  },
+  "switch": {
+    "enabled": true,
+    "poe": {
+      "enabled": true
+    }
+  },
+  "tls": {
+    "enabled": true
+  },
+  "typeconf": {
+    "enabled": false
+  },
+  "udmi": {
+    "enabled": true
+  }
+}
+    SNAKE!         ____
+                .'`_ o `;__,
+       .       .'.'` '---'  '
+       .`-...-'.'
+        `-...-'
+   LIZARD!              )/_
+             _.--..---"-,--c_
+        \L..'           ._O__)_
+,-.     _.+  _  \..--( /
+  `\.-''__.-' \ (     \_
+    `'''       `\__   /\
+                ')
 Redacted docs diff
-1,395d0
-< # Device 9a:02:57:1e:8f:01, *** Make *** *** Model ***
-< 
-< ## Test Roles
-< 
-< |  Role  |      Name              | Status |
-< |--------|------------------------|--------|
-< |Operator| *** Operator Name *** |        |
-< |Approver| *** Approver Name *** |        |
-< 
-< ## Test Iteration
-< 
-< | Test             |                        |
-< |------------------|------------------------|
-< | Test report start date | XXX |
-< | Test report end date   | XXX |
-< | 
-< | Attempt number   | 1 |
-< 
-< ## Device Identification
-< 
-< | Device            | Entry              |
-< |-------------------|--------------------|
-< | Name              | *** Name *** |
-< | GUID              | *** GUID *** |
-< | MAC addr          | 9a:02:57:1e:8f:01 |
-< | Hostname          | *** Network Hostname *** |
-< | Type              | *** Type *** |
-< | Make              | *** Make *** |
-< | Model             | *** Model *** |
-< | Serial Number     | *** Serial *** |
-< | Firmware Version  | *** Firmware Version *** |
-< 
-< ## Device Description
-< 
-< ![Image of device](*** Device Image URL ***)
-< 
-< *** Device Description ***
-< 
-< 
-< ### Device documentation
-< 
-< [Device datasheets](*** Device Datasheets URL ***)
-< [Device manuals](*** Device Manuals URL ***)
-< 
-< ## Report summary
-< 
-< Overall device result FAIL
-< 
-< |Category|Result|
-< |---|---|
-< |Security|PASS|
-< |Other|1/2|
-< |Connectivity|n/a|
-< 
-< |Expectation|pass|fail|skip|info|gone|
-< |---|---|---|---|---|---|
-< |Required|1|0|1|0|0|
-< |Recommended|1|0|0|0|0|
-< |Other|8|9|13|4|2|
-< 
-< |Result|Test|Category|Expectation|Notes|
-< |---|---|---|---|---|
-< |skip|base.switch.ping|Other|Other||
-< |pass|base.target.ping|Connectivity|Required|target|
-< |skip|cloud.udmi.pointset|Other|Other|No device id.|
-< |info|communication.type.broadcast|Other|Other|Broadcast packets received.|
-< |pass|connection.dhcp_long|Other|Other|ARP packets received.|
-< |fail|connection.mac_oui|Other|Other||
-< |pass|connection.min_send|Other|Other|ARP packets received. Packets received.|
-< |skip|connection.port_duplex|Other|Other||
-< |skip|connection.port_link|Other|Other||
-< |skip|connection.port_speed|Other|Other||
-< |skip|network.brute|Security|Required||
-< |fail|network.ntp.support|Other|Other||
-< |skip|poe.negotiation|Other|Other||
-< |skip|poe.power|Other|Other||
-< |skip|poe.support|Other|Other||
-< |fail|protocol.app_min_send|Other|Other||
-< |skip|protocol.bacnet.pic|Other|Other|Bacnet device not found... Pics check cannot be performed.|
-< |skip|protocol.bacnet.version|Other|Other|Bacnet device not found.|
-< |skip|security.firmware|Other|Other|Could not retrieve a firmware version with nmap.|
-< |pass|security.ports.nmap|Security|Recommended||
-< |skip|security.tls.v3|Other|Other||
-< |skip|security.x509|Other|Other||
-< |gone|unknown.fake.llama|Other|Other||
-< |gone|unknown.fake.monkey|Other|Other||
-< 
-< 
-< ## Module ping
-< 
-< ```
-< Baseline ping test report
-< 
-< RESULT skip base.switch.ping
-< RESULT pass base.target.ping target
-< ```
-< 
-< ## Module nmap
-< 
-< ```
-< No invalid ports found.
-< RESULT pass security.ports.nmap
-< ```
-< 
-< ## Module brute
-< 
-< ```
-< Target port 10000 not open.
-< RESULT skip network.brute
-< ```
-< 
-< ## Module discover
-< 
-< ```
-< --------------------
-< security.firmware
-< --------------------
-< Automatic bacnet firmware scan using nmap
-< --------------------
-< PORT      STATE  SERVICE
-< 47808/udp closed bacnet
-< MAC Address: 9A:02:57:1E:8F:01 (Unknown)
-< Firmware test complete
-< --------------------
-< RESULT skip security.firmware Could not retrieve a firmware version with nmap.
-< ```
-< 
-< ## Module network
-< 
-< ```
-< --------------------
-< connection.dhcp_long
-< --------------------
-< Device sends ARP request on DHCP lease expiry.
-< --------------------
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< RESULT pass connection.dhcp_long ARP packets received.
-< 
-< --------------------
-< connection.min_send
-< --------------------
-< Device sends data at a frequency of less than 5 minutes.
-< --------------------
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< RESULT pass connection.min_send ARP packets received. Packets received.
-< 
-< --------------------
-< communication.type.broadcast
-< --------------------
-< Device sends unicast or broadcast packets.
-< --------------------
-< RESULT info communication.type.broadcast Broadcast packets received. 
-< --------------------
-< protocol.app_min_send
-< --------------------
-< Device sends application packets at a frequency of less than 5 minutes.
-< --------------------
-< RESULT fail protocol.app_min_send 
-< --------------------
-< network.ntp.support
-< --------------------
-< Device sends NTP request packets.
-< --------------------
-< RESULT fail network.ntp.support 
-< --------------------
-< connection.dhcp_long
-< --------------------
-< Device sends ARP request on DHCP lease expiry.
-< --------------------
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< RESULT pass connection.dhcp_long ARP packets received.
-< 
-< --------------------
-< connection.min_send
-< --------------------
-< Device sends data at a frequency of less than 5 minutes.
-< --------------------
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< RESULT pass connection.min_send ARP packets received. Packets received.
-< 
-< --------------------
-< communication.type.broadcast
-< --------------------
-< Device sends unicast or broadcast packets.
-< --------------------
-< RESULT info communication.type.broadcast Broadcast packets received. 
-< --------------------
-< protocol.app_min_send
-< --------------------
-< Device sends application packets at a frequency of less than 5 minutes.
-< --------------------
-< RESULT fail protocol.app_min_send 
-< --------------------
-< network.ntp.support
-< --------------------
-< Device sends NTP request packets.
-< --------------------
-< RESULT fail network.ntp.support 
-< ```
-< 
-< ## Module switch
-< 
-< ```
-< LOCAL_IP not configured, assuming no network switch.
-< RESULT skip connection.port_link
-< RESULT skip connection.port_speed
-< RESULT skip connection.port_duplex
-< RESULT skip poe.power
-< RESULT skip poe.negotiation
-< RESULT skip poe.support
-< ```
-< 
-< ## Module macoui
-< 
-< ```
-< Mac OUI Test
-< RESULT fail connection.mac_oui
-< ```
-< 
-< ## Module bacext
-< 
-< ```
-< RESULT skip protocol.bacnet.version Bacnet device not found.
-< RESULT skip protocol.bacnet.pic Bacnet device not found... Pics check cannot be performed.
-< ```
-< 
-< ## Module tls
-< 
-< ```
-< IOException unable to connect to server.
-< RESULT skip security.tls.v3
-< RESULT skip security.x509
-< ```
-< 
-< ## Module udmi
-< 
-< ```
-< RESULT skip cloud.udmi.pointset No device id.
-< ```
-< 
-< ## Module network
-< 
-< ```
-< --------------------
-< connection.dhcp_long
-< --------------------
-< Device sends ARP request on DHCP lease expiry.
-< --------------------
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< RESULT pass connection.dhcp_long ARP packets received.
-< 
-< --------------------
-< connection.min_send
-< --------------------
-< Device sends data at a frequency of less than 5 minutes.
-< --------------------
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< RESULT pass connection.min_send ARP packets received. Packets received.
-< 
-< --------------------
-< communication.type.broadcast
-< --------------------
-< Device sends unicast or broadcast packets.
-< --------------------
-< RESULT info communication.type.broadcast Broadcast packets received. 
-< --------------------
-< protocol.app_min_send
-< --------------------
-< Device sends application packets at a frequency of less than 5 minutes.
-< --------------------
-< RESULT fail protocol.app_min_send 
-< --------------------
-< network.ntp.support
-< --------------------
-< Device sends NTP request packets.
-< --------------------
-< RESULT fail network.ntp.support 
-< --------------------
-< connection.dhcp_long
-< --------------------
-< Device sends ARP request on DHCP lease expiry.
-< --------------------
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< RESULT pass connection.dhcp_long ARP packets received.
-< 
-< --------------------
-< connection.min_send
-< --------------------
-< Device sends data at a frequency of less than 5 minutes.
-< --------------------
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< 
-< RESULT pass connection.min_send ARP packets received. Packets received.
-< 
-< --------------------
-< communication.type.broadcast
-< --------------------
-< Device sends unicast or broadcast packets.
-< --------------------
-< RESULT info communication.type.broadcast Broadcast packets received. 
-< --------------------
-< protocol.app_min_send
-< --------------------
-< Device sends application packets at a frequency of less than 5 minutes.
-< --------------------
-< RESULT fail protocol.app_min_send 
-< --------------------
-< network.ntp.support
-< --------------------
-< Device sends NTP request packets.
-< --------------------
-< RESULT fail network.ntp.support 
-< ```
-< 
-< ## Report complete
-< 
+No report diff
 Done with tests
