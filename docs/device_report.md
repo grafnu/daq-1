@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2020-02-18 17:01:08+00:00 |
-| Test report end date   | 2020-02-18 17:13:17+00:00 |
+| Test report start date | 2020-02-19 10:45:05+00:00 |
+| Test report end date   | 2020-02-19 10:57:16+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -90,9 +90,9 @@ Overall device result FAIL
 
 ```
 Baseline ping test report
-%% 84 packets captured.
+%% 86 packets captured.
 RESULT skip base.switch.ping
-RESULT pass base.target.ping target %% 10.20.11.164
+RESULT pass base.target.ping target %% 10.20.2.164
 ```
 
 ## Module nmap
@@ -133,17 +133,16 @@ connection.dhcp_long
 --------------------
 Device sends ARP request on DHCP lease expiry.
 --------------------
-%% 17:02:24.764612 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 17:02:24.764890 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 17:02:24.764921 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 17:02:24.764927 ARP, Reply 10.0.0.1 is-at 6e:c2:e0:c6:0f:73 (oui Unknown), length 28
-%% 17:03:09.565854 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 17:03:09.566036 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 17:03:09.566083 ARP, Reply 10.0.0.1 is-at 6e:c2:e0:c6:0f:73 (oui Unknown), length 28
-%% 17:03:09.566169 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 17:06:53.820434 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 17:06:53.820551 ARP, Reply 10.0.0.1 is-at 6e:c2:e0:c6:0f:73 (oui Unknown), length 28
-%% packets_count=13
+%% 10:47:09.455868 ARP, Request who-has 10.0.0.3 tell daq-faux-1, length 28
+%% 10:47:09.456019 ARP, Reply 10.0.0.3 is-at e2:da:b5:03:dd:a9 (oui Unknown), length 28
+%% 10:47:09.459596 ARP, Request who-has daq-faux-1 tell 10.0.0.3, length 28
+%% 10:47:09.459613 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
+%% 10:49:58.416159 ARP, Request who-has 10.0.0.3 tell daq-faux-1, length 28
+%% 10:49:58.416272 ARP, Request who-has daq-faux-1 tell 10.0.0.3, length 28
+%% 10:49:58.416501 ARP, Reply 10.0.0.3 is-at e2:da:b5:03:dd:a9 (oui Unknown), length 28
+%% 10:49:58.416577 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
+%% 
+%% packets_count=9
 RESULT pass connection.dhcp_long ARP packets received.
 
 --------------------
@@ -151,17 +150,16 @@ connection.min_send
 --------------------
 Device sends data at a frequency of less than 5 minutes.
 --------------------
-%% 17:02:24.764890 ARP, Request who-has 10.0.0.1 tell 10.20.11.164, length 28
-%% 17:02:24.764921 ARP, Reply 10.20.11.164 is-at 9a:02:57:1e:8f:01, length 28
-%% 17:02:28.601444 IP 10.20.11.164.33601 > 10.255.255.255.41794: UDP, length 32
-%% 17:02:48.614797 IP 10.20.11.164.32984 > 10.255.255.255.41794: UDP, length 32
-%% 17:03:04.519204 IP 10.20.11.164.68 > 10.0.0.1.67: BOOTP/DHCP, Request from 9a:02:57:1e:8f:01, length 300
-%% 17:03:08.630924 IP 10.20.11.164.34079 > 10.255.255.255.41794: UDP, length 32
-%% 17:03:09.566036 ARP, Request who-has 10.0.0.1 tell 10.20.11.164, length 28
-%% 17:03:09.566169 ARP, Reply 10.20.11.164 is-at 9a:02:57:1e:8f:01, length 28
-%% 17:03:28.649459 IP 10.20.11.164.43135 > 10.255.255.255.41794: UDP, length 32
-%% 17:03:48.664036 IP 10.20.11.164.54183 > 10.255.255.255.41794: UDP, length 32
-%% packets_count=13
+%% 10:46:17.101105 IP 10.20.2.164.33174 > 10.255.255.255.41794: UDP, length 32
+%% 10:46:37.123792 IP 10.20.2.164.42622 > 10.255.255.255.41794: UDP, length 32
+%% 10:46:57.144209 IP 10.20.2.164.45700 > 10.255.255.255.41794: UDP, length 32
+%% 10:47:04.213865 IP 10.20.2.164.68 > 10.0.0.3.67: BOOTP/DHCP, Request from 9a:02:57:1e:8f:01, length 300
+%% 10:47:09.455868 ARP, Request who-has 10.0.0.3 tell 10.20.2.164, length 28
+%% 10:47:09.459613 ARP, Reply 10.20.2.164 is-at 9a:02:57:1e:8f:01, length 28
+%% 10:47:17.165009 IP 10.20.2.164.60123 > 10.255.255.255.41794: UDP, length 32
+%% 10:47:37.181940 IP 10.20.2.164.52196 > 10.255.255.255.41794: UDP, length 32
+%% 10:47:57.201541 IP 10.20.2.164.42976 > 10.255.255.255.41794: UDP, length 32
+%% packets_count=9
 RESULT pass connection.min_send ARP packets received. Packets received.
 
 --------------------
@@ -187,17 +185,16 @@ connection.dhcp_long
 --------------------
 Device sends ARP request on DHCP lease expiry.
 --------------------
-%% 17:02:24.764612 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 17:02:24.764890 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 17:02:24.764921 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 17:02:24.764927 ARP, Reply 10.0.0.1 is-at 6e:c2:e0:c6:0f:73 (oui Unknown), length 28
-%% 17:03:09.565854 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 17:03:09.566036 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 17:03:09.566083 ARP, Reply 10.0.0.1 is-at 6e:c2:e0:c6:0f:73 (oui Unknown), length 28
-%% 17:03:09.566169 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 17:06:53.820434 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 17:06:53.820551 ARP, Reply 10.0.0.1 is-at 6e:c2:e0:c6:0f:73 (oui Unknown), length 28
-%% packets_count=13
+%% 10:47:09.455868 ARP, Request who-has 10.0.0.3 tell daq-faux-1, length 28
+%% 10:47:09.456019 ARP, Reply 10.0.0.3 is-at e2:da:b5:03:dd:a9 (oui Unknown), length 28
+%% 10:47:09.459596 ARP, Request who-has daq-faux-1 tell 10.0.0.3, length 28
+%% 10:47:09.459613 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
+%% 10:49:58.416159 ARP, Request who-has 10.0.0.3 tell daq-faux-1, length 28
+%% 10:49:58.416272 ARP, Request who-has daq-faux-1 tell 10.0.0.3, length 28
+%% 10:49:58.416501 ARP, Reply 10.0.0.3 is-at e2:da:b5:03:dd:a9 (oui Unknown), length 28
+%% 10:49:58.416577 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
+%% 
+%% packets_count=9
 RESULT pass connection.dhcp_long ARP packets received.
 
 --------------------
@@ -205,17 +202,16 @@ connection.min_send
 --------------------
 Device sends data at a frequency of less than 5 minutes.
 --------------------
-%% 17:02:24.764890 ARP, Request who-has 10.0.0.1 tell 10.20.11.164, length 28
-%% 17:02:24.764921 ARP, Reply 10.20.11.164 is-at 9a:02:57:1e:8f:01, length 28
-%% 17:02:28.601444 IP 10.20.11.164.33601 > 10.255.255.255.41794: UDP, length 32
-%% 17:02:48.614797 IP 10.20.11.164.32984 > 10.255.255.255.41794: UDP, length 32
-%% 17:03:04.519204 IP 10.20.11.164.68 > 10.0.0.1.67: BOOTP/DHCP, Request from 9a:02:57:1e:8f:01, length 300
-%% 17:03:08.630924 IP 10.20.11.164.34079 > 10.255.255.255.41794: UDP, length 32
-%% 17:03:09.566036 ARP, Request who-has 10.0.0.1 tell 10.20.11.164, length 28
-%% 17:03:09.566169 ARP, Reply 10.20.11.164 is-at 9a:02:57:1e:8f:01, length 28
-%% 17:03:28.649459 IP 10.20.11.164.43135 > 10.255.255.255.41794: UDP, length 32
-%% 17:03:48.664036 IP 10.20.11.164.54183 > 10.255.255.255.41794: UDP, length 32
-%% packets_count=13
+%% 10:46:17.101105 IP 10.20.2.164.33174 > 10.255.255.255.41794: UDP, length 32
+%% 10:46:37.123792 IP 10.20.2.164.42622 > 10.255.255.255.41794: UDP, length 32
+%% 10:46:57.144209 IP 10.20.2.164.45700 > 10.255.255.255.41794: UDP, length 32
+%% 10:47:04.213865 IP 10.20.2.164.68 > 10.0.0.3.67: BOOTP/DHCP, Request from 9a:02:57:1e:8f:01, length 300
+%% 10:47:09.455868 ARP, Request who-has 10.0.0.3 tell 10.20.2.164, length 28
+%% 10:47:09.459613 ARP, Reply 10.20.2.164 is-at 9a:02:57:1e:8f:01, length 28
+%% 10:47:17.165009 IP 10.20.2.164.60123 > 10.255.255.255.41794: UDP, length 32
+%% 10:47:37.181940 IP 10.20.2.164.52196 > 10.255.255.255.41794: UDP, length 32
+%% 10:47:57.201541 IP 10.20.2.164.42976 > 10.255.255.255.41794: UDP, length 32
+%% packets_count=9
 RESULT pass connection.min_send ARP packets received. Packets received.
 
 --------------------
@@ -286,17 +282,16 @@ connection.dhcp_long
 --------------------
 Device sends ARP request on DHCP lease expiry.
 --------------------
-%% 17:02:24.764612 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 17:02:24.764890 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 17:02:24.764921 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 17:02:24.764927 ARP, Reply 10.0.0.1 is-at 6e:c2:e0:c6:0f:73 (oui Unknown), length 28
-%% 17:03:09.565854 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 17:03:09.566036 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 17:03:09.566083 ARP, Reply 10.0.0.1 is-at 6e:c2:e0:c6:0f:73 (oui Unknown), length 28
-%% 17:03:09.566169 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 17:06:53.820434 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 17:06:53.820551 ARP, Reply 10.0.0.1 is-at 6e:c2:e0:c6:0f:73 (oui Unknown), length 28
-%% packets_count=13
+%% 10:47:09.455868 ARP, Request who-has 10.0.0.3 tell daq-faux-1, length 28
+%% 10:47:09.456019 ARP, Reply 10.0.0.3 is-at e2:da:b5:03:dd:a9 (oui Unknown), length 28
+%% 10:47:09.459596 ARP, Request who-has daq-faux-1 tell 10.0.0.3, length 28
+%% 10:47:09.459613 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
+%% 10:49:58.416159 ARP, Request who-has 10.0.0.3 tell daq-faux-1, length 28
+%% 10:49:58.416272 ARP, Request who-has daq-faux-1 tell 10.0.0.3, length 28
+%% 10:49:58.416501 ARP, Reply 10.0.0.3 is-at e2:da:b5:03:dd:a9 (oui Unknown), length 28
+%% 10:49:58.416577 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
+%% 
+%% packets_count=9
 RESULT pass connection.dhcp_long ARP packets received.
 
 --------------------
@@ -304,17 +299,16 @@ connection.min_send
 --------------------
 Device sends data at a frequency of less than 5 minutes.
 --------------------
-%% 17:02:24.764890 ARP, Request who-has 10.0.0.1 tell 10.20.11.164, length 28
-%% 17:02:24.764921 ARP, Reply 10.20.11.164 is-at 9a:02:57:1e:8f:01, length 28
-%% 17:02:28.601444 IP 10.20.11.164.33601 > 10.255.255.255.41794: UDP, length 32
-%% 17:02:48.614797 IP 10.20.11.164.32984 > 10.255.255.255.41794: UDP, length 32
-%% 17:03:04.519204 IP 10.20.11.164.68 > 10.0.0.1.67: BOOTP/DHCP, Request from 9a:02:57:1e:8f:01, length 300
-%% 17:03:08.630924 IP 10.20.11.164.34079 > 10.255.255.255.41794: UDP, length 32
-%% 17:03:09.566036 ARP, Request who-has 10.0.0.1 tell 10.20.11.164, length 28
-%% 17:03:09.566169 ARP, Reply 10.20.11.164 is-at 9a:02:57:1e:8f:01, length 28
-%% 17:03:28.649459 IP 10.20.11.164.43135 > 10.255.255.255.41794: UDP, length 32
-%% 17:03:48.664036 IP 10.20.11.164.54183 > 10.255.255.255.41794: UDP, length 32
-%% packets_count=13
+%% 10:46:17.101105 IP 10.20.2.164.33174 > 10.255.255.255.41794: UDP, length 32
+%% 10:46:37.123792 IP 10.20.2.164.42622 > 10.255.255.255.41794: UDP, length 32
+%% 10:46:57.144209 IP 10.20.2.164.45700 > 10.255.255.255.41794: UDP, length 32
+%% 10:47:04.213865 IP 10.20.2.164.68 > 10.0.0.3.67: BOOTP/DHCP, Request from 9a:02:57:1e:8f:01, length 300
+%% 10:47:09.455868 ARP, Request who-has 10.0.0.3 tell 10.20.2.164, length 28
+%% 10:47:09.459613 ARP, Reply 10.20.2.164 is-at 9a:02:57:1e:8f:01, length 28
+%% 10:47:17.165009 IP 10.20.2.164.60123 > 10.255.255.255.41794: UDP, length 32
+%% 10:47:37.181940 IP 10.20.2.164.52196 > 10.255.255.255.41794: UDP, length 32
+%% 10:47:57.201541 IP 10.20.2.164.42976 > 10.255.255.255.41794: UDP, length 32
+%% packets_count=9
 RESULT pass connection.min_send ARP packets received. Packets received.
 
 --------------------
@@ -340,17 +334,16 @@ connection.dhcp_long
 --------------------
 Device sends ARP request on DHCP lease expiry.
 --------------------
-%% 17:02:24.764612 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 17:02:24.764890 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 17:02:24.764921 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 17:02:24.764927 ARP, Reply 10.0.0.1 is-at 6e:c2:e0:c6:0f:73 (oui Unknown), length 28
-%% 17:03:09.565854 ARP, Request who-has daq-faux-1 tell 10.0.0.1, length 28
-%% 17:03:09.566036 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 17:03:09.566083 ARP, Reply 10.0.0.1 is-at 6e:c2:e0:c6:0f:73 (oui Unknown), length 28
-%% 17:03:09.566169 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
-%% 17:06:53.820434 ARP, Request who-has 10.0.0.1 tell daq-faux-1, length 28
-%% 17:06:53.820551 ARP, Reply 10.0.0.1 is-at 6e:c2:e0:c6:0f:73 (oui Unknown), length 28
-%% packets_count=13
+%% 10:47:09.455868 ARP, Request who-has 10.0.0.3 tell daq-faux-1, length 28
+%% 10:47:09.456019 ARP, Reply 10.0.0.3 is-at e2:da:b5:03:dd:a9 (oui Unknown), length 28
+%% 10:47:09.459596 ARP, Request who-has daq-faux-1 tell 10.0.0.3, length 28
+%% 10:47:09.459613 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
+%% 10:49:58.416159 ARP, Request who-has 10.0.0.3 tell daq-faux-1, length 28
+%% 10:49:58.416272 ARP, Request who-has daq-faux-1 tell 10.0.0.3, length 28
+%% 10:49:58.416501 ARP, Reply 10.0.0.3 is-at e2:da:b5:03:dd:a9 (oui Unknown), length 28
+%% 10:49:58.416577 ARP, Reply daq-faux-1 is-at 9a:02:57:1e:8f:01 (oui Unknown), length 28
+%% 
+%% packets_count=9
 RESULT pass connection.dhcp_long ARP packets received.
 
 --------------------
@@ -358,17 +351,16 @@ connection.min_send
 --------------------
 Device sends data at a frequency of less than 5 minutes.
 --------------------
-%% 17:02:24.764890 ARP, Request who-has 10.0.0.1 tell 10.20.11.164, length 28
-%% 17:02:24.764921 ARP, Reply 10.20.11.164 is-at 9a:02:57:1e:8f:01, length 28
-%% 17:02:28.601444 IP 10.20.11.164.33601 > 10.255.255.255.41794: UDP, length 32
-%% 17:02:48.614797 IP 10.20.11.164.32984 > 10.255.255.255.41794: UDP, length 32
-%% 17:03:04.519204 IP 10.20.11.164.68 > 10.0.0.1.67: BOOTP/DHCP, Request from 9a:02:57:1e:8f:01, length 300
-%% 17:03:08.630924 IP 10.20.11.164.34079 > 10.255.255.255.41794: UDP, length 32
-%% 17:03:09.566036 ARP, Request who-has 10.0.0.1 tell 10.20.11.164, length 28
-%% 17:03:09.566169 ARP, Reply 10.20.11.164 is-at 9a:02:57:1e:8f:01, length 28
-%% 17:03:28.649459 IP 10.20.11.164.43135 > 10.255.255.255.41794: UDP, length 32
-%% 17:03:48.664036 IP 10.20.11.164.54183 > 10.255.255.255.41794: UDP, length 32
-%% packets_count=13
+%% 10:46:17.101105 IP 10.20.2.164.33174 > 10.255.255.255.41794: UDP, length 32
+%% 10:46:37.123792 IP 10.20.2.164.42622 > 10.255.255.255.41794: UDP, length 32
+%% 10:46:57.144209 IP 10.20.2.164.45700 > 10.255.255.255.41794: UDP, length 32
+%% 10:47:04.213865 IP 10.20.2.164.68 > 10.0.0.3.67: BOOTP/DHCP, Request from 9a:02:57:1e:8f:01, length 300
+%% 10:47:09.455868 ARP, Request who-has 10.0.0.3 tell 10.20.2.164, length 28
+%% 10:47:09.459613 ARP, Reply 10.20.2.164 is-at 9a:02:57:1e:8f:01, length 28
+%% 10:47:17.165009 IP 10.20.2.164.60123 > 10.255.255.255.41794: UDP, length 32
+%% 10:47:37.181940 IP 10.20.2.164.52196 > 10.255.255.255.41794: UDP, length 32
+%% 10:47:57.201541 IP 10.20.2.164.42976 > 10.255.255.255.41794: UDP, length 32
+%% packets_count=9
 RESULT pass connection.min_send ARP packets received. Packets received.
 
 --------------------
