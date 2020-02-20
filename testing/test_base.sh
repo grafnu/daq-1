@@ -5,9 +5,10 @@ source testing/test_preamble.sh
 echo Base Tests >> $TEST_RESULTS
 
 function redact {
-    sed -e 's/\s*%%.*//' \
-        -e 's/2019-.*T.*Z/XXX/' \
-        -e 's/2019-.*00:00/XXX/' \
+    sed -e '/^%%.*/d' \
+	-e 's/\s*%%.*//' \
+        -e 's/2020-.*T.*Z/XXX/' \
+        -e 's/2020-.*00:00/XXX/' \
         -e 's/DAQ version.*//'
 }
 
