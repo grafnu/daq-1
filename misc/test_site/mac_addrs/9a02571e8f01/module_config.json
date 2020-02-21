@@ -24,13 +24,81 @@
   "servers": {
     "tcp": {
       "ports": {
+        "20": {
+          "allowed": false,
+          "reason": "File Transfer Protocol (FTP) Server Data Transfer"
+        },
+        "21": {
+          "allowed": false,
+          "reason": "File Transfer Protocol (FTP) Server Data Transfer"
+        },
+        "22": {
+          "allowed": true,
+          "reason": "Secure Shell (SSH) server"
+        },
+        "23": {
+          "allowed": false,
+          "reason": "Telnet Server"
+        },
+        "25": {
+          "allowed": false,
+          "reason": "Simple Mail Transfer Protocol (SMTP) Server"
+        },
+        "80": {
+          "allowed": false,
+          "reason": "Administrative Insecure Web-Server"
+        },
+        "110": {
+          "allowed": false,
+          "reason": "Post Office Protocol v3 (POP3) Server"
+        },
+        "143": {
+          "allowed": false,
+          "reason": "Internet Message Access Protocol (IMAP) Server"
+        },
+        "161": {
+          "allowed": false,
+          "reason": "Simple Network Management Protocol (SNMP)"
+        },
+        "162": {
+          "allowed": false,
+          "reason": "Simple Network Management Protocol (SNMP) Trap"
+        },
         "443": {
           "allowed": true,
-          "reason": "Administrative Web-Server"
+          "reason": "Administrative Secure Web-Server"
         },
-        "10000": {
+        "5800": {
+          "allowed": false,
+          "reason": "Virtual Network Computing (VNC) Remote Frame Buffer Protocol Over HTTP"
+        },
+        "5500": {
+          "allowed": false,
+          "reason": "Virtual Network Computing (VNC) Remote Frame Buffer Protocol"
+        }
+      }
+    },
+    "udp": {
+      "ports": {
+        "69": {
+          "allowed": false,
+          "reason": "Trivial File Transfer Protocol (TFTP) Server"
+        },
+        "123": {
           "allowed": true,
-          "reason": "Testing snet-sensor-mgmt"
+          "reason": "Network Time Protocol (NTP) Server"
+        },
+        "161": {
+          "allowed": false,
+          "reason": "Simple Network Management Protocol (SNMP)"
+        },
+        "162": {
+          "allowed": false,
+          "reason": "Simple Network Management Protocol (SNMP) Trap"
+        },
+        "47808": {
+          "allowed": false,
+          "reason": "BACnet protocol"
         }
       }
     }
