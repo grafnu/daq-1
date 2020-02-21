@@ -13,9 +13,9 @@ RESULT info protocol.bacnet.version Protocol version: 1
 RESULT skip protocol.bacnet.pic Bacnet device not found. pics.csv not found in device_types/../aux/ directory 
 RESULT info protocol.bacnet.version Protocol version: 1
 RESULT pass protocol.bacnet.pic
-RESULT fail network.brute Change the default password on the DUT
-RESULT pass network.brute 
-RESULT skip network.brute Port 10000 is not open
+RESULT fail security.brute Change the default password on the DUT
+RESULT pass security.brute 
+RESULT skip security.brute Port 10000 is not open
 RESULT fail connection.mac_oui Manufacturer prefix not found!
 RESULT pass connection.mac_oui
 RESULT skip security.tls.v3
@@ -41,7 +41,7 @@ RESULT pass security.firmware version found: ?\xFF\xFF\x19,>u\x08\x00no
 dhcp requests 2 1
 01: ['01:brute:1', '01:macoui:1']
 02: ['02:hold:TimeoutError', '02:macoui:TimeoutError', '02:nmap:1', '02:tls:1']
-03: ['03:hold:DaqException', '03:nmap:1']
+03: ['03:hold:DaqException']
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
@@ -107,7 +107,7 @@ port-02 module_config modules
     "timeout_sec": 120
   },
   "hold": {
-    "enabled": true 
+    "enabled": true
   },
   "macoui": {
     "enabled": true,
@@ -145,8 +145,43 @@ port-02 module_config modules
     `'''       `\__   /\
                 ')
 Redacted docs diff
-No report diff
+57c57
+< |Required|1|1|0|0|
+---
+> |Required|1|0|0|0|
+59c59
+< |Other|0|1|17|2|
+---
+> |Other|0|2|17|2|
+70d69
+< |fail|network.brute|Security|Required|Change the default password on the DUT|
+75a75
+> |fail|security.brute|Other|Other|Change the default password on the DUT|
+81c81
+< |pass|security.ports.nmap|Security|Recommended||
+---
+> |pass|security.ports.nmap|Security|Recommended|Only allowed ports found open.|
+126c126,128
+< Allowing 10000 open tcp snet-sensor-mgmt
+---
+> # Nmap 7.60 scan initiated Fri Feb 21 18:10:24 2020 as: nmap -v -n -Pn -T5 -sU -sT --open -pU:123,161,162,47808,69,T:110,143,161,162,20,21,22,23,25,443,5500,5800,80, -oG /tmp/nmap.log 10.20.33.164
+> # Ports scanned: TCP(13;20-23,25,80,110,143,161-162,443,5500,5800) UDP(5;69,123,161-162,47808) SCTP(0;) PROTOCOLS(0;)
+> # Nmap done at Fri Feb 21 18:10:24 2020 -- 1 IP address (1 host up) scanned in 0.58 seconds
+129c131
+< RESULT pass security.ports.nmap 
+---
+> RESULT pass security.ports.nmap Only allowed ports found open.
+137c139
+< network.brute
+---
+> security.brute
+145c147
+< RESULT fail network.brute Change the default password on the DUT
+---
+> RESULT fail security.brute Change the default password on the DUT
+ M subset/pentests/test_nmap
+ M testing/test_aux.sh
 01: ['01:ping:Exception']
 02: ['02:ping:ValueError']
-03: ['03:ping:Exception']
+03: ['03:nmap:1', '03:ping:Exception']
 Done with tests

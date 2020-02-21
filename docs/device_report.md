@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2019-10-22 09:34:33+00:00 |
-| Test report end date   | 2019-10-22 09:41:18+00:00 |
+| Test report start date | 2020-02-21 18:04:04+00:00 |
+| Test report end date   | 2020-02-21 18:11:02+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -54,9 +54,9 @@ Overall device result FAIL
 
 |Expectation|pass|fail|skip|gone|
 |---|---|---|---|---|
-|Required|1|1|0|0|
+|Required|1|0|0|0|
 |Recommended|1|0|0|0|
-|Other|0|1|17|2|
+|Other|0|2|17|2|
 
 |Result|Test|Category|Expectation|Notes|
 |---|---|---|---|---|
@@ -67,18 +67,18 @@ Overall device result FAIL
 |skip|connection.port_duplex|Other|Other|No local IP has been set, check ext_loip in system.conf|
 |skip|connection.port_link|Other|Other|No local IP has been set, check ext_loip in system.conf|
 |skip|connection.port_speed|Other|Other|No local IP has been set, check ext_loip in system.conf|
-|fail|network.brute|Security|Required|Change the default password on the DUT|
 |skip|poe.negotiation|Other|Other|No local IP has been set, check ext_loip in system.conf|
 |skip|poe.power|Other|Other|No local IP has been set, check ext_loip in system.conf|
 |skip|poe.support|Other|Other|No local IP has been set, check ext_loip in system.conf|
 |skip|protocol.bacnet.pic|Other|Other|Bacnet device not found.|
 |skip|protocol.bacnet.version|Other|Other|Bacnet device not found.|
+|fail|security.brute|Other|Other|Change the default password on the DUT|
 |skip|security.firmware|Other|Other|Could not retrieve a firmware version with nmap. Check bacnet port.|
 |skip|security.passwords.http|Other|Other|Could not lookup password info for mac-key 9a:02:57:1e:8f:01|
 |skip|security.passwords.https|Other|Other|Could not lookup password info for mac-key 9a:02:57:1e:8f:01|
 |skip|security.passwords.ssh|Other|Other|Could not lookup password info for mac-key 9a:02:57:1e:8f:01|
 |skip|security.passwords.telnet|Other|Other|Could not lookup password info for mac-key 9a:02:57:1e:8f:01|
-|pass|security.ports.nmap|Security|Recommended||
+|pass|security.ports.nmap|Security|Recommended|Only allowed ports found open.|
 |skip|security.tls.v3|Other|Other||
 |skip|security.x509|Other|Other||
 |gone|unknown.fake.llama|Other|Other||
@@ -111,7 +111,7 @@ Attempt to ping the Device Under Test
 --------------------
 See log above
 --------------------
-RESULT pass base.target.ping target reached %% 10.20.70.164
+RESULT pass base.target.ping target reached %% 10.20.33.164
 
 ```
 
@@ -123,10 +123,12 @@ security.ports.nmap
 --------------------
 Automatic TCP/UDP port scan using nmap
 --------------------
-Allowing 10000 open tcp snet-sensor-mgmt
+# Nmap 7.60 scan initiated Fri Feb 21 18:10:24 2020 as: nmap -v -n -Pn -T5 -sU -sT --open -pU:123,161,162,47808,69,T:110,143,161,162,20,21,22,23,25,443,5500,5800,80, -oG /tmp/nmap.log 10.20.33.164
+# Ports scanned: TCP(13;20-23,25,80,110,143,161-162,443,5500,5800) UDP(5;69,123,161-162,47808) SCTP(0;) PROTOCOLS(0;)
+# Nmap done at Fri Feb 21 18:10:24 2020 -- 1 IP address (1 host up) scanned in 0.58 seconds
 No invalid ports found.
 --------------------
-RESULT pass security.ports.nmap 
+RESULT pass security.ports.nmap Only allowed ports found open.
 
 ```
 
@@ -134,7 +136,7 @@ RESULT pass security.ports.nmap
 
 ```
 --------------------
-network.brute
+security.brute
 --------------------
 Educational test - not to be included in a production environment!
 --------------------
@@ -142,7 +144,7 @@ Username:manager
 Password:friend
 Login success!
 --------------------
-RESULT fail network.brute Change the default password on the DUT
+RESULT fail security.brute Change the default password on the DUT
 
 ```
 
@@ -263,7 +265,7 @@ RESULT skip protocol.bacnet.pic Bacnet device not found.
 
 ```
 --------------------
-Collecting TLS cert from target address %% 10.20.96.164
+Collecting TLS cert from target address %% 10.20.33.164
 IOException unable to connect to server.
 
 --------------------

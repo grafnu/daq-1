@@ -18,6 +18,9 @@ echo Lint checks | tee -a $TEST_RESULTS
 bin/check_style
 echo check_style exit code $? | tee -a $TEST_RESULTS
 
+# Remove report file for faux-1 device
+rm -f inst/reports/report_9a02571e8f01_*.md
+
 # Function to create pubber config files (for use in cloud tests)
 
 function make_pubber {
@@ -149,6 +152,7 @@ function redact {
 }
 # Make sure that what you've done hasn't messed up DAQ by diffing the output from your test run
 cat docs/device_report.md | redact > out/redacted_docs.md
+cp inst/reports/report_9a02571e8f01_*.md out/
 cat inst/reports/report_9a02571e8f01_*.md | redact > out/redacted_file.md
 
 echo Redacted docs diff | tee -a $TEST_RESULTS

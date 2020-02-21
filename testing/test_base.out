@@ -1,6 +1,6 @@
 Running testing/test_base.sh
 Base Tests
-01: []
+01: ['01:nmap:1']
 # Device 9a02571e8f00, XXX to XXX
 
 Sample device description.
@@ -24,14 +24,13 @@ Overall device result PASS
 
 |Expectation|skip|pass|
 |---|---|---|
-|Other|2|2|
+|Other|2|1|
 
 |Result|Test|Category|Expectation|Notes|
 |---|---|---|---|---|
 |skip|base.switch.ping|Other|Other|No local IP has been set, check ext_loip in system.conf|
 |pass|base.target.ping|Other|Other|target reached|
-|skip|network.brute|Other|Other|Port 10000 is not open|
-|pass|security.ports.nmap|Other|Other||
+|skip|security.brute|Other|Other|Port 10000 is not open|
 
 
 ## Module ping
@@ -64,31 +63,17 @@ RESULT pass base.target.ping target reached
 
 ```
 
-## Module nmap
-
-```
---------------------
-security.ports.nmap
---------------------
-Automatic TCP/UDP port scan using nmap
---------------------
-No invalid ports found.
---------------------
-RESULT pass security.ports.nmap 
-
-```
-
 ## Module brute
 
 ```
 --------------------
-network.brute
+security.brute
 --------------------
 Educational test - not to be included in a production environment!
 --------------------
 Target port 10000 not open.
 --------------------
-RESULT skip network.brute Port 10000 is not open
+RESULT skip security.brute Port 10000 is not open
 
 ```
 
@@ -96,15 +81,9 @@ RESULT skip network.brute Port 10000 is not open
 
 Open port tests
 01: ['01:nmap:1']
-|fail|security.ports.nmap|Other|Other|Some disallowed ports are open|
-security.ports.nmap
-RESULT fail security.ports.nmap Some disallowed ports are open
-01: []
-|pass|security.ports.nmap|Other|Other||
-security.ports.nmap
-RESULT pass security.ports.nmap
+01: ['01:nmap:1']
 External switch tests
-02: []
+02: ['02:nmap:1']
     dp_id: 1
     dp_id: 4886718345
 Switch test with port 2
