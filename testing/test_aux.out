@@ -10,11 +10,11 @@ ERROR:host:Monitoring timeout for macoui after 1s
 RESULT skip protocol.bacnet.version Bacnet device not found.
 RESULT skip protocol.bacnet.pic Bacnet device not found.
 RESULT info protocol.bacnet.version Protocol version: 1
-RESULT skip protocol.bacnet.pic Bacnet device not found. pics.csv not found in device_types/../aux/ directory 
+RESULT skip protocol.bacnet.pic Bacnet device not found. pics.csv not found in device_types/../aux/ directory
 RESULT info protocol.bacnet.version Protocol version: 1
 RESULT pass protocol.bacnet.pic
 RESULT fail security.brute Change the default password on the DUT
-RESULT pass security.brute 
+RESULT pass security.brute
 RESULT skip security.brute Port 10000 is not open
 RESULT fail connection.mac_oui Manufacturer prefix not found!
 RESULT pass connection.mac_oui
@@ -32,12 +32,16 @@ RESULT fail security.passwords.http Default passwords has not been changed
 RESULT fail security.passwords.https Default passwords has not been changed
 RESULT fail security.passwords.telnet Default passwords has not been changed
 RESULT fail security.passwords.ssh Default passwords have not been changed
+RESULT pass security.passwords.http  Default passwords have been changed
+RESULT pass security.passwords.https  Default passwords have been changed
+RESULT pass security.passwords.telnet  Default passwords have been changed
+RESULT pass security.passwords.ssh Default passwords have been changed
 RESULT skip security.firmware Could not retrieve a firmware version with nmap. Check bacnet port.
 RESULT pass security.firmware version found: ?\xFF\xFF\x19,>u\x08\x00no
 dhcp requests 2 1
 01: ['01:brute:1', '01:macoui:1']
 02: ['02:hold:TimeoutError', '02:macoui:TimeoutError', '02:nmap:1', '02:tls:1']
-03: ['03:hold:DaqException', '03:password:TimeoutError']
+03: ['03:hold:DaqException']
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
@@ -141,12 +145,8 @@ port-02 module_config modules
     `'''       `\__   /\
                 ')
 Redacted docs diff
- M docs/device_report.md
- M testing/test_aux.out
- M testing/test_aux.sh
- M testing/test_base.out
- M testing/test_base.sh
+No report diff
 01: ['01:ping:Exception']
-02: ['02:ping:ValueError']
+02: ['02:nmap:1', '02:ping:ValueError']
 03: ['03:nmap:1', '03:ping:Exception']
 Done with tests
