@@ -30,18 +30,14 @@ RESULT skip security.passwords.telnet Could not lookup password info for mac-key
 RESULT skip security.passwords.ssh Could not lookup password info for mac-key 9a:02:57:1e:8f:01
 RESULT fail security.passwords.http Default passwords has not been changed
 RESULT fail security.passwords.https Default passwords has not been changed
-RESULT pass security.passwords.telnet  Default passwords have been changed
+RESULT fail security.passwords.telnet Default passwords has not been changed
 RESULT fail security.passwords.ssh Default passwords have not been changed
-RESULT pass security.passwords.http  Default passwords have been changed
-RESULT pass security.passwords.https  Default passwords have been changed
-RESULT pass security.passwords.telnet  Default passwords have been changed
-RESULT pass security.passwords.ssh Default passwords have been changed
 RESULT skip security.firmware Could not retrieve a firmware version with nmap. Check bacnet port.
 RESULT pass security.firmware version found: ?\xFF\xFF\x19,>u\x08\x00no
 dhcp requests 2 1
 01: ['01:brute:1', '01:macoui:1']
 02: ['02:hold:TimeoutError', '02:macoui:TimeoutError', '02:nmap:1', '02:tls:1']
-03: ['03:hold:DaqException']
+03: ['03:hold:DaqException', '03:password:TimeoutError']
 ctrl-br.flows
 ctrl-br.ofctl
 ext-ovs.flows
@@ -145,11 +141,8 @@ port-02 module_config modules
     `'''       `\__   /\
                 ')
 Redacted docs diff
-125c125
-< # Nmap 7.60 scan initiated XXX as: nmap -v -n -Pn -T5 -sU -sT --open -pU:123,161,162,47808,69,T:110,143,161,162,20,21,22,23,25,443,5500,5800,80, -oG /tmp/nmap.log 10.20.33.164
----
-> # Nmap 7.60 scan initiated XXX as: nmap -v -n -Pn -T5 -sU -sT --open -pU:123,161,162,47808,69,T:110,143,161,162,20,21,22,23,25,443,5500,5800,80, -oG /tmp/nmap.log 10.20.59.164
- M qualification/system_module_config.json
+ M docs/device_report.md
+ M testing/test_aux.out
  M testing/test_aux.sh
  M testing/test_base.out
  M testing/test_base.sh
