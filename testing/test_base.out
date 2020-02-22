@@ -38,7 +38,6 @@ Overall device result PASS
 ```
 --------------------
 Baseline ping test report
-
 LOCAL_IP not configured, assuming no network switch
 
 Done with basic connectivity tests

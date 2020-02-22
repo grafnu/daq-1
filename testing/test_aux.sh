@@ -19,7 +19,7 @@ bin/check_style
 echo check_style exit code $? | tee -a $TEST_RESULTS
 
 # Remove report file for faux-1 device
-rm -f inst/reports/report_9a02571e8f01_*.md
+rm -f out/report_9a02571e8f01_*.md
 
 # Function to create pubber config files (for use in cloud tests)
 
@@ -145,8 +145,10 @@ echo done with docker logs
 # Remove things that will always (probably) change - like DAQ version/timestamps/IPs
 # from comparison
 function redact {
-    sed -E -e 's/\s*%%.*//' \
+    sed -E -e '/^%%.*/d' \
+        -e 's/\s*%%.*//' \
         -e 's/[0-9]{4}-.*T.*Z/XXX/' \
+        -e 's/[a-zA-Z]{3} [a-zA-Z]{3} [0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2} [0-9]{4}/XXX/' \
         -e 's/[0-9]{4}-(0|1)[0-9]-(0|1|2|3)[0-9] [0-9]{2}:[0-9]{2}:[0-9]{2}\+00:00/XXX/g' \
         -e 's/DAQ version.*//'
 }

@@ -11,8 +11,8 @@
 
 | Test             |                        |
 |------------------|------------------------|
-| Test report start date | 2020-02-21 18:04:04+00:00 |
-| Test report end date   | 2020-02-21 18:11:02+00:00 |
+| Test report start date | 2020-02-22 00:19:09+00:00 |
+| Test report end date   | 2020-02-22 00:26:00+00:00 |
 | DAQ version      | 1.0.1 |
 | Attempt number   | 1 |
 
@@ -90,7 +90,7 @@ Overall device result FAIL
 ```
 --------------------
 Baseline ping test report
-%% 61 packets captured.
+%% 72 packets captured.
 LOCAL_IP not configured, assuming no network switch
 
 Done with basic connectivity tests
@@ -111,7 +111,7 @@ Attempt to ping the Device Under Test
 --------------------
 See log above
 --------------------
-RESULT pass base.target.ping target reached %% 10.20.33.164
+RESULT pass base.target.ping target reached %% 10.20.59.164
 
 ```
 
@@ -123,9 +123,9 @@ security.ports.nmap
 --------------------
 Automatic TCP/UDP port scan using nmap
 --------------------
-# Nmap 7.60 scan initiated Fri Feb 21 18:10:24 2020 as: nmap -v -n -Pn -T5 -sU -sT --open -pU:123,161,162,47808,69,T:110,143,161,162,20,21,22,23,25,443,5500,5800,80, -oG /tmp/nmap.log 10.20.33.164
+# Nmap 7.60 scan initiated Sat Feb 22 00:25:19 2020 as: nmap -v -n -Pn -T5 -sU -sT --open -pU:123,161,162,47808,69,T:110,143,161,162,20,21,22,23,25,443,5500,5800,80, -oG /tmp/nmap.log 10.20.59.164
 # Ports scanned: TCP(13;20-23,25,80,110,143,161-162,443,5500,5800) UDP(5;69,123,161-162,47808) SCTP(0;) PROTOCOLS(0;)
-# Nmap done at Fri Feb 21 18:10:24 2020 -- 1 IP address (1 host up) scanned in 0.58 seconds
+# Nmap done at Sat Feb 22 00:25:20 2020 -- 1 IP address (1 host up) scanned in 0.58 seconds
 No invalid ports found.
 --------------------
 RESULT pass security.ports.nmap Only allowed ports found open.
@@ -265,7 +265,7 @@ RESULT skip protocol.bacnet.pic Bacnet device not found.
 
 ```
 --------------------
-Collecting TLS cert from target address %% 10.20.33.164
+Collecting TLS cert from target address %% 10.20.59.164
 IOException unable to connect to server.
 
 --------------------

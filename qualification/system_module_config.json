@@ -94,7 +94,7 @@
       "required": "pass",
       "expected": "Required Pass for PoE Devices"
     },
-    "network.brute": {
+    "security.brute": {
       "category": "Security",
       "required": "pass",
       "expected": "Required Pass"

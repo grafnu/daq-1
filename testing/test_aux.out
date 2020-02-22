@@ -30,7 +30,7 @@ RESULT skip security.passwords.telnet Could not lookup password info for mac-key
 RESULT skip security.passwords.ssh Could not lookup password info for mac-key 9a:02:57:1e:8f:01
 RESULT fail security.passwords.http Default passwords has not been changed
 RESULT fail security.passwords.https Default passwords has not been changed
-RESULT fail security.passwords.telnet Default passwords has not been changed
+RESULT pass security.passwords.telnet  Default passwords have been changed
 RESULT fail security.passwords.ssh Default passwords have not been changed
 RESULT pass security.passwords.http  Default passwords have been changed
 RESULT pass security.passwords.https  Default passwords have been changed
@@ -145,42 +145,14 @@ port-02 module_config modules
     `'''       `\__   /\
                 ')
 Redacted docs diff
-57c57
-< |Required|1|1|0|0|
+125c125
+< # Nmap 7.60 scan initiated XXX as: nmap -v -n -Pn -T5 -sU -sT --open -pU:123,161,162,47808,69,T:110,143,161,162,20,21,22,23,25,443,5500,5800,80, -oG /tmp/nmap.log 10.20.33.164
 ---
-> |Required|1|0|0|0|
-59c59
-< |Other|0|1|17|2|
----
-> |Other|0|2|17|2|
-70d69
-< |fail|network.brute|Security|Required|Change the default password on the DUT|
-75a75
-> |fail|security.brute|Other|Other|Change the default password on the DUT|
-81c81
-< |pass|security.ports.nmap|Security|Recommended||
----
-> |pass|security.ports.nmap|Security|Recommended|Only allowed ports found open.|
-126c126,128
-< Allowing 10000 open tcp snet-sensor-mgmt
----
-> # Nmap 7.60 scan initiated Fri Feb 21 18:10:24 2020 as: nmap -v -n -Pn -T5 -sU -sT --open -pU:123,161,162,47808,69,T:110,143,161,162,20,21,22,23,25,443,5500,5800,80, -oG /tmp/nmap.log 10.20.33.164
-> # Ports scanned: TCP(13;20-23,25,80,110,143,161-162,443,5500,5800) UDP(5;69,123,161-162,47808) SCTP(0;) PROTOCOLS(0;)
-> # Nmap done at Fri Feb 21 18:10:24 2020 -- 1 IP address (1 host up) scanned in 0.58 seconds
-129c131
-< RESULT pass security.ports.nmap 
----
-> RESULT pass security.ports.nmap Only allowed ports found open.
-137c139
-< network.brute
----
-> security.brute
-145c147
-< RESULT fail network.brute Change the default password on the DUT
----
-> RESULT fail security.brute Change the default password on the DUT
- M subset/pentests/test_nmap
+> # Nmap 7.60 scan initiated XXX as: nmap -v -n -Pn -T5 -sU -sT --open -pU:123,161,162,47808,69,T:110,143,161,162,20,21,22,23,25,443,5500,5800,80, -oG /tmp/nmap.log 10.20.59.164
+ M qualification/system_module_config.json
  M testing/test_aux.sh
+ M testing/test_base.out
+ M testing/test_base.sh
 01: ['01:ping:Exception']
 02: ['02:ping:ValueError']
 03: ['03:nmap:1', '03:ping:Exception']
