@@ -96,10 +96,10 @@ cat inst/result.log | sort | tee -a $TEST_RESULTS
 for iface in $(seq 1 6); do
     intf_mac=9a:02:57:1e:8f:0$iface
     ip_file=inst/run-9a02571e8f0$iface/scans/ip_triggers.txt
+    host_pcap=inst/run-9a02571e8f0$iface/scans/test_ipaddr.pcap
     report_file=inst/run-9a02571e8f0$iface/nodes/ipaddr0$iface/tmp/report.txt
     base_log=inst/run-9a02571e8f0$iface/nodes/ipaddr0$iface/activate.log
     module_log=inst/run-9a02571e8f0$iface/nodes/ipaddr0$iface/tmp/module.log
-    host_pcap=inst/run-9a02571e8f0$iface/nodes/ipaddr0$iface/scans/test_ipaddr.pcap
     more $ip_file $report_file $base_log $module_log | cat
     echo $host_pcap
     tcpdump -en -r $host_pcap
