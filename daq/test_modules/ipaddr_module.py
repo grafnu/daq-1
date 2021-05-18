@@ -107,6 +107,8 @@ class IpAddrModule(HostModule):
     def _analyze(self):
         self._set_timeout()
         self._ip_callback = None
+        result = self.host.runner.ping_test(self.host.gateway.host, self.host.target_ip, count=10)
+        self._logger.info('Ping to %s, result %s', self.host.target_ip, result)
         self.docker_host.start(self.port, self.params,
                                self._finalize, self._finish_hook)
 
