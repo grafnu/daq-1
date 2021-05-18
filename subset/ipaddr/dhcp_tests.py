@@ -109,10 +109,9 @@ def main():
         pingFound = False
         for packet in capture:
             if ICMP in packet:
+                print('ping from src %s' % packet[IP].src)
                 if packet[IP].src == ip_change_ip:
                     return 'pass', 'Ping response received after IP change.'
-                else:
-                    print('Unexpected ping src %s' % packet[IP].src)
         return 'fail', 'No ping response received after IP change.'
 
     def _test_private_address():
@@ -139,6 +138,14 @@ def main():
             if running_dhcp_change in line:
                 run_dhcp_change = True
         fd.close()
+
+        if not running_dhcp_change:
+            return 'skip', 'DHCP change test did not run.'
+
+        if not ip_notification:
+            return 'fail', 'No ip change found.'
+
+        print('ip_change looking for ping src IP %s' % dhcp_change_ip)
 
         capture = rdpcap(scan_file)
         pingFound = False
