@@ -149,9 +149,10 @@ def main():
 
         capture = rdpcap(scan_file)
         for packet in capture:
-            print('ping from src %s' % packet[IP].src)
-            if ICMP in packet and packet[IP].src == dhcp_change_ip:
-                return 'pass', 'Device has received new IP address.'
+            if ICMP in packet:
+                print('ping from src %s' % packet[IP].src)
+                if packet[IP].src == dhcp_change_ip:
+                    return 'pass', 'Device has received new IP address.'
         return 'fail', 'Device has not received new IP address.'
 
     _write_report("{b}{t}\n{b}".format(b=dash_break_line, t=TEST_REQUEST))
