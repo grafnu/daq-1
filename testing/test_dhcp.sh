@@ -101,8 +101,6 @@ for iface in $(seq 1 6); do
     base_log=inst/run-9a02571e8f0$iface/nodes/ipaddr0$iface/activate.log
     module_log=inst/run-9a02571e8f0$iface/nodes/ipaddr0$iface/tmp/module.log
     more $ip_file $report_file $base_log $module_log | cat
-    echo $host_pcap
-    tcpdump -en -r $host_pcap
     ip_triggers=$(fgrep done $ip_file | wc -l)
     long_triggers=$(fgrep long $ip_file | wc -l)
     num_ips=$(cat $ip_file | cut -d ' ' -f 1 | sort | uniq | wc -l)
@@ -132,7 +130,8 @@ for iface in $(seq 1 6); do
     else
       echo "Device $iface ip triggers: $((ip_triggers > 0)) $((long_triggers > 0))" | tee -a $TEST_RESULTS
     fi
-
+    echo $host_pcap
+    tcpdump -en -r $host_pcap
 done
 
 echo Done with tests | tee -a $TEST_RESULTS

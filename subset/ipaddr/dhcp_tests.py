@@ -145,15 +145,13 @@ def main():
         if not ip_notification:
             return 'fail', 'No ip change found.'
 
-        print('ip_change looking for ping src IP %s' % dhcp_change_ip)
+        print('dhcp_change looking for ping src IP %s' % dhcp_change_ip)
 
         capture = rdpcap(scan_file)
-        pingFound = False
         for packet in capture:
+            print('ping from src %s' % packet[IP].src)
             if ICMP in packet and packet[IP].src == dhcp_change_ip:
-                pingFound = True
-        if pingFound:
-            return 'pass', 'Device has received new IP address.'
+                return 'pass', 'Device has received new IP address.'
         return 'fail', 'Device has not received new IP address.'
 
     _write_report("{b}{t}\n{b}".format(b=dash_break_line, t=TEST_REQUEST))
