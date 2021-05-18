@@ -842,7 +842,8 @@ class DAQRunner:
         assert dst_ip != "0.0.0.0", "IP address not assigned, can't ping"
         ping_opt = '-I %s' % src_addr if src_addr else ''
         try:
-            output = src.cmd('ping -c', count, ping_opt, dst_ip, '> /dev/null 2>&1 || echo ', failure)
+            output = src.cmd('ping -c', count, ping_opt, dst_ip,
+                             '> /dev/null 2>&1 || echo ', failure)
             return output.strip() != failure
         except Exception as e:
             LOGGER.info('Test ping failure: %s', e)
