@@ -78,7 +78,7 @@ function test_mud {
     rule_counts_file=inst/device_rule_counts.json
 
     cmd/run -k -s device_specs=$device_specs_file &
-    sleep 60
+    sleep 120
 
     $PYTHON_CMD daq/traffic_analyzer.py $device_specs_file $rule_counts_file &
     sleep 120
