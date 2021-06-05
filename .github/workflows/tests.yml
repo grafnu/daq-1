@@ -100,10 +100,12 @@ jobs:
     - name: Generated test report
       if: ${{ always() }}
       run: |
-        echo '************* Use sed to filter out timestamp prefix *************'
-        echo 'Download log archive, find the right job, and use:'
-        echo "  sed -e 's/^[-:.0-9TZ]\+ //' 7_Generated\ test\ report.txt"
+        echo %%%%%%%% Raw test out
         cat inst/test_${{ matrix.test }}.out
+        echo %%%%%%%% Faucet log
+        cat inst/faucet.log
+        echo %%%%%%%% Counts log
+        cat inst/device_rule_counts.json
 
   unit_tests:
     runs-on: ubuntu-18.04

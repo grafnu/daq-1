@@ -14,11 +14,11 @@ build_if_not_release
 
 echo %%%%%%%%%%%%%%%%%%%%%% Default MUD | tee -a $TEST_RESULTS
 # Except with a default MUD file that blocks the port.
-cmd/run -s interfaces.faux.opts=telnet device_specs=resources/device_specs/simple.json
-echo DAQ result code $? | tee -a $TEST_RESULTS
-cat inst/result.log | tee -a $TEST_RESULTS
-fgrep 'security.nmap.ports'  inst/reports/report_9a02571e8f00_*.md | tee -a $TEST_RESULTS
-cat inst/run-9a02571e8f00/nodes/nmap01/activate.log
+#cmd/run -s interfaces.faux.opts=telnet device_specs=resources/device_specs/simple.json
+#echo DAQ result code $? | tee -a $TEST_RESULTS
+#cat inst/result.log | tee -a $TEST_RESULTS
+#fgrep 'security.nmap.ports'  inst/reports/report_9a02571e8f00_*.md | tee -a $TEST_RESULTS
+#cat inst/run-9a02571e8f00/nodes/nmap01/activate.log
 
 echo %%%%%%%%%%%%%%%%%%%%%% Mud profile tests | tee -a $TEST_RESULTS
 rm -f local/system.yaml
@@ -79,10 +79,10 @@ function test_mud {
     rule_counts_file=inst/device_rule_counts.json
 
     cmd/run -k -s device_specs=$device_specs_file &
-    sleep 30
+    sleep 60
 
     $PYTHON_CMD daq/traffic_analyzer.py $device_specs_file $rule_counts_file &
-    sleep 150
+    sleep 120
 
     echo result $type | tee -a $TEST_RESULTS
 
@@ -99,9 +99,9 @@ function test_mud {
 
 activate_venv
 
-test_mud open
-test_mud todev
-test_mud none
+#test_mud open
+#test_mud todev
+#test_mud none
 test_mud star
 
 echo %%%%%%%%%%%%%%%%%%%%%% Done with tests | tee -a $TEST_RESULTS
