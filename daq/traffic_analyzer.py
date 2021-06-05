@@ -21,7 +21,7 @@ from proto.acl_counting_pb2 import DeviceRuleCounts
 from faucet import config_parser
 from forch.proto.devices_state_pb2 import DevicePlacement
 
-LOGGER = logger.get_logger('ta')
+LOGGER = logger.get_logger('trafica')
 PID_FILE = 'inst/ta.pid'
 
 

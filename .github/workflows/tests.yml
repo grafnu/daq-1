@@ -103,9 +103,11 @@ jobs:
         echo %%%%%%%% Raw test out
         cat inst/test_${{ matrix.test }}.out
         echo %%%%%%%% Faucet log
-        cat inst/faucet.log
+        cat inst/network/faucet.log
         echo %%%%%%%% Counts log
         cat inst/device_rule_counts.json
+        echo %%%%%%%% DAQ log
+        cat inst/cmdrun.log
 
   unit_tests:
     runs-on: ubuntu-18.04
