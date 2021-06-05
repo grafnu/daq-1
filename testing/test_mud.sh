@@ -56,6 +56,7 @@ function test_acl_count {
 
     jq_filter=".device_mac_rules.\"$device_mac\".rules | to_entries[] | select(.key|match(\"bacnet\")).value[]"
     packet_count=$(jq "$jq_filter" $rule_counts_file || true)
+    echo device-$device_num $type count $packet_count
     echo device-$device_num $type $((packet_count > 2)) | tee -a $TEST_RESULTS
 }
 
