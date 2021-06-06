@@ -79,10 +79,11 @@ function test_mud {
     rule_counts_file=inst/device_rule_counts.json
 
     cmd/run -k -s device_specs=$device_specs_file &
-    sleep 60
+    # Race condition here to make sure faucet.yaml exists before running traffic_analyzer
+    sleep 30
 
     $PYTHON_CMD daq/traffic_analyzer.py $device_specs_file $rule_counts_file | tee -a inst/traffica.log &
-    sleep 120
+    sleep 1200
 
     echo result $type | tee -a $TEST_RESULTS
 

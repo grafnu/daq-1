@@ -64,6 +64,7 @@ class TrafficAnalyzer:
             return dict_proto(self._get_device_rule_counts(), DeviceRuleCounts)
 
     def _get_device_rule_counts(self):
+        LOGGER.info('_get_device_rule_counts')
         port_acl_metrics, error = self._get_rule_count_metric()
 
         if error:

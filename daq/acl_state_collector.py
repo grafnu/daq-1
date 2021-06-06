@@ -33,6 +33,7 @@ class AclStateCollector:
         rules_map = rule_counts_map['rules']
         errors = rule_counts_map['errors']
 
+        LOGGER.info('Processing %d rules', len(acl_config.rules))
         for rule_config in acl_config.rules:
             cookie_num = rule_config.get('cookie')
             if not cookie_num:
@@ -47,7 +48,9 @@ class AclStateCollector:
                 continue
 
             has_sample = False
+            LOGGER.info('Processing %d camples', len(rule_samples))
             for sample in rule_samples:
+                LOGGER.info('rule sample %s', str(sample))
                 if str(sample.labels.get('cookie')) != str(cookie_num):
                     continue
                 if sample.labels.get('dp_name') != switch:
