@@ -48,29 +48,30 @@ class AclStateCollector:
                 continue
 
             has_sample = None
-            LOGGER.info('Processing cookie %d samples %d', cookie_num, len(rule_samples))
-            sample_cookies = []
+            sample_cookies = set()
             for sample in rule_samples:
-                sample_cookies.append(cookie_num)
-                if str(sample.labels.get('cookie')) != str(cookie_num):
-                    continue
                 if sample.labels.get('dp_name') != switch:
                     continue
                 if int(sample.labels.get('in_port')) != port:
                     continue
 
-                rule_map = rules_map.setdefault(rule_description, {})
-                rule_map['packet_count'] = int(sample.value)
+                sample_cookies.add(cookie_num)
+                if str(sample.labels.get('cookie')) != str(cookie_num):
+                    continue
+
                 has_sample = int(sample.value)
-                break
 
-            LOGGER.info('Sample count %d, cookies %s', has_sample, sample_cookies)
+            rule_map = rules_map.setdefault(rule_description, {})
+            rule_map['packet_count'] = has_sample
 
-            if has_sample is not None:
-                error = (f'No ACL metric sample available: '
-                         f'{switch}, {port}, {acl_config._id}, {rule_description}')
-                errors.append(error)
-                LOGGER.error(error)
+            LOGGER.info('Cookie %d, samples %d, count %s, cookies %s',
+                        cookie_num, len(rule_samples), has_sample, sample_cookies)
+
+            #if has_sample is not None:
+            #    error = (f'No ACL metric sample available: '
+            #             f'{switch}, {port}, {acl_config._id}, {rule_description}')
+            #    errors.append(error)
+            #    LOGGER.error(error)
 
         return rule_counts_map
 
