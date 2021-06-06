@@ -43,7 +43,7 @@ class AclStateCollector:
 
             rule_description = rule_config.get('description')
             if not rule_description:
-                LOGGER.error('Rule with cookie %s does not have a description', cookie_num)
+                LOGGER.warning('Rule with cookie %s does not have a description', cookie_num)
                 continue
 
             has_sample = False

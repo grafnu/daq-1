@@ -16,7 +16,6 @@ import utils
 
 from proto import system_config_pb2 as sys_config
 
-ROOT_LOG = logger.get_logger()
 LOGGER = logger.get_logger('daq')
 ALT_LOG = logger.get_logger('mininet')
 
@@ -75,9 +74,6 @@ class DAQ:
         level = minilog.LEVELS.get(daq_env, minilog.LEVELS['info'])
 
         logger.set_config(level=level)
-
-        # This handler is used by everything, so be permissive here.
-        ROOT_LOG.handlers[0].setLevel(minilog.LEVELS['debug'])
 
         mininet_env = config.get('mininet_loglevel', 'info')
         minilog.setLogLevel(mininet_env)

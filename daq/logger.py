@@ -17,6 +17,7 @@ _LOG_FORMAT = "%(asctime)s %(name)-8s %(levelname)-7s %(message)s"
 _DATE_FORMAT = '%b %02d %H:%M:%S'
 _FORMATTER = logging.Formatter(fmt=_LOG_FORMAT, datefmt=_DATE_FORMAT)
 
+
 def set_stackdriver_client(client, labels=None):
     """Sets stackdriver client"""
     stackdriver_client_name, stackdriver_client = client
@@ -62,7 +63,7 @@ def get_logger(name=None, log_file=None):
     return LOGGERS[name]
 
 
-def set_config(fmt=None, level='info'):
+def set_config(fmt=None, level=logging.INFO):
     """Sets config for all loggers"""
     root_logger = logging.getLogger()
     root_logger.setLevel(level)
@@ -71,5 +72,11 @@ def set_config(fmt=None, level='info'):
     for handler in root_logger.handlers:
         handler.setFormatter(formatter)
 
+    # This handler is used by everything, so be permissive here.
+    ROOT_LOG.handlers[0].setLevel(logging.DEBUG)
+
+
 set_stackdriver_client.stackdriver_handler = None
 _get_file_handler.log_handler = None
+
+ROOT_LOG = get_logger()

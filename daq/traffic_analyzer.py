@@ -4,7 +4,6 @@ from __future__ import absolute_import
 
 import argparse
 import json
-import logging
 import os
 import signal
 import sys
@@ -72,9 +71,9 @@ class TrafficAnalyzer:
             return {'error': error}
 
         device_rule_counts = {}
+        rule_counts_map = device_rule_counts.setdefault('device_mac_rules', {})
 
         for mac, device_placement in self._device_placements.items():
-            rule_counts_map = device_rule_counts.setdefault('device_mac_rules', {})
             port_rule_counts = self._acl_state_collector.get_port_rule_counts(
                 device_placement.switch, device_placement.port, port_acl_metrics.samples)
             rule_counts_map[mac] = proto_dict(port_rule_counts)
@@ -151,28 +150,32 @@ def parse_args(raw_args):
 
 def main():
     """Entry point for standalone Traffic Analyzer"""
+
     args = parse_args(sys.argv[1:])
-    logging.basicConfig(level='INFO')
+    logger.set_config()
+
     write_pid_file(PID_FILE, LOGGER)
     signal.signal(signal.SIGINT, signal.default_int_handler)
 
-    logging.info(
+    LOGGER.info(
         'Initializing Traffic Analyzer with: %s, %s', args.device_specs, args.faucet_config)
 
     traffic_analyzer = TrafficAnalyzer(args.device_specs, args.faucet_config)
     traffic_analyzer.initialize()
     traffic_analyzer.start()
 
-    logging.info('Periodically saving device rule counts to file %s.', args.output_file)
+    LOGGER.info('Periodically saving device rule counts to file %s.', args.output_file)
 
     try:
         while True:
             device_rule_counts = proto_dict(traffic_analyzer.get_device_rule_counts())
+            devices = len(device_rule_counts.get('device_mac_rules', {}))
+            LOGGER.info('Writing rule counts for %s', devices.keys())
             with open(args.output_file, 'w') as file:
                 json.dump(device_rule_counts, file)
             time.sleep(30)
     except KeyboardInterrupt:
-        logging.info('Keyboard interrupt. Exiting.')
+        LOGGER.info('Keyboard interrupt. Exiting.')
 
     traffic_analyzer.stop()
     os.remove(PID_FILE)

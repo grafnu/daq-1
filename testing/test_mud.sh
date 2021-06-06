@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 source testing/test_preamble.sh
 
@@ -64,7 +64,7 @@ function terminate_processes {
     for process in daq ta; do
         pid=$(<inst/$process.pid)
         sudo kill -SIGINT $pid
-        while [ -f inst/$process.pid ]; do
+        while [ -d /proc/$pid ]; do
             echo Waiting for $process to exit...
             sleep 5
         done
@@ -81,7 +81,7 @@ function test_mud {
     cmd/run -k -s device_specs=$device_specs_file &
     sleep 60
 
-    $PYTHON_CMD daq/traffic_analyzer.py $device_specs_file $rule_counts_file &
+    $PYTHON_CMD daq/traffic_analyzer.py $device_specs_file $rule_counts_file | tee -a inst/traffica.log &
     sleep 120
 
     echo result $type | tee -a $TEST_RESULTS
