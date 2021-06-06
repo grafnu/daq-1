@@ -27,7 +27,7 @@ class AclStateCollector:
         rule_counts = self._get_port_rule_counts(switch, port, acl_config, rule_samples)
         prev_counts = self._rule_counts['rules']
         for rule in rule_counts['rules']:
-            rule_sample = rule_counts[rule]['packet_sample']
+            rule_sample = rule_counts.get(rule, {}).get('packet_sample', 0)
             prev_sample = prev_counts.setdefault(rule, {}).get('packet_sample', 0)
             prev_count = prev_counts.setdefault(rule, {}).get('packet_count', 0)
 
