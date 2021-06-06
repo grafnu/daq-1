@@ -67,10 +67,10 @@ class AclStateCollector:
             LOGGER.info('Cookie %d, samples %d, count %s, cookies %s',
                         cookie_num, len(rule_samples), has_sample, sample_cookies)
 
-            #if has_sample is not None:
-            #    error = (f'No ACL metric sample available: '
-            #             f'{switch}, {port}, {acl_config._id}, {rule_description}')
-            #    errors.append(error)
+            if has_sample is not None:
+                error = (f'No ACL metric sample available: '
+                         f'{switch}, {port}, {acl_config._id}, {rule_description}')
+                errors.append(error)
             #    LOGGER.error(error)
 
         return rule_counts_map
