@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1c\x64\x61q/proto/acl_counting.proto\"\xa6\x01\n\x10\x44\x65viceRuleCounts\x12?\n\x10\x64\x65vice_mac_rules\x18\x01 \x03(\x0b\x32%.DeviceRuleCounts.DeviceMacRulesEntry\x12\r\n\x05\x65rror\x18\x02 \x01(\t\x1a\x42\n\x13\x44\x65viceMacRulesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x1a\n\x05value\x18\x02 \x01(\x0b\x32\x0b.RuleCounts:\x02\x38\x01\"}\n\nRuleCounts\x12%\n\x05rules\x18\x01 \x03(\x0b\x32\x16.RuleCounts.RulesEntry\x12\x0e\n\x06\x65rrors\x18\x02 \x03(\t\x1a\x38\n\nRulesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x19\n\x05value\x18\x02 \x01(\x0b\x32\n.RuleCount:\x02\x38\x01\"!\n\tRuleCount\x12\x14\n\x0cpacket_count\x18\x01 \x01(\x05\x62\x06proto3'
+  serialized_pb=b'\n\x1c\x64\x61q/proto/acl_counting.proto\"\xa6\x01\n\x10\x44\x65viceRuleCounts\x12?\n\x10\x64\x65vice_mac_rules\x18\x01 \x03(\x0b\x32%.DeviceRuleCounts.DeviceMacRulesEntry\x12\r\n\x05\x65rror\x18\x02 \x01(\t\x1a\x42\n\x13\x44\x65viceMacRulesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x1a\n\x05value\x18\x02 \x01(\x0b\x32\x0b.RuleCounts:\x02\x38\x01\"}\n\nRuleCounts\x12%\n\x05rules\x18\x01 \x03(\x0b\x32\x16.RuleCounts.RulesEntry\x12\x0e\n\x06\x65rrors\x18\x02 \x03(\t\x1a\x38\n\nRulesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x19\n\x05value\x18\x02 \x01(\x0b\x32\n.RuleCount:\x02\x38\x01\"8\n\tRuleCount\x12\x14\n\x0cpacket_count\x18\x01 \x01(\x05\x12\x15\n\rpacket_sample\x18\x02 \x01(\x05\x62\x06proto3'
 )
 
 
@@ -194,6 +194,13 @@ _RULECOUNT = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='packet_sample', full_name='RuleCount.packet_sample', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -207,7 +214,7 @@ _RULECOUNT = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=328,
-  serialized_end=361,
+  serialized_end=384,
 )
 
 _DEVICERULECOUNTS_DEVICEMACRULESENTRY.fields_by_name['value'].message_type = _RULECOUNTS

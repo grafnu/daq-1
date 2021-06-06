@@ -15,17 +15,32 @@ class AclStateCollector:
 
     def __init__(self):
         self._switch_configs = {}
+        self._rule_counts = {'rules': {}, 'errors': []}
 
     def get_port_rule_counts(self, switch, port, rule_samples):
         """Return the ACL count for a port"""
 
         acl_config, error_map = self._verify_port_acl_config(switch, port)
-
         if not acl_config:
             return dict_proto(error_map, RuleCounts)
 
         rule_counts = self._get_port_rule_counts(switch, port, acl_config, rule_samples)
-        return dict_proto(rule_counts, RuleCounts)
+        prev_counts = self._rule_counts['rules']
+        for rule in rule_counts['rules']:
+            rule_sample = rule_counts[rule]['packet_sample']
+            prev_sample = prev_counts.setdefault(rule, {}).get('packet_sample', 0)
+            prev_count = prev_counts.setdefault(rule, {}).get('packet_count', 0)
+
+            LOGGER.info('counting rule %s: %s %s %s', rule, rule_sample, prev_sample, prev_count)
+
+            # Make count monotonically increasing. May lose some counts, but does not over-count.
+            if rule_sample >= prev_sample:
+                prev_counts[rule]['packet_count'] = prev_count + rule_sample - prev_sample
+            else:
+                prev_counts[rule]['packet_count'] = prev_count + rule_sample
+            prev_counts[rule]['packet_sample'] = rule_sample
+
+        return dict_proto(self._rule_counts, RuleCounts)
 
     # pylint: disable=protected-access
     def _get_port_rule_counts(self, switch, port, acl_config, rule_samples):
@@ -62,7 +77,7 @@ class AclStateCollector:
                 has_sample = int(sample.value)
 
             rule_map = rules_map.setdefault(rule_description, {})
-            rule_map['packet_count'] = has_sample
+            rule_map['packet_sample'] = has_sample
 
             LOGGER.info('Cookie %d, samples %d, count %s, cookies %s',
                         cookie_num, len(rule_samples), has_sample, sample_cookies)

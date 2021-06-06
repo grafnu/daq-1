@@ -29,6 +29,9 @@ message RuleCounts {
  * Rule count
  */
 message RuleCount {
-  // packet count
+  // total packet count
   int32 packet_count = 1;
+
+  // last packet sample
+  int32 packet_sample = 2;
 }
