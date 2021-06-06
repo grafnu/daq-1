@@ -66,11 +66,11 @@ class AclStateCollector:
             sample_cookies = set()
             LOGGER.info('TAPTAP1 %s %s %s', switch, port, cookie_num)
             for sample in rule_samples:
+                if sample.labels.get('dp_name') != switch:
+                    continue
                 LOGGER.info('TAPTAP2 %s %s %s %s', sample.labels.get('dp_name'),
                             sample.labels.get('in_port'), sample.labels.get('cookie'),
                             sample.value)
-                if sample.labels.get('dp_name') != switch:
-                    continue
                 if int(sample.labels.get('in_port')) != port:
                     continue
 
