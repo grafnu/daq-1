@@ -107,17 +107,19 @@ class TrafficAnalyzer:
             LOGGER.info('Loaded %s devices', len(self._duts))
 
     def _update_device_placements(self):
+        self._device_placements = {}
         try:
             metrics = self._varz_state_collector.retry_get_faucet_metrics(
                 [self._DEVICE_LEARNING_METRIC])
         except Exception as e:
             LOGGER.error('Could not get %s metric: %s', self._DEVICE_LEARNING_METRIC, e)
+            return
 
         device_learning_metric = metrics.get(self._DEVICE_LEARNING_METRIC)
         if not device_learning_metric:
             LOGGER.info('No devices are learned')
+            return
 
-        self._device_placements = {}
         for sample in device_learning_metric.samples:
             if sample.labels.get('dp_name') != self._SEC_SWITCH:
                 continue
