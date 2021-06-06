@@ -71,7 +71,7 @@ class AclStateCollector:
                 LOGGER.info('TAPTAP2 %s %s %s %s', sample.labels.get('dp_name'),
                             sample.labels.get('in_port'), sample.labels.get('cookie'),
                             sample.value)
-                if int(sample.labels.get('in_port')) != port:
+                if int(sample.labels.get('in_port') or '0') != port:
                     continue
 
                 sample_cookies.add(cookie_num)
