@@ -108,6 +108,8 @@ jobs:
         cat inst/device_rule_counts.json
         echo %%%%%%%% DAQ log
         cat inst/cmdrun.log
+        echo %%%%%%%% trafica log
+        cat inst/trafica.log
 
   unit_tests:
     runs-on: ubuntu-18.04

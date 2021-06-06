@@ -33,7 +33,7 @@ class AclStateCollector:
         rules_map = rule_counts_map['rules']
         errors = rule_counts_map['errors']
 
-        LOGGER.info('Processing %d rules', len(acl_config.rules))
+        LOGGER.info('Processing port %d rules %d', port, len(acl_config.rules))
         for rule_config in acl_config.rules:
             cookie_num = rule_config.get('cookie')
             if not cookie_num:
@@ -48,9 +48,8 @@ class AclStateCollector:
                 continue
 
             has_sample = False
-            LOGGER.info('Processing %d camples', len(rule_samples))
+            LOGGER.info('Processing cookie %d samples %d', cookie_num, len(rule_samples))
             for sample in rule_samples:
-                LOGGER.info('rule sample %s', str(sample))
                 if str(sample.labels.get('cookie')) != str(cookie_num):
                     continue
                 if sample.labels.get('dp_name') != switch:
@@ -58,6 +57,7 @@ class AclStateCollector:
                 if int(sample.labels.get('in_port')) != port:
                     continue
 
+                LOGGER.info('Packet count %d', int(sample.value))
                 rule_map = rules_map.setdefault(rule_description, {})
                 rule_map['packet_count'] = int(sample.value)
                 has_sample = True
