@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 source testing/test_preamble.sh
 

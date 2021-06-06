@@ -169,7 +169,7 @@ def main():
     try:
         while True:
             device_rule_counts = proto_dict(traffic_analyzer.get_device_rule_counts())
-            devices = len(device_rule_counts.get('device_mac_rules', {}))
+            devices = device_rule_counts.get('device_mac_rules', {})
             LOGGER.info('Writing rule counts for %s', devices.keys())
             with open(args.output_file, 'w') as file:
                 json.dump(device_rule_counts, file)
