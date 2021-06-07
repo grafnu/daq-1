@@ -35,10 +35,10 @@ class AclStateCollector:
         rule_counts = self._get_port_rule_counts(switch, port, acl_config, rule_samples)
         prev_counts = self._rule_counts['rules']
         for rule in rule_counts['rules']:
-            rule_sample = rule_counts['rules'].setdefault(rule, {}).get('packet_sample', 0)
-            rule_cookie = rule_counts['rules'].setdefault(rule, {}).get('cookie', 0)
-            prev_sample = prev_counts.setdefault(rule, {}).get('packet_sample', 0)
-            prev_count = prev_counts.setdefault(rule, {}).get('packet_count', 0)
+            rule_sample = rule_counts['rules'].setdefault(rule, {}).get('packet_sample') or 0
+            rule_cookie = rule_counts['rules'].setdefault(rule, {}).get('cookie')
+            prev_sample = prev_counts.setdefault(rule, {}).get('packet_sample') or 0
+            prev_count = prev_counts.setdefault(rule, {}).get('packet_count') or 0
 
             LOGGER.info('counting rule %s: %s %s %s', rule, rule_sample, prev_sample, prev_count)
 
