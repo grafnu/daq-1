@@ -14,7 +14,7 @@ build_if_not_release
 
 echo %%%%%%%%%%%%%%%%%%%%%% Default MUD | tee -a $TEST_RESULTS
 # Except with a default MUD file that blocks the port.
-cmd/run -s interfaces.faux.opts=telnet device_specs=resources/device_specs/simple.json
+#cmd/run -s interfaces.faux.opts=telnet device_specs=resources/device_specs/simple.json
 echo DAQ result code $? | tee -a $TEST_RESULTS
 cat inst/result.log | tee -a $TEST_RESULTS
 fgrep 'security.nmap.ports'  inst/reports/report_9a02571e8f00_*.md | tee -a $TEST_RESULTS
@@ -102,9 +102,9 @@ function test_mud {
 
 activate_venv
 
-test_mud open
-test_mud todev
-test_mud none
+#test_mud open
+#test_mud todev
+#test_mud none
 test_mud star
 
 echo %%%%%%%%%%%%%%%%%%%%%% Done with tests | tee -a $TEST_RESULTS
