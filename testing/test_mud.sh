@@ -74,7 +74,7 @@ function terminate_processes {
 function test_mud {
     type=$1
     echo %%%%%%%%%%%%%%%%% test mud profile $type
-    
+
     device_specs_file="resources/device_specs/bacnet_$type.json"
     rule_counts_file=inst/device_rule_counts.json
 
@@ -94,7 +94,8 @@ function test_mud {
     test_acl_count 1
     test_acl_count 2
 
-    more inst/run-*/nodes/*/activate.log | cat
+    more $rule_counts_file | cat
+    more inst/port_acls/*_augmented.yaml | cat
 
     terminate_processes
 }
