@@ -74,6 +74,8 @@ class TrafficAnalyzer:
         device_rule_counts = {}
         rule_counts_map = device_rule_counts.setdefault('device_mac_rules', {})
 
+        self._acl_state_collector.get_port_rule_counts('sec', None, port_acl_metrics.samples)
+
         for mac, device_placement in self._device_placements.items():
             port_rule_counts = self._acl_state_collector.get_port_rule_counts(
                 device_placement.switch, device_placement.port, port_acl_metrics.samples)
@@ -176,7 +178,7 @@ def main():
             LOGGER.info('Writing rule counts for %s', devices.keys())
             with open(args.output_file, 'w') as file:
                 json.dump(device_rule_counts, file)
-            time.sleep(30)
+            time.sleep(10)
     except KeyboardInterrupt:
         LOGGER.info('Keyboard interrupt. Exiting.')
 

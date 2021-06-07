@@ -34,4 +34,7 @@ message RuleCount {
 
   // last packet sample
   int32 packet_sample = 2;
+
+  // tracking cookie
+  int32 cookie = 3;
 }

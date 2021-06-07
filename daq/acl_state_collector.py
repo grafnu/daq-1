@@ -20,6 +20,14 @@ class AclStateCollector:
     def get_port_rule_counts(self, switch, port, rule_samples):
         """Return the ACL count for a port"""
 
+        if not port:
+            for sample in rule_samples:
+                if sample.labels.get('dp_name') == switch:
+                    LOGGER.info('TAPTAP1 %s:%s %s %s', sample.labels.get('dp_name'),
+                                sample.labels.get('in_port'), sample.labels.get('cookie'),
+                                sample.value)
+            return None
+
         acl_config, error_map = self._verify_port_acl_config(switch, port)
         if not acl_config:
             return dict_proto(error_map, RuleCounts)
@@ -27,7 +35,8 @@ class AclStateCollector:
         rule_counts = self._get_port_rule_counts(switch, port, acl_config, rule_samples)
         prev_counts = self._rule_counts['rules']
         for rule in rule_counts['rules']:
-            rule_sample = rule_counts.get(rule, {}).get('packet_sample', 0)
+            rule_sample = rule_counts['rules'].setdefault(rule, {}).get('packet_sample', 0)
+            rule_cookie = rule_counts['rules'].setdefault(rule, {}).get('cookie', 0)
             prev_sample = prev_counts.setdefault(rule, {}).get('packet_sample', 0)
             prev_count = prev_counts.setdefault(rule, {}).get('packet_count', 0)
 
@@ -35,10 +44,11 @@ class AclStateCollector:
 
             # Make count monotonically increasing. May lose some counts, but does not over-count.
             if rule_sample >= prev_sample:
-                prev_counts[rule]['packet_count'] = prev_count + rule_sample - prev_sample
+                self._rule_counts['rules'][rule]['packet_count'] = prev_count + rule_sample - prev_sample
             else:
-                prev_counts[rule]['packet_count'] = prev_count + rule_sample
-            prev_counts[rule]['packet_sample'] = rule_sample
+                self._rule_counts['rules'][rule]['packet_count'] = prev_count + rule_sample
+            self._rule_counts['rules'][rule]['packet_sample'] = rule_sample
+            self._rule_counts['rules'][rule]['cookie'] = rule_cookie
 
         return dict_proto(self._rule_counts, RuleCounts)
 
@@ -64,13 +74,10 @@ class AclStateCollector:
 
             has_sample = None
             sample_cookies = set()
-            LOGGER.info('TAPTAP1 %s %s %s', switch, port, cookie_num)
+            LOGGER.info('TAPTAP2 %s %s %s %s', switch, port, cookie_num, rule_description)
             for sample in rule_samples:
                 if sample.labels.get('dp_name') != switch:
                     continue
-                LOGGER.info('TAPTAP2 %s %s %s %s', sample.labels.get('dp_name'),
-                            sample.labels.get('in_port'), sample.labels.get('cookie'),
-                            sample.value)
                 if int(sample.labels.get('in_port') or '0') != port:
                     continue
 
@@ -82,6 +89,7 @@ class AclStateCollector:
 
             rule_map = rules_map.setdefault(rule_description, {})
             rule_map['packet_sample'] = has_sample
+            rule_map['cookie'] = cookie_num
 
             LOGGER.info('Cookie %d, samples %d, count %s, cookies %s',
                         cookie_num, len(rule_samples), has_sample, sample_cookies)
