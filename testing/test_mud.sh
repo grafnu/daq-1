@@ -79,8 +79,6 @@ function test_mud {
     rule_counts_file=inst/device_rule_counts.json
 
     cmd/run -k -s device_specs=$device_specs_file &
-    # Race condition here to make sure faucet.yaml exists before running traffic_analyzer
-    sleep 60
 
     echo $PYTHON_CMD daq/traffic_analyzer.py $device_specs_file $rule_counts_file > inst/traffica.log
     $PYTHON_CMD daq/traffic_analyzer.py $device_specs_file $rule_counts_file 2>&1 | tee -a inst/traffica.log &
@@ -94,10 +92,13 @@ function test_mud {
     test_acl_count 1
     test_acl_count 2
 
-    more $rule_counts_file | cat
+    cat $rule_counts_file | jq .
     more inst/port_acls/*_augmented.yaml | cat
 
-    terminate_processes
+    echo %%%%% ovs flows
+    sudo ovs-ofctl dump-flows sec | cat
+
+    #terminate_processes
 }
 
 activate_venv

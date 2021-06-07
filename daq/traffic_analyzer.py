@@ -122,11 +122,13 @@ class TrafficAnalyzer:
             LOGGER.info('No devices are learned')
             return
 
+        print('TAPTAP duts', self._duts)
         for sample in device_learning_metric.samples:
             if sample.labels.get('dp_name') != self._SEC_SWITCH:
                 continue
 
             mac = sample.labels.get('eth_src')
+            print('TAPTAP sample', sample)
             if mac not in self._duts:
                 continue
 
@@ -138,8 +140,11 @@ class TrafficAnalyzer:
             return
 
         with self._lock:
-            self._reload_faucet_config()
-            self._update_device_placements()
+            try:
+                self._reload_faucet_config()
+                self._update_device_placements()
+            except Exception as e:
+                LOGGER.error('Exception during periodic update: %s', e)
         threading.Timer(self._PERIODIC_TASKS_INTERVAL_SEC, self._periodic_tasks).start()
 
 
