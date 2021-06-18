@@ -44,17 +44,6 @@ EOF
   ls -l $local_dir
 }
 
-function setup_reflector {
-    echo Setting up GCP reflector configuration...
-
-    cat <<EOF > inst/config/gcp_reflect_config.json
-  {
-    "project_id": "$project_id",
-    "registry_id": "$registry_id"
-  }
-EOF
-}
-
 function capture_test_results {
     module_name=$1
     for mac in 9a02571e8f01 3c5ab41e8f0b 3c5ab41e8f0a; do
@@ -103,31 +92,9 @@ long_dhcp_response_sec: 0
 monitor_scan_sec: 20
 EOF
 
-if [ -f "$gcp_cred" ]; then
-    echo Using credentials from $gcp_cred
-    echo gcp_cred: $gcp_cred >> local/system.yaml
-    project_id=`jq -r .project_id $gcp_cred`
-
-    cloud_file=inst/test_site/cloud_iot_config.json
-    echo Pulling cloud iot details from $cloud_file...
-    registry_id=`jq -r .registry_id $cloud_file`
-    cloud_region=`jq -r .cloud_region $cloud_file`
-
-    make_pubber AHU-1 3c5ab41e8f0b daq-faux-2 null null
-    make_pubber SNS-4 3c5ab41e8f0a daq-faux-3 1234 \"GAT-123\"
-
-    GOOGLE_APPLICATION_CREDENTIALS=$gcp_cred udmi/bin/registrar inst/test_site $project_id
-    cat inst/test_site/registration_summary.json | redact | tee -a $GCP_RESULTS
-    echo | tee -a $GCP_RESULTS
-    fgrep hash inst/test_site/devices/*/metadata_norm.json | tee -a $GCP_RESULTS
-    find inst/test_site -name errors.json | tee -a $GCP_RESULTS
-    more inst/test_site/devices/*/errors.json
-
-    setup_reflector
-else
-    echo No gcp service account defined, as required for cloud-based tests.
-    echo Please check install/setup documentation to enable.
-fi
+echo Disabled.
+echo No gcp service account defined, as required for cloud-based tests.
+echo Please check install/setup documentation to enable.
 
 more inst/faux/daq-faux-*/local/pubber.json | cat
 
