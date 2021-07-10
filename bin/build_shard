@@ -10,15 +10,12 @@ target_set=$1
 targets=${!target_set}
 shift
 
-compressed_file_path=
+output_path=/tmp/build_artifacts
 if [ "$1" == "compress" ]; then
-    compressed_file_path=$2
+    output_path=$2
     shift 2
 fi
-
-if [ -z "$compressed_file_path" ]; then
-    compressed_file_path=/tmp/build_artifacts/docker_images/
-fi
+mkdir -p $output_path
 
 host_tests=
 if [ "$target_set" == "subset" ]; then
@@ -26,14 +23,13 @@ if [ "$target_set" == "subset" ]; then
 fi
 
 host_tests=$host_tests DAQ_TARGETS=$targets cmd/build
+image_path=$output_path/docker_images
 for target in $(echo $targets | sed 's/,/ /g'); do
     tag=daqf/$target
     echo $target $tag
-    echo Saving Docker image $tag to $compressed_file_path
-    mkdir -p $compressed_file_path
-    docker save "$tag" > $compressed_file_path/$target.tar
+    echo Saving Docker image $tag to $image_path
+    mkdir -p $image_path
+    docker save "$tag" > $image_path/$target.tar
 done
 
-mkdir -p /tmp/build_artifacts
-cp .build_built $compressed_file_path/../
-cp .build_hash $compressed_file_path/../
+cp .build_built .build_hash $output_path

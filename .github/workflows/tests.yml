@@ -34,7 +34,7 @@ jobs:
           bin/build_shard ${{ matrix.build }} compress /tmp/build_artifacts/docker_images/
     - uses: actions/upload-artifact@v2
       with:
-          name: build_artifacts_${{ matrix.build  }}
+          name: build_artifacts
           path: /tmp/build_artifacts/
 
   integration_tests:
@@ -48,25 +48,8 @@ jobs:
     steps:
     - uses: actions/download-artifact@v2
       with:
-          name: build_artifacts_faucet
-          path: /tmp/build_artifacts_faucet
-    - uses: actions/download-artifact@v2
-      with:
-          name: build_artifacts_faux
-          path: /tmp/build_artifacts_faux
-    - uses: actions/download-artifact@v2
-      with:
-          name: build_artifacts_setup
-          path: /tmp/build_artifacts_setup
-    - uses: actions/download-artifact@v2
-      with:
-          name: build_artifacts_base
-          path: /tmp/build_artifacts_base
-    - uses: actions/download-artifact@v2
-      with:
-          name: build_artifacts_subset
-          path: /tmp/build_artifacts_subset
-      if: matrix.test == 'aux'
+          name: build_artifacts
+          path: /tmp/build_artifacts
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
