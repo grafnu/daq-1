@@ -7,8 +7,8 @@ base=test_bacnet,test_mudgee,test_brute,test_discover,usi,test_ipaddr
 subset=test_switch,test_bacext,test_password,test_ssh,test_udmi,test_manual,test_network
 
 shard=$2
-targets=${$shard}
-echo Building targets $targets
+targets=${!shard}
+echo Building $shard targets $targets
 
 output_path=$1/$shard
 mkdir -p $output_path
