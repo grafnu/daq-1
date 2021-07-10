@@ -10,8 +10,9 @@ for shard in "$@"; do
     ls -l $shard_path
     cat $shard_path/.build_built >> .build_built
     for file in $shard_path/*.tar; do
-        docker load < $file
+        docker load < $file &
     done
+    wait
     rm -rf $shard_path
 done
 
