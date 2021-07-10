@@ -1,23 +1,18 @@
 #!/bin/bash -e
 
-ROOT=$PWD
-
 artifact_path=$1
 shift
 
 touch .build_built
 
 for shard in "$@"; do
-    (
-        cd $artifact_path/$shard
-        pwd
-        ls -l
-        cat .build_built >> $ROOT/.build_built
-        for file in *.tar; do
-            docker load < "$file"
-        done
-    )
-    rm -rf $artifact_path/$shard
+    shard_path=$artifact_path/$shard
+    ls -l $shard_path
+    cat $shard_path/.build_built >> .build_built
+    for file in $shard_path/*.tar; do
+        docker load < $file
+    done
+    rm -rf $shard_path
 done
 
 bin/build_hash write
