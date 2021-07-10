@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+ROOT=$PWD
+
 artifact_path=$1
 shift
 
@@ -8,7 +10,9 @@ touch .build_built
 for shard in "$@"; do
     (
         cd $artifact_path/$shard
-        cat .build_built >> .build_built
+        pwd
+        ls -l
+        cat .build_built >> $ROOT/.build_built
         for file in *.tar; do
             docker load < "$file"
         done
@@ -17,3 +21,5 @@ for shard in "$@"; do
 done
 
 bin/build_hash write
+
+docker images
