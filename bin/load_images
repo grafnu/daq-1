@@ -1,15 +1,19 @@
 #!/bin/bash -e
 
+artifact_path=$1
+shift
+
 touch .build_built
-run_dir=$PWD
-for var in "$@"; do
-    cat /tmp/build_artifacts_$var/.build_built >> .build_built
-    cd /tmp/build_artifacts_$var/docker_images
-    ls -a
-    for file in *; do
-        docker load < "$file"
-    done
-    rm -rf /tmp/build_artifacts_$var
-    cd $run_dir
+
+for shard in "$@"; do
+    (
+        cd $artifact_path/$shard
+        cat .build_built >> .build_built
+        for file in *.tar; do
+            docker load < "$file"
+        done
+    )
+    rm -rf $artifact_path/$shard
 done
+
 bin/build_hash write

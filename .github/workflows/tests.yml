@@ -31,11 +31,11 @@ jobs:
         bin/setup_daq
     - name: Build docker images for tests
       run: |
-          bin/build_shard ${{ matrix.build }} compress /tmp/build_artifacts/docker_images/
+          bin/build_shard /tmp/build_artifacts ${{ matrix.build }}
     - uses: actions/upload-artifact@v2
       with:
           name: build_artifacts
-          path: /tmp/build_artifacts/
+          path: /tmp/build_artifacts
 
   integration_tests:
     needs: build_docker
@@ -68,11 +68,11 @@ jobs:
         bin/setup_daq
     - name: Loading docker images
       run: |
-        bin/load_images faucet faux setup base
+        bin/load_images /tmp/build_artifacts faucet faux setup base
     - name: Loading subset docker images
-      run: |
-        bin/load_images subset
       if: matrix.test == 'aux'
+      run: |
+        bin/load_images /tmp/build_artifacts subset
     - name: Running ${{ matrix.test }} test
       env:
         DOCKER_STARTUP_TIMEOUT_MS: 60000

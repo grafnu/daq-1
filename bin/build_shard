@@ -6,30 +6,23 @@ faucet=faucet,gauge
 base=test_bacnet,test_mudgee,test_brute,test_discover,usi,test_ipaddr
 subset=test_switch,test_bacext,test_password,test_ssh,test_udmi,test_manual,test_network
 
-target_set=$1
-targets=${!target_set}
-shift
+shard=$2
+targets=${$shard}
+echo Building targets $targets
 
-output_path=/tmp/build_artifacts
-if [ "$1" == "compress" ]; then
-    output_path=$2
-    shift 2
-fi
+output_path=$1/$shard
 mkdir -p $output_path
 
 host_tests=
-if [ "$target_set" == "subset" ]; then
+if [ "$shard" == "subset" ]; then
     host_tests=config/modules/all.conf
 fi
 
 host_tests=$host_tests DAQ_TARGETS=$targets cmd/build
-image_path=$output_path/docker_images
+cp .build_built .build_hash $output_path/
+
 for target in $(echo $targets | sed 's/,/ /g'); do
     tag=daqf/$target
-    echo $target $tag
-    echo Saving Docker image $tag to $image_path
-    mkdir -p $image_path
-    docker save "$tag" > $image_path/$target.tar
+    echo Saving Docker image $tag to $output_path
+    docker save "$tag" > $output_path/$target.tar
 done
-
-cp .build_built .build_hash $output_path
